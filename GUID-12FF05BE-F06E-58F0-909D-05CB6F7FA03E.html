@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Code Efficiency"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Code Efficiency</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id1198324 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a> &gt; </div>
+<h1 class="topictitle1">Code Efficiency</h1>
+<div><p>Attention paid to making code efficient in speed and particularly in resource use is always worthwhile. This topic suggests some methods that should become familiar to Symbian developers for this platform. </p>
+ <div class="section"><h2 class="sectiontitle">Stack usage</h2> <p>Each thread in an application has a limited standard stack space of 8Kb, which should be carefully managed. Therefore: </p>
+ <ul><li id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-C8B30A14-5135-5594-A440-C8B4F78E4F0B"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-C8B30A14-5135-5594-A440-C8B4F78E4F0B"><!-- --></a><p>avoid copy-by-value, except for basic types </p>
+ </li>
+ <li id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-03380EB3-E1A7-573C-9CD5-9E7055885341"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-03380EB3-E1A7-573C-9CD5-9E7055885341"><!-- --></a><p>create any large object or array on the heap rather than the stack </p>
+ </li>
+ <li id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-F72CAEC5-FF15-59E9-8452-1324BBB61C7D"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-F72CAEC5-FF15-59E9-8452-1324BBB61C7D"><!-- --></a><p>minimise the lifetime of automatic variables by appropriately scoping them </p>
+ </li>
+ </ul>
+ <p>The last point can be illustrated with the following example: </p>
+ <pre class="codeblock" id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-DFFA3ADD-1FB3-5CAC-8B9E-7A141A958E22"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-DFFA3ADD-1FB3-5CAC-8B9E-7A141A958E22"><!-- --></a>void ABadFunction()
+    {
+    TBigObject Object1;
+    TBigObject Object2;
+    TBigObject Object3;
+    
+    GetTwoObjectValues(Object1,Object2);
+    Object3=SumObjects(Object1,Object2);
+    FunctionWithUnknownStackOverhead(Object3);
+    }</pre>
+ <p>In the above code, <samp class="codeph">Object1</samp> and <samp class="codeph">Object2</samp> persist, using stack space, throughout the lifetime of the call to <samp class="codeph">FunctionWithUnknownStackOverhead()</samp>, although they are not required by that time. They should be removed from the stack before the call is made. This can be achieved as follows: </p>
+ <pre class="codeblock" id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-46DB7A9B-6186-565E-AFF7-47C6A5E24CB3"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-46DB7A9B-6186-565E-AFF7-47C6A5E24CB3"><!-- --></a>void ABetterFunction()
+    {
+    TBigObject Object1;
+
+    GetTotalObjectValues(Object1);    
+    FunctionWithUnknownStackOverhead(Object1);
+    }
+
+void GetTotalObjectValues(TBigObject &amp;aObject)
+    {
+    TBigObject Object1;
+    TBigObject Object2;
+
+    GetTwoObjectValues(Object1,Object2);
+    aObject=SumObjects(Object1,Object2);
+    }</pre>
+ <p>By splitting the code into two functions, you ensure that the stack is used no more than required. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Function overloads</h2> <p>If a function definition has default arguments, and if that function often gets called with the caller assuming the default arguments, consider providing an overloaded function that doesn't have the additional arguments. This is because every time the compiler supplies a default parameter, it generates additional code where the function is called. </p>
+ <p>For example, if you have </p>
+ <pre class="codeblock" id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-AA858DE5-FDAC-5021-8581-88EEDA399671"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-AA858DE5-FDAC-5021-8581-88EEDA399671"><!-- --></a>void FunctionOne(TInt aInt=0);</pre>
+ <p>which often gets called in code by the line </p>
+ <pre class="codeblock" id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-660E507A-AD70-508D-A8B2-A9AA5A367996"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-660E507A-AD70-508D-A8B2-A9AA5A367996"><!-- --></a>FunctionOne();</pre>
+ <p>then consider supplying </p>
+ <pre class="codeblock" id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-B6DEAF81-0C9C-59D4-A0B3-2E3D6ECD4AB1"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-B6DEAF81-0C9C-59D4-A0B3-2E3D6ECD4AB1"><!-- --></a>void FunctionOne();</pre>
+ <p>the contents of which might be: </p>
+ <pre class="codeblock" id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-96ED9FA0-6C91-5298-8F28-F75C717C3D4E"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-96ED9FA0-6C91-5298-8F28-F75C717C3D4E"><!-- --></a>void FunctionOne()
+    {
+    FunctionOne(0);
+    }</pre>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Pointers and references</h2> <p>Using a reference as a function argument may be more efficient than using a pointer. This is because the compiler has to preserve the value of the null pointer through all conversions. </p>
+ <p>Imagine a class <samp class="codeph">CXxx</samp> which derives from a mixin class <samp class="codeph">MYyy</samp>, as in </p>
+ <pre class="codeblock" id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-5F86BE77-45BF-5D9B-A205-283B5D234889"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-5F86BE77-45BF-5D9B-A205-283B5D234889"><!-- --></a>class CXxx : public CBase,public MYyy {...};</pre>
+ <p>Then, to pass a pointer to a <samp class="codeph">CXxx</samp> to a function taking a <samp class="codeph">MYyy</samp>, the compiler has to add <samp class="codeph">sizeof(CBase)</samp> to the pointer, except when that pointer is <samp class="codeph">NULL</samp>. If <samp class="codeph">cp</samp> is a <samp class="codeph">CXxx*</samp>, and <samp class="codeph">Func()</samp> a function taking an <samp class="codeph">MYyy*</samp>, then what happens in a call like <samp class="codeph">Func(cp)</samp> is something like this: </p>
+ <pre class="codeblock" id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-E192FCB5-7F8D-56FC-B474-674B750C82B6"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-E192FCB5-7F8D-56FC-B474-674B750C82B6"><!-- --></a>Func((MYyy* aM)(cp==NULL ? NULL : (TUint8*)cp+sizeof(CBase)));</pre>
+ <p>Null references are not possible, so no test for <samp class="codeph">NULL</samp> is necessary when they are used. On ARM, converting from <samp class="codeph">CXxx*</samp> to <samp class="codeph">MYyy*</samp> takes 8 instructions, whereas the <samp class="codeph">CXxx&amp;</samp> to <samp class="codeph">MYyy&amp;</samp> conversion takes only two. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Floating point maths</h2> <p>Floating point maths is sufficiently slow that it is worth looking to see if an alternative algorithm using only integer maths is available. </p>
+ <p>For example, given two <samp class="codeph">TInts</samp>, <samp class="codeph">aTop</samp>, and <samp class="codeph">aBottom</samp>, instead of: </p>
+ <pre class="codeblock" id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-170883FB-40FD-5295-A545-2FE7F05D6813"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-170883FB-40FD-5295-A545-2FE7F05D6813"><!-- --></a>TReal a = (TReal)aTop;
+TReal b = (TReal)aBottom;
+TReal c = a/b+0.5;
+TReal result;
+Math::Round(result,c,0);
+return (TInt)result;</pre>
+ <p>you should use </p>
+ <pre class="codeblock" id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-CF3DC494-14DE-51B2-9F2C-5916F3E8AA84"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-CF3DC494-14DE-51B2-9F2C-5916F3E8AA84"><!-- --></a>return((2*aTop+aBottom)/(2*aBottom));</pre>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Inline functions</h2> <p>Inline functions are intended to speed up code by avoiding the expense of a function call, but retain its modularity by disguising operations as functions. Before using them, however, there are two issues that you should check: </p>
+ <ul><li id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-5381813A-ACF4-57FE-B70E-CCB4AA6AF5BC"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-5381813A-ACF4-57FE-B70E-CCB4AA6AF5BC"><!-- --></a><p>code compactness: limited memory resources may mean that the speed cost of a function call is preferable to large bodies of inline code </p>
+ </li>
+ <li id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-58841335-10A8-5E09-B7D6-DB011B95FDA1"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-58841335-10A8-5E09-B7D6-DB011B95FDA1"><!-- --></a><p>binary compatibility: changing the implementation of an inline function can break binary compatibility. This is important if your code is going to be used by other Symbian developers. </p>
+ </li>
+ </ul>
+ <p>The most common cases where inline functions are acceptable are: </p>
+ <ul><li id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-61970E70-8C53-5CCA-A214-4CEF87817FA8"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-61970E70-8C53-5CCA-A214-4CEF87817FA8"><!-- --></a><p>getter and setters for one- or two-machine word quantities: for example, </p>
+ </li>
+ </ul>
+ <pre class="codeblock" id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-683E842C-DBF7-516E-8B33-FC6FF3DCE2A9"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-683E842C-DBF7-516E-8B33-FC6FF3DCE2A9"><!-- --></a>inline ConEnv() const { return iConEnv; };</pre>
+ <ul><li id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-261BCAD0-CCD0-502A-9DC3-E8FC5E2217C7"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-261BCAD0-CCD0-502A-9DC3-E8FC5E2217C7"><!-- --></a><p>trivial constructors for <samp class="codeph">T</samp> classes: </p>
+ </li>
+ </ul>
+ <pre class="codeblock" id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-F906F1B0-E5AC-5F03-A432-61EAEA5C5C11"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-F906F1B0-E5AC-5F03-A432-61EAEA5C5C11"><!-- --></a>inline TPoint::TPoint(TInt aX, TInt aY) { iX=aX; iY=aY; }; </pre>
+ <ul><li id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-672214E8-5B5F-5879-BEFF-FF3E50B3280B"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-672214E8-5B5F-5879-BEFF-FF3E50B3280B"><!-- --></a><p>in the thin-template idiom: see <a href="GUID-497930CE-4D61-50EE-A63B-3656158EE29C.html">Thin templates</a>  </p>
+ </li>
+ <li id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-D1627362-04CD-55FD-AB66-3DD8A4FFCABD"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-D1627362-04CD-55FD-AB66-3DD8A4FFCABD"><!-- --></a><p>certain other operators and functions, possibly templated, whose definition, not subject to change, is to map one operation onto another, for example, </p>
+ </li>
+ </ul>
+ <pre class="codeblock" id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-D737320C-4153-5E34-93F7-7E89E377CDD5"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-D737320C-4153-5E34-93F7-7E89E377CDD5"><!-- --></a>template &lt;class T&gt; inline T Min(T aLeft,T aRight)
+{ return(aLeft&lt;aRight ? aLeft : aRight); }</pre>
+ </div>
+ <div class="section"><h2 class="sectiontitle">No test for NULL pointer when deleting object</h2> <p>C++ specifies that <samp class="codeph">delete 0</samp> does nothing, so that you need never write code such as </p>
+ <pre class="codeblock" id="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-9897710D-7202-5290-9454-EAC5B0129D70"><a name="GUID-12FF05BE-F06E-58F0-909D-05CB6F7FA03E__GUID-9897710D-7202-5290-9454-EAC5B0129D70"><!-- --></a>if (iX)
+    delete iX;</pre>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

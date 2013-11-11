@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="LCD Extension Implementation Tutorial"/>
+<meta name="abstract" content="This topic describes how to create an LCD Extension."/>
+<meta name="description" content="This topic describes how to create an LCD Extension."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8C22AF20-EE0E-5AD2-BEFD-FED5A7DBB09B.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8C22AF20-EE0E-5AD2-BEFD-FED5A7DBB09B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0C3A4156-E5CF-55F9-91A0-A7961FDEE030.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>LCD Extension Implementation Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2400211 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-8C22AF20-EE0E-5AD2-BEFD-FED5A7DBB09B.html">LCD Extension</a> &gt; </div>
+<h1 class="topictitle1">LCD Extension Implementation Tutorial</h1>
+<div><p>This topic describes how to create an LCD Extension.</p>
+
+<p>The topic uses a reference board port named <span class="filepath">template_variant</span> as an example implementation. </p>
+
+<div class="section" id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-7DDD91D2-A69F-4940-AA58-74EB2A989E55"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-7DDD91D2-A69F-4940-AA58-74EB2A989E55"><!-- --></a><h2 class="sectiontitle">Build
+environment</h2> <p>In the template reference board port, the <span class="filepath">.mmp</span> file for the LCD Extension is <span class="filepath">...\template_variant\lcdtemplate.mmp</span>. This is one of the <samp class="codeph">PRJ_MMPFILES</samp> referenced in
+the template variant's <span class="filepath">bld.inf</span> file in the <span class="filepath">...\template_variant\...</span> directory, and means that the
+LCD Extension is built as part of the Variant. </p>
+ <p>The source
+for the driver is contained entirely within <span class="filepath">...\template_variant\specific\lcd.cpp</span>. </p>
+ <p>The driver is defined as a kernel extension and is loaded
+early in the boot sequence. </p>
+ </div>
+
+<div class="section" id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-FC49B296-5DFA-4C19-BEDE-F641D70E5ED9"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-FC49B296-5DFA-4C19-BEDE-F641D70E5ED9"><!-- --></a><h2 class="sectiontitle">Initialization</h2> <p>The driver functionality is almost entirely encapsulated by the <samp class="codeph">DLcdPowerHandler</samp> class. This is a power handler class derived
+from <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html"><span class="apiname">DPowerHandler</span></a>. An instance of <samp class="codeph">DLcdPowerHandler</samp> is created when the extension is loaded. </p>
+ <p> <samp class="codeph">DLcdPowerHandler</samp> is defined within the source file itself <span class="filepath">...\template_variant\specific\lcd.cpp</span>. </p>
+ <p>As the driver is a kernel extension, it must have a <samp class="codeph">DECLARE_STANDARD_EXTENSION()</samp> statement. In the template
+port, this is implemented as follows: </p>
+ <pre class="codeblock" id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-BB93E7E7-06DA-5A12-ABA1-D07AA246D6FC"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-BB93E7E7-06DA-5A12-ABA1-D07AA246D6FC"><!-- --></a>DECLARE_STANDARD_EXTENSION()
+    {
+    __KTRACE_OPT(KPOWER,Kern::Printf("Starting LCD power manager"));
+    
+    // create LCD power handler
+    TInt r=KErrNoMemory;
+    DLcdPowerHandler* pH=new DLcdPowerHandler;
+    if (pH)
+        r=pH-&gt;Create();
+    
+    __KTRACE_OPT(KPOWER,Kern::Printf("Returns %d",r));
+    return r;
+    }
+</pre>
+ <p>This simply creates an instance of the <samp class="codeph">DLcdPowerHandler</samp> class and then calls its <samp class="codeph">Create()</samp> function which
+implements the display setup. This function should do the following: </p>
+ <ul>
+<li id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-4D3B36C6-C782-5B3F-8244-7FD33B9976C6"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-4D3B36C6-C782-5B3F-8244-7FD33B9976C6"><!-- --></a><p>map the video
+RAM </p>
+ </li>
+
+<li id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-B693BD2B-50FF-554D-AF2B-1992A472F586"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-B693BD2B-50FF-554D-AF2B-1992A472F586"><!-- --></a><p>setup the video
+info structure </p>
+ </li>
+
+<li id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-1DF67FC0-90FA-5853-88C2-6DBA5C60F377"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-1DF67FC0-90FA-5853-88C2-6DBA5C60F377"><!-- --></a><p>install the
+HAL handler </p>
+ </li>
+
+<li id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-2B8080C4-2A9F-5AA2-B609-3DC8F5759DDE"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-2B8080C4-2A9F-5AA2-B609-3DC8F5759DDE"><!-- --></a><p>install the
+power handler. </p>
+ </li>
+
+</ul>
+ <p><strong> Map the video RAM</strong> </p>
+ <p>The frame buffer is a <a href="GUID-2A34A3DD-A7FE-34A0-B0B7-BB0A4F04B098.html"><span class="apiname">DPlatChunkHw</span></a> object, and should be mapped as globally accessible,
+readable and writeable. It should <em>not</em> be mapped as writeback
+cached, it should be either not-cached or write-through. The advantage
+of write through is that it allows the use of the write buffer. </p>
+ <pre class="codeblock" id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-148795D9-45A2-526B-A2F7-57B5B2AAC8AB"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-148795D9-45A2-526B-A2F7-57B5B2AAC8AB"><!-- --></a>TInt DLcdPowerHandler::Create()
+    {
+    ...
+
+    // map the video RAM
+    TInt vSize = ((TemplateAssp*)Arch::TheAsic())-&gt;VideoRamSize();
+    ivRamPhys = TTemplate::VideoRamPhys();                // EXAMPLE ONLY: assume TTemplate interface class
+    TInt r = DPlatChunkHw::New(iChunk,ivRamPhys,vSize,EMapAttrUserRw|EMapAttrBufferedC);
+    if ® != KErrNone)
+        return r;
+ ...
+</pre>
+ <p>If the frame buffer resides in main RAM and there
+is no restriction on which physical addresses may be used for it,
+physical RAM for the frame buffer should be reserved by using <a href="GUID-3DC7B5F2-512E-3FF3-BC08-945DDE2AE680.html#GUID-3DC7B5F2-512E-3FF3-BC08-945DDE2AE680__GUID-B506D835-505D-3D89-A840-475F291908DC"><span class="apiname">Epoc::AllocPhysicalRam()</span></a>. </p>
+ <p>If the frame buffer does
+not reside in main RAM, there is no problem about reserving it. </p>
+ <p>If the frame buffer must reside at a specific address in main
+RAM, there are two strategies available for reserving it: </p>
+ <ul>
+<li id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-29D3BF5F-442B-5912-A8B9-4F1F76C1879E"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-29D3BF5F-442B-5912-A8B9-4F1F76C1879E"><!-- --></a><p>If no conflicts
+are permitted between the frame buffer and memory allocations made
+during the kernel boot (for example, if the frame buffer must reside
+at the end of main memory), simply use <a href="GUID-3DC7B5F2-512E-3FF3-BC08-945DDE2AE680.html#GUID-3DC7B5F2-512E-3FF3-BC08-945DDE2AE680__GUID-78F136DC-023B-30AB-A1AB-34D6BC4F1B3E"><span class="apiname">Epoc::ClaimPhysicalRam()</span></a>. This function just marks a region of physical RAM as allocated,
+returning an error if any part of the region has already been used. </p>
+ </li>
+
+<li id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-F2C5ED3A-767A-58CA-BDC6-78D3C1820C80"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-F2C5ED3A-767A-58CA-BDC6-78D3C1820C80"><!-- --></a><p>The required
+physical RAM region can be reserved in the bootstrap. The correct
+place to do this is in the implementation of the boot table function <a href="GUID-B3F6FC45-3BF0-5F92-8325-44C705BA47AE.html#GUID-B3F6FC45-3BF0-5F92-8325-44C705BA47AE__GUID-B3C6ACE9-A803-59D4-8EBD-314363905427">BTF_Reserve</a> when writing platform-specific source code for
+the bootstrap. See the Bootstrap <a href="GUID-5EB03086-A87D-5588-8927-7A7F8DB38366.html" title="This section describes how to implement a port of the bootstrap.">Port Implementation
+Tutorial</a> for more detail and look at <span class="filepath">...\template_variant\bootstrap\template.s</span> for a concrete example. </p>
+ </li>
+
+</ul>
+ <p>Note that all Symbian platform base ports currently create
+a second frame buffer for a secure screen. However, as platform security
+is not yet implemented, this is wasteful of RAM and should be omitted. </p>
+ <p id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-57223C8C-0381-51AC-8E8A-771434136A5C"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-57223C8C-0381-51AC-8E8A-771434136A5C"><!-- --></a><strong> Set up the video
+information structure</strong> </p>
+ <p>The video information structure
+is used to define several aspects of the display including display
+size, bits per pixel and address of the frame buffer. This structure
+is the class <a href="GUID-C4712A78-6C58-39ED-AF84-11038DB8571D.html"><span class="apiname">TVideoInfoV01</span></a> defined in the header
+file <span class="filepath">...\eka\include\videodriver.h</span> and exported
+to <span class="filepath">...\epoc32\include</span>. </p>
+ <pre class="codeblock" id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-0680E467-9552-5FD6-BBDE-60AE95F0B941"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-0680E467-9552-5FD6-BBDE-60AE95F0B941"><!-- --></a>TInt DLcdPowerHandler::Create()
+    {
+       ...
+       // setup the video info structure, this will be used to remember the video settings
+       iVideoInfo.iDisplayMode = KConfigLcdInitialDisplayMode;
+       iVideoInfo.iOffsetToFirstPixel = Lcd_Mode_Config[KConfigLcdInitialDisplayMode].iOffsetToFirstVideoBuffer;
+       iVideoInfo.iIsPalettized = Lcd_Mode_Config[KConfigLcdInitialDisplayMode].iIsPalettized;
+       iVideoInfo.iOffsetBetweenLines = Lcd_Mode_Config[KConfigLcdInitialDisplayMode].iOffsetBetweenLines;
+       iVideoInfo.iBitsPerPixel = Lcd_Mode_Config[KConfigLcdInitialDisplayMode].iBitsPerPixel;
+
+       iVideoInfo.iSizeInPixels.iWidth = KConfigLcdWidth;
+       iVideoInfo.iSizeInPixels.iHeight = KConfigLcdHeight;
+       iVideoInfo.iSizeInTwips.iWidth = KConfigLcdWidthInTwips;
+       iVideoInfo.iSizeInTwips.iHeight = KConfigLcdHeightInTwips;
+       iVideoInfo.iIsMono = KConfigLcdIsMono;
+       iVideoInfo.iVideoAddress=(TInt)pV;
+       iVideoInfo.iIsPixelOrderLandscape = KConfigLcdPixelOrderLandscape;
+       iVideoInfo.iIsPixelOrderRGB = KConfigLcdPixelOrderRGB;
+    ...
+    }</pre>
+ <p><strong> Install the HAL handler</strong> </p>
+ <p>Control of the display is
+done by using the HAL, the Hardware Abstraction Layer. </p>
+ <p>The <samp class="codeph">DLcdPowerHandler</samp> class provides the implementation for the
+HAL handler for the HAL function group <a href="GUID-7F299BFC-D8A5-3A5A-B8DA-39BF42C99DC6.html"><span class="apiname">EHalGroupDisplay</span></a> and this needs to be registered with the kernel by calling <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-8C8DCE9D-0094-3909-8FDA-2F3134D0BC88"><span class="apiname">Kern::AddHalEntry()</span></a>. </p>
+ <pre class="codeblock" id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-F9E86404-742D-5931-BA77-DA246A3975E5"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-F9E86404-742D-5931-BA77-DA246A3975E5"><!-- --></a>TInt DLcdPowerHandler::Create()
+    {
+       ...
+       // install the HAL function
+       r=Kern::AddHalEntry(EHalGroupDisplay, halFunction, this);
+       if (r!=KErrNone)
+              return r;
+    ...
+    }</pre>
+ <p>See <a href="GUID-2D977A02-5928-5441-8AE7-42A722F2A4B8.html#GUID-2D977A02-5928-5441-8AE7-42A722F2A4B8__GUID-4DA41221-40B9-5BC7-B2C6-7C6EB4522508">User-Side Hardware Abstraction</a> for more detailed information
+on the HAL. </p>
+ <p><strong> Install the power handler</strong> </p>
+ <p>A call must be made to
+the <samp class="codeph">Add()</samp> function, which is supplied by the <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html"><span class="apiname">DPowerHandler</span></a> base class of <samp class="codeph">DLcdPowerHandler</samp>, to register the handler with the power manager. </p>
+ <pre class="codeblock" id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-9286C3A2-DC2B-54F1-9F28-4EBE085AEE84"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-9286C3A2-DC2B-54F1-9F28-4EBE085AEE84"><!-- --></a>TInt DLcdPowerHandler::Create()
+    {
+       ...
+        // install the power handler
+        // power up the screen
+        Add();
+    ...
+    }</pre>
+ </div>
+
+<div class="section" id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-85B93308-2EDF-462C-8F64-6AE40B8B16B6"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-85B93308-2EDF-462C-8F64-6AE40B8B16B6"><!-- --></a><h2 class="sectiontitle">HAL
+handler implementation</h2> <p>Requests to get and set hardware
+attributes are made through calls to <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-573C49D6-7763-37AE-B2B2-4C8FB1327E21"><span class="apiname">HAL::Get()</span></a> and <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-9454F1B2-D525-3D6D-A872-C6457CACD4FC"><span class="apiname">HAL::Set()</span></a>. These two HAL functions take
+a value that identifies a hardware attribute, one of the <a href="GUID-8BE90160-2C60-3582-82C8-4A108C7C0317.html#GUID-8BE90160-2C60-3582-82C8-4A108C7C0317__GUID-1959915A-BA99-3F94-AFD4-FD1AA540BFBF"><span class="apiname">HALData::TAttribute</span></a> values. </p>
+ <p>For the LCD Extension,
+the relevant hardware attributes are: <samp class="codeph">EDisplayMode</samp>, <samp class="codeph">EDisplayBitsPerPixel</samp>, <samp class="codeph">EDisplayIsPalettized</samp>, <samp class="codeph">EDisplayIsMono</samp>, <samp class="codeph">EDisplayMemoryAddress</samp>, <samp class="codeph">EDisplayMemoryHandle</samp>, <samp class="codeph">EDisplayOffsetToFirstPixel</samp>, <samp class="codeph">EDisplayOffsetBetweenLines</samp>, <samp class="codeph">EDisplayXPixels</samp>, <samp class="codeph">EDisplayYPixels</samp>, <samp class="codeph">EDisplayPaletteEntry</samp> and <samp class="codeph">EDisplayOffsetBetweenLines</samp>. </p>
+ <p>The HAL
+handler is registered with the kernel as the handler for the <a href="GUID-66A851A0-2A0C-3624-AEC1-22F6629FABF7.html#GUID-66A851A0-2A0C-3624-AEC1-22F6629FABF7__GUID-950EA0D3-747F-305E-92EA-1579023A111E"><span class="apiname">THalFunctionGroup::EHalGroupDisplay</span></a> group. The HAL handler
+itself takes a function ID, which is one of the <a href="GUID-BB011D9B-105F-345C-9FC0-39B0BA509394.html"><span class="apiname">TDisplayHalFunction</span></a> enumerators. </p>
+ <p>A call to <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-573C49D6-7763-37AE-B2B2-4C8FB1327E21"><span class="apiname">HAL::Get()</span></a> and <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-9454F1B2-D525-3D6D-A872-C6457CACD4FC"><span class="apiname">HAL::Set()</span></a> that takes one of the hardware attributes relevant
+to the LCD Extension is ultimately routed to a call to this HAL handler
+function passing an appropriate function ID. The association between
+the hardware attribute and the function ID is the responsibility of
+the accessor functions. </p>
+ <p>See <a href="GUID-2D977A02-5928-5441-8AE7-42A722F2A4B8.html#GUID-2D977A02-5928-5441-8AE7-42A722F2A4B8__GUID-4DA41221-40B9-5BC7-B2C6-7C6EB4522508">User-Side Hardware Abstraction</a> for more information on the
+way this works in general. </p>
+ <p>The HAL handler is implemented
+as a case statement, switching on the function ID. For example, the
+following code fragment taken from <samp class="codeph">DLcdPowerHandler::HalFunction()</samp> gets and sets the brightness: </p>
+ <pre class="codeblock" id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-41D5153A-107A-5FCC-9E51-C6250857F3AC"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-41D5153A-107A-5FCC-9E51-C6250857F3AC"><!-- --></a>TInt DLcdPowerHandler::HalFunction(TInt aFunction, TAny* a1, TAny* a2)
+    {
+    TInt r=KErrNone;
+    switch(aFunction)
+        {
+    
+        ...
+         case EDisplayHalSetDisplayBrightness:
+             if(!Kern::CurrentThreadHasCapability(ECapabilityWriteDeviceData,
+       __PLATSEC_DIAGNOSTIC_STRING("Checked by Hal function EDisplayHalSetDisplayBrightness")))
+                       return KErrPermissionDenied;
+             r=SetBrightness(TInt(a1));
+             break;
+            
+         case EDisplayHalDisplayBrightness:
+             kumemput32(a1,&amp;iBrightness,sizeof(iBrightness));
+             break;
+        ...
+</pre>
+ <p>where <samp class="codeph">SetBrightness()</samp> is implemented
+as: </p>
+ <pre class="codeblock" id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-82F38251-19A9-54BC-A066-80ED5AC549AF"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-82F38251-19A9-54BC-A066-80ED5AC549AF"><!-- --></a>TInt DLcdPowerHandler::SetBrightness(TInt aValue)
+    {
+     __KTRACE_OPT(KEXTENSION,Kern::Printf("SetBrightness(%d)", aValue));
+
+     if (aValue &gt;= KConfigLcdMinDisplayBrightness &amp;&amp; aValue &lt;= KConfigLcdMaxDisplayBrightness)
+         {
+         iBrightness=aValue;
+    
+         // TO DO: (mandatory)
+         // set the brightness
+         //
+         return KErrNone;
+         }
+    return KErrArgument;
+    }
+</pre>
+ <p>If an attribute does not have an implementation, the
+HAL handler function should return <a href="GUID-F89DA3F0-2A48-3F9B-8F08-29350E92D0E4.html"><span class="apiname">KErrNotSupported</span></a>. </p>
+ <p>For platform security, the code only allows the attribute
+to be set if the current thread has been authorized to write system
+data. Otherwise, it returns <a href="GUID-213DE05E-24F7-3E94-9B35-F4A72B3EBFD8.html"><span class="apiname">KErrPermissionDenied</span></a>. </p>
+ <p><strong>Switch on and switch off operations</strong> </p>
+ <p>All of the HAL
+operations are seen to be synchronous by the user side. However there
+are some operations such as turning the display on and off which may
+need to be implemented asynchronously. </p>
+ <p>The display on/off
+code is implemented using synchronous kernel-side messages. There
+is only one message per thread and the thread always blocks while
+a message is outstanding. This means it is possible to make an asynchronous
+operation appear synchronous. </p>
+ <p>When turning on the screen the
+kernel-side message is queued and this thread is blocked until the
+message is completed, which happens when the display has been turned
+on. </p>
+ <p>If a display needs to be turned on and off truly asynchronously
+(for example, if millisecond timer waits are required during the process
+of turning on the display), the above functionality must be changed
+so that the complete occurs when the display is truly on. </p>
+ <p><strong>Accessing the video information structure</strong> </p>
+ <p>When any
+part of the <a href="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9.html#GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-57223C8C-0381-51AC-8E8A-771434136A5C">video information structure</a> is read or written to, this must
+be done within a critical section to prevent potential collisions
+with other threads attempting to access the structure concurrently.
+A fast mutex is used to ensure that only one thread can access the
+video information at any one time, as the code segment below shows. </p>
+ <pre class="codeblock" id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-E30D9790-109C-541F-A534-C92CBD4E1706"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-E30D9790-109C-541F-A534-C92CBD4E1706"><!-- --></a>TInt DLcdPowerHandler::GetCurrentDisplayModeInfo(TVideoInfoV01&amp; aInfo, TBool aSecure)
+    {
+     __KTRACE_OPT(KEXTENSION,Kern::Printf("GetCurrentDisplayModeInfo"));
+     NKern::FMWait(&amp;iLock);
+     if (aSecure)
+          aInfo = iSecureVideoInfo;
+     else
+         aInfo = iVideoInfo;
+     NKern::FMSignal(&amp;iLock);
+     return KErrNone;
+     }
+</pre>
+ </div>
+
+<div class="section" id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-04C06DAE-EE8E-4EE9-940F-807F82FBACD1"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-04C06DAE-EE8E-4EE9-940F-807F82FBACD1"><!-- --></a><h2 class="sectiontitle">Power
+handler implementation</h2> <p>The <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html"><span class="apiname">DPowerHandler</span></a> class defines the interface that the driver must implement to provide
+power handling behaviour. For the template reference board, the LCD
+Extension defines and implements the <samp class="codeph">DLcdPowerHandler</samp> class derived from <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html"><span class="apiname">DPowerHandler</span></a>. </p>
+ <p> <strong>Note</strong>: </p>
+ <ul>
+<li id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-32D95977-F46B-50E0-B575-BE7369C05F62"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-32D95977-F46B-50E0-B575-BE7369C05F62"><!-- --></a><p> <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-578DB5FB-731D-36B2-A459-AAC7F250D726"><span class="apiname">DPowerHandler::PowerDown()</span></a> and <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-DDC564B4-BD12-30E9-B04A-DBA6CFAF8743"><span class="apiname">DPowerHandler::PowerUp()</span></a>  </p>
+ <p>These functions
+are called in the context of the thread that initiates power down
+or power up, and synchronization is required, typically by means of
+power up and power down DFCs. </p>
+ </li>
+
+<li id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-7DC988A6-C60E-5951-9DD7-82DA129A8CB6"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-7DC988A6-C60E-5951-9DD7-82DA129A8CB6"><!-- --></a><p> <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-038F9D7D-7DA0-3299-8AA2-85F175206887"><span class="apiname">DPowerHandler::PowerUpLcd()</span></a> and <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-6EAF00D1-3CBA-3BC0-BAD9-7301EE5F9E12"><span class="apiname">DPowerHandler::PowerDownLcd()</span></a>  </p>
+ <p>These
+functions generally queue DFCs which then call platform-specific functions
+to power the display up and down. </p>
+ </li>
+
+<li id="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-51152EA7-C1A5-5AB3-8ACD-6FF6F16A255D"><a name="GUID-6A4FE3A3-2E5D-51BB-8272-5995586291E9__GUID-51152EA7-C1A5-5AB3-8ACD-6FF6F16A255D"><!-- --></a><p> <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-BF62042B-FB7B-3D5B-8379-490FBA284A7A"><span class="apiname">DPowerHandler::PowerUpDone()</span></a> and <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-EBE8CFF8-50BD-3AC3-A4C8-47094DA5674D"><span class="apiname">DPowerHandler::PowerDownDone()</span></a>  </p>
+ <p>When
+power up or down is complete, the interface supplies a set of acknowledgment
+functions which must be called when the change of state has taken
+place. </p>
+ </li>
+
+</ul>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-8C22AF20-EE0E-5AD2-BEFD-FED5A7DBB09B.html">LCD Extension</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-0C3A4156-E5CF-55F9-91A0-A7961FDEE030.html" title="This topic describes the architecture of the LCD Extension.">LCD
+Extension Architecture</a></div>
+<div><a href="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0.html" title="This topic describes how device creators can allocate the Direct Screen Access (DSA) buffer dynamically. This feature is new in Symbian^3 (S^3).">Implementing
+Dynamic DSA                 Allocation</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

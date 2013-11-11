@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CUnitTest"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41"/>
+
+<title>CUnitTest</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41"><a name="GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2653464 id2544523 id2545367 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CUnitTest Class Reference</h1>
+	<table class="signature"><tr><td>class CUnitTest : public CTimer</td></tr></table><div class="section"><div>
+			<p>Comments : Abstract base class upon which a test developer can base his unit test class. Most functionality is implemented in this base class, to write a derived class just implement a NewL() and a <a href="GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41.html#GUID-9F3C42CC-99C3-34A8-84B3-BB0B4DE89A51">ConstructL()</a> on the new object. <a href="GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41.html#GUID-9F3C42CC-99C3-34A8-84B3-BB0B4DE89A51">ConstructL()</a> should first call <a href="GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41.html#GUID-01348E0D-1B57-3E27-B261-EF46E0F936D2">UnitTestConstructL()</a> and then create the transitions which make up this unit test. Eg.</p>
+
+			<div class="p">
+				<pre class="codeblock">		_LIT(KExampleUnitTest,"CExampleUnitTest");
+
+		CExampleUnitTest* CExampleUnitTest::NewL(CDataLogger&amp;		aDataLogger,
+												 MUnitTestObserver&amp; aObserver)
+			{
+			CExampleUnitTest* self = new(ELeave) CExampleUnitTest(aDataLogger,
+																  aObserver);
+			self-&gt;ConstructL();
+			return self; 
+			}
+
+		TInt CExampleUnitTest::RunError(TInt aError)
+			{
+			// The RunL left so chain to the base first and then cleanup
+			TInt error = CUnitTest::RunError(aError);	// Chain to base
+			delete iTestClass;
+			iTestClass = NULL;
+			return error;
+			}
+
+		CExampleUnitTest::~CExampleUnitTest()
+			{
+			// delete the test context information
+			delete iStateAccessor;
+			delete iUTContext;
+			delete iValidator;
+
+			// Simply delete our test class instance
+			delete iTestClass;
+			}
+
+		CExampleUnitTest::CExampleUnitTest(CDataLogger&amp; aDataLogger,
+											MUnitTestObserver&amp; aObserver, 
+											MStateAccessor&amp; aStateAccessor)
+		: CUnitTest(KExampleUnitTest, aDataLogger, aObserver, aStateAccessor)
+			{
+			//Do nothing
+			}
+
+		// Now the Individual transitions need to be added.
+		void CExampleUnitTest::ConstructL()
+			{
+			// Perform base class initialization
+			UnitTestConstructL();
+
+			// Create the input variables to the transition creation
+			iStateAccessor = new(ELeave) TExampleStateAccessor();
+			iUTContext = new(ELeave) CUnitTestContext(iDataLogger, *iStateAccessor, *this);
+			iValidator = new(ELeave) TTransitionValidator(*iUTContext);
+
+			// Add the Transitions in the order they are to run
+			// C'tor first, D'tor last...
+			AddTransitionL(new(ELeave)CExampleNewLTransition(*iUTContext, *iValidator, iTestClass));
+			AddTransitionL(new(ELeave)CExampleDtorTransition(*iUTContext, *iValidator, iTestClass));
+			}</pre>
+ </div>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CUnitTest<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer</a><ul class="derivation"><li class="derivation-depth-2 "><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive</a><ul class="derivation"><li class="derivation-depth-3 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-3114F778-3B3B-3449-809B-D7D47B01AAA3">~CUnitTest</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-8E2E30EB-FB84-3879-A604-C67A753982AE">Complete</a>(<a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> &amp;</td><td><a href="#GUID-48AFA8A6-0A16-3203-B175-B978777DD1A0">GetCurrentTransition</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-D1DC798E-6CB5-32D4-8CAC-5A86F1640F1D">PrepareUnitTestL</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-19026926-B836-3240-9E01-29FA8F3D5C6B">RunTest</a>(<a href="GUID-EEC5813B-4C9F-323B-BCD6-1BB1A08D0B8C.html">TTimeIntervalMicroSeconds32</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-4C67B3B8-4809-38B8-BA6A-EF53C4469EE6">SetCurrentTransition</a>(<a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-17316486-89A2-344A-86E0-578321CAB7C2">SetParametersL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-BE323C29-DF3B-3F99-B19F-D5731566E974">SetRTest</a>(<a href="GUID-D16A6778-660E-302A-A3B5-DD98A088B7EC.html">RTest</a> *)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-34F18B8E-5578-340B-83FA-D8813F8A2B2A.html">CUnitTestInfo</a> *</td><td><a href="#GUID-B86077AA-4EB7-3C3D-9F6B-A1073886F91F">TransitionSetL</a>()</td></tr><tr class="bg"><td align="right" class="code">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td><a href="#GUID-C386F11B-7961-3CEA-A601-513B36DDDF49">UnitTestName</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-02061505-E17D-3979-A267-C85837CC88F0">CUnitTest</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-9BA3F878-A0BF-3B21-A8A6-D384F6EA4DE6.html">CDataLogger</a> &amp;, <a href="GUID-4A5E5AFA-FF1B-3A06-9959-04BAEAB575E3.html">MUnitTestObserver</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-13E74097-CB24-31AB-B625-B950D1EF438C">AddBlockingTransitionL</a>(<a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-961FC76F-567E-399E-BF5A-40BC4EFEB6B2">AddLeaveErrorCodeL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-814605B5-FE44-3FD2-BC87-AACE0E815E98">AddTransitionL</a>(<a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-9F3C42CC-99C3-34A8-84B3-BB0B4DE89A51">ConstructL</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-A9916052-6315-368D-83E3-ACEDA6D5E937">DoCancel</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-EA6890FA-8360-3300-AD61-A6CFA06AD9BF">RunL</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-01348E0D-1B57-3E27-B261-EF46E0F936D2">UnitTestConstructL</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::CActive(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Cancel()</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Deque()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::IsActive()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::IsAdded()const</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Priority()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::RunError(TInt)</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::SetActive()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::SetPriority(TInt)</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::~CActive()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::After(TTimeIntervalMicroSeconds32)</a></td></tr><tr><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::At(const TTime &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::AtUTC(const TTime &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::CTimer(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::HighRes(TTimeIntervalMicroSeconds32)</a></td></tr><tr><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::Inactivity(TTimeIntervalSeconds)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::Lock(TTimerLockSpec)</a></td></tr><tr><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::~CTimer()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Enumerations</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive:TPriority</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> *</td><td><a href="#GUID-4029E261-8F29-3E9C-B653-E61D8A595D7B">iCurrentlyExecutingTransition</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-9BA3F878-A0BF-3B21-A8A6-D384F6EA4DE6.html">CDataLogger</a> &amp;</td><td><a href="#GUID-C055D21E-118C-3E01-A195-78A2E14ADB8A">iDataLogger</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-82CEC14F-1479-3922-846A-9FCDB6465EF7.html">CFileMan</a> *</td><td><a href="#GUID-860CE5FD-F175-36B7-8610-097EDB6A4048">iFileMan</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html">RFs</a>
+				</td><td><a href="#GUID-D9D245A7-9D56-319F-8655-010937089439">iFs</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt;</td><td><a href="#GUID-1FC08336-D698-38DE-BCFF-091AC8F6AE33">iLeaveErrorArray</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-3DAAB4F8-568D-38F3-AD0E-7850472B6C20">iNextTransitionIndex</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> &gt; *</td><td><a href="#GUID-566A7947-DA22-3E80-B7C3-9922C3318DA7">iOutstandingTransitions</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-D16A6778-660E-302A-A3B5-DD98A088B7EC.html">RTest</a> *</td><td><a href="#GUID-899B0BA5-18A0-3577-9A20-8C965BB440DE">iRTest</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> &gt; *</td><td><a href="#GUID-7B34CC11-760E-3A57-8665-0EADF00B843B">iTransitions</a></td></tr><tr class="bg"><td align="right" valign="top">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td><a href="#GUID-E797E13E-F99C-3E9F-BD4A-A4AA0F95AE7F">iUnitTestName</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-4A5E5AFA-FF1B-3A06-9959-04BAEAB575E3.html">MUnitTestObserver</a> &amp;</td><td><a href="#GUID-C467CA85-D210-3B41-BD00-0436821D0626">iUnitTestObserver</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-22236255-4CCA-359E-AADF-2718C7ACA1F1">iWaitingForCompletion</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Attributes</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::iStatus</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-02061505-E17D-3979-A267-C85837CC88F0"><a name="GUID-02061505-E17D-3979-A267-C85837CC88F0"><!-- --></a>
+		<h2 class="topictitle2">CUnitTest(const TDesC &amp;, CDataLogger &amp;, MUnitTestObserver &amp;)</h2>
+		<table class="signature"><tr><td>CUnitTest</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aName,</td></tr><tr><td colspan="2"> </td><td><a href="GUID-9BA3F878-A0BF-3B21-A8A6-D384F6EA4DE6.html">CDataLogger</a> &amp;</td><td>aDataLogger,</td></tr><tr><td colspan="2"> </td><td><a href="GUID-4A5E5AFA-FF1B-3A06-9959-04BAEAB575E3.html">MUnitTestObserver</a> &amp;</td><td>aUnitTestObserver</td></tr><tr><td colspan="1"> </td><td>)</td><td colspan="2">[protected, inline]</td></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : Standard Constructor Error Condition : <dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aName</td><td>The identifier of this unit test  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-9BA3F878-A0BF-3B21-A8A6-D384F6EA4DE6.html">CDataLogger</a> &amp; aDataLogger</td><td>Provides the logging capability  </td></tr><tr><td class="parameter"><a href="GUID-4A5E5AFA-FF1B-3A06-9959-04BAEAB575E3.html">MUnitTestObserver</a> &amp; aUnitTestObserver</td><td>Is informed when this unit test completes  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3114F778-3B3B-3449-809B-D7D47B01AAA3"><a name="GUID-3114F778-3B3B-3449-809B-D7D47B01AAA3"><!-- --></a>
+		<h2 class="topictitle2">~CUnitTest()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CUnitTest</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : Standard Destructor <dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-13E74097-CB24-31AB-B625-B950D1EF438C"><a name="GUID-13E74097-CB24-31AB-B625-B950D1EF438C"><!-- --></a>
+		<h2 class="topictitle2">AddBlockingTransitionL(CTransition *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AddBlockingTransitionL</td><td>(</td><td><a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> *</td><td>aTransition</td><td>)</td><td>[protected]</td></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : Adds a transition to the unit test which will block until all previous asynchronous transitions have completed before running. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>KErrNoMemory </dd>
+</dl>
+<dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+<dl class="precondition"><dt class="dlterm">Pre-condition</dt>
+<dd>Should be used in developer implemented <a href="GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41.html#GUID-9F3C42CC-99C3-34A8-84B3-BB0B4DE89A51">ConstructL()</a> to add transitions to the Unit Test </dd>
+</dl>
+<dl class="postcondition"><dt class="dlterm">Post-condition</dt>
+<dd>The specified transition is added to the list to be run for this unit test </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> * aTransition</td><td>The transition to be added to the list  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-961FC76F-567E-399E-BF5A-40BC4EFEB6B2"><a name="GUID-961FC76F-567E-399E-BF5A-40BC4EFEB6B2"><!-- --></a>
+		<h2 class="topictitle2">AddLeaveErrorCodeL(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AddLeaveErrorCodeL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLeaveErrorCode</td><td>)</td><td>[protected]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLeaveErrorCode</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-814605B5-FE44-3FD2-BC87-AACE0E815E98"><a name="GUID-814605B5-FE44-3FD2-BC87-AACE0E815E98"><!-- --></a>
+		<h2 class="topictitle2">AddTransitionL(CTransition *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AddTransitionL</td><td>(</td><td><a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> *</td><td>aTransition</td><td>)</td><td>[protected]</td></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : Adds the transition to the list to be run during this unit test <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>KErrNoMemory </dd>
+</dl>
+<dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+<dl class="precondition"><dt class="dlterm">Pre-condition</dt>
+<dd>Should be used in developer implemented <a href="GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41.html#GUID-9F3C42CC-99C3-34A8-84B3-BB0B4DE89A51">ConstructL()</a> to add transitions to the Unit Test </dd>
+</dl>
+<dl class="postcondition"><dt class="dlterm">Post-condition</dt>
+<dd>The specified transition is added to the list to be run for this unit test </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> * aTransition</td><td>The transition to be added to the list  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8E2E30EB-FB84-3879-A604-C67A753982AE"><a name="GUID-8E2E30EB-FB84-3879-A604-C67A753982AE"><!-- --></a>
+		<h2 class="topictitle2">Complete(CTransition &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Complete</td><td>(</td><td><a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> &amp;</td><td>aTransition,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aAsyncPostCheckError</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : <a href="GUID-E49868CF-7547-3559-9A96-3998A00EB79E.html#GUID-E49868CF-7547-3559-9A96-3998A00EB79E">MTransitionObserver</a> override that is called to indicate that an asynchronous function on the specified transition has completed. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+<dl class="precondition"><dt class="dlterm">Pre-condition</dt>
+<dd>The specified transition has launched an asynchronous function </dd>
+</dl>
+<dl class="postcondition"><dt class="dlterm">Post-condition</dt>
+<dd>The transition has fully completed, if all transitions are complete then the unittest is complete. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> &amp; aTransition</td><td>The transition which has completed an async function.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aAsyncPostCheckError</td><td>An error code from the second phase of post-condition validation done after the transition's asynchronous request had completed. Used for asynchronous transitions only - for synchronous transitions, 2-phase post-condition checking does not apply, and a value of KErrNone is supplied.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9F3C42CC-99C3-34A8-84B3-BB0B4DE89A51"><a name="GUID-9F3C42CC-99C3-34A8-84B3-BB0B4DE89A51"><!-- --></a>
+		<h2 class="topictitle2">ConstructL()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ConstructL</td><td>(</td><td>)</td><td>[protected, pure virtual]</td></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : Must be overridden in derived class to complete construction Error Condition : <dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-A9916052-6315-368D-83E3-ACEDA6D5E937"><a name="GUID-A9916052-6315-368D-83E3-ACEDA6D5E937"><!-- --></a>
+		<h2 class="topictitle2">DoCancel()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>DoCancel</td><td>(</td><td>)</td><td>[protected, virtual]</td></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : Standard Active Object method for cancelling the current request <dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+<dl class="precondition"><dt class="dlterm">Pre-condition</dt>
+<dd>None </dd>
+</dl>
+<dl class="postcondition"><dt class="dlterm">Post-condition</dt>
+<dd>Any outstanding requests are cancelled </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-48AFA8A6-0A16-3203-B175-B978777DD1A0"><a name="GUID-48AFA8A6-0A16-3203-B175-B978777DD1A0"><!-- --></a>
+		<h2 class="topictitle2">GetCurrentTransition()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> &amp;</td><td>GetCurrentTransition</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : Retrieve a reference to the transition whose <a href="GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41.html#GUID-EA6890FA-8360-3300-AD61-A6CFA06AD9BF">RunL()</a> method is currently executing. This allows transition information can be retrieved and RepeatOnce() can be called on the transition. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+<dl class="precondition"><dt class="dlterm">Pre-condition</dt>
+<dd>None </dd>
+</dl>
+<dl class="postcondition"><dt class="dlterm">Post-condition</dt>
+<dd>No change. </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-D1DC798E-6CB5-32D4-8CAC-5A86F1640F1D"><a name="GUID-D1DC798E-6CB5-32D4-8CAC-5A86F1640F1D"><!-- --></a>
+		<h2 class="topictitle2">PrepareUnitTestL()</h2>
+		<table class="signature"><tr><td>void</td><td>PrepareUnitTestL</td><td>(</td><td>)</td><td>[inline, virtual]</td></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : May be overidden in the derived unit test to perform any unit test specific environment setup (eg copying data files into place). The default implementation is to do nothing. Error Condition : Depends on implementation. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+<dl class="precondition"><dt class="dlterm">Pre-condition</dt>
+<dd>This <a href="GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41.html#GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41">CUnitTest</a> is constructed </dd>
+</dl>
+<dl class="postcondition"><dt class="dlterm">Post-condition</dt>
+<dd>Depends on implementation </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-EA6890FA-8360-3300-AD61-A6CFA06AD9BF"><a name="GUID-EA6890FA-8360-3300-AD61-A6CFA06AD9BF"><!-- --></a>
+		<h2 class="topictitle2">RunL()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RunL</td><td>(</td><td>)</td><td>[protected, virtual]</td></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : Implementation of <a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html#GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F">CActive</a> method. Each iteration of <a href="GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41.html#GUID-EA6890FA-8360-3300-AD61-A6CFA06AD9BF">RunL()</a> causes one transition to be run. Error Condition : <dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+<dl class="precondition"><dt class="dlterm">Pre-condition</dt>
+<dd>Preconditions are ensured by <a href="GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41.html#GUID-19026926-B836-3240-9E01-29FA8F3D5C6B">RunTest()</a> </dd>
+</dl>
+<dl class="postcondition"><dt class="dlterm">Post-condition</dt>
+<dd>Transition has been activated </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-19026926-B836-3240-9E01-29FA8F3D5C6B"><a name="GUID-19026926-B836-3240-9E01-29FA8F3D5C6B"><!-- --></a>
+		<h2 class="topictitle2">RunTest(TTimeIntervalMicroSeconds32)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RunTest</td><td>(</td><td><a href="GUID-EEC5813B-4C9F-323B-BCD6-1BB1A08D0B8C.html">TTimeIntervalMicroSeconds32</a></td><td>aTimeAfter = 0</td><td>)</td><td/></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : Sets up the Timer Object request to cause the test to run. Error Condition : <dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+<dl class="precondition"><dt class="dlterm">Pre-condition</dt>
+<dd>None </dd>
+</dl>
+<dl class="postcondition"><dt class="dlterm">Post-condition</dt>
+<dd><a href="GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41.html#GUID-EA6890FA-8360-3300-AD61-A6CFA06AD9BF">RunL()</a> will be set up to run after the specified time. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-EEC5813B-4C9F-323B-BCD6-1BB1A08D0B8C.html">TTimeIntervalMicroSeconds32</a> aTimeAfter = 0</td><td>The time after which the unit test should be run  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4C67B3B8-4809-38B8-BA6A-EF53C4469EE6"><a name="GUID-4C67B3B8-4809-38B8-BA6A-EF53C4469EE6"><!-- --></a>
+		<h2 class="topictitle2">SetCurrentTransition(CTransition &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetCurrentTransition</td><td>(</td><td><a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> &amp;</td><td>aTransition</td><td>)</td><td/></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : <a href="GUID-E49868CF-7547-3559-9A96-3998A00EB79E.html#GUID-E49868CF-7547-3559-9A96-3998A00EB79E">MTransitionObserver</a> override that recieves a reference to the transition whose RnunL() method is executing. This allows transition information can be retrieved and RepeatOnce() can be called on the transition. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+<dl class="precondition"><dt class="dlterm">Pre-condition</dt>
+<dd>None </dd>
+</dl>
+<dl class="postcondition"><dt class="dlterm">Post-condition</dt>
+<dd>aTransition will be recorded as the currently executing transition. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> &amp; aTransition</td><td>A reference to the transition to set as current  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-17316486-89A2-344A-86E0-578321CAB7C2"><a name="GUID-17316486-89A2-344A-86E0-578321CAB7C2"><!-- --></a>
+		<h2 class="topictitle2">SetParametersL(TAny *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetParametersL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aParams</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : Should be overridden in the derived unit test to accept parameters to be used in the unit test. The default implementation is to do nothing. Error Condition : <dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+<dl class="precondition"><dt class="dlterm">Pre-condition</dt>
+<dd>This <a href="GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41.html#GUID-F7B33729-ECE0-3F07-9CC0-BBB071F10A41">CUnitTest</a> is constructed </dd>
+</dl>
+<dl class="postcondition"><dt class="dlterm">Post-condition</dt>
+<dd>The parameters are stored and ready for use in the test </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aParams</td><td>The parameter block which the unit test will use  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BE323C29-DF3B-3F99-B19F-D5731566E974"><a name="GUID-BE323C29-DF3B-3F99-B19F-D5731566E974"><!-- --></a>
+		<h2 class="topictitle2">SetRTest(RTest *)</h2>
+		<table class="signature"><tr><td>void</td><td>SetRTest</td><td>(</td><td><a href="GUID-D16A6778-660E-302A-A3B5-DD98A088B7EC.html">RTest</a> *</td><td>aRTest</td><td>)</td><td>[inline]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-D16A6778-660E-302A-A3B5-DD98A088B7EC.html">RTest</a> * aRTest</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B86077AA-4EB7-3C3D-9F6B-A1073886F91F"><a name="GUID-B86077AA-4EB7-3C3D-9F6B-A1073886F91F"><!-- --></a>
+		<h2 class="topictitle2">TransitionSetL()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-34F18B8E-5578-340B-83FA-D8813F8A2B2A.html">CUnitTestInfo</a> *</td><td>TransitionSetL</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : Creates and returns a <a href="GUID-34F18B8E-5578-340B-83FA-D8813F8A2B2A.html#GUID-34F18B8E-5578-340B-83FA-D8813F8A2B2A">CUnitTestInfo</a> containing information on this UnitTest. Passes ownership of the <a href="GUID-34F18B8E-5578-340B-83FA-D8813F8A2B2A.html#GUID-34F18B8E-5578-340B-83FA-D8813F8A2B2A">CUnitTestInfo</a> to the calling object. Error Condition : <dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+<dl class="precondition"><dt class="dlterm">Pre-condition</dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-01348E0D-1B57-3E27-B261-EF46E0F936D2"><a name="GUID-01348E0D-1B57-3E27-B261-EF46E0F936D2"><!-- --></a>
+		<h2 class="topictitle2">UnitTestConstructL()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>UnitTestConstructL</td><td>(</td><td>)</td><td>[protected]</td></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : Called from derived class construction to perform all base class initialisation. Error Condition : <dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+<dl class="precondition"><dt class="dlterm">Pre-condition</dt>
+<dd>Should be called during construction of the derived class to perform base class initialisation. </dd>
+</dl>
+<dl class="postcondition"><dt class="dlterm">Post-condition</dt>
+<dd>Unspecified </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C386F11B-7961-3CEA-A601-513B36DDDF49"><a name="GUID-C386F11B-7961-3CEA-A601-513B36DDDF49"><!-- --></a>
+		<h2 class="topictitle2">UnitTestName()</h2>
+		<table class="signature"><tr><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>UnitTestName</td><td>(</td><td>)</td><td>const [inline]</td></tr></table><div class="section"><div>
+				<div class="p">Intended Usage : Return the name identifier of this Unit Test Error Condition : <dl class="since"><dt class="dlterm">Since</dt>
+<dd>7.0 </dd>
+</dl>
+<dl class="precondition"><dt class="dlterm">Pre-condition</dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-4029E261-8F29-3E9C-B653-E61D8A595D7B"><a name="GUID-4029E261-8F29-3E9C-B653-E61D8A595D7B"><!-- --></a>
+		<h2 class="topictitle2">
+					CTransition * iCurrentlyExecutingTransition</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> *</td><td>iCurrentlyExecutingTransition</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>The currently executing transition : NOT OWNED </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C055D21E-118C-3E01-A195-78A2E14ADB8A"><a name="GUID-C055D21E-118C-3E01-A195-78A2E14ADB8A"><!-- --></a>
+		<h2 class="topictitle2">
+					CDataLogger &amp; iDataLogger</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-9BA3F878-A0BF-3B21-A8A6-D384F6EA4DE6.html">CDataLogger</a> &amp;</td><td>iDataLogger</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>The test logging mechanism </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-860CE5FD-F175-36B7-8610-097EDB6A4048"><a name="GUID-860CE5FD-F175-36B7-8610-097EDB6A4048"><!-- --></a>
+		<h2 class="topictitle2">
+					CFileMan * iFileMan</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-82CEC14F-1479-3922-846A-9FCDB6465EF7.html">CFileMan</a> *</td><td>iFileMan</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>File manager - useful in PrepareUnitTestL if copying files is required </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-D9D245A7-9D56-319F-8655-010937089439"><a name="GUID-D9D245A7-9D56-319F-8655-010937089439"><!-- --></a>
+		<h2 class="topictitle2">
+					RFs
+				 iFs</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html">RFs</a>
+				</td><td>iFs</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Connection to the file server - required by iFileMan </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-1FC08336-D698-38DE-BCFF-091AC8F6AE33"><a name="GUID-1FC08336-D698-38DE-BCFF-091AC8F6AE33"><!-- --></a>
+		<h2 class="topictitle2">
+					RArray&lt; TInt &gt; iLeaveErrorArray</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt;</td><td>iLeaveErrorArray</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>List of all the acceptable error codes </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-3DAAB4F8-568D-38F3-AD0E-7850472B6C20"><a name="GUID-3DAAB4F8-568D-38F3-AD0E-7850472B6C20"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iNextTransitionIndex</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iNextTransitionIndex</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>The index in iTransitions of the next transition to be run </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-566A7947-DA22-3E80-B7C3-9922C3318DA7"><a name="GUID-566A7947-DA22-3E80-B7C3-9922C3318DA7"><!-- --></a>
+		<h2 class="topictitle2">
+					RPointerArray&lt; CTransition &gt; * iOutstandingTransitions</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> &gt; *</td><td>iOutstandingTransitions</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>List of the asyncronous transitions which have requests outstanding </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-899B0BA5-18A0-3577-9A20-8C965BB440DE"><a name="GUID-899B0BA5-18A0-3577-9A20-8C965BB440DE"><!-- --></a>
+		<h2 class="topictitle2">
+					RTest * iRTest</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-D16A6778-660E-302A-A3B5-DD98A088B7EC.html">RTest</a> *</td><td>iRTest</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Optional reference to the <a href="GUID-D16A6778-660E-302A-A3B5-DD98A088B7EC.html#GUID-D16A6778-660E-302A-A3B5-DD98A088B7EC">RTest</a> object used in the EXE test harness code which kicked off this test framework </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-7B34CC11-760E-3A57-8665-0EADF00B843B"><a name="GUID-7B34CC11-760E-3A57-8665-0EADF00B843B"><!-- --></a>
+		<h2 class="topictitle2">
+					RPointerArray&lt; CTransition &gt; * iTransitions</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-46998269-6F66-3EE0-8B5C-14F452511E2B.html">CTransition</a> &gt; *</td><td>iTransitions</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>List of the transitions which make up this Unit Test </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-E797E13E-F99C-3E9F-BD4A-A4AA0F95AE7F"><a name="GUID-E797E13E-F99C-3E9F-BD4A-A4AA0F95AE7F"><!-- --></a>
+		<h2 class="topictitle2">const TDesC &amp; iUnitTestName</h2>
+		<table class="signature"><tr><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>iUnitTestName</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>The identifier of this Unit Test </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C467CA85-D210-3B41-BD00-0436821D0626"><a name="GUID-C467CA85-D210-3B41-BD00-0436821D0626"><!-- --></a>
+		<h2 class="topictitle2">
+					MUnitTestObserver &amp; iUnitTestObserver</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-4A5E5AFA-FF1B-3A06-9959-04BAEAB575E3.html">MUnitTestObserver</a> &amp;</td><td>iUnitTestObserver</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Used to call back to the test controller that the test has finished </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-22236255-4CCA-359E-AADF-2718C7ACA1F1"><a name="GUID-22236255-4CCA-359E-AADF-2718C7ACA1F1"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iWaitingForCompletion</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iWaitingForCompletion</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Indicates that the next transition is waiting for the completion of async requests before it will be run </p>
+
+			</div></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

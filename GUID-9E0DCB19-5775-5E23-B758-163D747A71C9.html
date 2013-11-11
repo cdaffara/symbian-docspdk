@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Multiple Inheritance and Interfaces"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Multiple Inheritance and Interfaces</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id1198324 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a> &gt; </div>
+<h1 class="topictitle1">Multiple Inheritance and Interfaces </h1>
+<div><p>Multiple inheritance is a powerful aspect of C++. This topic explains its use in Symbian platform C++. </p>
+ <div class="section" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-DB8C6A7D-515F-59E4-B2CD-454ACD203DAC"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-DB8C6A7D-515F-59E4-B2CD-454ACD203DAC"><!-- --></a><h2 class="sectiontitle">Overview</h2> <p>Experience of multiple inheritance indicates that its benefits are best realised by carefully controlling the ways in which it is used within a system to a few easily understood paradigms. Use of multiple inheritance without such control has usually led to designs that are difficult to understand. </p>
+ <p>Multiple inheritance is used for a single purpose on the Symbian platform: namely, interface protocol definitions. These are used in the following kinds of situation: there is a <em>protocol provider</em> class, and a <em>protocol user</em>. It is desirable that the protocol user be independent of all aspects of the protocol provider, except its ability to provide the specified protocol. Examples of such situations include: </p>
+ <ul><li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-F092AADB-57BD-5D05-95E9-4A4E482BE49F"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-F092AADB-57BD-5D05-95E9-4A4E482BE49F"><!-- --></a><p>an application control is a protocol provider; its menu tree uses the protocol for menu observing. When a menu item has been selected, the menu observing protocol is invoked, so that the application control may handle the menu command. Apart from this, the menu control knows nothing about the application control. </p>
+ </li>
+ <li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-6257FC9B-96A1-5697-9031-2EAE2543CE8E"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-6257FC9B-96A1-5697-9031-2EAE2543CE8E"><!-- --></a><p>an application, such as a spreadsheet, may have an <em>engine</em> which provides protocols for updating and getting its model contents, and a <em>user interface</em>, which uses these protocols to drive the engine. The engine is written with no knowledge of the user interface, and the user interface is written with minimal knowledge of the engine. They interact using a protocol provided by the engine. </p>
+ </li>
+ </ul>
+ <p>To understand why interfaces are used, this page examines in turn: </p>
+ <ul><li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-38F4E007-C040-5CA0-B2DE-F6BD0E369A0F"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-38F4E007-C040-5CA0-B2DE-F6BD0E369A0F"><!-- --></a><p>the traditional method which uses single inheritance </p>
+ </li>
+ <li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-25E00997-6A10-5EEF-BAD1-784C9F9B5349"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-25E00997-6A10-5EEF-BAD1-784C9F9B5349"><!-- --></a><p>a technique of overcoming the disadvantages of single inheritance, using protocol intermediary classes </p>
+ </li>
+ <li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-7AAE1568-0FF7-5C3E-98C0-29674C5FABDF"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-7AAE1568-0FF7-5C3E-98C0-29674C5FABDF"><!-- --></a><p>a better technique, which uses multiple inheritance with interface classes </p>
+ </li>
+ <li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-E81625F6-CD1C-5C54-85E3-B4CF292422E0"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-E81625F6-CD1C-5C54-85E3-B4CF292422E0"><!-- --></a><p>the restrictions on C++ multiple inheritance on the Symbian platform </p>
+ </li>
+ </ul>
+ </div>
+ <div class="section" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-099DC498-32E2-573A-9404-A60C55FE0D32"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-099DC498-32E2-573A-9404-A60C55FE0D32"><!-- --></a><h2 class="sectiontitle">Protocols using classic single inheritance</h2> <p>A classical use of single inheritance is to define an abstract protocol from which derived classes may inherit. A base class defines a protocol: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-9BA46070-85BD-5806-A781-A9E7BD0F1CC3"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-9BA46070-85BD-5806-A781-A9E7BD0F1CC3"><!-- --></a>class CProtocol : public CBase
+    {
+public:
+    virtual void HandleEvent(TInt aEventCode)=0;
+    };</pre>
+ <p>The protocol includes just one function, <samp class="codeph">HandleEvent()</samp>, where the event is defined by an integer event code. </p>
+ <p>A concrete protocol provider class is then derived from this base class. It provides a concrete implementation of the pure virtual function in the base class: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-55ABB36D-2131-570C-A23A-AC02B3F154D5"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-55ABB36D-2131-570C-A23A-AC02B3F154D5"><!-- --></a>class CProtocolProvider : public CProtocol
+    {
+public:
+    // construct/destruct
+    static CProtocolProvider* NewLC();
+    void Destruct();
+    // implement the protocol
+    void HandleEvent(TInt aEventCode); // handle protocol
+protected:
+    void ConstructL();
+    };</pre>
+ <p>In addition, there is a protocol user class which knows nothing about the derived <samp class="codeph">CProtocolProvider</samp> class, but it does know about the <samp class="codeph">CProtocol</samp> class and the functions that specify its protocol. It has a function which uses <samp class="codeph">HandleEvent()</samp>: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-30356ABC-7148-5004-B4A4-B55DA1053381"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-30356ABC-7148-5004-B4A4-B55DA1053381"><!-- --></a>void CProtocolUser::DoSomething(CProtocol* aProtocol)
+    {
+    _LIT(KOutput1,"External system doing something\n");
+    _LIT(KOutput2,"invoking protocol - event 3\n");
+    testConsole.Printf(KOutput1);
+    testConsole.Printf(KOutput2);
+    aProtocol-&gt;HandleEvent(3); // handle an event
+    }</pre>
+ <p>The virtual function defined by <samp class="codeph">CProtocol</samp> is provided by <samp class="codeph">CProtocolProvider</samp>. This is the virtual function that is actually executed: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-A718C56C-6555-5D15-9C52-FE4F5E0120ED"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-A718C56C-6555-5D15-9C52-FE4F5E0120ED"><!-- --></a>void CProtocolProvider::HandleEvent(TInt aEventCode)
+    { // handle an event in the protocol user
+    _LIT(KOutput1,"CProtocolProvider handling event %d\n");
+    testConsole.Printf(KOutput1,aEventCode);
+    }</pre>
+ <p>Thus, although the protocol user knows nothing about the derived <samp class="codeph">CProtocolProvider</samp> class, it can invoke its member functions through a pointer to its derived class, using the C++ virtual function mechanism. </p>
+ <p>This code may be used in the following way: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-6355012A-2413-5B0E-811C-BF28A30FDC4F"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-6355012A-2413-5B0E-811C-BF28A30FDC4F"><!-- --></a>void doExampleL()
+    {
+    // show use of interface with simple class
+    CProtocolProvider* provider=CProtocolProvider::NewLC();
+    CProtocolUser* user=CProtocolUser::NewLC();
+    user-&gt;DoSomething(provider);
+    CleanupStack::PopAndDestroy(); // user
+    CleanupStack::PopAndDestroy(); // provider
+    }</pre>
+ <p>In the function call, the <samp class="codeph">provider</samp> pointer is cast to its <samp class="codeph">CProtocol*</samp> base class, as required by <samp class="codeph">CProtocolUser::DoSomething()</samp>. </p>
+ <p>The advantages of this method are </p>
+ <ul><li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-E9B232B6-42F9-5A34-A9E9-116D82D269E9"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-E9B232B6-42F9-5A34-A9E9-116D82D269E9"><!-- --></a><p>it achieves independence of the protocol user from the specific protocol provider </p>
+ </li>
+ </ul>
+ <p>This was the goal we set out to achieve. However, this method has a serious disadvantage: </p>
+ <ul><li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-FA6702D5-AE01-5367-ABD0-AF92892BE871"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-FA6702D5-AE01-5367-ABD0-AF92892BE871"><!-- --></a><p>it forces the protocol provider to be <em>derived</em> from a protocol base class </p>
+ </li>
+ <li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-1B4D6785-1BE5-534B-B4FA-B0FADA87E268"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-1B4D6785-1BE5-534B-B4FA-B0FADA87E268"><!-- --></a><p>however, if <em>more than one</em> protocol must be provided by the provider class, the only solution is to include all the protocols into a single umbrella protocol, and to derive the provider class from that. This is bad encapsulation. Firstly, the base class can become quite large and it can be unclear why it contains so many member functions, or which function belongs to which protocol. Secondly, it may be desirable to have another provider class which provides some of the protocols provided by the first class, and others in addition. To support this requires an even larger umbrella protocol. </p>
+ </li>
+ </ul>
+ <p>The straightforward method of providing protocols by strict single inheritance often leads to large base classes, representing many protocols which should really be independent of one another. </p>
+ </div>
+ <div class="section" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-75614A8E-B613-5E2E-AF34-EFAF854DCD92"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-75614A8E-B613-5E2E-AF34-EFAF854DCD92"><!-- --></a><h2 class="sectiontitle">Protocols using an intermediate class</h2> <p>Some of these disadvantages can be overcome by using an intermediary object which represents the protocol, and has a pointer to the protocol provider. The base protocol class is essentially the same: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-F8A493FA-77EE-5C9D-9BB2-DB2547558EAF"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-F8A493FA-77EE-5C9D-9BB2-DB2547558EAF"><!-- --></a>class TProtocol
+    {
+public:
+    virtual void HandleEvent(TInt aEventCode)=0;
+    };</pre>
+ <p>but there is now a derived class for use with the <samp class="codeph">CProtocolProvider</samp> only: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-9448AEDC-5B25-51FC-BCF8-E1C747DE89F3"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-9448AEDC-5B25-51FC-BCF8-E1C747DE89F3"><!-- --></a>class TProtocolProviderIntermediary : public TProtocol
+    {
+public:
+    // construct
+    TProtocolProviderIntermediary(CProtocolProvider* aRealProvider);
+    // protocol itself
+    void HandleEvent(TInt aEventCode);
+private:
+    CProtocolProvider* iRealProvider; // real provider
+    };</pre>
+ <p>This class provides the protocol as far as the protocol user is concerned. The concrete implementation of <samp class="codeph">HandleEvent()</samp> just passes the function call to the real protocol provider class, which has a non-virtual <samp class="codeph">DoHandleEvent()</samp> to provide the required functionality: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-4A035C1A-ABBD-5557-BBB8-A2D2AAABF85E"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-4A035C1A-ABBD-5557-BBB8-A2D2AAABF85E"><!-- --></a>void TProtocolProviderIntermediary::HandleEvent(TInt aEventCode)
+    {
+    iRealProvider-&gt;DoHandleEvent(aEventCode);
+    }</pre>
+ <p>With this system, <samp class="codeph">CProtocolProvider</samp> is derived, not from the protocol definition class, but from <samp class="codeph">CBase</samp>: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-63868CC8-2FAD-5013-BE90-0C258EC79319"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-63868CC8-2FAD-5013-BE90-0C258EC79319"><!-- --></a>class CProtocolProvider : public CBase
+    {
+public:
+    // construct/destruct
+    static CProtocolProvider* NewLC();
+    void Destruct();
+    // implement the protocol
+    void DoHandleEvent(TInt aEventCode); // handle protocol
+protected:
+    void ConstructL();
+public:
+    TProtocolProviderIntermediary* iProviderIntermediary;
+    };</pre>
+ <p>The <samp class="codeph">TProtocolProviderIntermediary</samp> is constructed by the <samp class="codeph">CProtocolProvider</samp> ’s constructor, and destroyed by its destructor. For this reason, the <samp class="codeph">TProtocolProviderIntermediary</samp> is a <samp class="codeph">T</samp> class: it does not own the <samp class="codeph">CProtocolProvider</samp>, and cannot be orphaned. </p>
+ <p>When a function in the protocol user requiring the protocol provider is called, it must now be called passing the intermediary object as a parameter: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-EDE3C9FC-71AF-59B6-B339-0819FE6AA578"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-EDE3C9FC-71AF-59B6-B339-0819FE6AA578"><!-- --></a>LOCAL_C void doExampleL()
+    {
+    // show use of interface with simple class
+    CProtocolProvider* provider=CProtocolProvider::NewLC();
+    CProtocolUser* user=CProtocolUser::NewLC();
+    user-&gt;DoSomething(provider-&gt;iProviderIntermediary);
+    CleanupStack::PopAndDestroy(); // user
+    CleanupStack::PopAndDestroy(); // provider
+    }</pre>
+ <p>The protocol user’s <samp class="codeph">DoSomething()</samp> is essentially as it was before, except that its parameter is now a <samp class="codeph">TProtocol*</samp>. Thus, the user knows only about the base <samp class="codeph">TProtocol</samp> class. The virtual function mechanism causes the derived intermediary’s <samp class="codeph">HandleEvent()</samp> to be called, and this function passes on the request to the real protocol provider’s <samp class="codeph">DoHandleEvent()</samp>. </p>
+ <p>This method solves the problems associated with using only single inheritance: </p>
+ <ul><li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-67EBED78-BA71-5D6E-8642-0EBE413EAE48"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-67EBED78-BA71-5D6E-8642-0EBE413EAE48"><!-- --></a><p>any number of protocols may be supported, and separately encapsulated, by a particular class: each protocol requires an intermediary class, and objects of each intermediary class point to corresponding objects of the real protocol provider class </p>
+ </li>
+ <li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-D6D043F9-86D3-5486-B584-24BE27E58D3A"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-D6D043F9-86D3-5486-B584-24BE27E58D3A"><!-- --></a><p>no large base classes are needed to provide umbrellas for several protocols </p>
+ </li>
+ </ul>
+ <p>However, it has a serious disadvantage: </p>
+ <ul><li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-66694BCD-5C3F-505F-9B51-A4D37801F6B1"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-66694BCD-5C3F-505F-9B51-A4D37801F6B1"><!-- --></a><p>it is awkward: not only does each protocol require an abstract class (which cannot be avoided), but also, at each point in the derivation tree at which a protocol is introduced, a derived protocol class must be written which implements the protocol for the relevant class which really provides the protocol: further, the derived protocol object and the real protocol provider must be linked </p>
+ </li>
+ <li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-363DEB0D-E3B9-513C-ADEC-654C315390B4"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-363DEB0D-E3B9-513C-ADEC-654C315390B4"><!-- --></a><p>if there are many classes which use many protocols in this way, not only is the method cumbersome to program, but it is uneconomical on memory, since each derived protocol class object requires at least two machine words of heap memory. This consideration becomes more serious if there are more small real protocol providers, providing many different protocols. </p>
+ </li>
+ </ul>
+ </div>
+ <div class="section" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-EBBC826E-BD8C-5753-9F86-BE601C8E1852"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-EBBC826E-BD8C-5753-9F86-BE601C8E1852"><!-- --></a><h2 class="sectiontitle">Protocols using interface classes</h2> <p>These problems can be overcome by using multiple inheritance. A base <samp class="codeph">MProtocol</samp> class specifies the protocol: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-BAA67F7D-95A9-52E7-80B5-CA0EB447FE55"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-BAA67F7D-95A9-52E7-80B5-CA0EB447FE55"><!-- --></a>class MProtocol
+    {
+public:
+    virtual void HandleEvent(TInt aEventCode)=0;
+    };</pre>
+ <p>This time, however, the protocol provider is derived both from <samp class="codeph">CBase</samp>  <em>and</em> from <samp class="codeph">MProtocol</samp>: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-2768C379-BE30-58E3-8EB3-EFB9CEC1CFD3"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-2768C379-BE30-58E3-8EB3-EFB9CEC1CFD3"><!-- --></a>class CProtocolProvider : public CBase, public MProtocol
+    {
+public:
+    // construct/destruct
+    static CProtocolProvider* NewLC();
+    void Destruct();
+    // implement the protocol
+    void HandleEvent(TInt aEventCode); // handle protocol
+protected:
+    void ConstructL();
+    };</pre>
+ <p>The protocol provider class provides a concrete implementation of the <samp class="codeph">HandleEvent()</samp> function required by the protocol. The user class may now be invoked as follows: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-88E052C2-7796-5E30-A5D4-C0D8640E6E98"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-88E052C2-7796-5E30-A5D4-C0D8640E6E98"><!-- --></a>LOCAL_C void doExampleL()
+    {
+    // show use of interface with simple class
+    CProtocolProvider* provider=CProtocolProvider::NewLC();
+    CProtocolUser* user=CProtocolUser::NewLC();
+    user-&gt;DoSomething(provider);
+    CleanupStack::PopAndDestroy(); // user
+    CleanupStack::PopAndDestroy(); // provider
+    }</pre>
+ <p>The <samp class="codeph">DoSomething()</samp> function requires an <samp class="codeph">MProtocol*</samp> parameter. C++ casts the <samp class="codeph">CProtocolProvider*
+          provider</samp> pointer down to an <samp class="codeph">MProtocol*</samp>, because <samp class="codeph">MProtocol</samp> is one of the base classes of <samp class="codeph">CProtocolProvider</samp>. When <samp class="codeph">DoSomething()</samp> invokes <samp class="codeph">HandleEvent()</samp>, the C++ virtual function mechanism ensures that it is <samp class="codeph">CProtocolProvider</samp> ’s <samp class="codeph">HandleEvent()</samp> that is actually called. Thus, the user may use the protocol, without knowing anything specific about the concrete protocol provider class. </p>
+ <p>This method achieves the intended goals: </p>
+ <ul><li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-1E2C3B6E-DD7E-511E-91EF-324215FC11EB"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-1E2C3B6E-DD7E-511E-91EF-324215FC11EB"><!-- --></a><p>the protocol user is dependent on the protocol, but not on any particular provider </p>
+ </li>
+ <li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-03479EC5-0AEC-5D44-B601-95351773D2A3"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-03479EC5-0AEC-5D44-B601-95351773D2A3"><!-- --></a><p>the protocol can be introduced into a class hierarchy at any desired point, by multiply inheriting from a base class and one or more interface classes </p>
+ </li>
+ <li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-E6D3B4B5-DDEB-50D0-9052-6D0149CA1298"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-E6D3B4B5-DDEB-50D0-9052-6D0149CA1298"><!-- --></a><p>full encapsulation of different protocols is achieved </p>
+ </li>
+ <li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-DC84E8E4-3DB8-52C2-80EC-CEF35C25C15F"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-DC84E8E4-3DB8-52C2-80EC-CEF35C25C15F"><!-- --></a><p>there is no inconvenient intermediate class, with its programming difficulties and wasteful memory use </p>
+ </li>
+ </ul>
+ <p>Because protocols may be mixed into the derivation hierarchy of conventional classes at any convenient point in the hierarchy, such protocol specification classes are sometimes also called mixins, the origin of the prefix <samp class="codeph">M</samp>. </p>
+ </div>
+ <div class="section" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-66C2EC3E-8047-5A0C-AFC5-8D486E67A1E1"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-66C2EC3E-8047-5A0C-AFC5-8D486E67A1E1"><!-- --></a><h2 class="sectiontitle">Restrictions on the use of multiple inheritance</h2> <p>The use of multiple inheritance is restricted to interfaces used as described above. C++’s full multiple inheritance facilities are unnecessarily complex. This is perhaps recognised by the OO community now. Java, for instance, allows only single inheritance, but the <samp class="codeph">interface</samp> and <samp class="codeph">implements</samp> keywords support the same facilities as are provided by <samp class="codeph">M</samp> classes. The restrictions are given in more detail here. </p>
+ <p>Firstly, <samp class="codeph">M</samp> classes primarily define protocols, not implementations. In particular, they should not have any member data. The restriction implies that certain types of behaviour (e.g., that of active objects, see <a href="GUID-890F06C6-DE32-5EB1-BF0F-D41794F47AE1.html" title="This document describes the functionality and class membership of active objects.">Active objects</a>) may <em>not</em> be encapsulated in an interface, but must be derived in the conventional way. </p>
+ <p>Secondly, a <samp class="codeph">C</samp> class may be derived from one other <samp class="codeph">C</samp> class, and zero or more <samp class="codeph">M</samp> classes. This restriction reflects the fact that multiple inheritance is only to be used for interfaces. It implies that it is still possible to uniquely identify a primary inheritance tree (the <samp class="codeph">C</samp> class hierarchy), with interfaces as a side feature. If arbitrary multiple inheritance were allowed, it would be impossible to identify a primary inheritance tree. The restriction also guarantees that no <samp class="codeph">C</samp> class will be a multiple base class, which makes it unnecessary to consider the complications of multiple base class inclusion, virtual inheritance, etc. </p>
+ <p>Thirdly, the <samp class="codeph">C</samp> class must be the first specified class in any base class list. This emphasises the primary inheritance tree and, importantly, it makes conversions between any <samp class="codeph">C</samp> class (including those with interfaces) and <samp class="codeph">void*</samp> pointers freely possible. Admittedly, the C++ standards do not mandate that object layout follows the order in which base classes are specified, but in practice this is the case for most compilers, including those used for the Symbian platform. </p>
+ <p>Fourthly, no <samp class="codeph">M</samp> class may be mixed in more than once in any class, either as a direct base or as a base of any of its primary base classes. To put it another way: when deriving a <samp class="codeph">C</samp> class <samp class="codeph">CD</samp> from a base class <samp class="codeph">CB</samp>, you may not mix in any <samp class="codeph">M</samp> class <samp class="codeph">MP</samp> which has already been mixed into the derivation of <samp class="codeph">CB</samp>. This reflects the fact that <samp class="codeph">CB</samp> already supports the protocol defined by <samp class="codeph">MP</samp>: there is nothing to gain from mixing in this protocol class again. In addition, it makes it unnecessary to consider the complications of multiple base class inclusion, virtual inheritance, etc. </p>
+ <p>Finally, although it is legal to derive one <samp class="codeph">M</samp> class from another, it is not legal to include a protocol twice by including both it and a derived protocol into a <samp class="codeph">C</samp> class, at any point in the <samp class="codeph">C</samp> class’s base class graph. To put it another way, if there is a class <samp class="codeph">MD</samp> derived from <samp class="codeph">MB</samp>, then a <samp class="codeph">C</samp> class cannot include both <samp class="codeph">MB</samp> and <samp class="codeph">MD</samp>. This is because any function in the <samp class="codeph">C</samp> class which provided an implementation of <samp class="codeph">MB</samp> protocol could conflict with the implementation of <samp class="codeph">MD</samp> protocol. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Example uses</h2> <p><strong>Callbacks</strong> </p>
+ <p>A special case of an interface is the callback. In this situation, one class performs a certain function for another and, when this is done, calls a single function in the requesting class, to indicate that the requested operation is complete. This call-back function represents a protocol: the requesting class is the provider, and the performing class is the user. Apart from this, the performing class need know little or nothing about the requesting class. This is an ideal situation for a interface. </p>
+ <p><strong>Two-way use</strong> </p>
+ <p>So far, we have discussed interfaces in the context where one class provides services according to a given protocol, and another uses those services. In a more general case, two classes (or systems of classes) may require services from each other, so that there is two-way interaction. </p>
+ <p>Services are always provided according to a protocol. The protocol can be provided using any of the techniques described in this document: </p>
+ <ul><li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-7C71224B-9E1D-5277-B58F-C3B51E48D91C"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-7C71224B-9E1D-5277-B58F-C3B51E48D91C"><!-- --></a><p>conventional derivation, which is most appropriate where the protocol characterises a class’s main purpose </p>
+ </li>
+ <li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-F9D18F75-C44B-5E52-8140-454A79AFF31F"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-F9D18F75-C44B-5E52-8140-454A79AFF31F"><!-- --></a><p>interface inheritance, which is most appropriate where a protocol may be a characteristic of many classes, but where these classes have diverse main purposes </p>
+ </li>
+ <li id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-642E0CAD-5804-5364-9BDA-2C0AC334B670"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-642E0CAD-5804-5364-9BDA-2C0AC334B670"><!-- --></a><p>intermediary objects, which may be appropriate where an interface would otherwise be used, but when multiple inheritance is disallowed, or inconvenient for some other reason </p>
+ </li>
+ </ul>
+ <p><strong>Observers</strong> </p>
+ <p>GUI applications use menus to present a user interface for selecting options. When an option has been chosen, the menu bar should forward a command somewhere by calling a member function of some class. The only thing that is important to the menu bar is that some object exists which can handle the command: beyond that, nothing matters about the object. </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-3525BD39-699B-5977-A36B-A8B2355AA1DD"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-3525BD39-699B-5977-A36B-A8B2355AA1DD"><!-- --></a>class CEikMenuBar ...
+    {
+public:
+    ConstructL(MEikMenuObserver* aObserver, ...);
+    // ...
+private:
+    MEikMenuObserver* iObserver;
+    // ...
+    }</pre>
+ <p>A menu bar therefore <em>uses</em> a menu observer. This is passed in as a parameter at construction, stored as member data, and used when an option has been selected. The menu observer interface is defined by the menu component, as the <samp class="codeph">MEikMenuObserver</samp> class. </p>
+ <p>This interface is implemented by the app UI (which also does many other things, which are irrelevant to menus). So, <samp class="codeph">CEikAppUi</samp> implements menu observer interface by deriving from <samp class="codeph">MEikMenuObserver</samp>: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-FD7DE6CD-31ED-5F58-BA37-F6DA5CFCB6B7"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-FD7DE6CD-31ED-5F58-BA37-F6DA5CFCB6B7"><!-- --></a>class CEikAppUi : public CCoeAppUi, MEikMenuObserver</pre>
+ <p>The app UI has a menu bar, and when it constructs the menu bar, the app UI passes itself to the menu bar, as the observer: </p>
+ <pre class="codeblock" id="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-86E37F76-3B90-5179-9AAC-27B30C30735E"><a name="GUID-9E0DCB19-5775-5E23-B758-163D747A71C9__GUID-86E37F76-3B90-5179-9AAC-27B30C30735E"><!-- --></a>iMenuBar-&gt;ConstructL(this, ...);</pre>
+ <p>C++ causes the <samp class="codeph">this</samp> to be cast into the appropriate base class—in this case, an <samp class="codeph">MEikMenuObserver</samp> —automatically. </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Power Controller DPowerController Implementation Tutorial"/>
+<meta name="abstract" content="This topic describes how to implement the DPowerController class to provide the main power controller functionality in a base port."/>
+<meta name="description" content="This topic describes how to implement the DPowerController class to provide the main power controller functionality in a base port."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0C435514-EEC6-5660-BB5F-535790349632.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Power Controller DPowerController Implementation Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2400380 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html" title="This topic describes how to implement a power controller in a base port.">Power Management Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Power Controller DPowerController Implementation Tutorial</h1>
+<div><p>This topic describes how to implement the <samp class="codeph">DPowerController</samp> class to provide the main power controller functionality in a base
+port.</p>
+
+<p><a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html"><span class="apiname">DPowerController</span></a> is defined as: </p>
+
+<pre class="codeblock" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-95318C39-B205-557C-B1F3-75C1441E464A"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-95318C39-B205-557C-B1F3-75C1441E464A"><!-- --></a>class DPowerController : public DBase
+    {
+public:
+    IMPORT_C DPowerController();
+    IMPORT_C void Register();
+    IMPORT_C void WakeupEvent();
+
+#ifndef __X86__
+    IMPORT_C TInt RegisterResourceController(DBase* aController, TInt aClientId);
+private:
+    struct SResourceControllerData
+        {
+        DBase* iResourceController;
+        TInt   iClientId;
+        } iResourceControllerData;
+#endif
+
+public:
+    volatile TPowerState    iTargetState;
+public:
+    virtual void CpuIdle() = 0;
+    virtual void EnableWakeupEvents() = 0;
+    virtual void DisableWakeupEvents() = 0;
+    virtual void AbsoluteTimerExpired() = 0;
+    virtual void PowerDown(TTimeK aWakeupTime) = 0;
+    };
+      </pre>
+
+<p>The first three functions are exported from the kernel, <span class="filepath">EKERN.EXE</span>, while the other five pure virtual functions
+are implemented by your base port. You do not need to export any other
+functions. </p>
+
+<ul>
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-2EEFEFF3-FCAF-526C-A11B-790A2A47AA9C"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-2EEFEFF3-FCAF-526C-A11B-790A2A47AA9C"><!-- --></a><p> <a href="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703.html#GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-BCCDBA09-415D-5779-BCE5-CDEB2E1EF7D8">Initialising the power controller</a>, </p>
+ </li>
+
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-CBB1EE9C-CD27-5417-973C-3BBED74715D6"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-CBB1EE9C-CD27-5417-973C-3BBED74715D6"><!-- --></a><p> <a href="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703.html#GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-DCD91EBA-CB0E-5EA9-84E0-8F8FED6FC91E">DPowerController::RegisterResourceController()</a>, </p>
+ </li>
+
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-4E2D396D-E6FA-5658-830F-9F82D4A63AD1"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-4E2D396D-E6FA-5658-830F-9F82D4A63AD1"><!-- --></a><p> <a href="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703.html#GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-5A0CAD08-AA12-56EE-B0A3-75548D1896C9">DPowerController::EnableWakeupEvents()</a>, </p>
+ </li>
+
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-DB82BCE3-702A-51EB-ADE0-9434D59CD553"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-DB82BCE3-702A-51EB-ADE0-9434D59CD553"><!-- --></a><p> <a href="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703.html#GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-51D37A0C-AD46-52D5-A31C-CB3A8046CE84">DPowerController::AbsoluteTimerExpired()</a>, </p>
+ </li>
+
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-77CCBFFE-037D-5B86-BF14-1BE87D38B47A"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-77CCBFFE-037D-5B86-BF14-1BE87D38B47A"><!-- --></a><p> <a href="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703.html#GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-1F77C71C-D226-58BB-ABAE-43F958CC0C61">DPowerController::PowerDown()</a>, </p>
+ </li>
+
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-8657D772-2338-588D-B074-832B06144D8B"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-8657D772-2338-588D-B074-832B06144D8B"><!-- --></a><p> <a href="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703.html#GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-E2A072D0-A67F-5E6D-81ED-CFD77B6ED4F1">CpuIdle()</a>. </p>
+ </li>
+
+</ul>
+
+<div class="section" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-BCCDBA09-415D-5779-BCE5-CDEB2E1EF7D8"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-BCCDBA09-415D-5779-BCE5-CDEB2E1EF7D8"><!-- --></a><h2 class="sectiontitle">Initialising
+the power controller</h2> <p>Typically, you implement your derived
+class in a power management kernel extension, which has the opportunity
+to perform initialisation before the system itself is fully initialised.
+This is done via the extension's DLL entry point. You use the <a href="GUID-7964FC46-4641-3BDD-92C9-50FA22C3321A.html"><span class="apiname">DECLARE_STANDARD_EXTENSION()</span></a> macro as a wrapper around
+your initialisation code. There are at least three things to do here: </p>
+ <ul>
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-25C66F1B-6B2F-5B3B-A827-410263EE22A4"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-25C66F1B-6B2F-5B3B-A827-410263EE22A4"><!-- --></a><p>create an instance
+of your power controller object </p>
+ </li>
+
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-369A09EC-74D3-529A-AC05-0EFE0C4ABBF7"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-369A09EC-74D3-529A-AC05-0EFE0C4ABBF7"><!-- --></a><p>register your
+power controller object with the Symbian platform power manager, by
+calling <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-F66D72D0-AA27-3BAF-8915-C6E8CC4E7CCF"><span class="apiname">DPowerController::Register()</span></a>. Your power
+controller cannot be used by the Symbian platform power manager until
+it has been registered. </p>
+ </li>
+
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-E4C7D934-AAB9-511B-93A4-125D5A5B248D"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-E4C7D934-AAB9-511B-93A4-125D5A5B248D"><!-- --></a><p>if you intend
+to use a battery monitor, then you would create it and register it
+as the HAL handler to deal with <a href="GUID-66A851A0-2A0C-3624-AEC1-22F6629FABF7.html#GUID-66A851A0-2A0C-3624-AEC1-22F6629FABF7__GUID-227B4DCD-5D74-3AB7-8E09-64A04D88F094"><span class="apiname">THalFunctionGroup::EHALGroupPower</span></a> calls. See <a href="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02.html" title="A base port can implement code to monitor the battery of the phone and to provide notifications when the battery power is low.">Battery Monitor Implementation Tutorialc</a> and <a href="GUID-54042C84-6216-5930-9CBF-BAF635CECD4D.html" title="User-side programs can get and set a number of system attributes about power using the HAL interface.">Power HAL Handler
+Tutorial</a> for more detail. </p>
+ </li>
+
+</ul>
+ <p>For example: </p>
+ <pre class="codeblock" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-1A909C4C-DCAF-54E3-B482-16918E33BF4F"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-1A909C4C-DCAF-54E3-B482-16918E33BF4F"><!-- --></a>DECLARE_STANDARD_EXTENSION()
+    {
+    TInt r=KErrNoMemory;
+
+    // Create the power controller object, and register it.
+    DPowerController* pC = new DYourPowerController;
+    if !(pC)
+        {
+        return (r);
+        }
+        pC-&gt;Register();
+
+    // Create the battery monitor.
+    DBatteryMonitor* pM = new DYourBatteryMonitor;
+    if !(pM)
+        {
+        return(r);
+        }
+
+    r = KErrNone;
+    return(r);
+    }</pre>
+ </div>
+
+<div class="section" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-DCD91EBA-CB0E-5EA9-84E0-8F8FED6FC91E"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-DCD91EBA-CB0E-5EA9-84E0-8F8FED6FC91E"><!-- --></a><h2 class="sectiontitle">DPowerController::RegisterResourceController()</h2> <p>The function <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-42896B4D-9F77-3D91-82BD-50102A8F3DA4"><span class="apiname">DPowerController::RegisterResourceController()</span></a> allows the Resource Controller to register itself with the Power
+Controller. See <a href="GUID-66FD040B-133E-57CF-80DD-9369F62709C6.html#GUID-66FD040B-133E-57CF-80DD-9369F62709C6__GUID-08BFCAF4-9AF0-5999-A1C4-7BBD107C9354">registering with the resource controller</a> in the PSL implementation
+document. </p>
+ <p>To support idle power management the Power Controller's
+PSL must override <samp class="codeph">RegisterResourceController()</samp> to
+include the registration of a list of resources whose states are of
+interest to idle power management. </p>
+ <p><strong>Idle power management</strong> </p>
+ <p>The Power Controller can assemble
+a list of resources whose state it is interested in from a NULL thread
+in an array of <a href="GUID-586AF75A-8350-345D-ABF4-6542C8E75DED.html"><span class="apiname">SIdleResourceInfo</span></a> structures. Each
+entry in the list contains the resource ID that the power controller
+must enter before registering with the PRM. The resource list should
+be created in the kernel heap or data section. </p>
+ <p>The example
+below creates a buffer to capture the state of all static resources.
+The PRM captures the information using <a href="GUID-46F2174F-0206-345B-8C5D-F8B5763652E0.html#GUID-46F2174F-0206-345B-8C5D-F8B5763652E0__GUID-52DC308A-9DF1-3BDE-A905-A4DD3B692638"><span class="apiname">DPowerResourceController::RegisterResourcesForIdle()</span></a>. </p>
+ <pre class="codeblock" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-C6E907FD-094D-5412-8F81-FC02CDE8B411"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-C6E907FD-094D-5412-8F81-FC02CDE8B411"><!-- --></a>    ...
+//Allocate buffer for Idle resource management
+    NKern::ThreadEnterCS();
+    pBuf = HBuf::New(numResources * sizeof(SIdleResourceInfo)); 
+    NKern::ThreadLeaveCS();
+    if(!pBuf)
+        {
+           return KErrNoMemory;
+        }
+    SIdleResourceInfo* pI = (SIdleResourceInfo*)pBuf-&gt;Ptr();
+
+//Update resource ID
+    for(TUint c = 0; c &lt; numResources; c++)
+        {
+        pI[c].iResourceId = c+1; 
+        }
+    r = (iResourceControllerData.iResourceController)-&gt;RegisterResourcesForIdle(iResourceControllerData.iClientId, numResources, (TPtr*)pI);
+    ...</pre>
+ <p>The first parameter passed to <samp class="codeph">RegisterResourcesForIdle()</samp> is the client Id generated for the power controller this is the
+client ID passed by the PRM when calling <a href="GUID-B2C466D1-0B65-3BB7-81B1-7297400E60C4.html"><span class="apiname">RegisterResourceController</span></a>. </p>
+ <p> <strong>Note</strong>: <samp class="codeph">RegisterResourcesForIdle()</samp> is not exported and is only available for use by the Power Controller
+to register resources for idle power management. <strong>Note</strong>: <samp class="codeph">RegisterResourcesForIdle()</samp> can only be called by the Power
+Controller once. </p>
+ </div>
+
+<div class="section" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-5A0CAD08-AA12-56EE-B0A3-75548D1896C9"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-5A0CAD08-AA12-56EE-B0A3-75548D1896C9"><!-- --></a><h2 class="sectiontitle">DPowerController::EnableWakeupEvents()</h2> <pre class="codeblock" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-38714507-C38C-5787-997F-5D45F3A90357"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-38714507-C38C-5787-997F-5D45F3A90357"><!-- --></a>virtual void EnableWakeupEvents() = 0;</pre>
+ <p>The Symbian Power Model defines 3 generic system-wide <a href="GUID-113B3755-1797-5D1B-8E07-8A18F5FE1504.html" title="Describes three power states that are defined by the kernel.">power states</a>: <em>Active</em>, <em>Standby</em> and <em>Off</em>, as defined in the <a href="GUID-0C435514-EEC6-5660-BB5F-535790349632.html" title="The kernel provides a framework for managing power within the system, and the management of the transition between power states.">Symbian platform
+power model</a>. </p>
+ <p>Each of the system-wide low power states: <em>Standby</em> and <em>Off</em>, has a defined set of wake-up events.
+If a wake-up event occurs while the system is preparing to transition
+into one of these low power states, or when the system is in the <em>Standby</em> state, then this can result in the system moving back
+to the <em>Active</em> power state. Wake-up events may be different
+for different target power states. Wake-up events are platform-specific
+hardware events, and it is your base port that decides which events
+count as wake-up events. </p>
+ <p><strong>When is it called?</strong> </p>
+ <p> <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-0642129D-05F2-3AB0-B562-37A7BB7A275F"><span class="apiname">DPowerController::EnableWakeupEvents()</span></a> is called called by the <a href="GUID-0C435514-EEC6-5660-BB5F-535790349632.html#GUID-0C435514-EEC6-5660-BB5F-535790349632__GUID-330F07B2-BBDF-5675-B7D5-FF6B25DD03F4">power manager</a> as a result of a user side call to <a href="GUID-15D25C07-CFD2-32CE-AD22-E17D512D8E87.html#GUID-15D25C07-CFD2-32CE-AD22-E17D512D8E87__GUID-C49C0A07-EAC7-32CB-956F-1FFEFF2FD326"><span class="apiname">Power::EnableWakeupEvents()</span></a>. The class <a href="GUID-15D25C07-CFD2-32CE-AD22-E17D512D8E87.html"><span class="apiname">Power</span></a> is the user side interface to the power manager, and is used by
+the user side entity that is responsible for moving the device into
+a low power state. </p>
+ <p><strong>Context</strong> </p>
+ <p>When the user side entity decides to move
+the device to a low power state, it sends a notification to all of
+the user side power domains registered with it, giving their applications
+a chance to save their data and state. However, before doing this,
+it calls <a href="GUID-15D25C07-CFD2-32CE-AD22-E17D512D8E87.html#GUID-15D25C07-CFD2-32CE-AD22-E17D512D8E87__GUID-C49C0A07-EAC7-32CB-956F-1FFEFF2FD326"><span class="apiname">Power::EnableWakeupEvents()</span></a>. It also calls <a href="GUID-15D25C07-CFD2-32CE-AD22-E17D512D8E87.html#GUID-15D25C07-CFD2-32CE-AD22-E17D512D8E87__GUID-6CFE19D9-249A-3305-8224-823D2FDB1859"><span class="apiname">Power::RequestWakeupEventNotification()</span></a> so that it can
+be informed of a wake-up event. If it is notified of a wake-up event,
+it can halt, and reverse the user side response to the power transition. </p>
+ <div class="fignone" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-ACC6E7E3-71E3-5553-B433-9017CB04513D"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-ACC6E7E3-71E3-5553-B433-9017CB04513D"><!-- --></a>
+<img src="GUID-AEDBF425-6077-4C84-A698-508291671F2B_d0e391938_href.png"/>
+</div>
+ <p>Before calling <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-0642129D-05F2-3AB0-B562-37A7BB7A275F"><span class="apiname">DPowerController::EnableWakeupEvents()</span></a>, the power manager sets the <samp class="codeph">iTargetState</samp> member
+of <samp class="codeph">DPowerController</samp> to the applicable <a href="GUID-87AB8B20-04EE-31D2-8F3D-EA904D05B8D0.html"><span class="apiname">TPowerState</span></a>. This means that you can enable the appropriate set of wake-up events. </p>
+ <p>Once the user side transition is complete, it calls <a href="GUID-15D25C07-CFD2-32CE-AD22-E17D512D8E87.html#GUID-15D25C07-CFD2-32CE-AD22-E17D512D8E87__GUID-7C6F3F0F-319B-3DEE-81BF-1EB5BB2EAB0A"><span class="apiname">Power::PowerDown()</span></a> in the user side interface to the <a href="GUID-0C435514-EEC6-5660-BB5F-535790349632.html#GUID-0C435514-EEC6-5660-BB5F-535790349632__GUID-330F07B2-BBDF-5675-B7D5-FF6B25DD03F4">power manager</a>, which results in a call to <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-8AE99718-6B82-3920-9029-28C2041A3B10"><span class="apiname">DPowerController::PowerDown()</span></a> in the power controller. This starts the transition of all <a href="GUID-0C435514-EEC6-5660-BB5F-535790349632.html#GUID-0C435514-EEC6-5660-BB5F-535790349632__GUID-DC5F1ECD-CCA3-59FF-A2F1-A3DBD76CD458">power handlers</a> to a low power state, a potentially long process.
+This means that the power controller needs the ability to detect wake-up
+events so that it can halt, and reverse the power transition. </p>
+ <p><strong>Implementation issues</strong> </p>
+ <p>There are three possibilities
+in dealing with wake-up events: </p>
+ <ul>
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-4243E6DD-C903-58DE-B125-38CEDB8B5269"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-4243E6DD-C903-58DE-B125-38CEDB8B5269"><!-- --></a><p>if wake-up events
+are not handled by specific peripheral drivers, you could set up the
+hardware so that wake-up events are recorded in a location accessible
+by the software. Prior to completing the system power transition,
+the Power controller would check the relevant hardware to see whether
+a wakeup event had occurred. On detecting a wake-up event it would
+tell the power manager by calling <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-C193F898-2C15-3C42-8353-14F00789BCDA"><span class="apiname">DPowerController::WakeupEvent()</span></a>. </p>
+ </li>
+
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-289B86C4-A578-5A42-A0DF-70A7BF3F440E"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-289B86C4-A578-5A42-A0DF-70A7BF3F440E"><!-- --></a><p>if wake-up events
+are not handled by specific peripheral drivers, you could arrange
+for wake-up events to interrupt the CPU. The code that services those
+interrupts would tell the power manager by calling <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-FABDB7E2-DEC5-3EA9-8106-66C971C04AB7"><span class="apiname">DPowerController::WakepEvent()</span></a>. </p>
+ </li>
+
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-E51BAE55-0A81-5D1F-B509-096A7F2141EF"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-E51BAE55-0A81-5D1F-B509-096A7F2141EF"><!-- --></a><p>if wakeup events
+are intercepted, serviced and cleared by peripheral drivers, then
+the following outline solution could be adopted: </p>
+ <ul>
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-5C942237-BBB2-5919-8578-B55BDAFAFC9F"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-5C942237-BBB2-5919-8578-B55BDAFAFC9F"><!-- --></a><p>The power controller
+would need to publish a list of wake-up events, preferably as a bit
+mask, and export an API which peripheral drivers could use to notify
+the power controller that a wake-up event has occurred. The following
+interface class could be used for this purpose: </p>
+ <pre class="codeblock" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-084F7F46-66B6-5661-85AF-57D499250886"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-084F7F46-66B6-5661-85AF-57D499250886"><!-- --></a>class TPowerController
+    {
+public:
+    inline static void SetPowerControllerPointer(DPowerController* apPowerController)
+    { iPowerControllerPointer = apPowerController; }
+    IMPORT_C static void WakeupEventOccurred(TUint aWakeupEvent);
+    …        // other methods if required
+private:
+    DPowerController* iPowerControllerPointer;
+    };
+                      </pre>
+ <p>The class would be implemented
+as part of the power management kernel extension and <samp class="codeph">SetPowerControllerPointer()</samp> would be called when <a href="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703.html#GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-BCCDBA09-415D-5779-BCE5-CDEB2E1EF7D8">initialising the power controller</a>, but after creation of the
+power controller object. </p>
+ <p>Those peripheral drivers that intercept
+wake-up events would need to link to the power controller DLL (i.e.
+the power management kernel extension). </p>
+ <p>On the occurrence
+of a wake-up event, the peripheral driver software servicing that
+event would notify the power controller by calling <samp class="codeph">WakeupEventOccurred()</samp>, specifying the appropriate wake-up event bit(s). </p>
+ <p>You might
+implement <samp class="codeph">WakeupEventOccurred()</samp> as follows: </p>
+ <pre class="codeblock" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-501ABA28-81B9-52C1-9842-003E1E389045"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-501ABA28-81B9-52C1-9842-003E1E389045"><!-- --></a>EXPORT_C void TPowerController::WakeupEventOccurred(TUint aWakeupEvent)
+    {
+    if(iPowerControllerPointer-&gt;iWakeupEvents &amp; aWakeupEvent)
+        {
+        iPowerControllerPointer-&gt;WakeupEvent();
+        }
+    }</pre>
+ <p>where <samp class="codeph">iWakeupEvents</samp> is a data
+member defined in your <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html"><span class="apiname">DPowerController</span></a> -derived
+class that contains the bitmask representing the wake-up events. The
+bitmask groups wakeup events according to the target power state. </p>
+ </li>
+
+</ul>
+ </li>
+
+</ul>
+ <p>When the peripheral driver powers down, it should leave the
+hardware that generates the wake-up event powered and enabled for
+detection. Thus, if a wake-up event of the type handled by this peripheral
+driver occurs, it will not be serviced in the normal way, but will
+be left pending until the power controller services it. </p>
+ <p>When
+the power controller’s <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-8AE99718-6B82-3920-9029-28C2041A3B10"><span class="apiname">DPowerController::PowerDown()</span></a> function is called, the power controller must check the peripheral
+hardware directly to see whether the wakeup event has happened, or
+is happening right now, prior to transitioning the device to the target
+system-wide low power state. If the wake-up event is found to have
+happened then <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-8AE99718-6B82-3920-9029-28C2041A3B10"><span class="apiname">DPowerController::PowerDown()</span></a> would
+return immediately, instead of initiating the <a href="GUID-0C435514-EEC6-5660-BB5F-535790349632.html#GUID-0C435514-EEC6-5660-BB5F-535790349632__GUID-DC5F1ECD-CCA3-59FF-A2F1-A3DBD76CD458">power handlers</a> power down of the peripheral drivers. </p>
+ </div>
+
+<div class="section" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-51D37A0C-AD46-52D5-A31C-CB3A8046CE84"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-51D37A0C-AD46-52D5-A31C-CB3A8046CE84"><!-- --></a><h2 class="sectiontitle"> DPowerController::AbsoluteTimerExpired()</h2> <pre class="codeblock" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-5EC61B73-DA37-51C8-963F-4E4169AC1BE7"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-5EC61B73-DA37-51C8-963F-4E4169AC1BE7"><!-- --></a>virtual void AbsoluteTimerExpired() = 0;</pre>
+ <p><strong>When is it called?</strong> </p>
+ <p> <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-C6F792DB-1EC0-33F4-8F82-AB3F7B44B061"><span class="apiname">DPowerController::AbsoluteTimerExpired()</span></a> is called by the <a href="GUID-0C435514-EEC6-5660-BB5F-535790349632.html#GUID-0C435514-EEC6-5660-BB5F-535790349632__GUID-330F07B2-BBDF-5675-B7D5-FF6B25DD03F4">power manager</a> whenever an absolute timer expires. An absolute
+timer is one that is set to complete at a specific time, as queued
+by a call to <a href="GUID-8A423EA2-4264-30C9-9579-0466994E6E88.html#GUID-8A423EA2-4264-30C9-9579-0466994E6E88__GUID-3F302410-5CC2-3CCB-82F4-47E953E7A29B"><span class="apiname">RTimer::At()</span></a>. </p>
+ <p><strong>Implementation issues</strong> </p>
+ <p>If absolute timer expiration
+is one of your wake-up events, then your implementation of <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-C6F792DB-1EC0-33F4-8F82-AB3F7B44B061"><span class="apiname">DPowerController::AbsoluteTimerExpired()</span></a> should call <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-C193F898-2C15-3C42-8353-14F00789BCDA"><span class="apiname">DPowerController::WakeupEvent()</span></a> to notify the power manager
+that a wake-up event has happened. </p>
+ <p>It is recommended that
+you track absolute timers. </p>
+ </div>
+
+<div class="section" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-1F77C71C-D226-58BB-ABAE-43F958CC0C61"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-1F77C71C-D226-58BB-ABAE-43F958CC0C61"><!-- --></a><h2 class="sectiontitle">DPowerController::PowerDown()</h2> <pre class="codeblock" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-AD394AD5-8E3E-5FE3-938E-639C4E5E9F79"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-AD394AD5-8E3E-5FE3-938E-639C4E5E9F79"><!-- --></a>virtual void PowerDown(TTimeK aWakeupTime) = 0;</pre>
+ <p><strong>When is it called?</strong> </p>
+ <p> <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-8AE99718-6B82-3920-9029-28C2041A3B10"><span class="apiname">DPowerController::PowerDown()</span></a> is called by the <a href="GUID-0C435514-EEC6-5660-BB5F-535790349632.html#GUID-0C435514-EEC6-5660-BB5F-535790349632__GUID-330F07B2-BBDF-5675-B7D5-FF6B25DD03F4">power manager</a> to move the device into one of the system-wide
+low power states: <em>Standby</em> or <em>Off</em>. </p>
+ <p>Typically,
+this is a result of the user side entity that is responsible for moving
+the device into a low power state calling <a href="GUID-15D25C07-CFD2-32CE-AD22-E17D512D8E87.html#GUID-15D25C07-CFD2-32CE-AD22-E17D512D8E87__GUID-7C6F3F0F-319B-3DEE-81BF-1EB5BB2EAB0A"><span class="apiname">Power::PowerDown()</span></a> in the user side interface to the <a href="GUID-0C435514-EEC6-5660-BB5F-535790349632.html#GUID-0C435514-EEC6-5660-BB5F-535790349632__GUID-330F07B2-BBDF-5675-B7D5-FF6B25DD03F4">power manager</a>. </p>
+ <p>If <a href="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520.html" title="Describes Symbian platform RAM defragmentation.">physical RAM defragmentation</a> is implemented you may wish to include calls to <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-B4825007-E3DB-3559-9D58-637150EF3DB9"><span class="apiname"> TRamDefragRequest::DefragRam()</span></a> within this function to enable defragmentation of RAM zones that
+can then be powered down. </p>
+ <p><strong>Context</strong> </p>
+ <p>The target state is defined by the value of
+the <samp class="codeph">iTargetState</samp> member of <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html"><span class="apiname">DPowerController</span></a>, as set by the power manager. </p>
+ <p><strong>Implementation issues</strong> </p>
+ <p>Implementation depends on the
+target state: </p>
+ <ul>
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-0473B5C1-BEC0-5276-88C5-A4A8379A4621"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-0473B5C1-BEC0-5276-88C5-A4A8379A4621"><!-- --></a><p>if the target
+state is <em>Standby</em>, as implied by a value of <a href="GUID-87AB8B20-04EE-31D2-8F3D-EA904D05B8D0.html#GUID-87AB8B20-04EE-31D2-8F3D-EA904D05B8D0__GUID-5604F598-8CBC-3A94-865F-CA58DA4492B0"><span class="apiname">TPowerState::EPwStandby</span></a> in <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-86A0C14F-B219-3E0B-BD5E-A2C20EEDBF64"><span class="apiname">DPowerController::iTargetState</span></a>, then the power
+controller should put the hardware into a state corresponding to the <em>Standby</em> state. </p>
+ <p>If at least one wake-up event has been
+detected and recorded since the last call to <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-0642129D-05F2-3AB0-B562-37A7BB7A275F"><span class="apiname">DPowerController::EnableWakeupEvents()</span></a>, then <samp class="codeph">PowerDown()</samp> should return immediately; otherwise,
+it should continue with the process of putting the device into <em>Standby</em>; execution of the function will halt, and can only continue,
+and return, when a wake-up event occurs. </p>
+ </li>
+
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-E38B9334-CFE4-5E91-9DD4-D7A0678AF344"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-E38B9334-CFE4-5E91-9DD4-D7A0678AF344"><!-- --></a><p>if the target
+state is <em>Off</em>, as implied by a value of <a href="GUID-87AB8B20-04EE-31D2-8F3D-EA904D05B8D0.html#GUID-87AB8B20-04EE-31D2-8F3D-EA904D05B8D0__GUID-0DAD6E93-BD08-3C90-BCE8-ADBFC2681227"><span class="apiname">TPowerState::EPwOff</span></a> in <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-86A0C14F-B219-3E0B-BD5E-A2C20EEDBF64"><span class="apiname">DPowerController::iTargetState</span></a>, then <samp class="codeph">PowerDown()</samp> must <em>never</em> return. Typically, the power
+controller turns the device off, but can choose to perform other device-specific
+action such as a system reboot. </p>
+ </li>
+
+</ul>
+ <p>The <a href="GUID-8C6E2996-24DE-3E59-927A-46D32290225E.html"><span class="apiname">TTimeK</span></a> parameter passed to the function
+is a system time value. If non-zero, it specifies the time when the
+system should wakeup. The kernel calculates it as the time that the
+next absolute timer expires. Typically, your implementation will use
+the Real Time Clock module to generate an event at the specified time,
+and this will cause a return to the <em>Active</em> state. This implies
+that the base port should enable Real Time Clock event detection during <em>Standby</em>. </p>
+ <p>The Symbian definition of the <em>Standby</em> state usually translates into the hardware manufacturer’s CPU “Standby”
+or “Sleep” modes of operation. Typically, the internal clocks associated
+with the core and some of the core peripherals, or their power supply,
+are suppressed, and their internal state is not preserved. In this
+case, the state of the core and core peripherals should be saved before
+going into <em>Standby</em> so that they can be restored when the system
+wakes-up. Note the following: </p>
+ <ul>
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-824D88FD-33FB-50DC-A904-F5F44BFBF90A"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-824D88FD-33FB-50DC-A904-F5F44BFBF90A"><!-- --></a><p>for the core
+state, save the current mode, the banked registers for each mode,
+and the stack pointer for both the current mode and user mode </p>
+ </li>
+
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-E8CDFA98-E6F2-5D48-987F-E2591DAB242B"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-E8CDFA98-E6F2-5D48-987F-E2591DAB242B"><!-- --></a><p>for the core
+peripherals, save the state of the interrupt controller, the pin function
+controller, the bus state controller, and the clock controller </p>
+ </li>
+
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-90BEA663-F58C-5AD7-8578-353E5EFFBCCC"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-90BEA663-F58C-5AD7-8578-353E5EFFBCCC"><!-- --></a><p>for the MMU
+state, save the control register, the translation table base address,
+and the domain access control, if this is supported </p>
+ </li>
+
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-68AB9558-5CC7-573F-8A33-A38F16EAF304"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-68AB9558-5CC7-573F-8A33-A38F16EAF304"><!-- --></a><p>flush the data
+cache and drain the write buffer. </p>
+ </li>
+
+</ul>
+ <p>If all of this data is saved to a DRAM device, then this
+should be put into self refresh mode. </p>
+ <p>Peripherals modules
+involved in the detection of wake-up events should be left powered. </p>
+ <p>Tick timer events should be disabled, and the current count of
+this and any other system timers should be saved; relevant wake-up
+events should be left unmasked, and any others should be disabled. </p>
+ </div>
+
+<div class="section" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-E2A072D0-A67F-5E6D-81ED-CFD77B6ED4F1"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-E2A072D0-A67F-5E6D-81ED-CFD77B6ED4F1"><!-- --></a><h2 class="sectiontitle">DPowerController::CpuIdle()</h2> <pre class="codeblock" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-0E6F1B1D-F979-575B-BA3C-096CE4C0CA15"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-0E6F1B1D-F979-575B-BA3C-096CE4C0CA15"><!-- --></a>virtual void CpuIdle()=0;</pre>
+ <p><strong>When is it called?</strong> </p>
+ <p> <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-473874CA-FC35-3EB2-BC23-A97D7176B833"><span class="apiname">DPowerController::CpuIdle()</span></a> is called whenever the Null thread is scheduled to run. This can
+happen as soon as the power model has been installed. It is the mechanism
+through which your base port can increase power savings when the system
+becomes inactive by moving the CPU or the system into a low power
+mode. </p>
+ <p>If <a href="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520.html" title="Describes Symbian platform RAM defragmentation.">physical RAM defragmentation</a> is implemented you may wish to
+include calls to <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-B4825007-E3DB-3559-9D58-637150EF3DB9"><span class="apiname"> TRamDefragRequest::DefragRam()</span></a> within this function to enable defragmentation while the device
+is idle. </p>
+ <p><strong>Implementation issues</strong> </p>
+ <p>The implementation can call
+the Variant or ASSP implementation of <a href="GUID-A83A7C3C-7DC0-3B9C-842F-70FCC751365D.html#GUID-A83A7C3C-7DC0-3B9C-842F-70FCC751365D__GUID-6F242C0C-2EFC-30EC-9A5E-A34C8D15E0D7"><span class="apiname">Asic::Idle()</span></a>. </p>
+ <p>The idle state is usually implemented via a Wait-For-Interrupt
+type instruction that will usually suspend execution of the CPU, possibly
+triggering other ASIC power saving actions, and will resume execution
+when any unmasked interrupt occurs. </p>
+ <p><strong>Suppressing the system tick interrupt</strong> </p>
+ <p>To further increase
+power savings during CPU Idle, a base port can choose to suppress
+the system tick interrupt until the next nanokernel Timer (as implemented
+by <a href="GUID-D8CF05A3-5C9B-3662-92DA-3290C6EE7FD2.html"><span class="apiname">NTimer</span></a>) is due to expire. Nanokernel timers
+are the basic timing service and all Symbian platform tick-based timers
+and time-of-day functions are derived from nanokernel timers. </p>
+ <p>In EKA2, timing services rely on a hardware timer, which is programmed
+by the base port Variant code, to generate the system tick. We refer
+to this as the <em>system timer</em>. </p>
+ <p>Typically, the platform-specific
+ASSP or Variant object has a pointer to the nanokernel timer queue,
+an <a href="GUID-C54D99AA-FF6E-3023-8260-8F5A88FBFBE0.html"><span class="apiname">NTimerQ</span></a> object. The number of ticks before the
+next <a href="GUID-D8CF05A3-5C9B-3662-92DA-3290C6EE7FD2.html"><span class="apiname">NTimer</span></a> is due to expire can be found by calling <a href="GUID-C54D99AA-FF6E-3023-8260-8F5A88FBFBE0.html#GUID-C54D99AA-FF6E-3023-8260-8F5A88FBFBE0__GUID-69103F26-2C21-3ECA-9DB5-C31A41F6C238"><span class="apiname">NTimerQ::IdleTime()</span></a>. </p>
+ <p>Before going into Idle mode, <samp class="codeph">CpuIdle()</samp> disables the hardware timer used to generate the
+system tick (i.e. the system timer) for the number of ticks to be
+suppressed; i.e. the system timer is reset to go off and generate
+an interrupt only when the <a href="GUID-D8CF05A3-5C9B-3662-92DA-3290C6EE7FD2.html"><span class="apiname">NTimer</span></a> expires. Note
+that the clock supply to the hardware timer must be left enabled. </p>
+ <p>On returning from Idle mode, the software must examine the system
+timer and decide whether the <a href="GUID-D8CF05A3-5C9B-3662-92DA-3290C6EE7FD2.html"><span class="apiname">NTimer</span></a> expiration
+was responsible for waking up the processor, or whether it was due
+to some other interrupt. </p>
+ <p>If waking up was due to the <a href="GUID-D8CF05A3-5C9B-3662-92DA-3290C6EE7FD2.html"><span class="apiname">NTimer</span></a>, the system timer must be reset to generate the
+system tick at the frequency desired, and the tick count, <a href="GUID-C54D99AA-FF6E-3023-8260-8F5A88FBFBE0.html#GUID-C54D99AA-FF6E-3023-8260-8F5A88FBFBE0__GUID-ACFDFE7C-19AE-3C81-9D38-3266A3A3EF1F"><span class="apiname">NTimerQ::iMsCount</span></a>, must be adjusted with the <a href="GUID-D8CF05A3-5C9B-3662-92DA-3290C6EE7FD2.html"><span class="apiname">NTimer</span></a> expiration time. As the expiration time is always an integer multiple
+of the number of ticks, then the <a href="GUID-C54D99AA-FF6E-3023-8260-8F5A88FBFBE0.html#GUID-C54D99AA-FF6E-3023-8260-8F5A88FBFBE0__GUID-AA1EC86F-8A6E-340D-848F-A86554772A13"><span class="apiname">NTimerQ::Advance()</span></a> function can be used for this purpose. </p>
+ <p>If waking up was
+due to another interrupt, then the software must read the system timer
+and calculate the time elapsed since going into Idle mode, and adjust
+the system tick count with the elapsed time (which could be a fractional
+number of ticks) and reprogram the system timer to continue generating
+the tick after the correct interval, as above. </p>
+ <p>If the hardware
+timer that is used to generate the system ticks does not use a Compare-Match
+function, then some care has to be taken not to introduce skewing
+when manipulating the timer value directly. If the timer needs to
+be reloaded with the new value to give the next tick, then the software
+usually “spins”, waiting for the hardware timer to change, and then
+reloads it. This way the timer will always be reloaded on an edge
+of its internal clock. </p>
+ <p><strong>Waking up from “Sleep” modes with long wakeup latencies</strong> </p>
+ <p>Often, to further enhance power savings, the CPU and some peripherals
+are moved into a hardware “sleep” mode when <samp class="codeph">CpuIdle()</samp> is called. This could be of long latency, and waking up could take
+longer than the system Tick period. There are two situations: </p>
+ <ul>
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-7484F7CB-C824-5752-9043-736E95D4405D"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-7484F7CB-C824-5752-9043-736E95D4405D"><!-- --></a><p>if the wakeup
+time can be determined precisely, then <samp class="codeph">CpuIdle()</samp> programs
+the system timer to bring the CPU back from the “Sleep“ mode at a
+time corresponding to the next <a href="GUID-D8CF05A3-5C9B-3662-92DA-3290C6EE7FD2.html"><span class="apiname">NTimer</span></a> expiration
+(as a number of Ticks to suppress) <em>minus</em> the number of ticks
+it takes to wake up from that mode. On waking up on the timer, the
+System tick count should be adjusted with the total number of ticks
+suppressed, i.e. the count corresponding to the time of the <a href="GUID-D8CF05A3-5C9B-3662-92DA-3290C6EE7FD2.html"><span class="apiname">NTimer</span></a> expiration. </p>
+ </li>
+
+<li id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-C0A9B2A2-D98D-50C0-B58A-4E84FCEC12E4"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-C0A9B2A2-D98D-50C0-B58A-4E84FCEC12E4"><!-- --></a><p>If the wakeup
+time cannot be known deterministically, then the above scheme must
+be combined with another system to allow adjusting the system timer
+from the hardware Real Time Clock (RTC). </p>
+ <p>Typically, the hardware
+RTC is clocked with a 1Hz clock, and can be programmed to interrupt
+the CPU on multiples of one second intervals. The clock supply to
+the RTC must be left enabled on going into "sleep" mode. </p>
+ </li>
+
+</ul>
+ <p>To guarantee that timed events occur when they are due, the
+CPU should only be allowed to go to into the long latency hardware
+“sleep” mode if the RTC can be guaranteed to complete a second tick
+before the CPU is due to wakeup. </p>
+ <p>Note that if waking up from
+hardware “Sleep” mode takes a non-negligible amount of time, extreme
+care should be taken when deciding to move the platform into that
+mode. For example, if a receive request is pending on a data input
+device <em>and</em> the CPU reaches the Idle mode <em>and</em> the platform
+is transitioned into a “sleep” state <em>and</em> data arrives while
+it is still in that state, <em>then</em> there is a possibility that
+the system will not wake up on time to service the incoming data. </p>
+ </div>
+
+<div class="section" id="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-4B613C67-3A12-4AD5-8842-6ED510A68746"><a name="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-4B613C67-3A12-4AD5-8842-6ED510A68746"><!-- --></a><h2 class="sectiontitle">Validation</h2> <p>The <span class="filepath">e32test</span> programs <span class="filepath">t_power</span>, and <span class="filepath">t_timer</span> will put the system into standby
+and resume off a timer. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html" title="This topic describes how to implement a power controller in a base port.">Power Management Tutorials</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-0C435514-EEC6-5660-BB5F-535790349632.html" title="The kernel provides a framework for managing power within the system, and the management of the transition between power states.">Power
+Management</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

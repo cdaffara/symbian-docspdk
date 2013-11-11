@@ -1,0 +1,1041 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="RSqlStatement"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A"/>
+
+<title>RSqlStatement</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A"><a name="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2490214 id2490614 id2490875 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">RSqlStatement Class Reference</h1>
+	<table class="signature"><tr><td>class RSqlStatement</td></tr></table><div class="section"><div>
+			<p>Represents an SQL statement.</p>
+
+			<p>An object of this type can be used to execute all types of SQL statements; this includes SQL statements with parameters.</p>
+
+			<p>If a SELECT statament is passed to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-B73F48F2-241F-3D8D-87C6-02B190FE4DAB">RSqlStatement::Prepare()</a>, then the returned record set is forward only, non-updateable.</p>
+
+			<p>There are a number of ways that this object is used; here are some examples.</p>
+
+			<p>CASE 1 - the execution of a SQL statement, which does not return record set:</p>
+
+			<div class="p">
+				<pre class="codeblock">RSqlDatabase database;
+.........
+RSqlStatement stmt;
+TInt err = stmt.Prepare(database, _L("INSERT INTO Tbl1(Fld1) VALUES(:Val)"));
+TInt paramIndex = stmt.ParameterIndex(_L(":Val"));
+for(TInt i=1;i&lt;=10;++i)
+	{
+	err = stmt.BindInt(paramIndex, i);
+	err = stmt.Exec();
+	err = stmt.Reset();
+	}
+stmt.Close();</pre>
+
+			</div>
+
+			<p>The following pseudo code shows the general pattern:</p>
+
+			<div class="p">
+				<pre class="codeblock">&lt;RSqlStatement::Prepare()&gt;
+[begin:]
+&lt;RSqlStatement::Bind&lt;param_type&gt;()&gt;
+&lt;RSqlStatement::Exec()&gt;
+[&lt;RSqlStatement::Reset()&gt;]
+[&lt;RSqlStatement::Bind&lt;param_type&gt;()&gt;]
+[&lt;Goto :begin&gt;]</pre>
+
+			</div>
+
+			<p>CASE 2 - the execution of a SQL statement, which returns a record set:</p>
+
+			<div class="p">
+				<pre class="codeblock">RSqlDatabase database;
+.........
+RSqlStatement stmt;
+TInt err = stmt.Prepare(database, _L("SELECT Fld1 FROM Tbl1 WHERE Fld1 &gt; :Val"));
+TInt paramIndex = stmt.ParameterIndex(_L(":Val"));
+err = stmt.BindInt(paramIndex, 5);
+TInt columnIndex = stmt.ColumnIndex(_L("Fld1"));
+while((err = stmt.Next()) == KSqlAtRow)
+	{
+	TInt val = stmt.ColumnInt(columnIndex);
+	RDebug::Print(_L("val=%d\n"), val);
+	}
+if(err == KSqlAtEnd)
+	&lt;OK - no more records&gt;;
+else
+	&lt;process the error&gt;;
+stmt.Close();</pre>
+
+			</div>
+
+			<p>The following pseudo code shows the general pattern:</p>
+
+			<div class="p">
+				<pre class="codeblock">&lt;RSqlStatement::Prepare()&gt;
+[begin:]
+&lt;while (RSqlStatement::Next() == KSqlAtRow)&gt;
+	&lt;do something with the records&gt;
+if(err == KSqlAtEnd)
+	&lt;OK - no more records&gt;;
+else
+	&lt;process the error&gt;;
+[&lt;RSqlStatement::Reset()&gt;]
+[&lt;RSqlStatement::Bind&lt;param_type&gt;()&gt;]
+[&lt;Goto begin&gt;]</pre>
+
+			</div>
+
+			<p>CASE 3.1 - SELECT statements: large column data processing, where the data is copied into a buffer supplied by the client:</p>
+
+			<div class="p">
+				<pre class="codeblock">RSqlDatabase database;
+.........
+RSqlStatement stmt;
+TInt err = stmt.Prepare(database, _L("SELECT BinaryField FROM Tbl1"));
+TInt columnIndex = stmt.ColumnIndex(_L("BinaryField"));
+while((err = stmt.Next()) == KSqlAtRow)
+	{
+	TInt size = stmt. ColumnSize(columnIndex);
+	HBufC8* buf = HBufC8::NewL(size);
+	err = stmt.ColumnBinary(columnIndex, buf-&gt;Ptr());
+	&lt;do something with the data&gt;;
+	delete buf;
+	}
+if(err == KSqlAtEnd)
+	&lt;OK - no more records&gt;;
+else
+	&lt;process the error&gt;;
+stmt.Close();</pre>
+
+			</div>
+
+			<p>CASE 3.2 - SELECT statements: large column data processing, where the data is accessed by the client without copying:</p>
+
+			<div class="p">
+				<pre class="codeblock">RSqlDatabase database;
+.........
+RSqlStatement stmt;
+TInt err = stmt.Prepare(database, _L("SELECT BinaryField FROM Tbl1"));
+TInt columnIndex = stmt.ColumnIndex(_L("BinaryField"));
+while((err = stmt.Next()) == KSqlAtRow)
+	{
+	TPtrC8 data = stmt.ColumnBinaryL(columnIndex);
+	&lt;do something with the data&gt;;
+	}
+if(err == KSqlAtEnd)
+	&lt;OK - no more records&gt;;
+else
+	&lt;process the error&gt;;
+stmt.Close();</pre>
+
+			</div>
+
+			<p>CASE 3.3 - SELECT statements, large column data processing (the data is accessed by the client without copying), leaving-safe processing:</p>
+
+			<div class="p">
+				<pre class="codeblock">RSqlDatabase database;
+.........
+RSqlStatement stmt;
+TInt err = stmt.Prepare(database, _L("SELECT BinaryField FROM Tbl1"));
+TInt columnIndex = stmt.ColumnIndex(_L("BinaryField"));
+while((err = stmt.Next()) == KSqlAtRow)
+	{
+	TPtrC8 data;
+	TInt err = stmt.ColumnBinary(columnIndex, data);
+	if(err == KErrNone)
+		{
+		&lt;do something with the data&gt;;
+		}
+	}
+if(err == KSqlAtEnd)
+	&lt;OK - no more records&gt;;
+else
+	&lt;process the error&gt;;
+stmt.Close();</pre>
+
+			</div>
+
+			<p>CASE 3.4 - SELECT statements: large column data processing, where the data is accessed by the client using a stream:</p>
+
+			<div class="p">
+				<pre class="codeblock">RSqlDatabase database;
+.........
+RSqlStatement stmt;
+TInt err = stmt.Prepare(database, _L("SELECT BinaryField FROM Tbl1"));
+TInt columnIndex = stmt.ColumnIndex(_L("BinaryField"));
+while((err = stmt.Next()) == KSqlAtRow)
+	{
+	RSqlColumnReadStream stream;
+	err = stream.ColumnBinary(stmt, columnIndex);
+	&lt;do something with the data in the stream&gt;;
+	stream.Close();
+	}
+if(err == KSqlAtEnd)
+	&lt;OK - no more records&gt;;
+else
+	&lt;process the error&gt;;
+stmt.Close();</pre>
+
+			</div>
+
+			<p>CASE 4 - the execution of a SQL statement with parameter(s), some of which may be large text or binary values:</p>
+
+			<div class="p">
+				<pre class="codeblock">RSqlDatabase database;
+.........
+RSqlStatement stmt;
+TInt err = 
+	stmt.Prepare(database, _L("UPDATE Tbl1 SET LargeTextField = :LargeTextVal WHERE IdxField = :KeyVal"));
+TInt paramIndex1 = stmt.ParameterIndex(_L(":LargeTextVal"));
+TInt paramIndex2 = stmt.ParameterIndex(_L(":KeyVal"));
+for(TInt i=1;i&lt;=10;++i)
+	{
+	RSqlParamWriteStream stream;
+	err = stream.BindText(stmt, paramIndex1);
+	&lt;insert large text data into the stream&gt;;
+	stream.Close();
+	err = stmt.BindInt(paramIndex2, i);
+	err = stmt.Exec();
+	stmt.Reset();
+	}
+stmt.Close();</pre>
+
+			</div>
+
+			<p>The following table shows what is returned when the caller uses a specific column data retrieving function on a specific column type.</p>
+
+			<div class="p">
+				<pre class="codeblock">--------------------------------------------------------------------------------
+Column type | ColumnInt() ColumnInt64() ColumnReal() ColumnText() ColumnBinary()
+--------------------------------------------------------------------------------
+Null........|.0...........0.............0.0..........KNullDesC....KNullDesC8
+Int.........|.Int.........Int64.........Real.........KNullDesC....KNullDesC8 
+Int64.......|.clamp.......Int64.........Real.........KNullDesC....KNullDesC8 
+Real........|.round.......round.........Real.........KNullDesC....KNullDesC8 
+Text........|.0...........0.............0.0..........Text.........KNullDesC8   
+Binary......|.0...........0.............0.0..........KNullDesC....Binary
+--------------------------------------------------------------------------------</pre>
+ Note the following definitions:<ul><li><p>"clamp": return KMinTInt or KMaxTInt if the value is outside the range that can be represented by the type returned by the accessor function.</p>
+</li>
+<li><p>"round": the floating point value will be rounded up to the nearest integer. If the result is outside the range that can be represented by the type returned by the accessor function, then it will be clamped.</p>
+</li>
+</ul>
+</div>
+
+			<p>Note that when handling blob and text data over 2Mb in size it is recommended that the <a href="GUID-03426E55-3C0A-322B-9CE7-556D63FD762F.html#GUID-03426E55-3C0A-322B-9CE7-556D63FD762F">RSqlBlobReadStream</a> and <a href="GUID-9D7747B6-E090-3450-9906-845B549F966F.html#GUID-9D7747B6-E090-3450-9906-845B549F966F">RSqlBlobWriteStream</a> classes or the <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a> class is used instead. These classes provide a more RAM-efficient way of reading and writing large amounts of blob or text data from a database.</p>
+
+			<p>
+				<a href="GUID-83B95166-7DF5-3D6B-B790-F0D5AE3AA08C.html#GUID-1261B44B-30AD-3AD3-B7F9-7B486434F8AB">KMinTInt</a> <a href="GUID-83B95166-7DF5-3D6B-B790-F0D5AE3AA08C.html#GUID-ECBFBC46-E7AF-3E3B-A347-7A3FD976CDAE">KMaxTInt</a> <a href="GUID-9692245D-DDBC-39F9-BFFB-EC9FFE4BB1AB.html#GUID-5A096F1A-B316-3B40-BB4B-F9F12099DC91">KNullDesC</a> <a href="GUID-9692245D-DDBC-39F9-BFFB-EC9FFE4BB1AB.html#GUID-4E950F8E-4B25-3671-BEFC-4B8BB232436D">KNullDesC8</a> <a href="GUID-03426E55-3C0A-322B-9CE7-556D63FD762F.html#GUID-03426E55-3C0A-322B-9CE7-556D63FD762F">RSqlBlobReadStream</a> <a href="GUID-9D7747B6-E090-3450-9906-845B549F966F.html#GUID-9D7747B6-E090-3450-9906-845B549F966F">RSqlBlobWriteStream</a> <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a></p>
+
+		</div></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-DD55A995-367D-3E43-9CB5-15041ECCD73A">RSqlStatement</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-825E78BF-1563-3DE1-B95B-711DA2B4A960">BindInt64</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt64</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-ECEF04B5-3E0F-371F-BB08-45DB31646046">BindNull</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-5518899C-91C6-3D72-9A9B-539DAB148F26">BindReal</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TReal</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-A032C04D-CF0E-36D1-BBDE-73E388DB2AA2">BindText</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-EFB302BE-2B1E-395B-A71E-712D74C3ECEB">BindZeroBlob</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-916A5F7B-9B00-31D9-A945-075353D3915E">Close</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-B72A01CC-D8E3-3E96-ACCB-386F31D5C0A2">ColumnBinary</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-91BB3C7E-8B2C-363B-AB9A-E27769D12409">ColumnBinary</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a></td><td><a href="#GUID-F29FE151-E300-3CAC-AE88-424797145FCC">ColumnBinaryL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-8A9EA7D6-AAC2-3981-82A2-584FAFD120BE">ColumnIndex</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt64</a></td><td><a href="#GUID-49B77617-4271-3364-8771-5EC77C5BA40B">ColumnInt64</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-C8213CB8-FD6E-3760-91A3-4A2B2C426CCA">ColumnName</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TReal</a></td><td><a href="#GUID-B9624B7D-8008-33A2-825E-408F9F14D09B">ColumnReal</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-C1336BB7-B7BD-3CD5-8683-7D9EEBBCA512">ColumnSize</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-8BA47281-23E7-3528-8F35-F2F2A34C848A">ColumnText</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-4E2D90A0-356E-3AB2-B025-44532786A15F">ColumnText</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td><a href="#GUID-9B5BAAC2-720E-34CB-851B-AD27D1C1CB2F">ColumnTextL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-F63F5552-1EAE-3A96-927A-94B1325EC161.html">TSqlColumnType</a></td><td><a href="#GUID-87CB4E6F-B4BF-38BD-AB20-2432B8C71C04">ColumnType</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-13F4BE72-F455-3762-9583-75C9D69AE12F">DeclaredColumnType</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-F63F5552-1EAE-3A96-927A-94B1325EC161.html">TSqlColumnType</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-52E3CE72-D495-388F-8829-952E32F0F37D">Exec</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-97971150-31CC-3021-A7C9-165F32DC228C">IsNull</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-95463A1A-4A39-328D-B093-1D31B6AE9738">ParamName</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-1BA57BD7-6AA4-3404-84A4-BBF72B4E4067">ParameterIndex</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-DCFD22F7-8D07-3898-B76F-05021E0C3DF8">ParameterName</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-9EB3C57B-3F3C-37F4-9FF6-9F12EE73E858">Prepare</a>(<a href="GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF.html">RSqlDatabase</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-02808C4C-EBA0-3B67-A454-E54748CE5C4E">PrepareL</a>(<a href="GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF.html">RSqlDatabase</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-AF9E1A15-26FD-334E-A9CA-6EA93B0773FE">PrepareL</a>(<a href="GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF.html">RSqlDatabase</a> &amp;, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867">Reset</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">CSqlStatementImpl &amp;</td><td><a href="#GUID-3B1D07B6-531F-373A-B64D-03EFB46CB03C">Impl</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">CSqlStatementImpl *</td><td><a href="#GUID-4B00DDBC-C728-39D1-822F-A38776261BB2">iImpl</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-DD55A995-367D-3E43-9CB5-15041ECCD73A"><a name="GUID-DD55A995-367D-3E43-9CB5-15041ECCD73A"><!-- --></a>
+		<h2 class="topictitle2">RSqlStatement()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>RSqlStatement</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Initialises the pointer to the implementation object to NULL.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>None </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-825E78BF-1563-3DE1-B95B-711DA2B4A960"><a name="GUID-825E78BF-1563-3DE1-B95B-711DA2B4A960"><!-- --></a>
+		<h2 class="topictitle2">BindInt64(TInt, TInt64)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>BindInt64</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aParameterIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt64</a></td><td>aParameterValue</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Sets the parameter to the specified 64-bit integer value.</p>
+
+				<p>The parameter is identified by the specified index value.</p>
+
+				<div class="p">A parameter value can be set:<ul><li><p>immediately after this SQL statement has been prepared</p>
+</li>
+<li><p>after a call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867">Reset()</a></p>
+</li>
+</ul>
+</div>
+
+				<div class="p">
+					<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-B73F48F2-241F-3D8D-87C6-02B190FE4DAB">RSqlStatement::Prepare()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867">RSqlStatement::Reset()</a><dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 5 Parameter index out of bounds.</dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aParameterIndex</td><td>The index value identifying the parameter; this is 0 for the first parameter.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt64</a> aParameterValue</td><td>The 64-bit integer value to be assigned to the parameter. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-ECEF04B5-3E0F-371F-BB08-45DB31646046"><a name="GUID-ECEF04B5-3E0F-371F-BB08-45DB31646046"><!-- --></a>
+		<h2 class="topictitle2">BindNull(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>BindNull</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aParameterIndex</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the parameter to a NULL value.</p>
+
+				<p>The parameter is identified by the specified index value.</p>
+
+				<div class="p">A parameter value can be set:<ul><li><p>immediately after this SQL statement has been prepared</p>
+</li>
+<li><p>after a call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867">Reset()</a></p>
+</li>
+</ul>
+</div>
+
+				<div class="p">
+					<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-B73F48F2-241F-3D8D-87C6-02B190FE4DAB">RSqlStatement::Prepare()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867">RSqlStatement::Reset()</a><dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 5 Parameter index out of bounds.</dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aParameterIndex</td><td>The index value identifying the parameter; this is 0 for the first parameter. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5518899C-91C6-3D72-9A9B-539DAB148F26"><a name="GUID-5518899C-91C6-3D72-9A9B-539DAB148F26"><!-- --></a>
+		<h2 class="topictitle2">BindReal(TInt, TReal)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>BindReal</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aParameterIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TReal</a></td><td>aParameterValue</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Sets the parameter to the specified 64-bit floating point value.</p>
+
+				<p>The parameter is identified by the specified index value.</p>
+
+				<div class="p">A parameter value can be set:<ul><li><p>immediately after this SQL statement has been prepared</p>
+</li>
+<li><p>after a call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867">Reset()</a></p>
+</li>
+</ul>
+</div>
+
+				<div class="p">
+					<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-B73F48F2-241F-3D8D-87C6-02B190FE4DAB">RSqlStatement::Prepare()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867">RSqlStatement::Reset()</a><dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 5 Parameter index out of bounds.</dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aParameterIndex</td><td>The index value identifying the parameter; this is 0 for the first parameter.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TReal</a> aParameterValue</td><td>The 64-bit floating point value to be assigned to the parameter. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A032C04D-CF0E-36D1-BBDE-73E388DB2AA2"><a name="GUID-A032C04D-CF0E-36D1-BBDE-73E388DB2AA2"><!-- --></a>
+		<h2 class="topictitle2">BindText(TInt, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>BindText</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aParameterIndex,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aParameterText</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Sets the parameter to the specified 16-bit descriptor.</p>
+
+				<p>The parameter is identified by the specified index value.</p>
+
+				<div class="p">A parameter value can be set:<ul><li><p>immediately after this SQL statement has been prepared</p>
+</li>
+<li><p>after a call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867">Reset()</a></p>
+</li>
+</ul>
+</div>
+
+				<p>Note that when the text data to be bound is over 2Mb in size then use of the <a href="GUID-9D7747B6-E090-3450-9906-845B549F966F.html#GUID-9D7747B6-E090-3450-9906-845B549F966F">RSqlBlobWriteStream</a> or <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a> class should be considered instead.</p>
+
+				<p>These classes provide a more RAM-efficient way of writing large amounts of text data to a database, however no conversions are performed on the text data - it is simply stored as a stream of bytes. If the text data is part of a record to be inserted into a database then <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-EFB302BE-2B1E-395B-A71E-712D74C3ECEB">BindZeroBlob()</a> should be called on the INSERT statement to create a placeholder for the text data, whose content can then be written using the above classes.</p>
+
+				<div class="p">
+					<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-B73F48F2-241F-3D8D-87C6-02B190FE4DAB">RSqlStatement::Prepare()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867">RSqlStatement::Reset()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">RSqlStatement::Next()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0440D12B-C1AC-397D-A676-71ED0CB1838F">RSqlStatement::Exec()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-EFB302BE-2B1E-395B-A71E-712D74C3ECEB">RSqlStatement::BindZeroBlob()</a> <a href="GUID-9D7747B6-E090-3450-9906-845B549F966F.html#GUID-9D7747B6-E090-3450-9906-845B549F966F">RSqlBlobWriteStream</a> <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a><dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 5 Parameter index out of bounds.</dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aParameterIndex</td><td>The index value identifying the parameter; this is 0 for the first parameter.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aParameterText</td><td>The 16-bit descriptor whose content is to be assigned to the parameter. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EFB302BE-2B1E-395B-A71E-712D74C3ECEB"><a name="GUID-EFB302BE-2B1E-395B-A71E-712D74C3ECEB"><!-- --></a>
+		<h2 class="topictitle2">BindZeroBlob(TInt, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>BindZeroBlob</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aParameterIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aBlobSize</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Binds a blob of length aBlobSize bytes that is filled with zeroes.</p>
+
+				<p>The parameter is identified by the specified index value.</p>
+
+				<div class="p">A parameter value can be set:<ul><li><p>immediately after this SQL statement has been prepared</p>
+</li>
+<li><p>after a call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867">Reset()</a></p>
+</li>
+</ul>
+</div>
+
+				<p>A zeroblob acts as a placeholder for a blob whose binary content is later written using the <a href="GUID-9D7747B6-E090-3450-9906-845B549F966F.html#GUID-9D7747B6-E090-3450-9906-845B549F966F">RSqlBlobWriteStream</a> or <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a> class.</p>
+
+				<p>Using zeroblobs provides a much more RAM-efficient way of creating large blobs than including the blob data in the INSERT statement and it is recommended for blobs that are over 2Mb in size.</p>
+
+				<p>Note that a zeroblob should be created in a column after which there are no columns that contain anything other than zeroblobs or NULLs, otherwise the zeroblob must be allocated in full in RAM and its benefit is lost.</p>
+
+				<p>When creating a zeroblob it is recommended, where possible, to create the zeroblob and then write the blob content (using the <a href="GUID-9D7747B6-E090-3450-9906-845B549F966F.html#GUID-9D7747B6-E090-3450-9906-845B549F966F">RSqlBlobWriteStream</a> or <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a> class) within the same transaction. Otherwise the zeroblob will have to be journalled before being written to.</p>
+
+				<div class="p">
+					<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-B73F48F2-241F-3D8D-87C6-02B190FE4DAB">RSqlStatement::Prepare()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867">RSqlStatement::Reset()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">RSqlStatement::Next()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0440D12B-C1AC-397D-A676-71ED0CB1838F">RSqlStatement::Exec()</a> <a href="GUID-9D7747B6-E090-3450-9906-845B549F966F.html#GUID-9D7747B6-E090-3450-9906-845B549F966F">RSqlBlobWriteStream</a> <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a><dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 5 Parameter index out of bounds.</dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aParameterIndex</td><td>The index value identifying the parameter; this is 0 for the first parameter.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aBlobSize</td><td>The size in bytes of the blob. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-916A5F7B-9B00-31D9-A945-075353D3915E"><a name="GUID-916A5F7B-9B00-31D9-A945-075353D3915E"><!-- --></a>
+		<h2 class="topictitle2">Close()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Close</td><td>(</td><td>)</td><td/></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-B72A01CC-D8E3-3E96-ACCB-386F31D5C0A2"><a name="GUID-B72A01CC-D8E3-3E96-ACCB-386F31D5C0A2"><!-- --></a>
+		<h2 class="topictitle2">ColumnBinary(TInt, TPtrC8 &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ColumnBinary</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp;</td><td>aPtr</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp; aPtr</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-91BB3C7E-8B2C-363B-AB9A-E27769D12409"><a name="GUID-91BB3C7E-8B2C-363B-AB9A-E27769D12409"><!-- --></a>
+		<h2 class="topictitle2">ColumnBinary(TInt, TDes8 &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ColumnBinary</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp;</td><td>aDest</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp; aDest</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F29FE151-E300-3CAC-AE88-424797145FCC"><a name="GUID-F29FE151-E300-3CAC-AE88-424797145FCC"><!-- --></a>
+		<h2 class="topictitle2">ColumnBinaryL(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a></td><td>ColumnBinaryL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Gets the value of the column as an 8-bit descriptor (leaves on failure).</p>
+
+				<p>The column is identified by the specified index value.</p>
+
+				<p>Note that the function can only be called after a successful call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a>, i.e. after a call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a> that has completed with a KSqlAtRow return code. Calling this function after an unsuccessful call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a> raises a panic.</p>
+
+				<p>Note that when the binary data to be retrieved is over 2Mb in size then it is recommended that the <a href="GUID-03426E55-3C0A-322B-9CE7-556D63FD762F.html#GUID-03426E55-3C0A-322B-9CE7-556D63FD762F">RSqlBlobReadStream</a> or <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a> class is used instead. These classes provide a more RAM-efficient way of retrieving large amounts of binary data from a database.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNoMemory if the operation for retrieving the column value from the server fails with an out of memory condition.</dd>
+
+						
+					</dl>
+
+					<a href="GUID-0CC7AAD6-DB2D-36E0-AB7C-01F4CD38C119.html#GUID-12B4B9EC-DA1D-365A-B5AB-37F2AB23C600">KSqlAtRow</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-1D147373-2C93-35D8-A0D7-2DE37DA7EB18">RSqlStatement::ColumnBinary()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-B73F48F2-241F-3D8D-87C6-02B190FE4DAB">RSqlStatement::Prepare()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">RSqlStatement::Next()</a> <a href="GUID-03426E55-3C0A-322B-9CE7-556D63FD762F.html#GUID-03426E55-3C0A-322B-9CE7-556D63FD762F">RSqlBlobReadStream</a> <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a><dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 5 Column index out of bounds. </dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 11 Statement cursor not positioned on a row</dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td>The index value identifying the column; this is 0 for the first column. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8A9EA7D6-AAC2-3981-82A2-584FAFD120BE"><a name="GUID-8A9EA7D6-AAC2-3981-82A2-584FAFD120BE"><!-- --></a>
+		<h2 class="topictitle2">ColumnIndex(const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ColumnIndex</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aColumnName</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Gets the index (starting from 0) of the column with the given name.</p>
+
+				<p>The function does a case insensitive column name search.</p>
+
+				<p>This function can be called at any time after the SQL statement has been prepared.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>None </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aColumnName</td><td>The column name. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-49B77617-4271-3364-8771-5EC77C5BA40B"><a name="GUID-49B77617-4271-3364-8771-5EC77C5BA40B"><!-- --></a>
+		<h2 class="topictitle2">ColumnInt64(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt64</a></td><td>ColumnInt64</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Gets the value of the column as a 64-bit integer.</p>
+
+				<p>The column is identified by the specified index value.</p>
+
+				<p>Note that the function can only be called after a successful call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a>, i.e. after a call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a> that has completed with a KSqlAtRow return code. Calling this function after an unsuccessful call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a> raises a panic.</p>
+
+				<div class="p">
+					<a href="GUID-0CC7AAD6-DB2D-36E0-AB7C-01F4CD38C119.html#GUID-12B4B9EC-DA1D-365A-B5AB-37F2AB23C600">KSqlAtRow</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-B73F48F2-241F-3D8D-87C6-02B190FE4DAB">RSqlStatement::Prepare()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">RSqlStatement::Next()</a><dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 5 Column index out of bounds. </dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 11 Statement cursor not positioned on a row</dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td>The index value identifying the column; this is 0 for the first column. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C8213CB8-FD6E-3760-91A3-4A2B2C426CCA"><a name="GUID-C8213CB8-FD6E-3760-91A3-4A2B2C426CCA"><!-- --></a>
+		<h2 class="topictitle2">ColumnName(TInt, TPtrC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ColumnName</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a> &amp;</td><td>aNameDest</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Obtain the name of a column after preparing a query.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>None </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td>Column index  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a> &amp; aNameDest</td><td>Descriptor which will be set to column name  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B9624B7D-8008-33A2-825E-408F9F14D09B"><a name="GUID-B9624B7D-8008-33A2-825E-408F9F14D09B"><!-- --></a>
+		<h2 class="topictitle2">ColumnReal(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TReal</a></td><td>ColumnReal</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Gets the value of the column as a 64-bit floating point value.</p>
+
+				<p>The column is identified by the specified index value.</p>
+
+				<p>Note that the function can only be called after a successful call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a>, i.e. after a call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a> that has completed with a KSqlAtRow return code. Calling this function after an unsuccessful call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a> raises a panic.</p>
+
+				<div class="p">
+					<a href="GUID-0CC7AAD6-DB2D-36E0-AB7C-01F4CD38C119.html#GUID-12B4B9EC-DA1D-365A-B5AB-37F2AB23C600">KSqlAtRow</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-B73F48F2-241F-3D8D-87C6-02B190FE4DAB">RSqlStatement::Prepare()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">RSqlStatement::Next()</a><dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 5 Column index out of bounds. </dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 11 Statement cursor not positioned on a row</dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td>The index value identifying the column; this is 0 for the first column. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C1336BB7-B7BD-3CD5-8683-7D9EEBBCA512"><a name="GUID-C1336BB7-B7BD-3CD5-8683-7D9EEBBCA512"><!-- --></a>
+		<h2 class="topictitle2">ColumnSize(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ColumnSize</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8BA47281-23E7-3528-8F35-F2F2A34C848A"><a name="GUID-8BA47281-23E7-3528-8F35-F2F2A34C848A"><!-- --></a>
+		<h2 class="topictitle2">ColumnText(TInt, TPtrC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ColumnText</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a> &amp;</td><td>aPtr</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a> &amp; aPtr</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4E2D90A0-356E-3AB2-B025-44532786A15F"><a name="GUID-4E2D90A0-356E-3AB2-B025-44532786A15F"><!-- --></a>
+		<h2 class="topictitle2">ColumnText(TInt, TDes &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ColumnText</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aDest</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aDest</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9B5BAAC2-720E-34CB-851B-AD27D1C1CB2F"><a name="GUID-9B5BAAC2-720E-34CB-851B-AD27D1C1CB2F"><!-- --></a>
+		<h2 class="topictitle2">ColumnTextL(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td>ColumnTextL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Gets the value of the column as a 16-bit descriptor (leaves on failure).</p>
+
+				<p>The column is identified by the specified index value.</p>
+
+				<p>Note that the function can only be called after a successful call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a>, i.e. after a call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a> that has completed with a KSqlAtRow return code. Calling this function after an unsuccessful call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a> raises a panic.</p>
+
+				<p>Note that when the text to be retrieved is over 2Mb in size then it is recommended that the <a href="GUID-03426E55-3C0A-322B-9CE7-556D63FD762F.html#GUID-03426E55-3C0A-322B-9CE7-556D63FD762F">RSqlBlobReadStream</a> or <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a> class is used instead. These classes provide a more RAM-efficient way of retrieving large amounts of text data from a database.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNoMemory if the operation for retrieving the column value from the server fails with an out of memory condition.</dd>
+
+						
+					</dl>
+
+					<a href="GUID-0CC7AAD6-DB2D-36E0-AB7C-01F4CD38C119.html#GUID-12B4B9EC-DA1D-365A-B5AB-37F2AB23C600">KSqlAtRow</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-16212E72-DB56-369F-BA68-B878217B8F0E">RSqlStatement::ColumnText()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-B73F48F2-241F-3D8D-87C6-02B190FE4DAB">RSqlStatement::Prepare()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">RSqlStatement::Next()</a> <a href="GUID-03426E55-3C0A-322B-9CE7-556D63FD762F.html#GUID-03426E55-3C0A-322B-9CE7-556D63FD762F">RSqlBlobReadStream</a> <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a><dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 5 Column index out of bounds. </dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 11 Statement cursor not positioned on a row</dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td>The index value identifying the column; this is 0 for the first column. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-87CB4E6F-B4BF-38BD-AB20-2432B8C71C04"><a name="GUID-87CB4E6F-B4BF-38BD-AB20-2432B8C71C04"><!-- --></a>
+		<h2 class="topictitle2">ColumnType(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-F63F5552-1EAE-3A96-927A-94B1325EC161.html">TSqlColumnType</a></td><td>ColumnType</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Gets the runtime type of the column identified by the specified column index.</p>
+
+				<p>This function returns the actual runtime datatype of the specified column as opposed to its declared type.</p>
+
+				<p>Note that the function can only be called after a successful call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a>, i.e. after a call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a> that has completed with a KSqlAtRow return code. Calling this function after an unsuccessful call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a> raises a panic.</p>
+
+				<div class="p">
+					<a href="GUID-0CC7AAD6-DB2D-36E0-AB7C-01F4CD38C119.html#GUID-12B4B9EC-DA1D-365A-B5AB-37F2AB23C600">KSqlAtRow</a> <a href="GUID-B8B6DDE9-1A4D-3BD6-AFE2-FE1CB4101E38.html#GUID-8B0C278C-46BE-30B0-8A14-A0688022D275">TSqlColumnType</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-13F4BE72-F455-3762-9583-75C9D69AE12F">RSqlStatement::DeclaredColumnType()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">RSqlStatement::Next()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-8A9EA7D6-AAC2-3981-82A2-584FAFD120BE">RSqlStatement::ColumnIndex()</a><dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 5 Column index out of bounds. </dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 11 Statement cursor not positioned on a row.</dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td>The index value identifying the column; this is 0 for the first column. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-13F4BE72-F455-3762-9583-75C9D69AE12F"><a name="GUID-13F4BE72-F455-3762-9583-75C9D69AE12F"><!-- --></a>
+		<h2 class="topictitle2">DeclaredColumnType(TInt, TSqlColumnType &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>DeclaredColumnType</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-F63F5552-1EAE-3A96-927A-94B1325EC161.html">TSqlColumnType</a> &amp;</td><td>aColumnType</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<p>Gets the declared type of the column identified by the specified column index.</p>
+
+				<p>Note that the function can only be called when executing a SELECT query, and only after a successful call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-B73F48F2-241F-3D8D-87C6-02B190FE4DAB">Prepare()</a>.</p>
+
+				<p>This function returns the datatype that the specified column was originally declared to have.</p>
+
+				<div class="p">The declared type of a column is determined according to the following rules: <pre class="codeblock"> - if the column type name contains the string "INT", then the declared column type is ESqlInt;
+ - if the column type name contains any of the strings "CHAR, "TEXT" or "CLOB", then the declared column type is ESqlText;
+ - if the column type name contains any of the strings "BLOB" or "BINARY", then the declared column type is ESqlBinary;
+ - if the column type name contains any of the strings "FLOAT", "REAL" or "DOUBLE", then the declared column type is ESqlReal;
+ - in all other cases the declared column type is assumed to be ESqlInt;</pre>
+</div>
+
+				<div class="p">
+					<a href="GUID-B8B6DDE9-1A4D-3BD6-AFE2-FE1CB4101E38.html#GUID-8B0C278C-46BE-30B0-8A14-A0688022D275">TSqlColumnType</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-87CB4E6F-B4BF-38BD-AB20-2432B8C71C04">RSqlStatement::ColumnType()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-8A9EA7D6-AAC2-3981-82A2-584FAFD120BE">RSqlStatement::ColumnIndex()</a><dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 5 Column index out of bounds.</dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td>The index value identifying the column. This is 0 for the first column.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-F63F5552-1EAE-3A96-927A-94B1325EC161.html">TSqlColumnType</a> &amp; aColumnType</td><td>Output parameter. If the call completes successfully, aColumnType contains the type of the column, one of TSqlColumnType enum item values. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-52E3CE72-D495-388F-8829-952E32F0F37D"><a name="GUID-52E3CE72-D495-388F-8829-952E32F0F37D"><!-- --></a>
+		<h2 class="topictitle2">Exec()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Exec</td><td>(</td><td>)</td><td/></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-3B1D07B6-531F-373A-B64D-03EFB46CB03C"><a name="GUID-3B1D07B6-531F-373A-B64D-03EFB46CB03C"><!-- --></a>
+		<h2 class="topictitle2">Impl()</h2>
+		<table class="signature"><tr><td>CSqlStatementImpl &amp;</td><td>Impl</td><td>(</td><td>)</td><td>const [private]</td></tr></table><div class="section"><div>
+				<p>Returns a reference to the implementation object of <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A">RSqlStatement</a> - CSqlStatementImpl.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>SqlDb 2 The SQL statement has not been prepared, i.e. <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-B73F48F2-241F-3D8D-87C6-02B190FE4DAB">Prepare()</a> has not yet been called on this <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A">RSqlStatement</a> object.</dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-97971150-31CC-3021-A7C9-165F32DC228C"><a name="GUID-97971150-31CC-3021-A7C9-165F32DC228C"><!-- --></a>
+		<h2 class="topictitle2">IsNull(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>IsNull</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Tests whether the value of the specified column is NULL.</p>
+
+				<p>The column is identified by the specified index value.</p>
+
+				<p>Note that the function can only be called after a successful call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a>, i.e. after a call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a> that has completed with a KSqlAtRow return code. Calling this function after an unsuccessful call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a> raises a panic.</p>
+
+				<div class="p">
+					<a href="GUID-0CC7AAD6-DB2D-36E0-AB7C-01F4CD38C119.html#GUID-12B4B9EC-DA1D-365A-B5AB-37F2AB23C600">KSqlAtRow</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-B73F48F2-241F-3D8D-87C6-02B190FE4DAB">RSqlStatement::Prepare()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">RSqlStatement::Next()</a><dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 5 Column index out of bounds. </dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>SqlDb 11 Statement cursor not positioned on a row</dd>
+</dl>
+<dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td>The index value identifying the column; this is 0 for the first column. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C8BBAAA8-0468-3330-B601-391443C1C410"><a name="GUID-C8BBAAA8-0468-3330-B601-391443C1C410"><!-- --></a>
+		<h2 class="topictitle2">Next()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Next</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Retrieves a record.</p>
+
+				<p>If the prepared SQL statement is a "SELECT" statement, and is expected to return a set of records, then this function can be used to retrieve that record data.</p>
+
+				<p>If the SQL statement contains parameters, then their values must be bound before this function is called.</p>
+
+				<p>If the call to this function completes successfully, i.e. it returns with KSqlAtRow, then this <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A">RSqlStatement</a> object contains the record data, and this data will remain valid for access until another call is made to any <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A">RSqlStatement</a> function.</p>
+
+				<div class="p">The record data can be accessed using the following functions:<ul><li><p><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-87CB4E6F-B4BF-38BD-AB20-2432B8C71C04">RSqlStatement::ColumnType()</a></p>
+</li>
+<li><p><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-EB6C6E33-617D-32AB-B6A6-5A60390E46DC">RSqlStatement::ColumnSize()</a></p>
+</li>
+<li><p><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-3C72F528-C67B-3194-B1AA-0069E4B57A7B">RSqlStatement::ColumnInt()</a></p>
+</li>
+<li><p><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-49B77617-4271-3364-8771-5EC77C5BA40B">RSqlStatement::ColumnInt64()</a></p>
+</li>
+<li><p><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-B9624B7D-8008-33A2-825E-408F9F14D09B">RSqlStatement::ColumnReal()</a></p>
+</li>
+<li><p><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-9B5BAAC2-720E-34CB-851B-AD27D1C1CB2F">RSqlStatement::ColumnTextL()</a></p>
+</li>
+<li><p><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-16212E72-DB56-369F-BA68-B878217B8F0E">RSqlStatement::ColumnText()</a></p>
+</li>
+<li><p><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-1D147373-2C93-35D8-A0D7-2DE37DA7EB18">RSqlStatement::ColumnBinary()</a></p>
+</li>
+<li><p><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-F29FE151-E300-3CAC-AE88-424797145FCC">RSqlStatement::ColumnBinaryL()</a></p>
+</li>
+</ul>
+</div>
+
+				<p>Note that if this call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">Next()</a> fails, as indicated by a return code value other than KSqlAtRow, then calls to these RSqlStatement::Column...() functions will raise a panic.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>None </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-95463A1A-4A39-328D-B093-1D31B6AE9738"><a name="GUID-95463A1A-4A39-328D-B093-1D31B6AE9738"><!-- --></a>
+		<h2 class="topictitle2">ParamName(TInt, TPtrC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ParamName</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aParameterIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a> &amp;</td><td>aNameDest</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Obtain the name of a parameter after preparing a DML query. The parameter names are returned in exactly the same form as supplied in SQL statement. For example, if the parameter name is ":Prm", then the ":" prefix will not be omitted.</p>
+
+				<p>ParamName has the same behaviour as ParameterName. It is provided to maintain source compatibility with previous Symbian releases.</p>
+
+				<p>This function can be called at any time after the DML SQL statement has been prepared.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>None </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aParameterIndex</td><td>Parameter index  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a> &amp; aNameDest</td><td>Descriptor which will be set to parameter name  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1BA57BD7-6AA4-3404-84A4-BBF72B4E4067"><a name="GUID-1BA57BD7-6AA4-3404-84A4-BBF72B4E4067"><!-- --></a>
+		<h2 class="topictitle2">ParameterIndex(const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ParameterIndex</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aParameterName</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Gets the index (starting from 0) of the parameter with the given name.</p>
+
+				<p>The function does a case insensitive parameter name search.</p>
+
+				<p>For example, if the parameter name is ":Prm", then the ":" prefix cannot be omitted when you call <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-1BA57BD7-6AA4-3404-84A4-BBF72B4E4067">ParameterIndex()</a>.</p>
+
+				<p>This function can be called at any time after the SQL statement has been prepared.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>None </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aParameterName</td><td>The parameter name. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DCFD22F7-8D07-3898-B76F-05021E0C3DF8"><a name="GUID-DCFD22F7-8D07-3898-B76F-05021E0C3DF8"><!-- --></a>
+		<h2 class="topictitle2">ParameterName(TInt, TPtrC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ParameterName</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aParameterIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a> &amp;</td><td>aNameDest</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Obtain the name of a parameter after preparing a DML query. The parameter names are returned in exactly the same form as supplied in SQL statement. For example, if the parameter name is ":Prm", then the ":" prefix will not be omitted.</p>
+
+				<p>This function can be called at any time after the DML SQL statement has been prepared.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>None </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aParameterIndex</td><td>Parameter index  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a> &amp; aNameDest</td><td>Descriptor which will be set to column name  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9EB3C57B-3F3C-37F4-9FF6-9F12EE73E858"><a name="GUID-9EB3C57B-3F3C-37F4-9FF6-9F12EE73E858"><!-- --></a>
+		<h2 class="topictitle2">Prepare(RSqlDatabase &amp;, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Prepare</td><td>(</td><td><a href="GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF.html">RSqlDatabase</a> &amp;</td><td>aDatabase,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSqlStmt</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF.html">RSqlDatabase</a> &amp; aDatabase</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSqlStmt</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-02808C4C-EBA0-3B67-A454-E54748CE5C4E"><a name="GUID-02808C4C-EBA0-3B67-A454-E54748CE5C4E"><!-- --></a>
+		<h2 class="topictitle2">PrepareL(RSqlDatabase &amp;, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>PrepareL</td><td>(</td><td><a href="GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF.html">RSqlDatabase</a> &amp;</td><td>aDatabase,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSqlStmt</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Prepares the supplied 16-bit SQL statement for execution.</p>
+
+				<p>An <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A">RSqlStatement</a> object can prepare and execute a parameterised SQL statement or an SQL statement without parameters.</p>
+
+				<p>The function can only deal with one SQL statement at a time, i.e. if you supply more than one SQL statement, each separated by a ";" character, then the function returns an error.</p>
+
+				<p>Note that when the statement is to be used to retrieve or write blob or text data that is over 2Mb in size then it is recommended that the <a href="GUID-03426E55-3C0A-322B-9CE7-556D63FD762F.html#GUID-03426E55-3C0A-322B-9CE7-556D63FD762F">RSqlBlobReadStream</a> and <a href="GUID-9D7747B6-E090-3450-9906-845B549F966F.html#GUID-9D7747B6-E090-3450-9906-845B549F966F">RSqlBlobWriteStream</a> classes or the <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a> class is used instead. These classes provide a more RAM-efficient way of reading and writing large amounts of blob or text data from a database.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNoMemory, an out of memory condition has occurred; KErrArgument, the SQL statement is invalid, for example, the supplied string contains more than one SQL statement, or it contains an empty SQL statement. Note that database specific errors categorised as ESqlDbError can also be returned; KSqlErrGeneral, a syntax error has occurred - text describing the problem can be obtained by calling <a href="GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF.html#GUID-78F8C738-A9AA-38E9-85F9-2F49ACEB62E4">RSqlDatabase::LastErrorMessage()</a>. KErrPermissionDenied, the calling application does not satisfy the relevant database security policies. Note that the function may leave with database specific errors categorised as ESqlDbError and other system-wide error codes.</dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>None, if current <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A">RSqlStatement</a> object represents a handle which operates on a non-secure database; <a href="GUID-56C52D43-C4A9-3B31-B154-CA1E77693F57.html#GUID-A5FCEFC4-6ADE-37E6-A94E-F4DED49AA97C">RSqlSecurityPolicy::ESchemaPolicy</a> database policy type, if the SQL statement modifies a secure database schema; <a href="GUID-56C52D43-C4A9-3B31-B154-CA1E77693F57.html#GUID-7C46A711-A0DC-36D6-8432-6962AEE75EF0">RSqlSecurityPolicy::EReadPolicy</a> or <a href="GUID-56C52D43-C4A9-3B31-B154-CA1E77693F57.html#GUID-A5FCEFC4-6ADE-37E6-A94E-F4DED49AA97C">RSqlSecurityPolicy::ESchemaPolicy</a> database policy type, if the SQL statement reads from a secure database; <a href="GUID-56C52D43-C4A9-3B31-B154-CA1E77693F57.html#GUID-7613A165-7AFC-3DC2-8836-8293336E6D7E">RSqlSecurityPolicy::EWritePolicy</a> or <a href="GUID-56C52D43-C4A9-3B31-B154-CA1E77693F57.html#GUID-A5FCEFC4-6ADE-37E6-A94E-F4DED49AA97C">RSqlSecurityPolicy::ESchemaPolicy</a> database policy type, if the SQL statement writes to a secure database;</dd>
+
+						
+					</dl>
+
+					<a href="GUID-0CC7AAD6-DB2D-36E0-AB7C-01F4CD38C119.html#GUID-873F89BA-BE78-341B-BAA0-69B99013B558">TSqlRetCodeClass::ESqlDbError</a> <a href="GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF.html#GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF">RSqlDatabase</a> <a href="GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF.html#GUID-78F8C738-A9AA-38E9-85F9-2F49ACEB62E4">RSqlDatabase::LastErrorMessage()</a> <a href="GUID-56C52D43-C4A9-3B31-B154-CA1E77693F57.html#GUID-56C52D43-C4A9-3B31-B154-CA1E77693F57">RSqlSecurityPolicy</a> <a href="GUID-56C52D43-C4A9-3B31-B154-CA1E77693F57.html#GUID-7E17DFB5-293D-3B9E-A8D7-1DF82B357BA1">RSqlSecurityPolicy::TPolicyType</a> <a href="GUID-03426E55-3C0A-322B-9CE7-556D63FD762F.html#GUID-03426E55-3C0A-322B-9CE7-556D63FD762F">RSqlBlobReadStream</a> <a href="GUID-9D7747B6-E090-3450-9906-845B549F966F.html#GUID-9D7747B6-E090-3450-9906-845B549F966F">RSqlBlobWriteStream</a> <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a> </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF.html">RSqlDatabase</a> &amp; aDatabase</td><td>A reference to the RSqlDatabase object that represents the database for which the SQL statement is being prepared.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSqlStmt</td><td>A string of 16-bit wide characters containing the SQL statement to be prepared. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AF9E1A15-26FD-334E-A9CA-6EA93B0773FE"><a name="GUID-AF9E1A15-26FD-334E-A9CA-6EA93B0773FE"><!-- --></a>
+		<h2 class="topictitle2">PrepareL(RSqlDatabase &amp;, const TDesC8 &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>PrepareL</td><td>(</td><td><a href="GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF.html">RSqlDatabase</a> &amp;</td><td>aDatabase,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aSqlStmt</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF.html">RSqlDatabase</a> &amp; aDatabase</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aSqlStmt</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867"><a name="GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867"><!-- --></a>
+		<h2 class="topictitle2">Reset()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Reset</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Resets the prepared SQL statement to its initial state and makes it ready to be executed again.</p>
+
+				<p>Any SQL statement parameters that had values bound to them, retain their values.</p>
+
+				<p>If this object processes a parameterised SQL statement, then the parameter values can be bound after the call to <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867">Reset()</a>.</p>
+
+				<p>If the call to this function fails because of a database-specific type error (i.e. the error is categorised as of type ESqlDbError), then a textual description of the error can be obtained calling <a href="GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF.html#GUID-78F8C738-A9AA-38E9-85F9-2F49ACEB62E4">RSqlDatabase::LastErrorMessage()</a>.</p>
+
+				<p>Usage pattern 1:</p>
+
+				<div class="p">
+					<pre class="codeblock">RSqlStatement stmt;
+TInt err = stmt.Prepare(&lt;database&gt;, &lt;SQL statement&gt;);
+while(&lt;condition&gt;)
+	{
+	err = stmt.Bind&lt;parameter type&gt;(&lt;parameter index&gt;, &lt;value&gt;);
+	...
+	err = stmt.Exec();
+	....
+	err = stmt.Reset();
+	}
+stmt.Close();</pre>
+
+				</div>
+
+				<p>Usage pattern 2:</p>
+
+				<div class="p">
+					<pre class="codeblock">RSqlStatement stmt;
+TInt err = stmt.Prepare(&lt;database&gt;, &lt;SQL statement&gt;);
+while(&lt;condition&gt;)
+	{
+	err = stmt.Bind&lt;parameter type&gt;(&lt;parameter index&gt;, &lt;value&gt;);
+	...
+	while((err = stmt.Next()) == KSqlAtRow)
+		{
+		....
+		}
+	err = stmt.Reset();
+	}
+stmt.Close();</pre>
+
+				</div>
+
+				<div class="p">
+					<a href="GUID-0CC7AAD6-DB2D-36E0-AB7C-01F4CD38C119.html#GUID-873F89BA-BE78-341B-BAA0-69B99013B558">TSqlRetCodeClass::ESqlDbError</a> <a href="GUID-4688F6B7-E1B0-37CF-BAA2-C6BD103D4FDF.html#GUID-78F8C738-A9AA-38E9-85F9-2F49ACEB62E4">RSqlDatabase::LastErrorMessage()</a><dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-4B00DDBC-C728-39D1-822F-A38776261BB2"><a name="GUID-4B00DDBC-C728-39D1-822F-A38776261BB2"><!-- --></a>
+		<h2 class="topictitle2">CSqlStatementImpl * iImpl</h2>
+		<table class="signature"><tr><td>CSqlStatementImpl *</td><td>iImpl</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

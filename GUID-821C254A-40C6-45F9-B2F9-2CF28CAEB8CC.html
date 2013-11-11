@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Interrupt Handling"/>
+<meta name="abstract" content="Describes how interrupts are handled in the SMP environment."/>
+<meta name="description" content="Describes how interrupts are handled in the SMP environment."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CE72E71B-6ED3-4961-B4C5-C43D823ACA9D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-629EAA30-ED77-4CA9-91ED-36C818D7B4F4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CE72E71B-6ED3-4961-B4C5-C43D823ACA9D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-387E98B0-568D-4DBB-9A9E-616E41E96B58.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-16AB388A-ED3E-4901-857D-834072437D25.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-821C254A-40C6-45F9-B2F9-2CF28CAEB8CC"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Interrupt Handling</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-821C254A-40C6-45F9-B2F9-2CF28CAEB8CC"><a name="GUID-821C254A-40C6-45F9-B2F9-2CF28CAEB8CC"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2561665 id2561671 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-629EAA30-ED77-4CA9-91ED-36C818D7B4F4.html" title="Provides summary of documents to make SMP-safe applications.">SMP</a> &gt; <a href="GUID-CE72E71B-6ED3-4961-B4C5-C43D823ACA9D.html" title="Symmetric Multiprocessing (SMP) applies to a multiprocessor computer architecture where 2 or more identical processes can connect to a single shared main memory. SMP allows simultaneous execution of threads. This means that overall performance is improved and ultimately battery life is extended. This section introduces the main concepts applied to SMP including Threading Models, Interrupt Handling, Locking and Memory Barriers.">SMP Concepts</a> &gt; </div>
+<h1 class="topictitle1">Interrupt
+Handling</h1>
+<div><p>Describes how interrupts are handled in the SMP environment.</p>
+
+<p>An interrupt is a signal from a hardware device or from an executable which
+causes a CPU to suspend normal execution, enter the interrupt handling state
+and jump to an interrupt handler. An interrupt handler, or ISR (interrupt
+service routine), schedules a DFC (delayed function call) on a DFC queue.</p>
+
+<div class="section" id="GUID-821C254A-40C6-45F9-B2F9-2CF28CAEB8CC__GUID-71D802FC-9A50-4BEB-8F21-497A7D04C814"><a name="GUID-821C254A-40C6-45F9-B2F9-2CF28CAEB8CC__GUID-71D802FC-9A50-4BEB-8F21-497A7D04C814"><!-- --></a><h2 class="sectiontitle">SMP-Safe Interrupt
+Handling</h2><p>Interrupt handlers are used to implement the functionality
+of device drivers.</p>
+<p>When a DFC executes on a unicore system, it disables
+interrupts to avoid clashing with its own ISR. </p>
+<p>On a multicore system
+this is not sufficient to maintain data integrity. To maintain data integrity
+on an SMP system the code must:</p>
+<ol>
+<li id="GUID-821C254A-40C6-45F9-B2F9-2CF28CAEB8CC__GUID-9A9C8A79-D53C-4B39-B108-86A0B04FCBE9"><a name="GUID-821C254A-40C6-45F9-B2F9-2CF28CAEB8CC__GUID-9A9C8A79-D53C-4B39-B108-86A0B04FCBE9"><!-- --></a><p> acquire a spin lock
+on any data to be written, to block other cores from accessing the data.</p>
+</li>
+
+<li id="GUID-821C254A-40C6-45F9-B2F9-2CF28CAEB8CC__GUID-87F5A9E5-2932-4BE8-8126-ECC1D4458476"><a name="GUID-821C254A-40C6-45F9-B2F9-2CF28CAEB8CC__GUID-87F5A9E5-2932-4BE8-8126-ECC1D4458476"><!-- --></a><p>Interrupts must be disabled,
+as on unicore, before the spin lock is acquired.</p>
+</li>
+
+</ol>
+<p> Although these are conceptually two separate tasks, you use the spin
+lock API <a href="GUID-FB1605A8-9946-364C-A649-DEF60E1F761B.html"><span class="apiname">TSpinLock</span></a> in <span class="filepath">nkern.h</span> to perform
+both tasks at the same time.</p>
+<p>The following macros provide SMP-safe interrupt
+handling in most situations.</p>
+<ul>
+<li><p><a href="GUID-DBC27EF9-9C56-3FE8-B93C-BA2A74E1E6E6.html"><span class="apiname">__SPIN_LOCK_IRQSAVE</span></a></p>
+</li>
+
+<li><p><a href="GUID-04EEFC44-C7FF-37D2-A8F1-7FBCDBAF9EE2.html"><span class="apiname">__SPIN_LOCK_IRQRESTORE</span></a></p>
+</li>
+
+</ul>
+<p>If code using these macros is executed on a unicore system, they will
+disable interrupts in the normal way.</p>
+<p>There are several other macros
+that can be used in the non standard situations or when you require greater
+control over the interaction of interrupt disabling and spin locks. </p>
+<ul>
+<li><p><a href="GUID-A6C6CADA-1552-3873-89BA-6DBDC6402FF2.html"><span class="apiname">__SPIN_LOCK_IRQSAVE(lock)</span></a></p>
+<p>Standard SMP-safe
+macro</p>
+</li>
+
+<li><p><a href="GUID-E7AB9188-3C0C-3267-96CF-751FD7C778EF.html"><span class="apiname"> __SPIN_UNLOCK_IRQRESTORE(lock,irq)</span></a></p>
+<p>Standard
+SMP-safe macro</p>
+</li>
+
+<li><p> <a href="GUID-8E0151AC-1F70-35BE-9DBA-659C3054C8FA.html"><span class="apiname">__SPIN_FLASH_IRQRESTORE(lock,irq)</span></a></p>
+</li>
+
+<li><p><a href="GUID-33E2A493-8F2F-32C1-A93C-A50F358C8126.html"><span class="apiname"> __SPIN_LOCK(lock) __SPIN_UNLOCK(lock)</span></a></p>
+</li>
+
+<li><p><a href="GUID-A9CDB15E-D435-3043-B9CA-265CC5C598DA.html"><span class="apiname"> __SPIN_FLASH_PREEMPT(lock)</span></a></p>
+</li>
+
+<li><p> <a href="GUID-5EF6D33D-998F-3BFD-95F1-478541221B35.html"><span class="apiname">__SPIN_LOCK_IRQ(lock)</span></a></p>
+</li>
+
+<li><p><a href="GUID-F8FA6FEA-56A2-3924-BA59-8DF4B0546AC9.html"><span class="apiname"> __SPIN_UNLOCK_IRQ(lock)</span></a></p>
+</li>
+
+<li><p> <a href="GUID-E474AC45-13AE-3DE5-857C-7BE76EE084E3.html"><span class="apiname">__SPIN_FLASH_IRQ(lock)</span></a></p>
+</li>
+
+</ul>
+<div class="note"><span class="notetitle">Note:</span> <p> To ensure SMP Safety in Symbian^3, the kernel ensures that
+device driver, ISR and DFC are all tied to the same CPU. CPU0 has been stipulated
+for this purpose.</p>
+</div>
+</div>
+
+<div class="example"><h2 class="sectiontitle">Using a spin lock</h2><p>In the following example, a spin
+lock protects memory being written by <samp class="codeph">DfcFun()</samp> on CPU0 from
+corruption by <samp class="codeph">ISRFun()</samp> running on a different core.</p>
+<div class="p">This
+code runs on CPU0:<pre class="codeblock">void DfcFun(TAny* aPtr)
+	{
+	…
+   irq = __SPIN_LOCK_IRQSAVE(iLock);
+   iState = EProcessed;
+   __SPIN_UNLOCK_IRQRESTORE(iLock,irq);
+
+	...
+	}
+</pre>
+</div>
+<div class="p">This code runs on a different core:<pre class="codeblock">void ISRFun(TAny* aPtr)
+	{
+   __SPIN_LOCK(iLock);	
+	iState = EProcessing;
+	__SPIN_UNLOCK(iLock);
+	}
+</pre>
+</div>
+</div>
+
+<div class="section" id="GUID-821C254A-40C6-45F9-B2F9-2CF28CAEB8CC__GUID-8BF9726E-B8E4-4558-98A4-7163CD13774A"><a name="GUID-821C254A-40C6-45F9-B2F9-2CF28CAEB8CC__GUID-8BF9726E-B8E4-4558-98A4-7163CD13774A"><!-- --></a><h2 class="sectiontitle">Making your
+device driver SMP safe</h2><p>Once a device driver has been migrated to
+be SMP Safe using the advice above, the mmp file of each driver's binaries
+must be updated with the keyword <span class="keyword">SMPSAFE</span>. </p>
+<p>This indicates
+to the scheduler that the kernel side threads and associated interrupts can
+be can be run and executed according to the kernel SMP policies.</p>
+</div>
+
+<div class="section" id="GUID-821C254A-40C6-45F9-B2F9-2CF28CAEB8CC__GUID-6B58F8D8-2776-4301-8914-96F4ABECE7C8"><a name="GUID-821C254A-40C6-45F9-B2F9-2CF28CAEB8CC__GUID-6B58F8D8-2776-4301-8914-96F4ABECE7C8"><!-- --></a><h2 class="sectiontitle">SMP Safe</h2><p>The <span class="keyword">SMPSAFE</span> keyword
+should only be used if the code is proven to be SMP-Safe.</p>
+<p>Impact of
+using the <span class="keyword">SMPSAFE</span> keyword:</p>
+<ul>
+<li><p>If your code is proven to be SMP-Safe you can identify it is such by
+inserting the <span class="keyword">SMPSAFE</span> keyword into your mmp file. The kernel
+will mark your application or service as SMP-safe and use whatever processors
+are available according to the policies of that baseport.</p>
+</li>
+
+<li><p>If the code is not SMP-Safe do not use the keyword. The kernel will
+run your code using the behaviours defined by the appropriate compatibility
+mode, ensuring that all threads are run on a single CPU.</p>
+</li>
+
+</ul>
+<p>There are two <em>SMP compatibility modes</em>: basic and enhanced.</p>
+<ul>
+<li><p>In basic mode all threads in unsafe processes are set to CPU0. There
+is no chance these threads will run concurrently and therefore they are executed
+in priority order, as on a single processor system.</p>
+</li>
+
+<li><p>In enhanced mode all the threads of a process are tied together in
+a thread group. Only one thread of a thread group can be run at any time,
+meaning they are executed in priority order. The benefit of the enhanced mode
+is that the entire thread group may be moved from one CPU to another as system
+resources and kernel policy demands. The default SMP compatibility mode is
+enhanced.</p>
+</li>
+
+</ul>
+<p>The decision to use basic or enhanced SMP-Safe compatibility mode
+is made at design time and assigned to the kernel iby/oby file as part of
+the baseport. Once set this can not be changed. This is an either or choice
+and therefore mutually exclusive.</p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-CE72E71B-6ED3-4961-B4C5-C43D823ACA9D.html" title="Symmetric Multiprocessing (SMP) applies to a multiprocessor computer architecture where 2 or more identical processes can connect to a single shared main memory. SMP allows simultaneous execution of threads. This means that overall performance is improved and ultimately battery life is extended. This section introduces the main concepts applied to SMP including Threading Models, Interrupt Handling, Locking and Memory Barriers.">SMP Concepts</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-387E98B0-568D-4DBB-9A9E-616E41E96B58.html" title="This document introduces Symmetric Multiprocessing (SMP) on the Symbian platform.">SMP Overview</a></div>
+<div><a href="GUID-16AB388A-ED3E-4901-857D-834072437D25.html" title="Spin locks allow resource execution control through fast lock context switching.">Spin Locks</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

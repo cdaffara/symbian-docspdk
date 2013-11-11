@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Parsing an XML document using Content Handler"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-82AF5F49-EE25-54C7-AEE9-D1F41BD5190F.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A25E730C-F34D-5464-BE78-650B3DEA4A88.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AF28D930-6BD1-5DC5-9BE5-7512241E90CD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Parsing an XML document using Content Handler</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808"><a name="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2436889 id2436897 id2436992 id2437012 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-82AF5F49-EE25-54C7-AEE9-D1F41BD5190F.html">XML Services Guide</a> &gt; <a href="GUID-A25E730C-F34D-5464-BE78-650B3DEA4A88.html">XML</a> &gt; <a href="GUID-AF28D930-6BD1-5DC5-9BE5-7512241E90CD.html">XML Framework</a> &gt; <a href="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html">XML Framework Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Parsing an XML document using Content Handler</h1>
+<div><p>This section explains how to parse an XML document by implementing the content handler functionality of the parser framework. </p>
+ <p> <a href="GUID-A6B8386B-29F6-3BEC-9D77-D8E0900DEAC2.html"><span class="apiname">MContentHandler</span></a> class defines the interface required by a client of the XML framework. It allows a client to be placed in a chain with other clients such as a Parser or a Validator, and therefore allows the flow of information within chain. It provides callbacks similar to that of the SAX 2.0 interface. </p>
+ <div class="section"><h2 class="sectiontitle">Introduction</h2> <p>Consider a scenario when an application with numerous settings require the settings being saved, so that when the application is restarted after a shutdown, the settings are available. This can be achieved (while ensuring the cross-platform compatibility) by saving the setting in an XML file, which the application parses on start-up. The application responds to the XML statements by implementing the <a href="GUID-A6B8386B-29F6-3BEC-9D77-D8E0900DEAC2.html"><span class="apiname">MContentHandler</span></a> interface. Since the parser detects tags and their content, it calls the associated content handler functions to respond with the required behaviour. </p>
+ <p>The callback functions which an implementation of <a href="GUID-A6B8386B-29F6-3BEC-9D77-D8E0900DEAC2.html"><span class="apiname">MContentHandler</span></a> must provide are depicted in the table. These correspond to functions defined in the <samp class="codeph">ContentHandler</samp> interface of the <a href="http://www.saxproject.org" target="_blank">SAX specification</a>. The last parameter of each function is an error code. If no error has taken place, then the <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a> null error code is returned by the framework. </p>
+ <p> </p>
+ 
+<div class="tablenoborder"><a name="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-BF14F3DB-7880-5299-874C-3B56554C8080"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-BF14F3DB-7880-5299-874C-3B56554C8080" frame="border" border="1" rules="all"><thead align="left"><tr><th class="cellrowborder" valign="top" id="d1599363e62">MContentHandler callback</th>
+ <th class="cellrowborder" valign="top" id="d1599363e65">SAX specification function</th>
+ </tr>
+ </thead>
+ <tbody><tr><td class="cellrowborder" valign="top" headers="d1599363e62 "><p> <a href="GUID-6F240EEF-81FA-3A27-9593-A7ADC9118627.html"><span class="apiname">OnStartDocumentL()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e65 "><p> <samp class="codeph">startDocument() </samp>  </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1599363e62 "><p> <a href="GUID-81F0FD8C-825D-3283-B998-6B44CC3294FE.html"><span class="apiname">OnEndDocumentL()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e65 "><p> <samp class="codeph">endDocument() </samp>  </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1599363e62 "><p> <a href="GUID-5BFFB049-5C71-31FB-ADBE-89FF4296E125.html"><span class="apiname">OnStartElementL()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e65 "><p> <samp class="codeph">startElement()</samp>  </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1599363e62 "><p> <a href="GUID-6F1E258D-CE57-3C22-BBDE-AF5B6D6C90EB.html"><span class="apiname">OnEndElementL()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e65 "><p> <samp class="codeph">endElement() </samp>  </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1599363e62 "><p> <a href="GUID-37601F09-7C8A-3397-8750-92CE95C1B87B.html"><span class="apiname">OnContentL()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e65 "><p> <samp class="codeph">characters()</samp>  </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1599363e62 "><p> <a href="GUID-DA03C829-A9E3-3A8E-9367-208545FA0721.html"><span class="apiname">OnStartPrefixMappingL()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e65 "><p> <samp class="codeph">startPrefixMapping()</samp>  </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1599363e62 "><p> <a href="GUID-CC4C2F12-DC24-3F7F-BB5F-7D744F41E095.html"><span class="apiname">OnEndPrefixMappingL()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e65 "><p> <samp class="codeph"> endPrefixMapping()</samp>  </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1599363e62 "><p> <a href="GUID-92826CB4-B56E-3E9F-BD4B-31ADE3974D91.html"><span class="apiname">OnIgnorableWhiteSpaceL()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e65 "><p> <samp class="codeph"> ignorableWhitespace()</samp>  </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1599363e62 "><p> <a href="GUID-3D25881F-192F-3A21-B3DE-ECAB29C1D5CA.html"><span class="apiname">OnSkippedEntityL()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e65 "><p> <samp class="codeph">skippedEntity()</samp>  </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1599363e62 "><p> <a href="GUID-7DAF7316-BD31-3AD4-9854-F8CB6319D3D4.html"><span class="apiname">OnProcessingInstructionL()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e65 "><p> <samp class="codeph">processingInstruction()</samp>  </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1599363e62 "><p> <a href="GUID-BF4510DE-7C8B-3404-91C0-FAC737AA1A07.html"><span class="apiname">OnError()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e65 "><p> </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1599363e62 "><p> <a href="GUID-A03D96B2-56B2-33A7-AC51-E1F5D1CA681C.html"><span class="apiname">GetExtendedInterface()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e65 "><p> </p>
+ </td>
+ </tr>
+ </tbody>
+ </table>
+</div>
+ <p>The following table lists the classes that are parameter of functions that must be implemented: </p>
+ 
+<div class="tablenoborder"><a name="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-B34320E0-B8B1-5992-94AE-DA6D587D84F1"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-B34320E0-B8B1-5992-94AE-DA6D587D84F1" frame="border" border="1" rules="all"><thead align="left"><tr><th class="cellrowborder" valign="top" id="d1599363e319">Class</th>
+ <th class="cellrowborder" valign="top" id="d1599363e322">Description</th>
+ </tr>
+ </thead>
+ <tbody><tr><td class="cellrowborder" valign="top" headers="d1599363e319 "><p> <a href="GUID-D79A2F59-8DC1-3493-92F6-2E1337CD9405.html"><span class="apiname">RDocumentParameters</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e322 "><p>Contains the character set which the document uses. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1599363e319 "><p> <a href="GUID-58047BD6-FECF-3BF0-869B-65F833D972A4.html"><span class="apiname">RAttributeArray</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e322 "><p>Consists of an array of <a href="GUID-BAD00F6C-6E5C-3331-BA58-85A186F933E8.html"><span class="apiname">RAttribute</span></a> objects. The array holds the name (as an <a href="GUID-6CEDFB6D-16B6-3860-922B-15A23C182DB2.html"><span class="apiname">RTagInfo</span></a> object), value and type of each attribute of the element. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1599363e319 "><p> <a href="GUID-6CEDFB6D-16B6-3860-922B-15A23C182DB2.html"><span class="apiname">RTagInfo</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1599363e322 "><p>Contains information about an XML tag, its namespace URI and prefix, and its local name. </p>
+ </td>
+ </tr>
+ </tbody>
+ </table>
+</div>
+ </div>
+ <div class="section" id="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-948C5BEE-0E05-525A-B601-909A1818FDA0"><a name="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-948C5BEE-0E05-525A-B601-909A1818FDA0"><!-- --></a><h2 class="sectiontitle">Procedure</h2> <p>Follow the steps given below to understand how to parse an XML document by implementing the content handler functionality: </p>
+ <a name="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-9404AB58-0C3C-5CE9-A4BE-D15861B145E8"><!-- --></a><ol id="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-9404AB58-0C3C-5CE9-A4BE-D15861B145E8"><li id="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-D4F71FA7-3DC7-5CB7-89D6-459E4F35D43E"><a name="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-D4F71FA7-3DC7-5CB7-89D6-459E4F35D43E"><!-- --></a><p>Implement the <samp class="codeph">MContentHandler</samp> interface. </p>
+ <p>The following code snippet illustrates how to implement <samp class="codeph">MContentHandler</samp>: </p>
+ <pre class="codeblock" id="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-DE2A07E6-00BD-577D-AF67-83B85CD59572"><a name="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-DE2A07E6-00BD-577D-AF67-83B85CD59572"><!-- --></a>class CMyContentHandler : public CBase, public MContentHandler
+{
+public:
+    // A callback to indicate the start of the document. 
+    void CXmlExample::OnStartDocumentL( const RDocumentParameters&amp;, TInt )
+    {
+    iConsole-&gt;Printf( KOnStartDoc );
+    iConsole-&gt;Printf( KPressAKey );
+    iConsole-&gt;Getch();
+
+    iNumElements = 0;
+    iNumSkippedEntities = 0;
+    iNumPrefixMappings = 0;
+    iNumPrefixUnmappings = 0;
+    }
+    
+// A callback to indicate an element has been parsed.     
+void CXmlExample::OnStartElementL( const RTagInfo&amp;, const RAttributeArray&amp;, TInt )
+    {
+    iConsole-&gt;Printf( KOnStartEle );
+
+    if( iLeaveOnStartElement )
+        {    
+        if( iNumElements++ == 0 )
+                  {
+                  iConsole-&gt;Printf( KOnStartErr, KExpectedLeaveCode );
+            User::After( 1 );
+                  User::Leave( KExpectedLeaveCode );
+                  }
+
+           iNumElements++;
+        }
+    }
+  
+// implementations of the other callbacks
+// ...
+
+}</pre>
+ </li>
+ <li id="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-A6BB0985-37A3-526D-B678-266A55F57862"><a name="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-A6BB0985-37A3-526D-B678-266A55F57862"><!-- --></a><p>Instantiate the <samp class="codeph">ContentHandler</samp> object in the client application code and pass it to the constructor method of a parser object. </p>
+ <pre class="codeblock" id="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-14F1FCEB-7475-583B-867A-E7D19E8369B0"><a name="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808__GUID-14F1FCEB-7475-583B-867A-E7D19E8369B0"><!-- --></a>...
+CMyContentHandler* ch = CMyContentHandler::NewL();
+CParser* parser = CParser::NewLC( KXmlMimeType,ch );
+parser-&gt;ParseL( myXMLdata ); // this will result in callbacks to ch
+...</pre>
+ </li>
+ </ol>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html">XML Framework Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

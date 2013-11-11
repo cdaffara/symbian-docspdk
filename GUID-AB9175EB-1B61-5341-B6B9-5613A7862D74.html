@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Channel Implementation"/>
+<meta name="abstract" content="Describes how to implement DComm to drive a serial port hardware."/>
+<meta name="description" content="Describes how to implement DComm to drive a serial port hardware."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0C8C41EC-A8ED-5916-B944-DDDF20FADAF4.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-52371DAB-A231-558C-B3E6-220DAAEE566B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A04F46F8-1BA9-5A77-B455-59C67DD4AA36.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0C8C41EC-A8ED-5916-B944-DDDF20FADAF4.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Channel Implementation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2400778 id2402110 id2402125 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-52371DAB-A231-558C-B3E6-220DAAEE566B.html" title="Provides software components that implement the interface between Symbian platform and peripherals.">Logical Device Drivers</a> &gt; <a href="GUID-A04F46F8-1BA9-5A77-B455-59C67DD4AA36.html" title="The Serial Port Driver is a device driver that handles serial port hardware (create the physical channel). This section describes how to create a port of it for your phone hardware.">Serial Port Driver</a> &gt; <a href="GUID-0C8C41EC-A8ED-5916-B944-DDDF20FADAF4.html" title="Steps required to implement a port of the Serial Port Driver.">Port Implementation Tutorial</a> &gt; </div>
+<h1 class="topictitle1">Channel
+Implementation</h1>
+<div><p>Describes how to implement <samp class="codeph">DComm</samp> to drive a serial
+port hardware.</p>
+
+<p>A physical channel defines the interface between the logical device and
+the physical device. The Serial Port Driver physical channel interface is
+defined by the <samp class="codeph">DComm</samp> class. </p>
+
+<p>The <samp class="codeph">DComm</samp> class is defined in: <span class="filepath">...\e32\include\drivers\comm.h</span>,
+which is exported to <span class="filepath">epoc32\include\drivers</span>: </p>
+
+<pre class="codeblock" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-F9E58262-51AA-5A58-A113-3FA994F00156"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-F9E58262-51AA-5A58-A113-3FA994F00156"><!-- --></a>class DComm : public DBase
+    {
+public:
+    virtual TInt Start() =0;
+    virtual void Stop(TStopMode aMode) =0;
+    virtual void Break(TBool aState) =0;
+    virtual void EnableTransmit() =0;
+    virtual TUint Signals() const =0;
+    virtual void SetSignals(TUint aSetMask,TUint aClearMask) =0;
+    virtual TInt ValidateConfig(const TCommConfigV01 &amp;aConfig) const =0;
+    virtual void Configure(TCommConfigV01 &amp;aConfig) =0;
+    virtual void Caps(TDes8 &amp;aCaps) const =0;
+    virtual void CheckConfig(TCommConfigV01&amp; aConfig)=0;
+    virtual TInt DisableIrqs()=0;
+    virtual void RestoreIrqs(TInt aIrq)=0;
+    virtual TDfcQue* DfcQ(TInt aUnit)=0;
+    inline TBool PowerGood(); 
+    inline void SetCurrent(TInt aCurrent);
+    inline void ReceiveIsr(TUint* aChar, TInt aCount, TInt aXonXoff);
+    inline TInt TransmitIsr();inline void CheckTxBuffer();
+    inline void StateIsr(TUint aSignals);
+    inline TBool Transmitting();
+public:
+    DChannelComm *iLdd;
+    TBool iTransmitting;
+    };
+</pre>
+
+<p>Note that <samp class="codeph">DComm</samp> defines the minimum set of functions to
+be used by the LDD. A real physical channel object, typically, requires the
+addition of an interrupt handler, some DFC callback routines (if these are
+not handled in the LDD itself) and various other state variables. </p>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-B0D61B54-EDF3-4804-9B1E-370C36E01708"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-B0D61B54-EDF3-4804-9B1E-370C36E01708"><!-- --></a><h2 class="sectiontitle">DCommVariant constructor</h2> <p>Implement the constructor
+for the channel object. Since there is no unit number argument, the constructor
+is limited to initialising only those members that are common across all possible
+channels, with no access to any specific hardware. </p>
+ </div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-550681C3-F1A6-4298-BAA5-C6F2D9D61624"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-550681C3-F1A6-4298-BAA5-C6F2D9D61624"><!-- --></a><h2 class="sectiontitle">DCommVariant destructor</h2> <p>Implement the destructor
+for the channel object. It should release any hardware and Symbian platform
+resources that have been allocated to the driver, typically unbinding the
+UART interrupt ISR, and any private DFCs that are still in use. The destructor
+merely unbinds the interrupt as no channel specific DFCs are active at destructor
+invocation. </p>
+ </div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-8254536B-E938-4B86-A735-798DD03E3456"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-8254536B-E938-4B86-A735-798DD03E3456"><!-- --></a><h2 class="sectiontitle">DoCreate()</h2> <p>Implement the <samp class="codeph">DoCreate()</samp> channel
+initialisation function for the UART driver. In general, defining a <samp class="codeph">DoCreate()</samp> function
+is not mandated by the device driver framework but is useful for drivers that
+make use of unit numbers. This is called by the factory object’s <a href="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46.html#GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-48EF94F9-ACBC-58DA-9F0E-4034E56C6C74">Create()</a> function after the device object’s allocation has succeeded. </p>
+ <p>Typical
+operations performed by this function are to setup any channel specific hardware
+states and bind the driver’s ISR to the (possibly channel specific) interrupt
+channel, as well as enabling the UART hardware itself. However, since the <a href="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74.html#GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-0CAA6D27-FE2E-5569-8747-EB3D4976E7FD">Start()</a> function
+has not yet been called, it should not enable the UART interrupts/poll routines
+which would actively buffer incoming data; any data I/O requests should be
+discarded until the driver’s <a href="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74.html#GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-0CAA6D27-FE2E-5569-8747-EB3D4976E7FD">Start()</a> routine
+has been called. </p>
+ </div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-0CAA6D27-FE2E-5569-8747-EB3D4976E7FD"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-0CAA6D27-FE2E-5569-8747-EB3D4976E7FD"><!-- --></a><h2 class="sectiontitle">Start()</h2> <p> Implement
+the <samp class="codeph">Start()</samp> function. This should enable the driver’s receive
+path.</p>
+<p> Received characters are placed in the LDD upstream buffer, either
+by the interrupt handler routine, or by a polling routine that tests for the
+existence of received characters (and their associated error state). This
+is done by calling the LDD’s <samp class="codeph">ReceiveIsr()</samp> routine, with a
+pointer to the buffered characters, a count and a flag indicating whether
+the XON or XOFF flow control characters have been received.</p>
+<p>The function
+is called by the LDD when the owning thread opens the device channel. It should
+complete any UART data I/O enabling that has not already been performed in
+the <samp class="codeph">DoCreate()</samp> function, i.e. the enabling of UART receive
+interrupt processing as a minimum. After this function returns, it is expected
+that incoming data will be placed in a (local) buffer and passed upstream
+to the LDD, until <a href="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74.html#GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-9428082D-581D-530B-8838-1DBF6D0EB8E7">Stop()</a> is
+invoked. Note that since there may have been line activity prior to this call,
+it may be necessary to reset the UART state, as we do not want to report errors/states
+that may have occurred before the UART was (logically) enabled.</p>
+</div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-9428082D-581D-530B-8838-1DBF6D0EB8E7"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-9428082D-581D-530B-8838-1DBF6D0EB8E7"><!-- --></a><h2 class="sectiontitle">Stop()</h2><p>Implement
+the <samp class="codeph">Stop()</samp> function. This should disable the driver’s transmit
+and receive paths. </p>
+<p>Depending on the type of stop requested, i.e. emergency
+power down, or otherwise, <samp class="codeph">Stop()</samp> may not wait for the UART
+to finish transmitting any characters stored in the transmit FIFO queue. All
+receive paths are stopped instantly and any characters that may be in the
+receive FIFO queue are ignored. </p>
+<p>The function is called by the LDD when
+the owning thread closes the device channel. At this point, the UART device
+should revert to the state in which all data I/O requests are ignored or failed.
+To save OS resources the natural method to accomplish this is to disable the
+UART interrupt processing or disable the UART itself. It may also be necessary
+to cancel any DFCs queued, so that event notifications are not sent to the
+LDD after it has requested an end to I/O. </p>
+</div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-5E4B6533-75F5-47FB-A4DF-55FAA1E1B973"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-5E4B6533-75F5-47FB-A4DF-55FAA1E1B973"><!-- --></a><h2 class="sectiontitle">DfcQ()</h2><p>Implement the <samp class="codeph">DfcQ()</samp> function.
+This should return the DFC queue on which the LDD will install its DFCs. Usually
+the standard low priority kernel DFC queue 0 is returned. </p>
+</div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-ADC89B5B-0E29-4723-92E6-A6F1A5604710"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-ADC89B5B-0E29-4723-92E6-A6F1A5604710"><!-- --></a><h2 class="sectiontitle">Break()</h2><p>Implement the <samp class="codeph">Break()</samp> function.
+This starts or ends a BREAK condition on the wire. </p>
+<p>This operation is
+explicitly requested by the owning thread through the LDD. A break state requires
+the forcing of the line into an abnormal state, which violates standard data
+format timings (a form of out of band signalling), and is detected by the
+remote device and is usually used to force it to cycle through its baud rate
+detection modes. Forcing a break state requires that the PDD explicitly set
+some state in the UART hardware. </p>
+</div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-82A259A7-54F7-536A-B829-31C0AF3C5C81"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-82A259A7-54F7-536A-B829-31C0AF3C5C81"><!-- --></a><h2 class="sectiontitle">Signals()</h2><p>Implement
+the <samp class="codeph">Signals()</samp> function. This returns the state of the flow
+and MODEM control inputs, ie. DCD, DSR, CTS and RI (if implemented on the
+device itself). This function is called by the LDD to return the state of
+all the handshaking lines so that it can decide whether further data I/O operations
+are allowed. </p>
+</div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-492D86E5-BEEF-4408-B6E0-6DDA1244CA74"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-492D86E5-BEEF-4408-B6E0-6DDA1244CA74"><!-- --></a><h2 class="sectiontitle">SetSignals()</h2><p>Implement the <samp class="codeph">SetSignals()</samp> function.
+This controls the state of the flow and MODEM control outputs. It is used
+by the LDD to control MODEM handshaking and line failure detection, and can
+be invoked in response to a specific user request to change the handshake
+signal’s state, or when the LDD itself decides that the output lines states
+should be changed in response to some transfer state (e.g. requesting no further
+transmissions if buffer availability runs low). </p>
+</div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-CB1FA26C-5D29-50ED-AF40-8CC579AF776F"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-CB1FA26C-5D29-50ED-AF40-8CC579AF776F"><!-- --></a><h2 class="sectiontitle">Caps()</h2><p>Implement
+the <samp class="codeph">Caps()</samp> function. This returns the driver supported configurations:
+speed, format, and handshaking. </p>
+<p>It is called by the LDD in response
+to a user request for the device's capabilities. The PDD must fill a <a href="GUID-98A18771-CA6D-3B68-8784-449CDBEC3D88.html"><span class="apiname">TCommCapsV02</span></a> object,
+with the capabilities for that port. </p>
+<p>The object is defined in <span class="filepath">d32comm.h</span>: </p>
+<pre class="codeblock" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-A95D8753-E574-5C86-85DC-6AA10F635612"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-A95D8753-E574-5C86-85DC-6AA10F635612"><!-- --></a>class TCommCapsV01
+    {
+public:
+    TUint iRate;
+    TUint iDataBits;
+    TUint iStopBits;
+    TUint iParity;
+    TUint iHandshake;
+    TUint iSignals;
+    TUint iFifo;
+    TUint iSIR;
+    };
+
+class TCommCapsV02 : public TCommCapsV01
+    {
+public:
+    TUint iNotificationCaps;
+    TUint iRoleCaps;
+    TUint iFlowControlCaps;
+    };</pre>
+ <p>The base object, <a href="GUID-BDBB61A7-18BC-3C85-A258-77D8B16621AD.html"><span class="apiname">TCommCapsV01</span></a>, defines
+capabilities in terms of: </p>
+ <ul>
+<li id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-7AE03D23-1013-5522-B219-23153E1B7798"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-7AE03D23-1013-5522-B219-23153E1B7798"><!-- --></a><p>data rate </p>
+ </li>
+
+<li id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-E2FBD4C1-B704-592A-B3A2-1BCFFC7E5451"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-E2FBD4C1-B704-592A-B3A2-1BCFFC7E5451"><!-- --></a><p>word format (i.e. parity,
+data bits, stop bits) </p>
+ </li>
+
+<li id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-525050DD-8ACE-5580-BDF7-3717295D704E"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-525050DD-8ACE-5580-BDF7-3717295D704E"><!-- --></a><p>flow control lines </p>
+ </li>
+
+<li id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-B5DBE4E6-8184-522A-856A-9BD17E76FF33"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-B5DBE4E6-8184-522A-856A-9BD17E76FF33"><!-- --></a><p>MODEM control lines </p>
+ </li>
+
+<li id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-62ACC296-4B9B-59D3-8531-480E04264FE0"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-62ACC296-4B9B-59D3-8531-480E04264FE0"><!-- --></a><p>IrDA support. </p>
+ </li>
+
+</ul>
+ <p>Each attribute range is passed as a bitfield of possible settings,
+all assumed to be orthogonal, i.e. each attribute can assume all the values
+independently of the other attributes. </p>
+ <p>The attribute bitfields are
+defined in <span class="filepath">d32comm.h</span>. </p>
+ <p>The <samp class="codeph">iSIR</samp> attribute
+in <a href="GUID-BDBB61A7-18BC-3C85-A258-77D8B16621AD.html"><span class="apiname">TCommCapsV01</span></a> indicates whether the port can support
+slow infrared protocol. </p>
+ <p>The <samp class="codeph">iNotificationCaps</samp> attribute
+in <a href="GUID-98A18771-CA6D-3B68-8784-449CDBEC3D88.html"><span class="apiname">TCommCapsV02</span></a> allows the driver to describe its ability
+to report asynchronous events, if requested to do so by the client thread.
+The only useful applications seem to be to report data arrival and handshake
+line status change, although fields exist for other capabilities. </p>
+ <p>The <samp class="codeph">iRoleCaps</samp> attribute
+in <a href="GUID-98A18771-CA6D-3B68-8784-449CDBEC3D88.html"><span class="apiname">TCommCapsV02</span></a> is intended to indicate that the device
+is capable of acting as a DCE as well as a DTE, i.e. that the port can be
+configured to act like a MODEM port. This essentially reverses the normal
+I/O of the status lines, and could add functionality such as ring indication.
+Normal UART devices will never need to change this field from the default,
+i.e. DTE device personality. </p>
+ <p>The <samp class="codeph">iFlowControlCaps</samp> field
+in <a href="GUID-98A18771-CA6D-3B68-8784-449CDBEC3D88.html"><span class="apiname">TCommCapsV02</span></a> is unused and should be set to 0. </p>
+ <p>The <samp class="codeph">iHandshake</samp> field
+in <a href="GUID-BDBB61A7-18BC-3C85-A258-77D8B16621AD.html"><span class="apiname">TCommCapsV01</span></a> describes the flow control signal support
+on the device. Input signals have attributes “Obey” and “Fail” e.g. ObeyCts,
+FailCts. Output signals have only the “Free” attribute, which indicates they
+can be driven (via a call to <a href="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74.html#GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-82A259A7-54F7-536A-B829-31C0AF3C5C81">Signals()</a>)
+to any state, independent of the internal state of the UART, i.e. they are
+entirely under LDD control. The Fail attribute implies that the LDD will deem
+operations to have failed if an input line thus labelled becomes disasserted.
+This means that the PDD can report these signal states asynchronously. If,
+for example, a change in CTS state can generate an interrupt, then the PDD
+should report it as possessing both Obey and Fail attributes, whereas if the
+DCD line cannot generate an asynchronous event, it should merely present itself
+as “Obey”. If the line is unimplemented then neither attribute should be reported. </p>
+ </div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-DA860E4A-4240-4C16-B1C0-5E9B7C96F9E8"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-DA860E4A-4240-4C16-B1C0-5E9B7C96F9E8"><!-- --></a><h2 class="sectiontitle">Configure()</h2> <p>Implement the <samp class="codeph">Configure()</samp> function.
+This configures the UART device according to the configuration data passed
+into the function. </p>
+ <p>Configuration data is encapsulated by a <a href="GUID-0CBAE946-AB8E-3114-89FC-9591125C4BDC.html"><span class="apiname">TCommConfigV02</span></a> object: </p>
+ <pre class="codeblock" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-275DAD25-9EF9-5084-A82B-8E2392CB14E8"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-275DAD25-9EF9-5084-A82B-8E2392CB14E8"><!-- --></a>class TCommConfigV01
+    {
+public:
+    TBps iRate;
+    TDataBits iDataBits;
+    TStopBits iStopBits;
+    TParity iParity;
+    TUint iHandshake;
+    TUint iParityError;
+    TUint iFifo;
+    TInt iSpecialRate;
+    TInt iTerminatorCount;
+    TText8 iTerminator[KConfigMaxTerminators];
+    TText8 iXonChar;
+    TText8 iXoffChar;
+    TText8 iParityErrorChar;
+    TSir iSIREnable;
+    TUint iSIRSettings;
+    };
+
+class TCommConfigV02: public TCommConfigV01
+    {
+public:
+    TInt iTxShutdownTimeout;
+    };
+</pre>
+ <p>This function is called by the LDD when the physical channel
+is opened. The default configuration is set by the LDD when the <samp class="codeph">Dcomm</samp> object
+is constructed, but the user can override the configuration with a <samp class="codeph">SetConfig</samp> request
+on the opened channel. The configuration is described by specifying a set
+of individual capability attributes from the supported ranges returned in
+the <a href="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74.html#GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-CB1FA26C-5D29-50ED-AF40-8CC579AF776F">Caps()</a> call. </p>
+ <p>Note
+that the <samp class="codeph">iTerminatorCount</samp>, the <samp class="codeph">iTerminatorArray</samp> and<samp class="codeph"> iSpecialRate</samp> are
+currently unused. The <samp class="codeph">iParityErrorChar</samp> replaces the character
+that the UART determined had a parity violation. This can be used to send
+a prearranged escape character to the upstream LDD. </p>
+ </div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-509C63E0-09D9-48F1-8ECB-F18377B73E8A"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-509C63E0-09D9-48F1-8ECB-F18377B73E8A"><!-- --></a><h2 class="sectiontitle">CheckConfig()</h2> <p>Implement the <samp class="codeph">CheckConfig()</samp> function.
+This is used by autosensing UARTs to pass detected configuration upstream
+to the LDD. This is called by the LDD when it creates the initial channel
+to allow the autosensed state to override any default it has set. If the UART
+device cannot perform autosensing, and most cannot, then the <samp class="codeph">CheckConfig()</samp> function
+should leave the parameter buffer unchanged. </p>
+ </div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-6F26F95A-7115-4E07-BA72-7AEF75DC2912"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-6F26F95A-7115-4E07-BA72-7AEF75DC2912"><!-- --></a><h2 class="sectiontitle">ValidateConfig()</h2> <p>Implement the <samp class="codeph">ValidateConfig()</samp> function.
+This returns true if the specified configuration is supported by the driver.
+This should never return false if the correct capabilities have been setup,
+but may be used to check for cases where, for example, a specific set of attributes
+cannot be applied together. As an example, a data format word size may not
+be generated for some specific baud rate. </p>
+ </div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-10FB213C-47B3-4CFF-AB2B-5868AE4531E0"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-10FB213C-47B3-4CFF-AB2B-5868AE4531E0"><!-- --></a><h2 class="sectiontitle">DisableIrqs()</h2> <p>Implement the <samp class="codeph">DisableIrqs()</samp> function.
+This is called by the LDD to disable (all) interrupts during critical sections,
+for example, during LDD buffer manipulation. It calls the kernel utility to
+perform the task. </p>
+ </div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-BFE0DF32-3D2A-4D86-8BEE-6EB5AF32C3BB"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-BFE0DF32-3D2A-4D86-8BEE-6EB5AF32C3BB"><!-- --></a><h2 class="sectiontitle">RestoreIrqs()</h2> <p>Implement the <samp class="codeph">RestoreIrqs()</samp> function,
+called by the LDD to enable (all) interrupts after critical sections have
+completed. Calls the kernel utility to perform the task. </p>
+ </div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-96B9D6FE-1E2C-45C0-B7F4-E5CF9B5BD802"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-96B9D6FE-1E2C-45C0-B7F4-E5CF9B5BD802"><!-- --></a><h2 class="sectiontitle">EnableTransmit()</h2> <p>Implement the <samp class="codeph">EnableTransmit()</samp> function.
+This initialises the UART transmit hardware, and the transmit ISR code path.
+This function can be called from the ISR (on receipt of an unblocking XON
+character), or to start a transmission of a LDD originated data buffer. It
+causes the UART to generate Tx service interrupts as it finishes transmitting
+a FIFOs worth of data, so that the entire buffer (passed by the LDD) can be
+sent under interrupt control. </p>
+ </div>
+
+<div class="section" id="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-593C5E94-A188-48C4-BB02-07268735270A"><a name="GUID-AB9175EB-1B61-5341-B6B9-5613A7862D74__GUID-593C5E94-A188-48C4-BB02-07268735270A"><!-- --></a><h2 class="sectiontitle">Data handling routines</h2> <p>Implement the main data
+handling routines. These are entirely dependent on the UART hardware interface
+and cannot therefore be described generally. They are typically driven by
+the interrupt service routine as asynchronous events from the UART (eg. data
+received, finished transmission of data, change in handshaking/flow control
+inputs) occur. </p>
+ <p>The main ISR is typically driven by an interrupt multiplexed
+from all the sources in the UART. The ISR, therefore, needs to determine which
+of the interrupt sources requires attention. Since the most critical source
+is the data received state, as this requires that the data is processed before
+following data overwrites earlier data, then this is usually the signal to
+be checked first. To avoid wasting time, the error state of the data is also
+checked – data that has bad parity or framing must be noted as such. Typically
+the receive path will save the currently available data into a temporary buffer,
+and queue a DFC to process the data further at a later time, when more client
+thread context is available (though this is a function of the LDD). The receive
+ISRr just passes the location of the ISR buffer into an LDD function which
+queues a DFC to process it. </p>
+ <p>The transmit path, called when the transmit
+FIFO contents drop below a programmable number, merely requests more data
+from the LDD. If there is none available it disables the transmit interrupt
+so as to prevent further requests when there is no data to be sent. Further
+data to transmit will cause the transmit FIFO empty interrupt to be re-enabled.
+Hence the start of any transmission is always performed on an explicit start
+request from the LDD and then continues under PDD interrupt control until
+the source data is exhausted. </p>
+ <p>The status notification path is present
+to inform the upstream LDD of changes in the input status signals (MODEM and
+flow control status). The UART can generate interrupts when any input handshake
+line changes state – the ISR merely reads the current state and queues a handler
+DFC so that the LDD can be informed. The LDD is responsible for determining
+what status change has occurred and dealing with it. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-0C8C41EC-A8ED-5916-B944-DDDF20FADAF4.html" title="Steps required to implement a port of the Serial Port Driver.">Port Implementation Tutorial</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

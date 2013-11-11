@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Watcher Framework Overview"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4603D4ED-966F-5F70-B991-D10495BC2D7E.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5DD1010C-1648-5086-BA80-BC25F3C7A2C4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C290FA5E-8E41-5D19-B8C1-F88491EE6388.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4603D4ED-966F-5F70-B991-D10495BC2D7E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-96C1C892-890E-5FA1-AEE2-DB6BA2AD0A1D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-E18592CD-223D-5B50-AF40-1AC7267BAB8C"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Watcher Framework Overview</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-E18592CD-223D-5B50-AF40-1AC7267BAB8C"><a name="GUID-E18592CD-223D-5B50-AF40-1AC7267BAB8C"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2404348 id2404397 id2404997 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5DD1010C-1648-5086-BA80-BC25F3C7A2C4.html">Messaging Middleware Guide</a> &gt; <a href="GUID-C290FA5E-8E41-5D19-B8C1-F88491EE6388.html">Messaging Framework</a> &gt; <a href="GUID-4603D4ED-966F-5F70-B991-D10495BC2D7E.html">Watcher Framework</a> &gt; </div>
+<h1 class="topictitle1">Watcher
+Framework Overview</h1>
+<div>
+<p>This section provides an overview of the functionality and the architecture
+of the Watcher Framework component. </p>
+
+<div class="section"><h2 class="sectiontitle">Purpose</h2> <p>The Watcher Framework is a lightweight
+framework used to launch watchers. </p>
+ <p>Watcher processes are launched
+when a device starts and execute until the device is switched-off. They watch
+for incoming messages and handle them as appropriate. For example an SMS Watcher
+waits for incoming SMS messages and delivers them to the Message Store. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Architecture</h2> <p>The Watcher Framework consists of
+an executable, <span class="filepath">watcher.exe</span>, that is started when the
+device boots. The start method depends on the UI family. The framework automatically
+loads each watcher plug-in DLL in <span class="filepath">z:\system\libs\watchers</span>. </p>
+ <p> <strong>Note:</strong> The
+Watcher Framework loads plug-ins only from ROM. </p>
+ <p>Because the watchers
+are started during system start-up it is important that they start quickly. </p>
+ <p>After
+the watcher framework has constructed all the watchers it starts an active
+scheduler which remains active while the phone is switched on. </p>
+ <p>The
+watcher executable is has the capabilities necessary for write-access to the <strong>Messaging
+Outbox </strong> folder. For instance, to update a delivery report, it may require
+an entry in the Outbox to be updated. </p>
+ <div class="fignone" id="GUID-E18592CD-223D-5B50-AF40-1AC7267BAB8C__GUID-B1A76302-6F78-50A1-B5CF-B7FB670A4477"><a name="GUID-E18592CD-223D-5B50-AF40-1AC7267BAB8C__GUID-B1A76302-6F78-50A1-B5CF-B7FB670A4477"><!-- --></a><span class="figcap">Figure 1.               Watcher Framework architecture            </span>
+
+<img src="GUID-C4945844-643F-5479-AA2C-61C35817555A_d0e493587_href.jpg"/>
+</div>
+ <p>A watcher plug-in typically make requests to another subsystem such
+that they are completed when an external event (an SMS) being received occurs.
+When a watcher has completed processing the request it waits for the next
+event. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">API summary</h2> <p>The <a href="GUID-2C666512-BA5C-31FC-A226-9C5449A73711.html"><span class="apiname">CWatcherLog</span></a> class
+logs the watcher operations. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Limitation</h2> <p>Support for starting and stopping watchers
+dynamically is not provided. This limitation makes watchers unsuitable for
+operations such as listening for messages transported through infrared (IR)
+because the IR port is not normally active. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-4603D4ED-966F-5F70-B991-D10495BC2D7E.html">Watcher Framework</a></div>
+</div>
+<div class="relinfo"><strong>Related information</strong><br/>
+<div><a href="GUID-96C1C892-890E-5FA1-AEE2-DB6BA2AD0A1D.html">WAP
+                Stack</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Server-Initiated vs. Application-Initiated Redrawing"/>
+<meta name="abstract" content="This topic introduces the reasons that the screen display may need to be updated and the difference between redrawing that is initiated by an application and that initiated by the Window Server."/>
+<meta name="description" content="This topic introduces the reasons that the screen display may need to be updated and the difference between redrawing that is initiated by an application and that initiated by the Window Server."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-484B51EC-2209-5492-8E9C-9D792AB0DF35.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-57A777A3-5D67-5CBB-B224-B7AD422A451B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0C4B86B5-530A-5839-86C1-46E7ABE281E0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DC5E8C7D-D697-53E8-87F4-344301430E61.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-484B51EC-2209-5492-8E9C-9D792AB0DF35.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-484B51EC-2209-5492-8E9C-9D792AB0DF35.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Server-Initiated vs. Application-Initiated Redrawing</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2384330 id2384499 id2384574 id2384588 id2384709 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html">Graphics Guide</a> &gt; <a href="GUID-57A777A3-5D67-5CBB-B224-B7AD422A451B.html" title="The Windowing collection contains two components—the Window Server, which manages the use of the screen by applications, and the Window Server Plugins component.">Windowing Collection</a> &gt; <a href="GUID-0C4B86B5-530A-5839-86C1-46E7ABE281E0.html" title="The Window Server component manages the use of the screen by applications and handles key and pointer events.">Window Server Component</a> &gt; <a href="GUID-DC5E8C7D-D697-53E8-87F4-344301430E61.html" title="The Window Server client-side library provides client applications with access to the screen and input devices.">Window Server Client-Side Library</a> &gt; <a href="GUID-484B51EC-2209-5492-8E9C-9D792AB0DF35.html" title="This section provides application developers with an introduction to key concepts involved in drawing graphics to the screen.">Graphics and Drawing</a> &gt; </div>
+<h1 class="topictitle1">Server-Initiated
+vs. Application-Initiated Redrawing</h1>
+<div><p>This topic introduces the reasons that the screen display may need
+to be updated and the difference between redrawing that is initiated by an
+application and that initiated by the Window Server. </p>
+
+<p> <strong>Variant</strong>: Both (ScreenPlay and non-ScreenPlay). <strong>Target
+audience</strong>: Application developers. </p>
+
+<div class="section" id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-D5FE0214-ECEB-4C0F-84C9-2BB44C19E477"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-D5FE0214-ECEB-4C0F-84C9-2BB44C19E477"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p>The Window Server maintains the UI
+display taking into account the region, ordinal position and visibility requirements
+of all displayable windows. The UI may be updated for several reasons: </p>
+ <ul>
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-017DF20B-5881-5B8A-A8A3-0019614535B7"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-017DF20B-5881-5B8A-A8A3-0019614535B7"><!-- --></a><p>at direct application
+request by an application drawing to a window through a <a href="GUID-0AEE5955-C530-35F1-A904-69183331B294.html"><span class="apiname">CWindowGc</span></a>  </p>
+ </li>
+
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-8B9CFD40-0ECB-5F0D-92BA-F8EB327B31CA"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-8B9CFD40-0ECB-5F0D-92BA-F8EB327B31CA"><!-- --></a><p>due to regions of the
+display becoming invalid </p>
+ </li>
+
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-6F5C9D10-BCE4-5F60-9F85-BE69C4C58F2C"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-6F5C9D10-BCE4-5F60-9F85-BE69C4C58F2C"><!-- --></a><p>due to actions internal
+to the Window Server, such as pointer cursor movements. </p>
+ </li>
+
+</ul>
+ <p>When a window is moved, resized, or otherwise manipulated by an application,
+it may cause parts of other windows to become invalid so that they must be
+redrawn. The Window Server maintains a list of all invalid regions and causes
+them to be redrawn in one of several ways: </p>
+ <ul>
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-2FFC86C2-0971-539B-BD21-E95E9FEB4202"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-2FFC86C2-0971-539B-BD21-E95E9FEB4202"><!-- --></a><p>for a region with no
+window, the Window Server redraws the invalid region in the default background
+color </p>
+ </li>
+
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-B0289B7D-97E2-5FBD-9983-130A5109FDFF"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-B0289B7D-97E2-5FBD-9983-130A5109FDFF"><!-- --></a><p>for a blank window,
+the Window Server redraws the invalid region in the window's color </p>
+ </li>
+
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-931BDE7B-4C56-5350-A26B-F89CCBA72DE6"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-931BDE7B-4C56-5350-A26B-F89CCBA72DE6"><!-- --></a><p>for a backed-up window,
+the invalid region is redrawn from a backup bitmap maintained by the Window
+Server </p>
+ </li>
+
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-24155452-0F5D-508E-B04D-96E06FD0913F"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-24155452-0F5D-508E-B04D-96E06FD0913F"><!-- --></a><p>if the invalid region
+is owned by an animation DLL, the Window Server invokes the animation DLL
+directly to redraw the area: the region is then valid again </p>
+ </li>
+
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-2A5080AF-1415-5CBF-B775-D547D9C3F222"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-2A5080AF-1415-5CBF-B775-D547D9C3F222"><!-- --></a><p>for a normal <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a>,
+whenever possible, the Window Server replays the sequence of drawing commands
+stored in the redraw stores. However, sometimes this is not possible, because,
+for example, the redraw stores have been lost due to low memory conditions.
+In these circumstances, the Window Server generates a redraw event and sends
+it to the application. This is described in more detail below. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-50054B7B-FF18-40B2-A582-B90FE66D269F"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-50054B7B-FF18-40B2-A582-B90FE66D269F"><!-- --></a><h2 class="sectiontitle">Window Server-initiated redrawing</h2> <p>When the Window
+Server needs to repaint a standard <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a> window and it
+is not possible to do this by replaying the drawing commands stored in the
+redraw stores, it sends a <a href="GUID-B5F16BF3-569D-3985-AAB7-439E3410468D.html"><span class="apiname">TWsRedrawEvent</span></a> message to the
+client. </p>
+ <p>It is part of the client's contract with the Window Server
+to listen for these events and respond to them by performing a redraw. The
+normal way for a client application to do this is through an active object,
+which is sometimes called a <strong>redrawer</strong>. This is normally provided by
+the application framework and should have a lower priority than the active
+objects for standard events. The client issues an asynchronous request for
+the next redraw event, calling the <a href="GUID-643DDA78-C7A7-386D-AB3F-8710141DDDA9.html#GUID-643DDA78-C7A7-386D-AB3F-8710141DDDA9__GUID-DADAFFD6-4B63-35EE-8F50-F397C119CC27"><span class="apiname">RWsSession::RedrawReady()</span></a> function. </p>
+ <p>The
+redrawer's <a href="GUID-12C281FF-546C-318D-8783-F26B0F619E11.html"><span class="apiname">RunL()</span></a> function (which handles the completed
+request) calls <a href="GUID-643DDA78-C7A7-386D-AB3F-8710141DDDA9.html#GUID-643DDA78-C7A7-386D-AB3F-8710141DDDA9__GUID-6008C20D-AA95-3803-8B57-54948FA61616"><span class="apiname">RWsSession::GetRedraw()</span></a>. This gets the <a href="GUID-B5F16BF3-569D-3985-AAB7-439E3410468D.html"><span class="apiname">TWsRedrawEvent</span></a>,
+which contains the handle of the window and the rectangle within it that needs
+to be redrawn and then does the redraw. This involves: </p>
+ <a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-078DF0F5-E856-5FFF-ADEB-1A09B4BBDFB0"><!-- --></a><ol id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-078DF0F5-E856-5FFF-ADEB-1A09B4BBDFB0">
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-75A15778-D570-5B5D-A07E-5660FFCAB00F"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-75A15778-D570-5B5D-A07E-5660FFCAB00F"><!-- --></a><p>Calling <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html#GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79__GUID-9337538E-7A53-3153-A330-968B5E4F2FF2"><span class="apiname">RWindow::BeginRedraw()</span></a> on
+the relevant window and passing in the rectangle. </p>
+ </li>
+
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-C63A002A-B433-5054-BD73-0368E2FB6C1B"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-C63A002A-B433-5054-BD73-0368E2FB6C1B"><!-- --></a><p>Issuing the <a href="GUID-0AEE5955-C530-35F1-A904-69183331B294.html"><span class="apiname">CWindowGc</span></a> drawing
+commands that define how to draw the area of the window specified by the rectangle
+passed in the <a href="GUID-B5F16BF3-569D-3985-AAB7-439E3410468D.html"><span class="apiname">TWsRedrawEvent</span></a>. These drawing commands must
+exactly match what was drawn originally, because the Window Server clips the
+drawing to the passed rectangle. </p>
+ </li>
+
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-AA03D7DD-0B8A-5241-87B1-D45BC8AAA369"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-AA03D7DD-0B8A-5241-87B1-D45BC8AAA369"><!-- --></a><p>Calling <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html#GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79__GUID-3DE16607-AD3B-3946-BEB3-88512EAAB9CE"><span class="apiname">RWindow::EndRedraw()</span></a>. </p>
+ </li>
+
+</ol>
+ <p>At the end of the redrawer’s <a href="GUID-12C281FF-546C-318D-8783-F26B0F619E11.html"><span class="apiname">RunL()</span></a>, a call is
+made to <a href="GUID-643DDA78-C7A7-386D-AB3F-8710141DDDA9.html#GUID-643DDA78-C7A7-386D-AB3F-8710141DDDA9__GUID-DADAFFD6-4B63-35EE-8F50-F397C119CC27"><span class="apiname">RWsSession::RedrawReady()</span></a> to enable the client
+to listen for further requests from the Window Server. </p>
+ <p>The following
+diagram demonstrates that typically the <a href="GUID-12C281FF-546C-318D-8783-F26B0F619E11.html"><span class="apiname">RunL()</span></a> starts with
+a <a href="GUID-C57CFECB-72CD-39EB-A83E-82A9E985F56B.html"><span class="apiname">GetRedraw()</span></a> and ends with a call to <a href="GUID-E3F0CB70-58E4-32FD-9828-71DF2F9976D3.html"><span class="apiname">RedrawReady()</span></a>. </p>
+ <div class="fignone" id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-B092D136-8C18-5237-A095-F8C3BBFFDDB4"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-B092D136-8C18-5237-A095-F8C3BBFFDDB4"><!-- --></a><span class="figcap">Figure 1.               Window Server-initiated redraw            </span>
+
+<img src="GUID-0528A294-AC1B-5CDD-B59C-A105F39D748F_d0e241129_href.png"/>
+</div>
+ <p>A redrawer's <samp class="codeph">RunL()</samp> function must <strong>not</strong> perform
+any non-redraw drawing (that is, any drawing operations that are not bracketed
+within the calls to <samp class="codeph">BeginRedraw()</samp> and <samp class="codeph">EndRedraw()</samp>).
+If it does, this causes a panic with code 79 (<samp class="codeph">EWservPanicWindowBeginRedrawNotCalled</samp>)
+in the ScreenPlay variant. This is to avoid the infinite loop that would otherwise
+be caused by an endless cycle of the non-redraw drawing within the <samp class="codeph">RunL()</samp> triggering
+a Window Server-initiated redraw. </p>
+ </div>
+
+<div class="section" id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-0238F737-3D2B-4811-8E46-561922210143"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-0238F737-3D2B-4811-8E46-561922210143"><!-- --></a><h2 class="sectiontitle">Application-initiated redrawing</h2> <p>An application
+initiates redrawing when it wants to update the UI to reflect a change of
+state. There are two scenarios, which we describe under separate headings
+below. </p>
+ <p><strong>The "draw now" scenario </strong> </p>
+ <p>The "draw now" redraw scenario is
+when an application wants to push a state change to a window immediately.
+Typically the application does this by calling <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-D5458F8C-E199-37DD-B821-050B749122C6"><span class="apiname">CCoeControl::DrawNow()</span></a>.
+However, it is possible to achieve the same results using <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a> and <a href="GUID-0AEE5955-C530-35F1-A904-69183331B294.html"><span class="apiname">CWindowGc</span></a> calls
+directly. To illustrate how to do this, consider a digital clock application
+that updates the time displayed in the window from 12:02 to 12:03. </p>
+ <p>The
+application does the following: </p>
+ <a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-D9D43E2B-B29D-5C6F-A1AB-ABA192D3D562"><!-- --></a><ol id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-D9D43E2B-B29D-5C6F-A1AB-ABA192D3D562">
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-C59E802D-0D4F-595B-9F1C-BED1090EE7D7"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-C59E802D-0D4F-595B-9F1C-BED1090EE7D7"><!-- --></a><p>Calls <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html#GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79__GUID-28202F81-52FE-30F5-8B8C-ABED0915822E"><span class="apiname">RWindow::Invalidate()</span></a>,
+optionally passing in the bounding rectangle. When called without passing
+in a rectangle, this function invalidates the entire window. </p>
+ </li>
+
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-491CB745-6B47-5656-874E-A87DE1BE6254"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-491CB745-6B47-5656-874E-A87DE1BE6254"><!-- --></a><p>Calls <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html#GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79__GUID-9337538E-7A53-3153-A330-968B5E4F2FF2"><span class="apiname">RWindow::BeginRedraw()</span></a>.
+If the application passed a bounding rectangle to <samp class="codeph">Invalidate()</samp>,
+it must pass the same bounding rectangle to <samp class="codeph">BeginRedraw()</samp>.
+If the application did not pass a bounding rectangle to <samp class="codeph">Invalidate()</samp>,
+it must not pass one to BeginRedraw(). </p>
+ </li>
+
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-8CA69A7D-0387-5604-9C10-983FB50514B5"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-8CA69A7D-0387-5604-9C10-983FB50514B5"><!-- --></a><p>Issues the <a href="GUID-0AEE5955-C530-35F1-A904-69183331B294.html"><span class="apiname">CWindowGc</span></a> draw
+commands. </p>
+ </li>
+
+<li id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-B2474EE6-CC03-55A8-9972-071B76512B26"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-B2474EE6-CC03-55A8-9972-071B76512B26"><!-- --></a><p>Calls <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html#GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79__GUID-3DE16607-AD3B-3946-BEB3-88512EAAB9CE"><span class="apiname">RWindow::EndRedraw()</span></a>. </p>
+ </li>
+
+</ol>
+ <div class="fignone" id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-6E2637DC-F92A-56DE-BB07-F109F5CA681B"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-6E2637DC-F92A-56DE-BB07-F109F5CA681B"><!-- --></a><span class="figcap">Figure 2.               Application-initiated redrawing, "draw now" scenario
+           </span>
+
+<img src="GUID-4BC95F70-2F3F-5CFE-B057-0C5A97430573_d0e241237_href.png"/>
+</div>
+ <p><strong>The "draw deferred" scenario </strong> </p>
+ <p>The "draw deferred" redraw scenario
+is when an application simply marks a window or a rectangle within a window
+as invalid. This eventually triggers a Window Server-initiated redraw. Typically
+the application does this by calling <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-9FB682AC-0209-302A-83F3-7BCB1162B998"><span class="apiname">CCoeControl::DrawDeferred()</span></a>.
+However, it is also possible to do this by calling <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html#GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79__GUID-28202F81-52FE-30F5-8B8C-ABED0915822E"><span class="apiname">RWindow::Invalidate()</span></a>. </p>
+ <div class="fignone" id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-8B78CE09-EE92-50B3-8000-731BD9C20890"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-8B78CE09-EE92-50B3-8000-731BD9C20890"><!-- --></a><span class="figcap">Figure 3.               Application-initiated redrawing, "draw deferred" scenario
+           </span>
+
+<img src="GUID-21EF9E6F-A0BF-5EB2-9E3F-CA6A011D4C89_d0e241261_href.png"/>
+</div>
+ <p>This approach is useful when the data to be displayed might be updated
+frequently but it is not necessary to update the display instantaneously. </p>
+ <p>To
+illustrate how it works, consider a window that has a rectangle that is used
+to display icons (a star, a cross and a triangle) that represent three different
+events that can occur in the application. Suppose the events can occur in
+quick succession. If you use the "draw now" approach when each event occurs,
+the Window Server updates the display separately for each one, as shown in
+the following diagram. </p>
+ <div class="fignone" id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-04BCFA21-8D44-5FEA-BE29-57B40AC9CF99"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-04BCFA21-8D44-5FEA-BE29-57B40AC9CF99"><!-- --></a><span class="figcap">Figure 4.               Icons displayed using the "draw now" approach       
+    </span>
+
+<img src="GUID-89185EBD-223F-5F52-B1CA-9F9692F7D21F_d0e241275_href.png"/>
+</div>
+ <p>However, if you use the "draw deferred" approach when each event
+occurs, the Window Server may not update the display for each one. For example,
+the Window Server does not update the display when it is superceded by a later
+call. </p>
+ <div class="fignone" id="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-1E0E2A3C-1E63-58F6-940F-0D439FA6C721"><a name="GUID-7C75642D-C0C9-5392-9354-711F42DC2C61__GUID-1E0E2A3C-1E63-58F6-940F-0D439FA6C721"><!-- --></a><span class="figcap">Figure 5.               Icons displayed using the "draw deferred" approach  
+         </span>
+
+<img src="GUID-EDC405DC-F222-59CD-836E-180F8E1D2D11_d0e241286_href.png"/>
+</div>
+ <p>If it is important that the display is updated immediately, you
+would generally use the "draw now" approach. However, if a short delay in
+the display being updated is unlikely to inconvenience the user, the "draw
+deferred" approach might be appropriate and has a performance advantage. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-484B51EC-2209-5492-8E9C-9D792AB0DF35.html" title="This section provides application developers with an introduction to key concepts involved in drawing graphics to the screen.">Graphics and Drawing</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-484B51EC-2209-5492-8E9C-9D792AB0DF35.html" title="This section provides application developers with an introduction to key concepts involved in drawing graphics to the screen.">Graphics
+and Drawing </a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

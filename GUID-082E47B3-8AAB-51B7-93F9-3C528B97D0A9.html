@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to Export Contact and Calendar Data"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-27E38FBB-F417-56C8-BFCF-B32215668902.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F22B8035-CD08-4181-B03A-759E92CA967B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-27E38FBB-F417-56C8-BFCF-B32215668902.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-082E47B3-8AAB-51B7-93F9-3C528B97D0A9"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to Export Contact and Calendar Data</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-082E47B3-8AAB-51B7-93F9-3C528B97D0A9"><a name="GUID-082E47B3-8AAB-51B7-93F9-3C528B97D0A9"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2858252 id2858504 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-F22B8035-CD08-4181-B03A-759E92CA967B.html">Organizer Guide</a> &gt; <a href="GUID-27E38FBB-F417-56C8-BFCF-B32215668902.html">Using Versit</a> &gt; </div>
+<h1 class="topictitle1">How to Export Contact and Calendar Data</h1>
+<div><p>The versit API provides support for exporting contact and calendar data to a stream. For example, suppose you want to make changes to an existing contact or calendar entry, and export the same to an external file store. To do so, again create the appropriate parser objects. That is, <a href="GUID-F4BEE3F4-F268-345D-B727-2C1D5E25F3F7.html"><span class="apiname">CParserVCard</span></a> and <a href="GUID-6BEFF6A7-FBD8-306D-98A4-8711E788C702.html"><span class="apiname">CParserVCal</span></a> objects to export vCards and/or vCalendars. For more information on importing vCard and vCalendar, refer to <a href="GUID-2A39CCBD-CADB-56B7-872A-1EC617AC7D93.html">How to Import Contact and Calendar Data</a>. </p>
+ <p>Let us assume that, you want to add a new property to the vCard called <em>EMAIL</em> with the parameters <em>ENCODING</em> and <em>CHARSET</em>, and the property value of <em>foo@bar.org</em>. To do so, you need to create objects of <a href="GUID-895C3D03-FE10-329C-9437-2948686509C5.html"><span class="apiname">CParserProperty</span></a>, an array of <a href="GUID-4A02E5BD-39D3-34AD-B70B-8177144FF12C.html"><span class="apiname">CParserParam</span></a> to hold parameter information, and <a href="GUID-76E6CCFA-5BAC-34F1-A5B2-FB505A68E784.html"><span class="apiname">CParserPropertyValue</span></a> to hold the property values. </p>
+ <pre class="codeblock" id="GUID-082E47B3-8AAB-51B7-93F9-3C528B97D0A9__GUID-B97F4C10-25A1-504E-A072-5E65EA5EEB73"><a name="GUID-082E47B3-8AAB-51B7-93F9-3C528B97D0A9__GUID-B97F4C10-25A1-504E-A072-5E65EA5EEB73"><!-- --></a>// String literals representing the property and its value.
+_LIT(KPName,"EMAIL");
+_LIT(KEmail,"foo@bar.org");
+
+// String literals representing the property parameters and their values.
+_LIT(KParam1,"ENCODING");
+_LIT(KValue1,"QUOTED-PRINTABLE");
+_LIT(KParam2,"CHARSET");
+_LIT(KValue2,"US-ASCII");
+
+CParserPropertyValue* value=CParserPropertyValueHBufC::NewL(KEmail); // The property value.
+
+// Array to hold parameters of EMAIL property.
+CArrayPtr&lt;CParserParam&gt;* arrayOfParams = new(ELeave)CArrayPtrFlat&lt;CParserParam&gt;(2);
+
+// Parameters with their corresponding values are added to the array.
+CParserParam* parserParam1=CParserParam::NewL(KParam1,KValue1);
+arrayOfParams-&gt;AppendL(parserParam1);
+CParserParam* parserParam2=CParserParam::NewL(KParam2,KValue2);
+arrayOfParams-&gt;AppendL(parserParam2);
+
+// Associate the property params and property value with the EMAIL property
+CParserProperty* property=CParserProperty::NewL(*value,KPName,arrayOfParams);
+
+// Finally add the EMAIL property to the vCard using the parser object.
+vCardParser-&gt;AddPropertyL(property);
+
+// Set the character set as ASCII (7-bit) for transformation.
+vCardParser-&gt;SetDefaultCharSet(Versit::EUSAsciiCharSet);</pre>
+ <p> <em>Note that you should include proper error checks in the above given code before using it for production.</em>  </p>
+ <p>Once you have added the EMAIL property, you can externalize (export) the vCard. This time you have to open the file in write mode to externalize the vCard data. </p>
+ <pre class="codeblock" id="GUID-082E47B3-8AAB-51B7-93F9-3C528B97D0A9__GUID-639AAC10-2332-5408-86F8-24045A3F0094"><a name="GUID-082E47B3-8AAB-51B7-93F9-3C528B97D0A9__GUID-639AAC10-2332-5408-86F8-24045A3F0094"><!-- --></a>TInt err = file.Replace(iFsSession, KVCardFileJIS, EFileWrite) // Replace the file with modified information.
+// Check if there is any error reported before exporting the vCard.
+if(err == KErrNone)
+   vCardParser-&gt;ExternalizeL(file);</pre>
+ <p>Same procedure could be followed if you want to modify a vCalendar using the <samp class="codeph">CParserVCal</samp> object. </p>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-27E38FBB-F417-56C8-BFCF-B32215668902.html">Using Versit</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

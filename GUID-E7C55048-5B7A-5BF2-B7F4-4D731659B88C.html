@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Device Driver Writing and Migration Technology Tutorial"/>
+<meta name="abstract" content="Explains techniques for writing device drivers on data paged systems and migrating device drivers to data paged systems."/>
+<meta name="description" content="Explains techniques for writing device drivers on data paged systems and migrating device drivers to data paged systems."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2D8B8FF1-7A35-5E98-BDDB-2B0BD8DE6215.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2B7D04D9-98DE-5284-836D-01DB4FA8949D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2D8B8FF1-7A35-5E98-BDDB-2B0BD8DE6215.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Device Driver Writing and Migration Technology Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388574 id2388657 id2388718 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html">Demand Paging</a> &gt; <a href="GUID-2B7D04D9-98DE-5284-836D-01DB4FA8949D.html">Writable Data Paging</a> &gt; <a href="GUID-2D8B8FF1-7A35-5E98-BDDB-2B0BD8DE6215.html">Writable Data Paging Tutorial</a> &gt; </div>
+<h1 class="topictitle1">Device
+Driver Writing and Migration Technology Tutorial</h1>
+<div><p>Explains techniques for writing device drivers on data paged systems
+and migrating device drivers to data paged systems. </p>
+
+<div class="section" id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-8629C08B-C1C8-4435-962A-A57F11EB25CF"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-8629C08B-C1C8-4435-962A-A57F11EB25CF"><!-- --></a><h2 class="sectiontitle">Impact of data
+paging on kernel APIs</h2> <p>The use of data paging impacts on the task
+of writing and migrating device drivers in two main ways: the preconditions
+for kernel API calls and the performance of the kernel APIs. </p>
+ <p>Firstly,
+kernel APIs which access user memory may only be called subject to preconditions.
+The preconditions are that </p>
+ <ul>
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-81B56316-97C6-5EE8-BD88-D0741F9301F9"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-81B56316-97C6-5EE8-BD88-D0741F9301F9"><!-- --></a><p>no fast mutex may be
+held while calling them, and </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-507412E1-1CA8-5590-B974-809B51C3D79D"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-507412E1-1CA8-5590-B974-809B51C3D79D"><!-- --></a><p>no kernel mutex may
+be held while calling them. </p>
+ </li>
+
+</ul>
+ <p>The APIs are these: </p>
+ <ul>
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-7A4E9152-8BFA-515E-A115-265436C843F4"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-7A4E9152-8BFA-515E-A115-265436C843F4"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-C154A151-0DF7-345D-9A10-E9B1CF3400D9"><span class="apiname">Kern::KUDesInfo</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-3C31D5D3-48E9-5D6D-8489-8259D98BF117"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-3C31D5D3-48E9-5D6D-8489-8259D98BF117"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-FAFAA120-AA28-32FD-9202-1534C3148026"><span class="apiname">Kern::InfoCopy</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-FCE0C3D6-EE49-5AC9-856E-9833D22D541A"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-FCE0C3D6-EE49-5AC9-856E-9833D22D541A"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-B79007D0-FF1F-30E7-986D-7CEBC5E45102"><span class="apiname">Kern::KUDesGet</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-72D4E609-B189-570A-B4D6-D2F4F1289EC1"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-72D4E609-B189-570A-B4D6-D2F4F1289EC1"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-CDEA7B22-9520-3DB1-AA04-1289C2287936"><span class="apiname">Kern::KUDesPut</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-EE2D8F45-5B12-5D69-A9FD-7ED47A0B5EAD"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-EE2D8F45-5B12-5D69-A9FD-7ED47A0B5EAD"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-94F2DF65-87A5-32C6-9695-9557E5832ACF"><span class="apiname">Kern::KUDesSetLength</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-46805316-D1D5-5477-8287-FBF43DD8D3C4"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-46805316-D1D5-5477-8287-FBF43DD8D3C4"><!-- --></a><p> <a href="GUID-EE4CB2B4-EAFC-3721-BF0D-ECDF96C29FBF.html"><span class="apiname">umemget</span></a>, <a href="GUID-E569834D-8960-3D4E-8980-64902200D4F8.html"><span class="apiname">kumemget</span></a>, <a href="GUID-388FF557-3092-3EA0-BF4A-D73504521CD0.html"><span class="apiname">umemget32</span></a>, <a href="GUID-874BB607-F0CA-3123-AB2D-D04F4763B16A.html"><span class="apiname">kumemget32</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-DB8BF5C7-2444-5B8F-8F66-12383ECB6A81"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-DB8BF5C7-2444-5B8F-8F66-12383ECB6A81"><!-- --></a><p> <a href="GUID-71B53E34-1F41-3B53-8133-D76D8847D143.html"><span class="apiname">umemput</span></a>, <a href="GUID-7B0CC157-0EF6-3CF5-BAF2-D8227F7734A5.html"><span class="apiname">kumemput</span></a>, <a href="GUID-A6303814-456F-3583-86B0-A99EA5C3E5A4.html"><span class="apiname">umemput32</span></a>, <a href="GUID-B00A6392-9A90-357E-B6A2-D2762800C2C5.html"><span class="apiname">kumemput32</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-9E6B180A-B360-58A6-B60E-8605E22F2C2E"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-9E6B180A-B360-58A6-B60E-8605E22F2C2E"><!-- --></a><p> <a href="GUID-BBF5941C-3369-3B56-A560-6E80A7CFFE0F.html"><span class="apiname">umemset</span></a>, <a href="GUID-08C2BCA6-6842-3D10-AB56-835B618317F9.html"><span class="apiname">kumemset</span></a>, <a href="GUID-B48B5214-ACDD-3E9B-AE07-1B40F645D959.html"><span class="apiname">umemset32</span></a>, <a href="GUID-5C1EB135-F9A7-37A5-B256-299CB9598DA9.html"><span class="apiname">kumemset32</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-F307081B-7672-5C3F-869C-9B4B4F55CE62"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-F307081B-7672-5C3F-869C-9B4B4F55CE62"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-D0FCFD5B-2814-3D81-A54A-9E2FA226019B"><span class="apiname">Kern::RequestComplete</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-647B36DF-2124-5252-824E-E100695624C2"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-647B36DF-2124-5252-824E-E100695624C2"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-589188FC-48E8-3973-B88B-D9E47CFE4403"><span class="apiname">Kern::ThreadRawRead</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-9776CFD1-B061-5FC1-B100-0A55D7E8BFA5"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-9776CFD1-B061-5FC1-B100-0A55D7E8BFA5"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-68BFCE22-E05E-3710-9014-6E72FDE7891F"><span class="apiname">Kern::ThreadRawWrite</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-21F695FF-8933-5FF4-84DC-1F09056E36A6"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-21F695FF-8933-5FF4-84DC-1F09056E36A6"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-451FD979-14A8-3301-A389-7B509C969FE9"><span class="apiname">Kern::ThreadDesRead</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-B477D969-B73E-514B-8E40-565EE6C4490E"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-B477D969-B73E-514B-8E40-565EE6C4490E"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-B4A7AF78-179A-378B-9184-CCC2E31830F5"><span class="apiname">Kern::ThreadDesWrite</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-C8080F75-2F3B-5DBE-B0DE-D8518ED49516"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-C8080F75-2F3B-5DBE-B0DE-D8518ED49516"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-6668EA8F-AA55-3CB4-ADEA-879579E94729"><span class="apiname">Kern::ThreadGetDesLength</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-8D644BB0-9A01-5248-8DD2-95CDAE058B09"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-8D644BB0-9A01-5248-8DD2-95CDAE058B09"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-53813A59-7CED-39E2-818A-D9E0374D2BFD"><span class="apiname">Kern::ThreadGetDesMaxLength</span></a>  </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-746E54A0-C6D0-5B90-89F3-D197DD04470C"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-746E54A0-C6D0-5B90-89F3-D197DD04470C"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-60E5E01D-2965-3E33-BC05-052A575303F8"><span class="apiname">Kern::ThreadGetDesInfo</span></a>  </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-8C767668-D568-40E4-82F7-DD6FC6EA8132"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-8C767668-D568-40E4-82F7-DD6FC6EA8132"><!-- --></a><h2 class="sectiontitle">Impact of data
+paging on execution</h2> <p>Device drivers use kernel side APIs to access
+user memory, and even when they are called in accordance with their preconditions
+they are no longer guaranteed to execute in a short and bounded time. This
+is because they may access paged memory and incur page faults which propagate
+from one thread to another. This document discusses how to mitigate the impact
+of data paging on device drivers. </p>
+ </div>
+
+<div class="section" id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-3903425C-EA48-44D6-B65E-253F583465BF"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-3903425C-EA48-44D6-B65E-253F583465BF"><!-- --></a><h2 class="sectiontitle">Mitigating
+data paging: general principles</h2> <p>Three general principles are involved
+in mitigating the impact of data paging on device drivers. </p>
+ <ul>
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-955ACDFA-CA71-5489-920F-B2F74039EA37"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-955ACDFA-CA71-5489-920F-B2F74039EA37"><!-- --></a><p>Device drivers should
+not use shared DFC queues. </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-3FD4823A-C1A0-53B2-8987-45313BC984C3"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-3FD4823A-C1A0-53B2-8987-45313BC984C3"><!-- --></a><p>Device drivers should,
+as far as possible, not access paged memory. </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-3557B245-D479-5FA3-B039-092A8F1B7E06"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-3557B245-D479-5FA3-B039-092A8F1B7E06"><!-- --></a><p>If a device driver needs
+to access paged memory, it should do so in the context of the client thread. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-BE00235A-D227-4290-B3FA-93B20966073F"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-BE00235A-D227-4290-B3FA-93B20966073F"><!-- --></a><h2 class="sectiontitle">Driver frameworks</h2> <p>There
+are three main categories of device driver: </p>
+ <ul>
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-EAD164EF-A615-5AFE-A512-032C1C0CC0AC"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-EAD164EF-A615-5AFE-A512-032C1C0CC0AC"><!-- --></a><p><strong>Boot-Loaded Non-Channel
+Drivers</strong></p>
+<p>Boot loaded drivers are built as kernel extensions. They
+are typically simple device drivers such as keyboard drivers with limited
+or no client side interface and are not much impacted by data paging. It is
+generally safe for them to pass data structures using the HAL in the context
+of a kernel thread and for them to execute in the context of a kernel thread:
+however, this assumption must always be verified for individual cases. </p>
+</li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-B82465B7-6306-5AAC-B6B4-FB5A4D07EBB2"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-B82465B7-6306-5AAC-B6B4-FB5A4D07EBB2"><!-- --></a><p><strong>Media Drivers</strong> </p>
+<p>Media
+drivers are both channel based drivers and kernel extensions. When written
+according to the recommended model they either execute wholly in the context
+of their clients or use a unique DFC queue and associated kernel thread. If
+these recommendations are followed, no additional measures to mitigate the
+impact of data paging are required. </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-86AB0CC9-B147-5019-837C-B2A6B32A9F6B"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-86AB0CC9-B147-5019-837C-B2A6B32A9F6B"><!-- --></a><p><strong>Dynamically loaded
+channel based IO device drivers</strong> </p>
+<p>Channel based IO device drivers
+are based on various models: all are dynamically loaded. They are derived
+either from <a href="GUID-E7550422-5121-3393-A85E-BB797969CD2A.html"><span class="apiname">DLogicalChannelBase</span></a> or <a href="GUID-A3CC1D95-4681-3349-A67C-F113A614041D.html"><span class="apiname">DLogicalChannel</span></a>.
+  </p>
+<p>Channel based drivers derived from <a href="GUID-E7550422-5121-3393-A85E-BB797969CD2A.html"><span class="apiname">DLogicalChannelBase</span></a> usually
+execute in the context of their client, mitigating the impact of data paging.
+Where they are multi-threaded, they typically create separate and unique kernel
+threads and do not use shared DFC queues, mitigating the impact of data paging:
+if they use a shared DFC queue and associated kernel thread, they are impacted
+by data paging and must be written so as to mitigate the effects.  Channel
+based drivers derived from <a href="GUID-A3CC1D95-4681-3349-A67C-F113A614041D.html"><span class="apiname">DLogicalChannel</span></a> may communicate
+with the hardware directly (LDD to hardware) or indirectly (LDD to PDD to
+hardware). If a PDD is involved, mitigation of data paging should take place
+at that level and not the LDD.   Channel based drivers may have single or
+multiple clients, channels and hardware. It is these drivers which require
+most work to mitigate the impact of data paging. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-6CD39776-B448-4F7D-8EC2-727AF13B575B"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-6CD39776-B448-4F7D-8EC2-727AF13B575B"><!-- --></a><h2 class="sectiontitle">Mitigation
+techniques</h2> <p>The impact of data paging on device drivers is mitigated
+by the use of various different techniques which are the subject of the rest
+of this document. </p>
+ <p><strong>Passing
+data by value</strong> </p>
+ <p>Clients should pass data by value not as pointers.
+Return values of calls should be return codes not data. </p>
+ <p><strong>Using dedicated DFC queues</strong> </p>
+ <p>All drivers which use DFCs should
+use a dedicated DFC queue to service them. You should not use the kernel queues <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-96588DB1-6884-300F-A85B-EA14A8A1BFAD"><span class="apiname">Kern::DfcQue0</span></a> and <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-7B1F53D8-7EC2-3A05-9F1B-240550A7283B"><span class="apiname">Kern::DfcQue1</span></a> for this purpose. How you create a dedicated DFC queue depends on the nature
+of the driver. </p>
+ <p>To service boot loaded drivers and media drivers, you
+create a DFC queue by calling <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-F8D26F25-FBFB-3D89-9A80-95719D165C8E"><span class="apiname">Kern::DfcQueueCreate()</span></a>. </p>
+ <p>To
+service dynamically loaded drivers derived from DLogicalChannelBase you call <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-ED1B8C3D-ABFB-37BD-A6E9-4080FCCE115C"><span class="apiname">Kern::DynamicDfcQCreate()</span></a> with
+a <a href="GUID-D9111A26-FAA3-3D8E-AB41-5B1263FABB6A.html"><span class="apiname">TDynamicDfcQue</span></a> as argument: </p>
+ <pre class="codeblock" id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-73C0C08A-6BAC-5526-A987-57079ED762E7"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-73C0C08A-6BAC-5526-A987-57079ED762E7"><!-- --></a>TInt Kern::DynamicDfcQCreate(TDynamicDfcQue*&amp; aDfcQ, TInt aPriority, const TDesC&amp; aBaseName);</pre>
+ <p>To service a dynamically loaded driver derived from <a href="GUID-A3CC1D95-4681-3349-A67C-F113A614041D.html"><span class="apiname">DLogicalChannel</span></a>,
+you use the DFC queue supplied with it (the member <a href="GUID-954F5891-8BF3-33B2-9F40-9D80A6D2A17C.html"><span class="apiname">iDfc</span></a>,
+accessed by pointer). To use the queue you call the <a href="GUID-2FC8CE8F-102C-3025-86B6-C903D26CD002.html"><span class="apiname">SetDfcQ()</span></a> function
+during the second phase construction of the LDD. </p>
+ <p>You destroy queues
+by calling their function <a href="GUID-38F49D2C-2798-37DB-82CC-A49EAB22B829.html"><span class="apiname">Destroy()</span></a> which also terminates
+the associated thread. </p>
+ <p><strong>Setting
+realtime state</strong> </p>
+ <p>The realtime state of a thread determines whether
+it is enabled to access paged memory. If a thread is realtime (its realtime
+state is on) it is guaranteed not to access paged memory, so avoiding unpredictable
+delays. The realtime state of a thread may be set to <a href="GUID-0AD1C6D1-591E-3ED2-A4AA-2486A37AE5CE.html"><span class="apiname">ERealtimeStateOn</span></a>, <a href="GUID-19425C4A-0B5F-3D89-B5C9-C5DB7E984D7F.html"><span class="apiname">ERealtimeStateOff</span></a> and <a href="GUID-2AB828E6-39A5-377C-87B1-FA0CB886E2D7.html"><span class="apiname">ERealtimeStateWarn</span></a> as defined in the enumeration <a href="GUID-C9606015-7E55-338D-BE81-42AF50980F59.html"><span class="apiname">TThreadRealtimeState</span></a> and
+set by the kernel function <a href="GUID-802BE082-128E-3F1E-A8D5-304DCDABFCC8.html"><span class="apiname">SetRealtimeState</span></a>. </p>
+ <p>If
+a driver uses DFC threads and is subject to performance guarantees, their
+realtime state should be set to on (this is the default when data paging is
+enabled). Otherwise the state should be set to off: the warning state is used
+for debugging. </p>
+ <p><strong>Validating
+arguments in client context</strong> </p>
+ <p>It is often necessary to validate
+the arguments of a request function. This should be done in the context of
+the client thread as far as possible. </p>
+ <p>When a driver derived from the
+class <a href="GUID-E7550422-5121-3393-A85E-BB797969CD2A.html"><span class="apiname">DLogicalChannelBase</span></a> makes a request this happens
+automatically as a call to the <a href="GUID-92AA62BB-14F1-325D-9A22-9C87AAE0535C.html"><span class="apiname">Request()</span></a> function takes
+place in the client thread. When the driver is derived from the class <a href="GUID-A3CC1D95-4681-3349-A67C-F113A614041D.html"><span class="apiname">DLogicalChannel</span></a> the
+request involves a call to the <a href="GUID-E31B440A-A98E-30DA-B222-C8BA59A81A0E.html"><span class="apiname">SendMsg()</span></a> function inherited
+from the base class and it is necessary to override the base implementation
+to force evaluation of the arguments within the client thread. </p>
+ <p><strong>Accessing user memory from client context</strong> </p>
+ <p>The DFC should access
+user memory as little as possible. Whenever there is a need to access user
+memory and it can be accessed in the context of the client thread, it should
+be. </p>
+ <p>When the driver is derived from the class <a href="GUID-E7550422-5121-3393-A85E-BB797969CD2A.html"><span class="apiname">DLogicalChannelBase</span></a>,
+read and write operations on user memory can be performed with calls to the <a href="GUID-92AA62BB-14F1-325D-9A22-9C87AAE0535C.html"><span class="apiname">Request()</span></a> function
+and these take place in the context of the client thread. </p>
+ <p>When the
+driver is derived from the class <a href="GUID-A3CC1D95-4681-3349-A67C-F113A614041D.html"><span class="apiname">DLogicalChannel</span></a> it is
+possible to read from and write to user memory by overriding the <a href="GUID-E31B440A-A98E-30DA-B222-C8BA59A81A0E.html"><span class="apiname">SendMsg()</span></a> function
+before passing the message on to be processed by the DFC thread if necessary.
+If the message is passed on, data must be stored kernel side either on the
+client thread's kernel stack or in the channel object. </p>
+ <p>Message data
+can only be stored on the client thread's kernel stack if the message is synchronous
+and the size of the data is less than 4Kb. Since the stack is local to the
+client it can be used by more than one thread. One way of doing this is to
+implement <a href="GUID-E31B440A-A98E-30DA-B222-C8BA59A81A0E.html"><span class="apiname">SendMsg()</span></a> with a call to <a href="GUID-4DF8919A-CAA2-36D5-B91B-E26D2A32F5F5.html"><span class="apiname">SendControl()</span></a> which
+is itself implemented to perform the copying in the client thread context
+and independently call the <a href="GUID-E31B440A-A98E-30DA-B222-C8BA59A81A0E.html"><span class="apiname">SendMsg()</span></a> function of the parent
+class. </p>
+ <p>Where the message is asynchronous you can use a similar strategy
+for overriding the <a href="GUID-E31B440A-A98E-30DA-B222-C8BA59A81A0E.html"><span class="apiname">SendMsg()</span></a> function but this time perform
+the copying to a buffer owned by the channel independently of a call to the <a href="GUID-E31B440A-A98E-30DA-B222-C8BA59A81A0E.html"><span class="apiname">SendMsg()</span></a> function
+of the parent class. In this case the size of the data must be small (in the
+region of 4Kb), there must be only one client using the buffer, and data cannot
+be written back to the client. </p>
+ <p><strong>Using
+TClientDataRequest</strong> </p>
+ <p>An asynchronous request often needs to copy
+a structure of fixed size to its client to complete a request. The <a href="GUID-918410AB-63D3-3672-82BE-73289F88C03E.html"><span class="apiname">TClientDataRequest</span></a> object
+exists for this purpose: it writes a fixed size structure to user memory and
+completes the request in the following steps. </p>
+ <a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-100FA302-3292-565D-A0BC-A7314C2E2499"><!-- --></a><ol id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-100FA302-3292-565D-A0BC-A7314C2E2499">
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-41BF301F-9FC7-55F8-9346-42262F49B5EE"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-41BF301F-9FC7-55F8-9346-42262F49B5EE"><!-- --></a><p>The driver creates a <a href="GUID-918410AB-63D3-3672-82BE-73289F88C03E.html"><span class="apiname">TClientDataRequest</span></a> object
+for each asynchronous client which may be outstanding concurrently: either
+one per client or one per request as appropriate. </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-D4322A3D-C2F7-52D2-B600-35A65EF460CD"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-D4322A3D-C2F7-52D2-B600-35A65EF460CD"><!-- --></a><p>When the client makes
+a request the <a href="GUID-918410AB-63D3-3672-82BE-73289F88C03E.html"><span class="apiname">TClientDataRequest</span></a> object is set to contain
+the address of the client's buffer or descriptor and the address of the client's <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html"><span class="apiname">TRequestStatus</span></a>.
+This takes place in the client context. </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-6FBED29F-E54D-5C5C-A6E5-8DBA41625338"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-6FBED29F-E54D-5C5C-A6E5-8DBA41625338"><!-- --></a><p>The data to be written
+is copied into the buffer of the <a href="GUID-918410AB-63D3-3672-82BE-73289F88C03E.html"><span class="apiname">TClientDataRequest</span></a> object. </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-3316EB6E-804D-5CBC-8930-68D8E226C955"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-3316EB6E-804D-5CBC-8930-68D8E226C955"><!-- --></a><p>A call to <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-DE0CF5BD-B166-3C5B-9E27-F95710322F21"><span class="apiname">Kern::QueueRequestComplete()</span></a> passes
+the address of the <a href="GUID-918410AB-63D3-3672-82BE-73289F88C03E.html"><span class="apiname">TClientDataRequest</span></a> object. </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-39DE78F0-D6E0-582B-B3F1-3AEC6D0E12CE"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-39DE78F0-D6E0-582B-B3F1-3AEC6D0E12CE"><!-- --></a><p>The client is signalled
+immediately. </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-5FF0CD64-F05D-5DF2-BD96-6B5966119CA8"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-5FF0CD64-F05D-5DF2-BD96-6B5966119CA8"><!-- --></a><p>When the client thread
+next runs, the buffer contents and completion value are written to the client. </p>
+ </li>
+
+</ol>
+ <p><strong>Using
+TClientBufferRequest</strong> </p>
+ <p>When it is necessary to access user memory
+from a DFC thread context, that memory must be pinned for the duration of
+the request and unpinned when the request is completed. The pinning must be
+performed in the context of the client thread. The <a href="GUID-5CD6D111-213B-31A2-AA46-C5598DDB7249.html"><span class="apiname">TClientBufferRequest</span></a> object
+exists for this purpose.It is used in the following way. </p>
+ <a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-3FEB8983-0BF6-578D-856A-09433AD7182E"><!-- --></a><ol id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-3FEB8983-0BF6-578D-856A-09433AD7182E">
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-4C3FB914-624A-50FE-94E0-EFF85D6169F8"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-4C3FB914-624A-50FE-94E0-EFF85D6169F8"><!-- --></a><p>The driver creates a <a href="GUID-5CD6D111-213B-31A2-AA46-C5598DDB7249.html"><span class="apiname">TClientBufferRequest</span></a> object
+for each client request which may be outstanding concurrently: either one
+per client or one per request as appropriate. </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-CAD03D3A-19E6-5C3D-A203-1726917A50B2"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-CAD03D3A-19E6-5C3D-A203-1726917A50B2"><!-- --></a><p>Whe a client makes a
+request, the <a href="GUID-5CD6D111-213B-31A2-AA46-C5598DDB7249.html"><span class="apiname">TClientBufferRequest</span></a> object is set to contain
+the address of any buffers used and the address of the client's <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html"><span class="apiname">TRequestStatus</span></a>.
+Doing so pins the contents of the buffers: they can be specified as descriptors
+or by start address and length. This takes place in the client context. </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-8493130F-9E96-580F-B509-5EB5B69852A0"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-8493130F-9E96-580F-B509-5EB5B69852A0"><!-- --></a><p>The driver calls <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-A33C039B-981C-3234-A414-95487D4103A9"><span class="apiname">Kern::ThreadBufRead()</span></a> and <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-0C62AA11-87B4-307A-B63E-08A6842C7283"><span class="apiname">Kern::ThreadBufWrite()</span></a> to access the client's buffers. This takes place in the context of the DFC. </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-5C63E867-025B-5F67-90CE-CE960DC254BB"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-5C63E867-025B-5F67-90CE-CE960DC254BB"><!-- --></a><p>When the request is
+complete, the driver calls <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-ECE11E29-0831-3271-AFAA-88DAE4131BE1"><span class="apiname">Kern::QueueBufferRequestComplete()</span></a> passing
+the <a href="GUID-5CD6D111-213B-31A2-AA46-C5598DDB7249.html"><span class="apiname">TClientBufferRequest</span></a> object. This signals the client
+immediately and unpins the buffers. </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-474B2BBE-F24E-5DB3-B83F-CDA95DDE0C3E"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-474B2BBE-F24E-5DB3-B83F-CDA95DDE0C3E"><!-- --></a><p>When the client thread
+next runs, the completion value is written back to the client along with the
+updated length of any descriptors. </p>
+ </li>
+
+</ol>
+ <p><strong>Using
+Kern::RequestComplete()</strong> </p>
+ <p>The function <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-D720BB4C-5E31-3213-BB16-859AA325FE98"><span class="apiname">Kern::RequestComplete()</span></a> exists
+in two versions: </p>
+ <pre class="codeblock" id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-11FEEAC7-3223-5B27-9FA2-0C71F5F55E8C"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-11FEEAC7-3223-5B27-9FA2-0C71F5F55E8C"><!-- --></a>static void Kern::RequestComplete(DThread* aThread, TRequestStatus*&amp; aStatus, TInt aReason);</pre>
+ <p>which is now deprecated, and its overloaded replacement </p>
+ <pre class="codeblock" id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-AAAAF661-3C0F-5048-8AD2-16C085A65387"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-AAAAF661-3C0F-5048-8AD2-16C085A65387"><!-- --></a>static void Kern::RequestComplete(TRequestStatus*&amp; aStatus, TInt aReason);</pre>
+ <p>The
+overloaded version should always be used, as it does not take a thread pointer
+argument. </p>
+ <p><strong>Using
+shared chunks</strong> </p>
+ <p>Shared chunks are a mechanism by which kernel side
+code shares buffers with user side code. As an alternative to pinning memory
+they have the following advantages: </p>
+ <ul>
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-65C6ECA6-A89B-5303-B674-E90AA805841A"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-65C6ECA6-A89B-5303-B674-E90AA805841A"><!-- --></a><p>Shared chunks cannot
+be paged and therefore paging faults never arise. </p>
+ </li>
+
+<li id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-D7B96CD0-725F-5FCB-A30A-6FFF55ADC439"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-D7B96CD0-725F-5FCB-A30A-6FFF55ADC439"><!-- --></a><p>Shared chunks transfer
+data with a minimum number of copying operations and are useful where high
+speeds and large volumes are required. </p>
+ </li>
+
+</ul>
+ <p>Shared chunks present disadvantages when a driver is being migrated
+rather than written from scratch, as the client API must be rewritten as well
+as the driver code. </p>
+ </div>
+
+<div class="section" id="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-143D7A45-D119-4AEF-8941-116C2567514F"><a name="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C__GUID-143D7A45-D119-4AEF-8941-116C2567514F"><!-- --></a><h2 class="sectiontitle">See Also</h2> <p> <a href="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1.html" title="Describes how to maintain performance guarantees when writing a software package on a data paged platform.">Performance Guarantee Tutorial</a>  </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-2D8B8FF1-7A35-5E98-BDDB-2B0BD8DE6215.html">Writable Data Paging Tutorial</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

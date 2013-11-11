@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Device Data Provider Configuration Parameters"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AF47A4FF-95DB-593B-BA8F-7751D14219D6.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A0D4B6EC-8FA7-5FD9-AE5A-E811D876D585.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-98ACB508-ED32-5193-9E30-BCDF7E921788.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0463683C-9E9A-55ED-836D-0826E8EFCA73.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AF47A4FF-95DB-593B-BA8F-7751D14219D6.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-3367B0DC-B23A-5161-ACEA-2611DC883E0D"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Device Data Provider Configuration Parameters</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-3367B0DC-B23A-5161-ACEA-2611DC883E0D"><a name="GUID-3367B0DC-B23A-5161-ACEA-2611DC883E0D"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2534806 id2534929 id2534938 id2534981 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-A0D4B6EC-8FA7-5FD9-AE5A-E811D876D585.html">Remote Connectivity Guide</a> &gt; <a href="GUID-98ACB508-ED32-5193-9E30-BCDF7E921788.html">MTP Frameworks</a> &gt; <a href="GUID-0463683C-9E9A-55ED-836D-0826E8EFCA73.html">MTP Framework</a> &gt; <a href="GUID-AF47A4FF-95DB-593B-BA8F-7751D14219D6.html">MTP Framework References</a> &gt; </div>
+<h1 class="topictitle1">Device Data Provider Configuration Parameters</h1>
+<div><p>The Device Data Provider implements a number of configurability parameters using the <samp class="codeph">opaque_data</samp> field of the <samp class="codeph">MTP_DATA_PROVIDER</samp> resource, and using the <samp class="codeph">DRIVEARRAY</samp> resource found in the Device Data Provider’s configuration resource file. </p>
+ <div class="section"><h2 class="sectiontitle">Syntax</h2> <p> <strong>Folder Exclusion List</strong>  </p>
+ <p>This parameter specifies the set of Symbian file system folders that are excluded from the object enumeration process. </p>
+ <p>The parameter is specified as an array of strings that specifies an excluded folder. Each folder must be specified as a full path and can include a drive letter. If a drive letter is specified the folder path is excluded on the specified drive only. If a drive letter is not specified then the folder path is excluded on all available drives. Any backslash at the end is ignored. </p>
+ <p>The exclusion list does not prevent the root folder of a drive from getting specified (for example by specifying “K:”). If specified, Device Data Provider excludes all folders and data objects on the specified drive. To prevent objects being added to the device and then not being visible to the MTP Initiator that created them, any attempt by an MTP Initiator to write data (<samp class="codeph">SendObject</samp>) to an excluded root folder will be rejected with an Access Denied MTP response code. </p>
+ <pre class="codeblock" id="GUID-3367B0DC-B23A-5161-ACEA-2611DC883E0D__GUID-FC2AB5E5-87D6-5F19-8CB3-D101DE7C89FE"><a name="GUID-3367B0DC-B23A-5161-ACEA-2611DC883E0D__GUID-FC2AB5E5-87D6-5F19-8CB3-D101DE7C89FE"><!-- --></a>
+RESOURCE MTP_DATA_PROVIDER dpConfig
+    {
+    type = KMTPDataProviderTypeECOM;
+    major_version = 1;
+    object_enumeration_persistent = 0;
+    supported_modes = KMTPModeMTP;  
+    server_name = "";
+    server_image_name = "";
+    opaque_resource = folderConfig;
+    }
+
+RESOURCE MTP_DEVICEDP_CONFIG folderConfig
+    {
+    enumeration_iteration_length = 32;
+    folder_exclusion_list = 
+        {
+        "?:\\private",
+        "?:\\resource",
+        "?:\\sys",
+        "?:\\system",
+        "?:\\logs",
+        "z:\\*",
+        "Z:\\*"
+        };
+    }</pre>
+ <p> <strong>Drive List</strong>  </p>
+ <p>This parameter list provides a mechanism to specify a friendly volume name and its root directory path for each drive (0 to 25, A to Z drive). For example, you can set the MMC card drive’s volume name to “<em>E Drive</em> ” or “<em>MMC</em> ”, etc and have <span class="filepath">E:\Media\</span> instead of <span class="filepath">E:\</span> as the drive’s root directory when MTP is accessing the drive. </p>
+ <p>You can specify friendly drive name and root directory name in <samp class="codeph">DRIVEARRAY</samp> field of the <span class="filepath">mtpdevicedp_config.rss</span> file. </p>
+ <pre class="codeblock" id="GUID-3367B0DC-B23A-5161-ACEA-2611DC883E0D__GUID-8FC0E6AB-4E36-5557-B33F-E83ADC0E6655"><a name="GUID-3367B0DC-B23A-5161-ACEA-2611DC883E0D__GUID-8FC0E6AB-4E36-5557-B33F-E83ADC0E6655"><!-- --></a>/**
+ * Update the drive number and provide the name that you wish to have. 
+ * Drive number varies from 0 to 25, '0' represent 
+ * A drive and '25' represent Z drive.
+ *
+ */
+        DRIVE
+            {
+            driveNo = 0;
+            driveName = "A Drive";
+            rootDirPath = "\\";
+            },</pre>
+ <p> <strong>Format Order List</strong>  </p>
+ <p>This parameter list provides a mechanism to specify the order of the supported formats. For instance in a Data Provider supporting two formats ‘<span class="filepath">wma</span> ’ and ‘<span class="filepath">mp3</span> ’, if you want <span class="filepath">mp3</span> to be ordered first then specify the order of format (mp3) first in <samp class="codeph">FORMATS</samp> field of the <samp class="codeph">mtpdevicedp_config.rss</samp> file. </p>
+ <pre class="codeblock" id="GUID-3367B0DC-B23A-5161-ACEA-2611DC883E0D__GUID-7A8B11F6-693A-51AD-990B-FCC06A7D7589"><a name="GUID-3367B0DC-B23A-5161-ACEA-2611DC883E0D__GUID-7A8B11F6-693A-51AD-990B-FCC06A7D7589"><!-- --></a>/**
+ *This resource used to create supported format ordered.
+ */ 
+RESOURCE FORMATSARRAY formats
+    {
+    //put the required format code in "" to enable format ordered property
+    objFormats = {"3009", "B901"}; //MP3, WMA
+    }</pre>
+ <p> <strong>Extension Plug-in List</strong>  </p>
+ <p>This parameter list provides a mechanism to extend device properties for Get/Set/Reset (for example Device Icon, Session initiator version info etc). Licensee can specify implementation UID for their own plug-ins (that has extenstion for any device property) in the <samp class="codeph">EXTNPLUGINUIDS</samp> field of <span class="filepath">mtpdevicedp_config.rss</span> file. </p>
+ <pre class="codeblock" id="GUID-3367B0DC-B23A-5161-ACEA-2611DC883E0D__GUID-9DFF6F6C-CA88-5B91-B206-1F579099B48A"><a name="GUID-3367B0DC-B23A-5161-ACEA-2611DC883E0D__GUID-9DFF6F6C-CA88-5B91-B206-1F579099B48A"><!-- --></a>// This resource is used to load the extension device properties for Device data provider. 
+RESOURCE PLUGINUIDARRAY extnpluginuids
+    {
+    //Put the extension plugin implementation UID in "" to load 
+
+particular exn plugin
+    // If more than one plugin is needed then seperate then by ',' 
+
+    //For example, "20010ADB" ,"20010ADC"
+    uid_list = {"20010ADB"}; //For example, 20010ADB can be a UID for extending a reset plug-in.
+    }</pre>
+ <p> </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-AF47A4FF-95DB-593B-BA8F-7751D14219D6.html">MTP Framework References</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

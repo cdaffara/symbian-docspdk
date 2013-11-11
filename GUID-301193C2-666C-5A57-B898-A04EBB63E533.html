@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to use a polymorphic interface DLL"/>
+<meta name="abstract" content="The example issues a greeting to the person whose name is passed in the descriptor aName."/>
+<meta name="description" content="The example issues a greeting to the person whose name is passed in the descriptor aName."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4A56B285-790E-5171-88F3-8C40B2AA9699.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4A56B285-790E-5171-88F3-8C40B2AA9699.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-301193C2-666C-5A57-B898-A04EBB63E533"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to use a polymorphic interface DLL</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-301193C2-666C-5A57-B898-A04EBB63E533"><a name="GUID-301193C2-666C-5A57-B898-A04EBB63E533"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2393100 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-4A56B285-790E-5171-88F3-8C40B2AA9699.html" title="Topics related to Dynamically loading link libraries.">Dynamically loading link libraries</a> &gt; </div>
+<h1 class="topictitle1">How to
+use a polymorphic interface DLL</h1>
+<div><p>The example issues a greeting to the person whose name is passed
+in the descriptor <samp class="codeph">aName</samp>.</p>
+
+<p>The following code can use any implementation of the interface defined
+by the example class, <samp class="codeph">CMessenger</samp>, to issue a simple greeting.</p>
+
+<p> The name of the DLL, which contains the implementation to be used, is
+passed in the descriptor <samp class="codeph">aLibraryName</samp>.</p>
+
+<pre class="codeblock" id="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-3BBCFE9F-7D77-563A-AE87-4BBE2B7F195E"><a name="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-3BBCFE9F-7D77-563A-AE87-4BBE2B7F195E"><!-- --></a>void UseDllL(const TFileName&amp; aLibraryName,const TDesC&amp; aName)
+    {
+          // Use RLibrary object to interface to the DLL
+    RLibrary library;
+          // Dynamically load the DLL
+    TUidType uidType(KDynamicLibraryUid,KMessengerUid);
+    User::LeaveIfError(library.Load(aLibraryName,uidType));
+          // Function at ordinal 1 creates new CMessenger
+    TLibraryFunction entry=library.Lookup(1);
+          // Call the function to create new CMessenger
+    CMessenger* messenger=(CMessenger*) entry();
+          // Push pointer to CMessenger onto the cleanup stack
+    CleanupStack::PushL(messenger);
+          // Second-phase constructor for CMessenger
+    messenger-&gt;ConstructL(console, aName);
+          // Use Cmessenger object to issue greeting
+    messenger-&gt;ShowMessage();
+          // Pop CMessenger object off cleanup stack and destroy
+    CleanupStack::PopAndDestroy();
+          // Finished with the DLL
+    library.Close();
+    }</pre>
+
+<div class="section" id="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-738C30CA-1A75-4038-8BB4-68682D3C539C"><a name="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-738C30CA-1A75-4038-8BB4-68682D3C539C"><!-- --></a><h2 class="sectiontitle">Notes:</h2> <ul>
+<li id="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-01B13D4C-7028-5987-B993-213E6FE9E571"><a name="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-01B13D4C-7028-5987-B993-213E6FE9E571"><!-- --></a><p>the <samp class="codeph">RLibrary</samp> class
+is the interface to dynamically loaded DLLs. It encapsulates a handle to the
+DLL.</p>
+ </li>
+
+<li id="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-726B2AA5-7674-5DA1-B6FA-EB10F85D7D1F"><a name="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-726B2AA5-7674-5DA1-B6FA-EB10F85D7D1F"><!-- --></a><p>The DLL has a <samp class="codeph">TUidType</samp> which
+is assigned when the DLL is built. This is ensures that the DLL that is loaded
+complies with the <samp class="codeph">CMessenger</samp> protocol.</p>
+ </li>
+
+<li id="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-F5F2DAE3-62B2-5690-92FF-85AF3F8C987F"><a name="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-F5F2DAE3-62B2-5690-92FF-85AF3F8C987F"><!-- --></a><p>If a specific implementation
+of the DLL is to be used, then specify a third UID when declaring the TUidType.
+Each specific implementation of the DLL is uniquely identified by the third
+UID.</p>
+ </li>
+
+<li id="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-C24783C0-CCFA-5AF1-9941-7FB5D0504756"><a name="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-C24783C0-CCFA-5AF1-9941-7FB5D0504756"><!-- --></a><p>A pointer to the ordinal
+1 function in the DLL is fetched by calling the <samp class="codeph">Lookup()</samp> member
+function of <samp class="codeph">RLibrary</samp> and passing it a parameter value of
+1. The returned function has type <samp class="codeph">TLibraryFunction</samp>; such
+a function takes no parameters and returns a <samp class="codeph">TAny*</samp> type.</p>
+ </li>
+
+<li id="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-C1FB1A45-A02A-5B10-B1EA-AE84982DB6BC"><a name="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-C1FB1A45-A02A-5B10-B1EA-AE84982DB6BC"><!-- --></a><p>The function pointer
+is assigned to the variable called <samp class="codeph">entry</samp> and the function
+itself is called to construct a <samp class="codeph">CMessenger</samp> object and return
+a pointer to that object. The implementation uses the <samp class="codeph">new (ELeave)</samp> operator
+to allocate the new <samp class="codeph">CMessenger</samp> object and invoke the C++
+default constructor.</p>
+ </li>
+
+<li id="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-1A7CBF75-9059-5AED-ABA9-DF649D613988"><a name="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-1A7CBF75-9059-5AED-ABA9-DF649D613988"><!-- --></a><p>As no arguments are
+passed to the function, a second-phase constructor, <samp class="codeph">ContructL()</samp>,
+is called to finish off construction.</p>
+ </li>
+
+<li id="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-B58DFA44-368F-578B-B35D-7DBF1C67A83A"><a name="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-B58DFA44-368F-578B-B35D-7DBF1C67A83A"><!-- --></a><p>The <samp class="codeph">CMessenger</samp> object
+can then be used like any other C++ object. In this example, the <samp class="codeph">ShowMessage()</samp> function
+is used to emit a greeting in whatever way the implementation chooses. In
+more complex cases, the object could have a long lifetime, and create many
+dependent objects.</p>
+ </li>
+
+<li id="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-67D8B0AA-8425-52C1-851A-D022B7847448"><a name="GUID-301193C2-666C-5A57-B898-A04EBB63E533__GUID-67D8B0AA-8425-52C1-851A-D022B7847448"><!-- --></a><p>When the <samp class="codeph">CMessenger</samp> object
+is no longer needed, the DLL is unloaded using <samp class="codeph">RLibrary::Close()</samp>.
+Do not call any code in the DLL after the library has been closed. It is important
+to note, therefore, that the library must not be closed until the object constructed
+by the DLL, <em>and all its dependent objects</em>, have been destroyed.</p>
+ </li>
+
+</ul>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-4A56B285-790E-5171-88F3-8C40B2AA9699.html" title="Topics related to Dynamically loading link libraries.">Dynamically loading link libraries</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

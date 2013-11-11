@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to share file handles between processes"/>
+<meta name="abstract" content="This section describes the sharing of file handles between two processes, and the APIs provided for this purpose. This feature is only supported on Symbian platform versions with EKA2 architecture."/>
+<meta name="description" content="This section describes the sharing of file handles between two processes, and the APIs provided for this purpose. This feature is only supported on Symbian platform versions with EKA2 architecture."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-30B2AF3F-E120-5D47-AAA2-529555625B55.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BB9760B4-4F3F-5326-81FB-B644C82F0E65.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-198DCED1-F429-5C95-A51D-53AE416687E8.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-30B2AF3F-E120-5D47-AAA2-529555625B55.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-E93D3767-0F74-5335-8233-8236908F70AF"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to share file handles between processes</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-E93D3767-0F74-5335-8233-8236908F70AF"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2399034 id2399048 id2399138 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-BB9760B4-4F3F-5326-81FB-B644C82F0E65.html" title="Symbian platform manages the basic permanent storage of data through file systems. Drives and file systems are common resources used by many programs, and access to them is managed by the File Server. The File Server is flexible, and can use many different file system formats and physical storage media. Applications and services access files, directories, and drives through the File Server client side API.">File Server</a> &gt; <a href="GUID-198DCED1-F429-5C95-A51D-53AE416687E8.html">File Server Client Side</a> &gt; <a href="GUID-30B2AF3F-E120-5D47-AAA2-529555625B55.html" title="This topic describes how to use file server sessions, files and directories effectively.">How To use sessions, files and directories</a> &gt; </div>
+<h1 class="topictitle1">How
+to share file handles between processes</h1>
+<div><p>This section describes the sharing of file handles between two
+processes, and the APIs provided for this purpose. This feature is only supported
+on Symbian platform versions with EKA2 architecture. </p>
+
+<p>It is possible to share file handles between two processes, allowing an
+open file to be passed from one process to another. This is a necessary feature
+in secure versions of Symbian platform. </p>
+
+<p>Some further implementation considerations are provided to support this
+mechanism. A description of passing file handles is given, followed by examples,
+which show you how to implement a binary using this feature. </p>
+
+<p> <strong>See also</strong>  </p>
+
+<p> <a href="GUID-B69FE02E-3A78-5438-BA7C-F7BB4CD3EB76.html" title="This topic describes the File Server Client Side overview.">File Server Client
+Side Overview</a>  </p>
+
+<p> <a href="GUID-4BFEDD79-9502-526A-BA7B-97550A6F0601.html">Platform security</a>. </p>
+
+<p>This section contains the following topics: </p>
+
+<ul>
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-79142E0A-C7F1-5545-A152-62C2EF681CC0"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-79142E0A-C7F1-5545-A152-62C2EF681CC0"><!-- --></a><p> <a href="GUID-E93D3767-0F74-5335-8233-8236908F70AF.html#GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-E5383F93-C846-5A10-BD59-6FE4754FDCD9">Overview</a>  </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-0CFEA4B0-C2EF-58A0-BE24-A55E695ED6FD"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-0CFEA4B0-C2EF-58A0-BE24-A55E695ED6FD"><!-- --></a><p> <a href="GUID-E93D3767-0F74-5335-8233-8236908F70AF.html#GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-16841C97-292A-5EF3-BE88-EE35BF3A0BC8">APIs that support the sharing of file handles</a>  </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-1B37219E-0980-5B45-8C38-76CD59A8240D"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-1B37219E-0980-5B45-8C38-76CD59A8240D"><!-- --></a><p> <a href="GUID-E93D3767-0F74-5335-8233-8236908F70AF.html#GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-B8F732D9-C97F-59FD-9623-E9D14EE657EF">Example 1 - Client passing a file handle to a server</a>  </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-DFCCFD0E-083E-50CD-9029-AE663311AFC4"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-DFCCFD0E-083E-50CD-9029-AE663311AFC4"><!-- --></a><p> <a href="GUID-E93D3767-0F74-5335-8233-8236908F70AF.html#GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-707872E2-CD5D-5883-A3F5-C66B34C26035">Example 2 - Client requesting a file handle from a server</a>  </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-A0A1C7DC-177F-5D13-8E89-5952A68D07A2"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-A0A1C7DC-177F-5D13-8E89-5952A68D07A2"><!-- --></a><p> <a href="GUID-E93D3767-0F74-5335-8233-8236908F70AF.html#GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-8457BB92-54A3-578B-99AA-0AD5EF8C3068">Example 3 - Client passing a file handle to another process</a>  </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-167D7C88-4802-57F7-9331-EB6228EC7DDC"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-167D7C88-4802-57F7-9331-EB6228EC7DDC"><!-- --></a><p> <a href="GUID-E93D3767-0F74-5335-8233-8236908F70AF.html#GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-DB2E90FD-5847-54EA-AA40-B7C298AC7801">Implementation Considerations</a>  </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-987CE666-F693-5459-9157-AE9CB9DEC9CC"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-987CE666-F693-5459-9157-AE9CB9DEC9CC"><!-- --></a><p> <a href="GUID-E93D3767-0F74-5335-8233-8236908F70AF.html#GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-E94C9F16-0F5B-5DCB-B644-A022D26A029C">Testing</a>  </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-B5815E9B-EA0A-5B49-95EF-C010B5D29FFA"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-B5815E9B-EA0A-5B49-95EF-C010B5D29FFA"><!-- --></a><p> <a href="GUID-E93D3767-0F74-5335-8233-8236908F70AF.html#GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-061BD238-43D0-5099-95B0-7E811CA59DAF">Summary</a>. </p>
+ </li>
+
+</ul>
+
+<div class="section" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-E5383F93-C846-5A10-BD59-6FE4754FDCD9"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-E5383F93-C846-5A10-BD59-6FE4754FDCD9"><!-- --></a><h2 class="sectiontitle">Overview</h2> <p>Allowing
+an open file to be passed from one process to another is a necessary feature
+in secure versions of Symbian platform. The platform security model provides
+a <em>data caging</em> mechanism, allowing processes and the OS itself to hide
+private data from other processes. </p>
+ <p>However, while it is desirable
+to keep a file safe from other processes, it is useful to give a specific
+process access to the file: </p>
+ <ul>
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-2553DE33-4C67-5258-862E-00B04CA17EB5"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-2553DE33-4C67-5258-862E-00B04CA17EB5"><!-- --></a><p>without the need to
+give that process any special capabilities </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-CB0364D9-2975-5829-ADFF-AD178BF8192C"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-CB0364D9-2975-5829-ADFF-AD178BF8192C"><!-- --></a><p>without the need to
+give the recipient of the file the full path name of that file. </p>
+ </li>
+
+</ul>
+ <p>New <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html"><span class="apiname">RFile</span></a> member functions enable an open file
+handle to be passed from client to a server, from server to a client or from
+one process to another process. </p>
+ <p>Note that file handles are not really
+handles in the usual sense of referring to a kernel object, but are simply
+numbers that refer to an open file within a file server session. </p>
+ </div>
+
+<div class="section" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-16841C97-292A-5EF3-BE88-EE35BF3A0BC8"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-16841C97-292A-5EF3-BE88-EE35BF3A0BC8"><!-- --></a><h2 class="sectiontitle">APIs that support
+the sharing of file handles</h2> <p>The following <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html"><span class="apiname">RFile</span></a> member
+functions support the sharing of file handles between processes: </p>
+ <ul>
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-C76BE924-7A28-5983-A9D4-05CCECF1B413"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-C76BE924-7A28-5983-A9D4-05CCECF1B413"><!-- --></a><p> <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-570BA348-E033-3A63-B702-D2554E95BF0B"><span class="apiname">RFile::AdoptFromClient()</span></a>  </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-EE3FEBF4-6736-5B20-BD9E-21C752239B80"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-EE3FEBF4-6736-5B20-BD9E-21C752239B80"><!-- --></a><p> <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-2E66E1ED-01FF-3610-BDB7-E83FE1559934"><span class="apiname">RFile::AdoptFromServer()</span></a>  </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-21A5C873-A1F9-595F-92CE-0FE5F27939AE"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-21A5C873-A1F9-595F-92CE-0FE5F27939AE"><!-- --></a><p> <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-943F64CA-B987-3BF5-B22F-5C637F12EEF4"><span class="apiname">RFile::AdoptFromCreator()</span></a>  </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-972A6339-060D-59E0-94E1-4293A85ED5B2"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-972A6339-060D-59E0-94E1-4293A85ED5B2"><!-- --></a><p> <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-3633606B-09E6-3DD7-8FA3-E20A16CFB87F"><span class="apiname">RFile::TransferToServer()</span></a>  </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-5FF4033F-68F0-5024-8E38-BFF7846661A1"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-5FF4033F-68F0-5024-8E38-BFF7846661A1"><!-- --></a><p> <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-B25BF021-8298-397E-9C3B-E4D2E591D88F"><span class="apiname">RFile::TransferToClient()</span></a>  </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-ECC89636-84B4-5B0B-8E31-6BE721D09405"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-ECC89636-84B4-5B0B-8E31-6BE721D09405"><!-- --></a><p> <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-FBE294F0-28C3-30E5-A6E4-E82699607216"><span class="apiname">RFile::TransferToProcess()</span></a>  </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-ADA3EBCC-25AB-5E3D-B380-0D3BF643578E"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-ADA3EBCC-25AB-5E3D-B380-0D3BF643578E"><!-- --></a><p> <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-EF48ADCC-01F7-3680-B090-9856301E3B9D"><span class="apiname">RFile::Name()</span></a>  </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-63B6C3C7-902A-540F-B8DA-ECE10AB8EE5C"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-63B6C3C7-902A-540F-B8DA-ECE10AB8EE5C"><!-- --></a><p> <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-88AC4973-622F-350D-9957-8FA5D409B129"><span class="apiname">RFile::Duplicate()</span></a>  </p>
+ </li>
+
+</ul>
+ <p>The owner of an open <a href="GUID-D3B4DF9D-BC59-36C1-BE81-D5B5591B2C63.html"><span class="apiname">Rfile</span></a> object uses the <samp class="codeph">Transfer***()</samp> member
+functions to transfer ownership of that object to another process. Note that
+the file-server session must be marked as shareable by calling <a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html#GUID-E263C747-946F-35AA-9F1D-41833BD350FC__GUID-7FD79082-9F32-376B-9BFB-914CA704E3FF"><span class="apiname">RFs::ShareProtected()</span></a> before
+any file handles are transferred, otherwise the <samp class="codeph">Transfer***()</samp> functions
+return <a href="GUID-25493BDC-2D2E-3CC5-A5FE-A36804A4388A.html"><span class="apiname">KErrBadHandle</span></a>. </p>
+ <p>A receiving process uses
+the <samp class="codeph">Adopt***()</samp> member functions to adopt an <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html"><span class="apiname">RFile</span></a> object
+passed from another process. </p>
+ <p>A receiving process uses the <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-EF48ADCC-01F7-3680-B090-9856301E3B9D"><span class="apiname">RFile::Name()</span></a> member
+function to retrieve the file name and extension (but not the path) from the
+adopted <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html"><span class="apiname">RFile</span></a> object. This is needed mainly by recognisers,
+which sometimes examine a file’s extension to determine whether it is valid
+or not. </p>
+ <p>The <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-88AC4973-622F-350D-9957-8FA5D409B129"><span class="apiname">RFile::Duplicate()</span></a> member function
+allows a process to clone a received <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html"><span class="apiname">RFile</span></a> object so that,
+for example, two separate functions or threads in the receiving process can
+read the file independently. </p>
+ <p>As another example, consider a client
+that only grants access to its <em>data caged</em> private area files, to a
+specific system server. The process that opens the file and shares it (using
+one of the <samp class="codeph">Transfer***()</samp> functions) controls read and write
+access to the file, while the corresponding client or server simply calls
+one of the <samp class="codeph">Adopt***()</samp> functions. In effect, the <samp class="codeph">Adopt***()</samp> functions
+behave like a file opening API such as <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-D5DCA731-EEC7-395A-91EC-2848DFBF5EF8"><span class="apiname">RFile::temp()</span></a>, <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-1EB4AA8F-9363-3EC5-8AE2-1F70F15FCF15"><span class="apiname">RFile::Create()</span></a> and <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-72470A68-7E07-30EF-A3C8-AA855CDAF60E"><span class="apiname">RFile::Open()</span></a>.
+The adopted file retains the access attributes of the file set by the process
+doing the sharing. The access attributes of the file can be changed by the
+adopting process if the security model permits it. </p>
+ <p>The following sections
+present example code and describe how to share a file between two processes.
+This example code uses a simple server that offers the kind of APIs required
+to implement the sharing. Details of this server are not given. </p>
+ <p>Note
+that for the sake of clarity, there is no error checking in the example code. </p>
+ </div>
+
+<div class="section" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-B8F732D9-C97F-59FD-9623-E9D14EE657EF"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-B8F732D9-C97F-59FD-9623-E9D14EE657EF"><!-- --></a><h2 class="sectiontitle">Example 1 -
+Client passing a file handle to a server</h2> <p>In this example, a client
+passes an open file’s handle to a server. The server in turn passes the handle
+over to a second server. </p>
+ <p>The example assumes that the paths and files
+used exist and are correct. A file server session (it is recommended that
+this session is used specifically for this purpose) is set as <em>shared</em> by
+calling <a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html#GUID-E263C747-946F-35AA-9F1D-41833BD350FC__GUID-7FD79082-9F32-376B-9BFB-914CA704E3FF"><span class="apiname">RFs::ShareProtected()</span></a>. This enables the session
+to be used by another process. The file is then opened (it exists in the client’s
+private directory). The subsession handle and the fileserver session are then
+passed to the server using <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-3633606B-09E6-3DD7-8FA3-E20A16CFB87F"><span class="apiname">RFile::TransferToServer()</span></a>. The
+file handle can now be adopted by the server’s process. </p>
+ <p><strong>Client code: </strong> </p>
+ <pre class="codeblock" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-D31EA6BD-53F3-5DF8-A447-96C1E99564AE"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-D31EA6BD-53F3-5DF8-A447-96C1E99564AE"><!-- --></a>
+
+    RFileHandleSharer handsvr;    // handle to server1
+    User::LeaveIfError(handsvr.Connect());        // connect to server1
+    CleanupClosePushL(handsvr);
+    RFs fs;
+    User::LeaveIfError(fs.Connect());
+    CleanupClosePushL(fs);
+    User::LeaveIfError(fs.ShareProtected());
+
+    RFile file;
+    User::LeaveIfError(file.Open(fs, _L("test.txt"), EFileRead));
+    CleanupClosePushL(file);
+    
+    
+    // store the RFs handle in message slot 0 and the RFile handle in slot 1
+    TIpcArgs ipcArgs;
+    User::LeaveIfError(file.TransferToServer(ipcArgs, 0, 1));        
+
+    // send to server
+    User::LeaveIfError(handsvr.SendReceive(EMsgXXX, ipcArgs));
+
+    // ...continue to use file
+    //
+
+    CleanupStack::PopAndDestroy(3); // close file, fs, and handsvr
+</pre>
+ <p><strong>Server1 code: </strong> </p>
+ <pre class="codeblock" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-73CA766C-FE29-56C1-94C3-2FC23CAC910E"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-73CA766C-FE29-56C1-94C3-2FC23CAC910E"><!-- --></a>
+
+    void CFHSession::PassFileHandleL(const RMessage2&amp; aMsg)
+        {
+        RFileHandleSharer2 handsvr2;    // connect to server2
+        User::LeaveIfError(handsvr2.Connect());
+        CleanupClosePushL(handsvr2);
+    
+        RFile file;
+    
+        // Adopt the file using the RFs handle from message slot 0 and the RFile handle from slot 1
+        User::LeaveIfError(file.AdoptFromClient(aMsg, 0, 1));    
+        CleanupClosePushL(file);
+    
+        // Use the file
+        // …
+    
+    
+        // pass the file handle on to server2
+        TIpcArgs ipcArgs;
+        User::LeaveIfError(file.TransferToServer(ipcArgs, 0, 1));
+        User::LeaveIfError(handsvr2.SendReceive(EMsgXXX, ipcArgs));
+    
+        // continue to use file
+        // …
+
+        CleanupStack::PopAndDestroy(2);    // close file and handsvr2
+    
+        aMsg.Complete(KErrNone);
+        }
+
+</pre>
+ <p><strong>Server2 code: </strong> </p>
+ <pre class="codeblock" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-A48D53BF-9616-5CBD-91FD-588D1EED71F7"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-A48D53BF-9616-5CBD-91FD-588D1EED71F7"><!-- --></a>
+
+    void CFHSession2::PassFileHandleL(const RMessage2&amp; aMsg)
+        {
+        RFile file;
+
+        // Adopt the file using the RFs handle from message slot 0 and the RFile handle from slot 1
+        User::LeaveIfError(file.AdoptFromClient(aMsg, 0, 1));    
+        CleanupClosePushL(file);
+    
+        // ..use the file
+    
+        CleanupStack::PopAndDestroy();    // close file
+    
+        aMsg.Complete(KErrNone);
+        }
+
+</pre>
+ </div>
+
+<div class="section" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-707872E2-CD5D-5883-A3F5-C66B34C26035"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-707872E2-CD5D-5883-A3F5-C66B34C26035"><!-- --></a><h2 class="sectiontitle">Example 2 -
+Client requesting a file handle from a server</h2> <p>This example is similar
+to <a href="GUID-E93D3767-0F74-5335-8233-8236908F70AF.html#GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-B8F732D9-C97F-59FD-9623-E9D14EE657EF">Example
+1</a> but there are some differences. </p>
+ <p>A client connects to a server
+that provides a shared fileserver session and a file handle to an open file
+when requested. </p>
+ <p><strong>Client code: </strong> </p>
+ <pre class="codeblock" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-D93672C4-9FBA-543F-8C2B-5F7ABFCC2A50"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-D93672C4-9FBA-543F-8C2B-5F7ABFCC2A50"><!-- --></a>
+
+    RFileHandleSharer handsvr;    // handle to server
+    User::LeaveIfError(handsvr.Connect());        // connect to server
+    CleanupClosePushL(handsvr);
+
+    // Retrieve the RFs and RFile handles from the server
+    TInt fsh;            // session (RFs) handle
+    TPckgBuf&lt;TInt&gt; fh;    // sub-session (RFile) handle
+    
+    fsh = handsvr.SendReceive(EMsgXXX, TIpcArgs(&amp;fh));    // pointer to fh in slot 0
+    User::LeaveIfError(fsh);
+
+// Adopt the file using the returned handles
+RFile file;
+User::LeaveIfError(file.AdoptFromServer(fsh, fh()));
+    CleanupClosePushL(file);
+
+// ..use the file
+//
+
+    CleanupStack::PopAndDestroy(2);    // close file and handsvr
+
+</pre>
+ <p><strong>Server code: </strong> </p>
+ <pre class="codeblock" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-4A16D8FB-C235-5DE6-A8E3-A7042DDCBBD4"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-4A16D8FB-C235-5DE6-A8E3-A7042DDCBBD4"><!-- --></a>
+
+    void CFHSession::GetFileHandleL(const RMessage2&amp; aMsg)
+        {
+        RFs fs;
+        User::LeaveIfError(fs.Connect());
+        CleanupClosePushL(fs);
+    
+        User::LeaveIfError(fs.ShareProtected());
+    
+        RFile file;
+        User::LeaveIfError(file.Open(fs, _L("test.txt"), EFileRead));
+
+        // transfer to client: store the RFile handle into the package buffer in slot 0 
+        // and complete the message with the RFs handle
+        // NB this assumes that if TransferToClient() return an error, then
+        // the standard CServer2::RunError() will complete the message
+        User::LeaveIfError(file.TransferToClient(aMsg, 0));
+        ASSERT(aMsg.IsNull());    // message should have been completed
+
+        file.Close();
+        CleanupStack::PopAndDestroy(1);    // fs
+        }
+
+</pre>
+ </div>
+
+<div class="section" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-8457BB92-54A3-578B-99AA-0AD5EF8C3068"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-8457BB92-54A3-578B-99AA-0AD5EF8C3068"><!-- --></a><h2 class="sectiontitle">Example 3 -
+Client passing a file handle to another process</h2> <p><strong>Creator code: </strong> </p>
+ <pre class="codeblock" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-92F72808-9A52-5504-8580-EACDF57353B8"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-92F72808-9A52-5504-8580-EACDF57353B8"><!-- --></a>
+
+    RFs fs;
+    User::LeaveIfError(fs.Connect());
+    CleanupClosePushL(fs);
+
+    User::LeaveIfError(fs.ShareProtected());
+    
+    RFile file;
+    User::LeaveIfError(file.Open(fs, _L("test.txt"), EFileRead));
+    CleanupClosePushL(file);
+    
+    // create test process
+    RProcess p;
+    User::LeaveIfError(p.Create(_L("FHServer.exe"),  KNullDesC));
+    CleanupClosePushL(p);
+
+    // transfer to process storing the RFs handle into environment  slot 1 and the RFile handle into slot 2
+    // NB slot 0 is reserved for the command line
+    User::LeaveIfError(file.TransferToProcess(p, 1, 2));
+
+    // Wait for handle to be transferred; wrap in an active object if blocking this thread is undesirable
+    TRequestStatus transStatus;
+    p.Rendezvous(transStatus);
+
+    if(transStatus != KRequestPending)
+        { // Process creation failed
+        p.RendezvousCancel(transStatus);
+        p.Kill(0);
+        User:Leave(transStatus.Int());
+        }
+    // Start the process
+    p.Resume();
+
+
+    User::WaitForRequest(transStatus);
+    User::LeaveIfError(transfStatus.Int());
+
+    // Now we can safely close the fs
+    CleanupStack::PopAndDestroy(3);    // close p, file, and fs
+
+</pre>
+ <p><strong>Created process code: </strong> </p>
+ <pre class="codeblock" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-E429B94F-E373-5F35-A4AC-385732933C23"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-E429B94F-E373-5F35-A4AC-385732933C23"><!-- --></a>
+
+    RFile file;
+
+    // Adopt the file using the RFs handle into environment  slot 1 and the RFile handle into slot 2
+    User::LeaveIfError(file.AdoptFromCreator(1));
+    CleanupClosePushL(file);
+    RProcess::Rendezvous(KErrNone); // Signal transfer completed successfully
+
+    // ..use the file
+    //
+
+    CleanupStack::PopAndDestroy();    // close file                                                                                                                                   
+
+</pre>
+ </div>
+
+<div class="section" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-DB2E90FD-5847-54EA-AA40-B7C298AC7801"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-DB2E90FD-5847-54EA-AA40-B7C298AC7801"><!-- --></a><h2 class="sectiontitle">Implementation
+Considerations</h2> <p>An <samp class="codeph">RFile</samp> object contains two handles: </p>
+ <ul>
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-D724D4E0-5E7F-5208-A55D-395A8C799BB5"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-D724D4E0-5E7F-5208-A55D-395A8C799BB5"><!-- --></a><p>a file (or subsession)
+handle </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-1E73FE27-B147-592C-9C36-D07A266D9805"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-1E73FE27-B147-592C-9C36-D07A266D9805"><!-- --></a><p>a file server handle </p>
+ </li>
+
+</ul>
+ <p>When a file handle is adopted by the <em>receiver</em>, the new <samp class="codeph">RFile</samp> object
+that is created by the <samp class="codeph">Adopt***()</samp> member functions contains
+a duplicate of the sender’s file server handle. This new <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html"><span class="apiname">RFile</span></a> object,
+however, has a flag set in the subsession handle to allow it to close its
+associated file server handle automatically whenever <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html#GUID-BE0804F6-4375-3C8A-8C83-968F510466E0__GUID-98C413E8-4C84-3DC3-B798-8C25E07EDDFF"><span class="apiname">RFile::Close()</span></a> is
+called. This removes the need to maintain a separate <samp class="codeph">RFs</samp> object
+when adopting a file. </p>
+ <p><strong>Security issues </strong> </p>
+ <p>It is <em>strongly</em> recommended that the
+process from which a shared file originates, opens a file server session specifically
+for this purpose, and closes it after it has finished using the shared file.
+This is because the session handle is shared along with the file handle, and
+therefore, any other files opened in that session may be accessible to the
+other process. The <em>receiving</em> process can increment file handle numbers
+(remember file handles are only numbers) and gain access to files. </p>
+ <p>It
+is also recommended that the adopting process does not open other files with
+the session it receives, as the process that shared the file may do the same. </p>
+ <p><strong>RFs and RFile lifetime issues </strong> </p>
+ <p>The <samp class="codeph">RFile</samp> subsession
+handle passed to <samp class="codeph">Transfer***()</samp> and <samp class="codeph">Adopt***()</samp> member
+functions is duplicated by the <samp class="codeph">Transfer***()</samp> functions so
+that the original <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html"><span class="apiname">RFile</span></a> handle can either be closed immediately
+or used for a period and then closed. This is because it is not the same handle
+as the one being adopted. </p>
+ <p>If there is no need to continue using the <samp class="codeph">RFile</samp> handle,
+then the <samp class="codeph">RFs</samp> handle can be safely closed as follows: </p>
+ <ul>
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-31668FA4-BC76-52BA-9535-E8ED890C6F83"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-31668FA4-BC76-52BA-9535-E8ED890C6F83"><!-- --></a><p>For <samp class="codeph">TransferToServer()</samp> or <samp class="codeph">AdoptFromClient()</samp>,
+the <a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html"><span class="apiname">RFs</span></a> handle can be safely closed once the server has
+called <samp class="codeph">AdoptFromClient()</samp>. This would normally be done on
+return from a synchronous call. </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-F5A80DB7-A09B-516F-9091-A6B3B83489F9"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-F5A80DB7-A09B-516F-9091-A6B3B83489F9"><!-- --></a><p>For <samp class="codeph">TransferToClient()</samp> or <samp class="codeph">AdoptFromServer()</samp>,
+the <a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html"><span class="apiname">RFs</span></a> handle can be safely closed once the server has
+called <samp class="codeph">TransferToClient()</samp>. </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-85F9159A-25D8-5356-ADE3-048D15B67C13"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-85F9159A-25D8-5356-ADE3-048D15B67C13"><!-- --></a><p>For <samp class="codeph">TransferToProcess()</samp> or <samp class="codeph">AdoptFromCreator()</samp>,
+the <a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html"><span class="apiname">RFs</span></a> handle can be safely closed once the client has
+called <samp class="codeph">TransferToProcess()</samp>. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-E94C9F16-0F5B-5DCB-B644-A022D26A029C"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-E94C9F16-0F5B-5DCB-B644-A022D26A029C"><!-- --></a><h2 class="sectiontitle">Testing</h2> <p>Extensive
+testing of implementations of this mechanism are not required as, in effect,
+you are simply using a file server subsession (<a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html"><span class="apiname">RFile</span></a>) API.
+It is recommended that you test the client-server system, but that will be
+specific to how you use it. If it works you have probably implemented it correctly,
+provided you adhere to the security considerations of the shared file. </p>
+ </div>
+
+<div class="section" id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-061BD238-43D0-5099-95B0-7E811CA59DAF"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-061BD238-43D0-5099-95B0-7E811CA59DAF"><!-- --></a><h2 class="sectiontitle">Summary</h2> <p>Passing
+files between processes is a useful tool, but it is important that you adhere
+to the security advice. </p>
+ <p>To share a file handle, take the following
+steps: </p>
+ <a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-52469F0B-A94B-5553-8F81-D73590361181"><!-- --></a><ol id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-52469F0B-A94B-5553-8F81-D73590361181">
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-BA9B1DCC-B185-56FB-B36A-A00BC204B9AD"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-BA9B1DCC-B185-56FB-B36A-A00BC204B9AD"><!-- --></a><p>Ensure the file exists.
+A file to be shared between two processes is a resource that lives in a system
+or private location for security. </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-439EE193-34F9-527D-BB2F-F1DFC3E90072"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-439EE193-34F9-527D-BB2F-F1DFC3E90072"><!-- --></a><p>Set the fileserver session
+as shareable so that it can be used by more that one process. A fileserver
+session (as with all server sessions) is a Kernel object. </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-FDFECB4A-991F-5E14-949D-444DE00311D5"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-FDFECB4A-991F-5E14-949D-444DE00311D5"><!-- --></a><p>Transfer the session
+handle and the subsession handle from the open file using one of the <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html"><span class="apiname">RFile</span></a>  <samp class="codeph">Transfer***()</samp> member
+functions and the message passing system between client and server. </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-3E169BD6-47A7-5275-92B5-08A98BB20B6F"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-3E169BD6-47A7-5275-92B5-08A98BB20B6F"><!-- --></a><p>Use one of the <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html"><span class="apiname">RFile</span></a> <samp class="codeph">Adopt***()</samp> member
+functions to begin using the handles in the receiving process. </p>
+ </li>
+
+<li id="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-E0CCBF52-D5CD-5199-8FC8-20DEB6F2F1B6"><a name="GUID-E93D3767-0F74-5335-8233-8236908F70AF__GUID-E0CCBF52-D5CD-5199-8FC8-20DEB6F2F1B6"><!-- --></a><p>Once you have finished,
+close the received <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html"><span class="apiname">RFile</span></a> object. </p>
+ </li>
+
+</ol>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-30B2AF3F-E120-5D47-AAA2-529555625B55.html" title="This topic describes how to use file server sessions, files and directories effectively.">How To use sessions, files and directories</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Initializing a Library"/>
+<meta name="abstract" content="Sometimes, a library needs to be initialized before it can provide any services to client of the library. This can be done in several ways."/>
+<meta name="description" content="Sometimes, a library needs to be initialized before it can provide any services to client of the library. This can be done in several ways."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-457628C5-2972-4432-A03F-CD8CC0E1B60A"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Initializing a Library</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-457628C5-2972-4432-A03F-CD8CC0E1B60A"><a name="GUID-457628C5-2972-4432-A03F-CD8CC0E1B60A"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381193 id2381201 id2381344 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html">Generic Open Libraries</a> &gt; <a href="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html">Open Environment Core (P.I.P.S.)</a> &gt; <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Initializing
+a Library</h1>
+<div><p>Sometimes, a library needs to be initialized before it can provide
+any services to client of the library. This can be done in several ways. </p>
+
+<div class="section" id="GUID-457628C5-2972-4432-A03F-CD8CC0E1B60A__GUID-A4E1C734-DF38-4AA7-8FDB-4FF97706F005"><a name="GUID-457628C5-2972-4432-A03F-CD8CC0E1B60A__GUID-A4E1C734-DF38-4AA7-8FDB-4FF97706F005"><!-- --></a><h2 class="sectiontitle">Export
+functions for initializing and closing the library</h2>              <p>The library
+can export more than one function for initializing and closing the library.</p>
+<p>The
+client of the library calls the initialization function before requesting
+any services and calls close when the client does not use the library. </p>
+<p><strong>Example:</strong></p>
+<p>There
+is a DLL called <span class="filepath">xxx.dll</span>. Two functions <samp class="codeph">InitXXX()</samp> and <samp class="codeph">CloseXXX()</samp> are
+exported from this DLL. The library code can look like the following:</p>
+<p>Library
+header file <span class="filepath">xxx_init.h</span>:</p>
+<pre class="codeblock">....
+IMPORT_C void InitXXX();
+IMPORT_C CloseXXX();
+....
+</pre>
+<p>Library source file <span class="filepath">xxx_init.cpp</span>:</p>
+<pre class="codeblock">static int _InitCount = 0;
+EXPORT_C void InitXXX()
+{
+   if(_InitCount++ &lt;= 0)
+   {
+   // initialize xxx.dll
+   }
+}
+EXPORT_C CloseXXX()
+{
+   if(--_InitCount &lt;= 0)
+   {
+   // free all the resources
+   }
+}
+</pre>
+<p>User code looks like the following:</p>
+<pre class="codeblock">#include &lt;xxx_init.h&gt;
+...
+int main()
+{
+   InitXXX();
+   ....
+   ....
+   CloseXXX();
+   return 0;
+}
+</pre>
+     </div>
+
+<div class="section" id="GUID-457628C5-2972-4432-A03F-CD8CC0E1B60A__GUID-ADE950F6-8C93-4080-86A1-91C5F92D254D"><a name="GUID-457628C5-2972-4432-A03F-CD8CC0E1B60A__GUID-ADE950F6-8C93-4080-86A1-91C5F92D254D"><!-- --></a><h2 class="sectiontitle">Exported functions
+check whether the library is initialized</h2><p>Every exported function
+can check whether the library has been initialized. The library can export
+one function (for example, <samp class="codeph">CloseLib()</samp>) and this can be called
+before exiting <samp class="codeph">main()</samp>.</p>
+<p><strong>Example:</strong></p>
+<p>Library
+header file <span class="filepath">xxx.h</span>: </p>
+<pre class="codeblock">....
+IMPORT_C void X_Export_Api1();
+IMPORT_C void X_Export_Api2();
+....
+</pre>
+<p>Library source file <span class="filepath">xxx.cpp</span>: </p>
+<pre class="codeblock">static int _InitCount = 0;
+#define INIT_LIB if(_InitCount == 0) \
+           {\
+               _InitCount++; \
+               InitXXX(); \
+           }
+LOCAL_C void InitXXX()
+{
+   // initialize xxx.dll
+}
+LOCAL_C CloseXXX()
+{
+   // free all the resources
+}
+EXPORT_C void X_Export_Api1()
+{
+   INIT_LIB;
+   ...
+   ...
+}
+</pre>
+<p>User code looks like the following:</p>
+<pre class="codeblock">#include &lt;xxx.h&gt;
+...
+int main()
+{
+   ....
+   ....
+   X_Export_Api1();
+   ....
+   ....
+   X_Export_Api2();
+   ....
+   ....
+   return 0;
+}
+</pre>
+</div>
+
+<div class="section" id="GUID-457628C5-2972-4432-A03F-CD8CC0E1B60A__GUID-F387926E-A6D2-439C-9EEA-A3751E38DFBE"><a name="GUID-457628C5-2972-4432-A03F-CD8CC0E1B60A__GUID-F387926E-A6D2-439C-9EEA-A3751E38DFBE"><!-- --></a><h2 class="sectiontitle">Library defines
+a static object</h2><p>The library can define static objects and call the
+initialization code from the constructor of these static objects so that before
+calling, the application entry point library will be initialized.</p>
+<p><strong>Example:</strong></p>
+<p>Library
+header file <span class="filepath">xxx.h</span>: </p>
+<pre class="codeblock">....
+IMPORT_C void X_Export_Api1();
+IMPORT_C void X_Export_Api2();
+....</pre>
+<p>Library source file <span class="filepath">xxx.cpp</span>: </p>
+<pre class="codeblock">LOCAL_C void InitXXX()
+{
+   // initialize xxx.dll
+}
+LOCAL_C CloseXXX()
+{
+   // free all the resources
+}
+class LibInit
+{
+   LibInit();
+   ~LibInit();
+};
+LibInit::LibInit()
+{
+   // put all library initialization code here.
+   InitXXX();
+}
+LibInit::~LibInit()
+{
+   // free all resources
+   CloseXXX();
+}
+static LibInit _libInit;
+</pre>
+<p>User code looks like the following:</p>
+<pre class="codeblock">#include &lt;xxx.h&gt;
+int main()
+{
+   ....
+   ....
+   X_Export_Api1();
+   ....
+   ....
+   X_Export_Api2();
+   ....
+   ....
+   return 0;
+}
+</pre>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Space management and granularity"/>
+<meta name="abstract" content="Explains how to manage space and granularity in dynamic buffers."/>
+<meta name="description" content="Explains how to manage space and granularity in dynamic buffers."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-112AAFA5-B4C9-5B62-A106-FB5097C13A0E.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DBF88873-21B1-5493-8EBF-C9071D314A09.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-112AAFA5-B4C9-5B62-A106-FB5097C13A0E.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-E3DD768F-752F-5414-9E9A-86E046806903"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Space management and granularity</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-E3DD768F-752F-5414-9E9A-86E046806903"><a name="GUID-E3DD768F-752F-5414-9E9A-86E046806903"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2392600 id2392898 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-DBF88873-21B1-5493-8EBF-C9071D314A09.html" title="Links to documents that describe buffers and strings.">Buffers And Strings</a> &gt; <a href="GUID-112AAFA5-B4C9-5B62-A106-FB5097C13A0E.html" title="Topics related to the dynamic buffers and how to use them.">Using Dynamic Buffers</a> &gt; </div>
+<h1 class="topictitle1">Space
+management and granularity</h1>
+<div><p>Explains how to manage space and granularity in dynamic buffers.</p>
+
+<p>As the buffer expands, extra space must be allocated. As it contracts,
+space may be released. In order to tune the management of space, a <em>granularity</em> is
+specified to the buffer’s constructor. Space is always allocated and freed
+in multiples of this granularity.</p>
+
+<p>The granularity should be carefully chosen. Too small a value will result
+in too many re-allocations with a cost in time and, due to fragmentation and
+segmentation overheads, some waste of space also. Too large a value will result
+in over-allocation of space: the extent of the waste of space depends on the
+type of data in the buffer: decisions must be made on a case-by-case basis.</p>
+
+<p>For flat buffers, the buffer’s single alloc cell is guaranteed to be a
+multiple of the granularity in length. When the buffer must be extended, just
+sufficient space is allocated to cover the immediate space need (rounded up,
+if necessary, to the nearest multiple of the granularity). When data is deleted,
+no automatic space reclamation is performed. The <samp class="codeph">Compress()</samp> function
+may be used to compress the allocation to the smallest possible multiple of
+the granularity necessary for the data currently held in the buffer.</p>
+
+<p>For segmented buffers, the granularity is the number of data bytes in each
+segment. Segments additionally have a 16-byte overhead. Therefore, the granularity
+of segmented buffers should always be considerably greater than 16, to avoid
+significant space waste. When a segmented buffer is extended, enough extra
+segments are allocated to contain all the data. When data is deleted from
+a segmented buffer, segments are deleted if they contain no data. Segments
+whose content is partially deleted may be amalgamated with neighbouring segments,
+but usually they are left partially full. If the pattern of insertions and
+deletions into a segmented buffer is arbitrary, nothing can be said about
+the extent of <em>data</em> in each segment: it may range from a single byte
+up to the entire segment length — which is the granularity of the buffer.
+The <samp class="codeph">Compress()</samp> function may be used with segmented buffers
+to cause a more efficient allocation of space to its segments.</p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-112AAFA5-B4C9-5B62-A106-FB5097C13A0E.html" title="Topics related to the dynamic buffers and how to use them.">Using Dynamic Buffers</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Fair Scheduling and File Caching"/>
+<meta name="abstract" content="This document describes the fair scheduling and file caching features of the File Server."/>
+<meta name="description" content="This document describes the fair scheduling and file caching features of the File Server."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AB2D58A0-E295-5005-9B94-C7C393075792.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F3BD37EC-0CCB-5859-908F-215E22C9FC20.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AB2D58A0-E295-5005-9B94-C7C393075792.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Fair Scheduling and File Caching</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F"><a name="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2399453 id2399461 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-F3BD37EC-0CCB-5859-908F-215E22C9FC20.html" title="The File Server component manages all files on a Symbian platform phone. This section describes how to extend the File Server for your phone hardware.">File Server Extensions</a> &gt; <a href="GUID-AB2D58A0-E295-5005-9B94-C7C393075792.html" title="This section describes the technology, architecture, and behaviour of the File Server.">Concepts</a> &gt; </div>
+<h1 class="topictitle1">Fair
+Scheduling and File Caching</h1>
+<div><p>This document describes the fair scheduling and file caching features
+of the File Server.</p>
+
+<div class="section" id="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-CBF527A2-EF30-5D4D-9BF4-631748315BE9"><a name="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-CBF527A2-EF30-5D4D-9BF4-631748315BE9"><!-- --></a><h2 class="sectiontitle">Fair scheduling</h2><p>The
+current design of the file server supports the processing of client requests
+concurrently, as long as those requests are made to different drives in the
+system. For example, a read operation may take place on the NAND user area
+partition while a write operation to the MMC card takes place concurrently. </p>
+<p>However,
+requests to the same drive are serialized on a first-come first-served basis,
+which under some circumstances leads to bad user experience. For example:</p>
+<ol>
+<li id="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-6550B420-5545-42C9-B304-9A8FA7D9DA01"><a name="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-6550B420-5545-42C9-B304-9A8FA7D9DA01"><!-- --></a><p>An incoming call arrives
+while a large video file is being written to the NAND user area by an application
+that writes the file in very large chunks.</p>
+</li>
+
+<li id="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-7B08B626-E610-448B-917C-CB6CC127F2B9"><a name="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-7B08B626-E610-448B-917C-CB6CC127F2B9"><!-- --></a><p>In order to display
+the caller’s details, the phone needs to read from the contacts database which
+is also stored on the NAND user area.</p>
+</li>
+
+<li id="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-3A42569B-66CF-420F-A09D-F02A6BA4E4F9"><a name="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-3A42569B-66CF-420F-A09D-F02A6BA4E4F9"><!-- --></a><p>The write operation
+takes a very long time to complete, so the call is lost.</p>
+</li>
+
+</ol>
+<p> This is one of many scenarios where the single threaded nature of
+the file server may lead to unresponsive behavior. In order to improve the
+responsiveness of the system, the Symbian platform implements a fair scheduling
+policy that splits up large requests into more manageable chunks, thus providing
+clients of the file server with a more responsive system when the file server
+is under heavy load.</p>
+<p>See <a href="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30.html#GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-450D57A3-928B-5389-B941-595DB20A7CEA">Enabling
+fair scheduling</a>.</p>
+</div>
+
+<div class="section" id="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-84C18F69-D193-4010-A9B2-B533FC6ACF51"><a name="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-84C18F69-D193-4010-A9B2-B533FC6ACF51"><!-- --></a><h2 class="sectiontitle">Read caching</h2><div class="p">Read caching aims to improve file server
+performance by addressing the following use case: <ul>
+<li><p>A client (or multiple clients) issues repeated requests to read data
+from the same locality within a file. Data that was previously read (and is
+still in the cache) can be returned to the client without continuously re-reading
+the data from the media. </p>
+</li>
+
+</ul>
+</div>
+<div class="note"><span class="notetitle">Note:</span> Read caching is of little benefit for clients/files that are
+typically accessed sequentially in large blocks and never re-read.</div>
+<p>There
+may be a small degradation in performance on some media due to the overhead
+of copying the data from the media into the file cache. To some extent this
+may be mitigated by the affects of read-ahead, but this clearly does not affect
+large (&gt;= 4K) reads and/or non-sequential reads. It should also be noted that
+any degradation may be more significant for media where the read is entirely
+synchronous (for example, NAND on the H4 HRP), because there is no scope for
+a read-ahead to be running in the file server drive thread at the same time
+as reads are being satisfied in the context of the file server’s main thread.</p>
+</div>
+
+<div class="section" id="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-7C6E6FDB-1419-4A8E-82F8-74EE6E62D468"><a name="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-7C6E6FDB-1419-4A8E-82F8-74EE6E62D468"><!-- --></a><h2 class="sectiontitle">Demand paging effects</h2><p>When ROM paging is enabled,
+the kernel maintains a <em>live list</em> of pages that are currently being
+used to store demand paged content. It is important to realize that this list
+also contains non-dirty pages belonging to the file cache. The implication
+of this is that reading some data into the file cache, or reading data already
+stored in the file cache, may result in code pages being evicted from the
+live list. </p>
+<p>Having a large number of clients reading through
+or from the file cache can have an adverse effect on performance. For this
+reason it is probably not a good idea to set the <a href="GUID-3B777E89-8E4C-3540-958F-C621741895C8.html"><span class="apiname">FileCacheSize</span></a> property
+to too large a value – otherwise a single application reading a single large
+file through the cache is more likely to cause code page evictions if the
+amount of available RAM is restricted. See <a href="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3.html" title="Describes how to change media drivers when demand paging is used.">Migration
+Tutorial: Demand Paging and Media Drivers</a>.</p>
+</div>
+
+<div class="section" id="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-9BCF8F2A-F919-4AC7-BA05-02CC763429C1"><a name="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-9BCF8F2A-F919-4AC7-BA05-02CC763429C1"><!-- --></a><h2 class="sectiontitle">Read-ahead caching</h2><p>Clients that read data sequentially
+(particularly using small block lengths) impact system performance due to
+the overhead in requesting data from the media. Read-ahead caching addresses
+this issue by ensuring that subsequent small read operations may be satisfied
+from the cache after issuing a large request to read ahead data from the media.</p>
+<p>Read-ahead
+caching builds on read caching by detecting clients that are performing streaming
+operations and speculatively reading ahead on the assumption that once the
+data is in the cache it is likely to be accessed in the near future, thus
+improving performance.</p>
+<p>The number of bytes requested by the read-ahead
+mechanism is initially equal to double the client’s last read length or a
+page, for example, 4K (whichever is greater) and doubles each time the file
+server detects that the client is due to read outside of the extents of the
+read-ahead cache, up to a pre-defined maximum (128K). </p>
+</div>
+
+<div class="section" id="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-976EE014-E3C3-42FD-8467-1D008DEC27FD"><a name="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F__GUID-976EE014-E3C3-42FD-8467-1D008DEC27FD"><!-- --></a><h2 class="sectiontitle">Write caching</h2><p>Write caching is implemented to perform
+a small level of write-back caching. This overcomes inefficiencies of clients
+that perform small write operations, thus taking advantage of media that is
+written on a block basis by consolidating multiple file updates into a single
+larger write as well as minimizing the overhead of metadata updates that the
+file system performs. </p>
+<p>By implementing write back at the file level,
+rather than at the level of the block device, the possibility of file system
+corruption is removed as the robustness features provided by rugged FAT and
+LFFS are still applicable.</p>
+<p>Furthermore, by disabling write back by default,
+allowing the licensee to specify the policy on a per drive basis, providing
+APIs on a per session basis and respecting Flush and Close operations, the
+risk of data corruption is minimized.</p>
+<div class="note"><span class="notetitle">Note:</span> The possibility of data loss
+increases, but the LFFS file system already implements a simple write back
+cache of 4K in size so the impact of this should be minimal.</div>
+<div class="note"><span class="notetitle">Note:</span> Write
+caching must be handled with care, as this could potentially result in loss
+of user data.</div>
+<p>Database access needs special consideration as corruption
+may occur if the database is written to expect write operations to be committed
+to disk immediately or in a certain order (write caching may re-order write
+requests).</p>
+<p>For these reasons, it is probably safer to leave write caching
+off by default and to consider enabling it on a per-application basis. See <a href="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30.html#GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-719C7E0C-790B-5C61-9EA8-E2687397340F">Enabling
+read and write caching</a>.</p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-AB2D58A0-E295-5005-9B94-C7C393075792.html" title="This section describes the technology, architecture, and behaviour of the File Server.">Concepts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

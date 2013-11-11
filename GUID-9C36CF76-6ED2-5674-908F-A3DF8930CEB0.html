@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to renew a request from the active scheduler"/>
+<meta name="abstract" content="This document describes how to maintain an outstanding request from an active scheduler."/>
+<meta name="description" content="This document describes how to maintain an outstanding request from an active scheduler."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3786D8E6-17A9-52E4-A8DF-CFCDC3039854.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B507490F-6BD3-5DF5-97E4-EFDFEA2B4EDD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to renew a request from the active scheduler</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0"><a name="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2393224 id2393257 id2393330 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-3786D8E6-17A9-52E4-A8DF-CFCDC3039854.html">Inter Process Communication</a> &gt; <a href="GUID-B507490F-6BD3-5DF5-97E4-EFDFEA2B4EDD.html">Using Asynchronous Programming</a> &gt; <a href="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html">High Level Asynchronous Service Handling</a> &gt; </div>
+<h1 class="topictitle1">How
+to renew a request from the active scheduler</h1>
+<div><p>This document describes how to maintain an outstanding request
+from an active scheduler.</p>
+
+<p>It is possible to maintain an outstanding request from the active scheduler,
+by overriding the <samp class="codeph">CActiveScheduler::WaitForAnyRequest()</samp> function.</p>
+
+<p>In this case, it is useful for the active scheduler to have a data member
+which points to the active object for which it will maintain an outstanding
+request. Implement the active scheduler as follows:</p>
+
+<pre class="codeblock" id="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-92FD6B7D-54E8-5E1D-828F-AEE77C45CA3A"><a name="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-92FD6B7D-54E8-5E1D-828F-AEE77C45CA3A"><!-- --></a>class CExampleScheduler : public CActiveScheduler
+    {
+public:
+    void Error (TInt aError) const;
+    void WaitForAnyRequest();
+    void SetActiveObject(CActiveConsole* aActiveConsole);
+private:
+    CActiveConsole* iActiveConsole;
+    };</pre>
+
+<pre class="codeblock" id="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-156BDAD4-B9EB-55AB-827A-16739A66AC2D"><a name="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-156BDAD4-B9EB-55AB-827A-16739A66AC2D"><!-- --></a>void CExampleScheduler::SetActiveObject(CActiveConsole* aActiveConsole)
+    {
+    iActiveConsole = aActiveConsole;
+    }</pre>
+
+<p>where <samp class="codeph">iActiveConsole</samp> is a pointer to an active object,
+initialized by call to <samp class="codeph">SetActiveObject()</samp> during the construction
+of the controlling active object:</p>
+
+<pre class="codeblock" id="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-721C2A53-CE4F-5C37-9599-DE359A586C9C"><a name="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-721C2A53-CE4F-5C37-9599-DE359A586C9C"><!-- --></a>void CMessageKeyProcessor::ConstructL()
+    {
+    CActiveScheduler::Add(this);
+    (CExampleScheduler*)(CActiveScheduler::Current())-&gt;SetActiveObject(this);
+    }</pre>
+
+<p>Now override <samp class="codeph">CActiveScheduler::WaitForAnyRequest()</samp>:</p>
+
+<pre class="codeblock" id="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-7646ED79-B891-5F94-BCBC-37A025FA5270"><a name="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-7646ED79-B891-5F94-BCBC-37A025FA5270"><!-- --></a>void CExampleScheduler::WaitForAnyRequest()
+    {
+    if (!(iActiveConsole-&gt;IsActive()))
+        {
+        iActiveConsole-&gt;RequestCharacter();
+        }
+    CActiveScheduler::WaitForAnyRequest();
+    }</pre>
+
+<div class="section" id="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-52635F6A-E5F8-4F08-A77F-136FC80C39BF"><a name="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-52635F6A-E5F8-4F08-A77F-136FC80C39BF"><!-- --></a><h2 class="sectiontitle">Notes</h2> <ul>
+<li id="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-76CC4644-1909-5423-BF85-44F6AA4053A3"><a name="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-76CC4644-1909-5423-BF85-44F6AA4053A3"><!-- --></a><p>The state of the active
+request flag is examined and a request is not issued if it is active. This
+check is important because the function may be called as a result of other
+active objects completing (for example, a timed messenger) and in these cases
+it would be inappropriate to renew the keyboard service request.</p>
+ </li>
+
+<li id="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-5DA7C2E5-4BB2-54B1-9800-53FB2E41793D"><a name="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-5DA7C2E5-4BB2-54B1-9800-53FB2E41793D"><!-- --></a><p>It is no longer necessary
+to call <samp class="codeph">RequestCharacter()</samp> either before starting the active
+scheduler, or as part of key processing.</p>
+ </li>
+
+<li id="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-7535854A-24C9-581C-9B49-FE17E2252E8E"><a name="GUID-9C36CF76-6ED2-5674-908F-A3DF8930CEB0__GUID-7535854A-24C9-581C-9B49-FE17E2252E8E"><!-- --></a><p>The static function <samp class="codeph">CActiveScheduler::Current()</samp> is
+used to fetch a pointer to the currently installed active scheduler (in this
+example, an object of type <samp class="codeph">CExampleScheduler</samp>). This is necessary
+in order to access the <samp class="codeph">SetActiveObject()</samp> member function
+of <samp class="codeph">CExampleScheduler</samp>.</p>
+ </li>
+
+</ul>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html">High Level Asynchronous Service Handling</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

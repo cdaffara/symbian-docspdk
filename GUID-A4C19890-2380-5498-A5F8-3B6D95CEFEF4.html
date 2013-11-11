@@ -1,0 +1,645 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="PSL Implementation"/>
+<meta name="abstract" content="Describes how to create the PSL implementation."/>
+<meta name="description" content="Describes how to create the PSL implementation."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3F47E907-975A-5739-9B03-042CB90D675D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DF2F0439-AE1A-599C-91B9-6EF2177C3C7E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3F47E907-975A-5739-9B03-042CB90D675D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>PSL Implementation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2399981 id2400012 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-DF2F0439-AE1A-599C-91B9-6EF2177C3C7E.html" title="The DMA Framework is a kernel extension that manages DMA (Direct Memory Access) hardware.">DMA Framework</a> &gt; <a href="GUID-3F47E907-975A-5739-9B03-042CB90D675D.html" title="Describes the steps to implement a port of the DMA Framework.">Port Implementation Tutorial</a> &gt; </div>
+<h1 class="topictitle1">PSL
+Implementation</h1>
+<div><p>Describes how to create the PSL implementation.</p>
+
+<p>To create a port of the DMA Framework, you must create an implementation
+of the PSL for the DMA controller hardware.</p>
+
+<div class="section" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-8664FA8F-E53A-5DBA-999F-A0B800C1F54B"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-8664FA8F-E53A-5DBA-999F-A0B800C1F54B"><!-- --></a><h2 class="sectiontitle">Define and
+implement PSL-specific channel classes</h2> <p>The choice of class to be
+used for implementing DMA channels is governed by the mode of operation to
+be supported: </p>
+ <ul>
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C254C7CA-D010-5885-811D-05BEAF068EDD"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C254C7CA-D010-5885-811D-05BEAF068EDD"><!-- --></a><p>single-buffer channels
+should use <a href="GUID-A8B4AD1B-770C-363E-A0DE-C78A9786CBDC.html"><span class="apiname">TDmaSbChannel</span></a>  </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-91DDE5AD-16E5-5FCE-86E9-80069F2CCDDB"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-91DDE5AD-16E5-5FCE-86E9-80069F2CCDDB"><!-- --></a><p>double-buffer channels
+should use <a href="GUID-FD76AF08-6250-3054-8A06-16343E385B23.html"><span class="apiname">TDmaDbChannel</span></a>  </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-994E863D-2C32-5AE3-931A-B852855883CA"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-994E863D-2C32-5AE3-931A-B852855883CA"><!-- --></a><p>scatter-gather channels
+should use <a href="GUID-2D4CFBB1-8D64-3CF5-B6F0-B24D16D5BAD4.html"><span class="apiname">TDmaSgChannel</span></a>  </p>
+ </li>
+
+</ul>
+ <p>These three classes are defined in <span class="filepath">dma.h</span>. </p>
+ <p>In
+addition, the PSL may need to store channel-specific data. One way of achieving
+this is by deriving a PSL-specific class from one of the generic ones. For
+example, the template scatter-gather implementation defines a <samp class="codeph">TTemplateSgChannel</samp> class
+derived from <samp class="codeph">TDmaSgChannel</samp> for storing data when appending
+new descriptors to a running channel: </p>
+ <pre class="codeblock" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C4807321-01A3-5893-800A-6E22B8B5E131"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C4807321-01A3-5893-800A-6E22B8B5E131"><!-- --></a>class TTemplateSgChannel : public TDmaSgChannel
+    {
+public:
+    TDmaDesc* iTmpDes;
+    TPhysAddr iTmpDesPhysAddr;
+    };
+
+      </pre>
+ </div>
+
+<div class="section" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-0991CFB7-B37E-57B9-BC1F-4A69FEDAF5A5"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-0991CFB7-B37E-57B9-BC1F-4A69FEDAF5A5"><!-- --></a><h2 class="sectiontitle">Define and
+implement the controller classes</h2> <p>A controller can either be a physical
+controller, or a logical one depending on which <a href="GUID-97F97D7B-D5A3-5471-A359-77B805ED198C.html" title="Describes different modes of operations of the DMA Framework .">DMA
+mode you intend to support</a>. </p>
+ <p>The PSL (platform-specific layer)
+must define one concrete controller class per supported controller. A controller
+class is derived from <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html"><span class="apiname">TDmac</span></a>. The concrete class must implement
+all the pure virtual functions defined in <samp class="codeph">TDmac</samp>, and, optionally
+the functions used to manipulate hardware descriptors. </p>
+ <p>Taking the
+template port as an example, the class is defined as: </p>
+ <pre class="codeblock" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-1C275111-6597-5616-822A-9EABF40BFE77"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-1C275111-6597-5616-822A-9EABF40BFE77"><!-- --></a>class TTemplateDmac : public TDmac
+    {
+public:
+    TTemplateDmac();
+    TInt Create();
+private:
+    // from TDmac (PIL pure virtual)
+    virtual void Transfer(const TDmaChannel&amp; aChannel, const SDmaDesHdr&amp; aHdr);
+    virtual void StopTransfer(const TDmaChannel&amp; aChannel);
+    virtual TBool IsIdle(const TDmaChannel&amp; aChannel);
+    virtual TInt MaxTransferSize(TDmaChannel&amp; aChannel, TUint aFlags, TUint32 aPslInfo);
+    virtual TUint MemAlignMask(TDmaChannel&amp; aChannel, TUint aFlags, TUint32 aPslInfo);
+    // from TDmac (PIL virtual)
+    virtual void InitHwDes(const SDmaDesHdr&amp; aHdr, TUint32 aSrc, TUint32 aDest, TInt aCount,
+                            TUint aFlags, TUint32 aPslInfo, TUint32 aCookie);
+    virtual void ChainHwDes(const SDmaDesHdr&amp; aHdr, const SDmaDesHdr&amp; aNextHdr);
+    virtual void AppendHwDes(const TDmaChannel&amp; aChannel, const SDmaDesHdr&amp; aLastHdr,
+                             const SDmaDesHdr&amp; aNewHdr);
+    virtual void UnlinkHwDes(const TDmaChannel&amp; aChannel, SDmaDesHdr&amp; aHdr);
+    // other
+    static void Isr(TAny* aThis);
+    inline TDmaDesc* HdrToHwDes(const SDmaDesHdr&amp; aHdr);
+private:
+    static const SCreateInfo KInfo;
+public:
+    TTemplateSgChannel iChannels[KChannelCount];
+    };
+</pre>
+ <p>Notes: </p>
+ <ul>
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-4E8059FF-0BBC-5F65-9F66-3C96BC86FE55"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-4E8059FF-0BBC-5F65-9F66-3C96BC86FE55"><!-- --></a><p>The array of channels
+must be defined in the PSL controller class because only the PSL knows what
+kind of channels are used. </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-66E7787B-E933-5E17-9169-E0D245B9D27A"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-66E7787B-E933-5E17-9169-E0D245B9D27A"><!-- --></a><p>The PSL controller class
+must be allocated in the BSS section of the DMA kernel extension. The second
+phase constructor must be called from the extension entry point. </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-7306F4CB-5D0F-5E82-AC61-E068A48C9C9B"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-7306F4CB-5D0F-5E82-AC61-E068A48C9C9B"><!-- --></a><p>The C++ constructor
+must pass a <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html#GUID-25398075-927B-36E4-B953-16785EC4086C__GUID-BBD2153C-4B41-357C-9299-D710930AFCBE"><span class="apiname">TDmac::SCreateInfo</span></a> structure to the <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html"><span class="apiname">TDmac</span></a> constructor.
+This structure defines what the PIL (platform-independent layer) needs to
+know about the underlying DMA controller. The template <samp class="codeph">TTemplateDmac</samp> constructor
+just passes a <samp class="codeph">TDmac::ScreateInfo</samp> structure, which defines
+the layout of the (base class managed) descriptor pool to the base class constructor
+through a ctor list: </p>
+ <pre class="codeblock" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-E00DD5C0-0976-58A0-B3C0-22DFD9216BC0"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-E00DD5C0-0976-58A0-B3C0-22DFD9216BC0"><!-- --></a>TTemplateDmac::TTemplateDmac()
+//
+// Constructor.
+//
+    : TDmac(KInfo)
+    {}
+
+          </pre>
+ <p>where KInfo is a <samp class="codeph">TDmac::ScreateInfo</samp> type. </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-4C6FB95D-BE6F-5938-8AC3-824B3BB508EE"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-4C6FB95D-BE6F-5938-8AC3-824B3BB508EE"><!-- --></a><p>The PSL controller class
+needs a second phase constructor. This is the <samp class="codeph">Create()</samp> function,
+which must: </p>
+ <a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-33DC912F-C5B4-5F33-A427-62700522D958"><!-- --></a><ol id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-33DC912F-C5B4-5F33-A427-62700522D958">
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-F0E8A497-B09F-5DA0-A94A-3B08FC28707C"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-F0E8A497-B09F-5DA0-A94A-3B08FC28707C"><!-- --></a><p>call the second phase
+constructor of the base class: <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html#GUID-25398075-927B-36E4-B953-16785EC4086C__GUID-9B0C8C35-F149-3358-90B8-B4670CFE888F"><span class="apiname">TDmac::Create()</span></a>. </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-1FD43FAD-4F43-557E-9EF0-19C725DD5FF5"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-1FD43FAD-4F43-557E-9EF0-19C725DD5FF5"><!-- --></a><p>perform any hardware-specific
+initialisation. </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-A522B8D4-744B-5C5B-B684-C82F34462171"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-A522B8D4-744B-5C5B-B684-C82F34462171"><!-- --></a><p>bind and enable the
+DMA interrupt(s). </p>
+ </li>
+
+</ol>
+ <p>In the template port, <samp class="codeph">Create()</samp> calls the base class <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html#GUID-25398075-927B-36E4-B953-16785EC4086C__GUID-9B0C8C35-F149-3358-90B8-B4670CFE888F"><span class="apiname">TDmac::Create()</span></a> function
+and then initialises the template specific channel object members (the temporary
+descriptor fields used for appending requests to live channels), and performs
+platform specific initialisation for the interrupt dispatch of DMA interrupt
+events: </p>
+ <pre class="codeblock" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-FBCC8132-129C-53A4-99B7-290B56C3035D"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-FBCC8132-129C-53A4-99B7-290B56C3035D"><!-- --></a>TInt TTemplateDmac::Create()
+//
+// Second phase construction.
+//
+    {
+    TInt r = TDmac::Create(KInfo);                            // Base class Create()
+    if (r == KErrNone)
+        {
+        __DMA_ASSERTA(ReserveSetOfDes(KChannelCount) == KErrNone);
+        for (TInt i=0; i &lt; KChannelCount; ++i)
+            {
+            TDmaDesc* pD = HdrToHwDes(*iFreeHdr);
+            iChannels[i].iTmpDes = pD;
+            iChannels[i].iTmpDesPhysAddr = DesLinToPhys(pD);
+            iFreeHdr = iFreeHdr-&gt;iNext;
+            }
+        r = Interrupt::Bind(EAsspIntIdDma, Isr, this);
+        if (r == KErrNone)
+            {
+            // TO DO: Map DMA clients (requests) to DMA channels here.
+
+            r = Interrupt::Enable(EAsspIntIdDma);
+            }
+        }
+    return r;
+    }
+          </pre>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-0DBA2E68-7759-5447-B34B-14F237369CB1"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-0DBA2E68-7759-5447-B34B-14F237369CB1"><!-- --></a><h2 class="sectiontitle">Implement the
+channel allocator</h2> <p>Channel allocation is implemented in the PSL
+(platform-specific layer) because this is a hardware-specific operation. There
+are two basic options: </p>
+ <ul>
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-A9246754-F21B-5BFC-9FDB-2CE5C92D1FA3"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-A9246754-F21B-5BFC-9FDB-2CE5C92D1FA3"><!-- --></a><p>Preallocate, at design
+time, one channel per DMA-aware peripheral. This is the simplest approach,
+and it should be acceptable for most Symbian platform devices because the
+set of supported peripherals is closed. In this case, cookies passed by client
+device drivers map uniquely to DMA channels. </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C1164FA0-9B70-55C1-9C5A-2D02728FA67A"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C1164FA0-9B70-55C1-9C5A-2D02728FA67A"><!-- --></a><p>Full dynamic allocation.
+This is a simple approach too, but DMA channels are, in general, not completely
+identical. For example, some channels may have greater priorities than others. </p>
+ </li>
+
+</ul>
+ <p>Mixed schemes are also possible, for example, client device driver
+cookies could be used to select a subset of channels, and dynamic allocation
+used inside this subset. </p>
+ <p>Whatever option is chosen, the PSL must provide
+an implementation for the function <a href="GUID-176B8E0D-0422-341B-A134-7C85432E1303.html#GUID-176B8E0D-0422-341B-A134-7C85432E1303__GUID-934F46B3-1DF9-3870-87EE-A8E2DEF82810"><span class="apiname">DmaChannelMgr::Open()</span></a>.
+The template implementation is: </p>
+ <pre class="codeblock" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-9C7F5850-F72B-5A16-9DA0-606FBABAB5F0"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-9C7F5850-F72B-5A16-9DA0-606FBABAB5F0"><!-- --></a>TDmaChannel* DmaChannelMgr::Open(TUint32 aOpenId)
+//
+//
+//
+    {
+    __KTRACE_OPT(KDMA, Kern::Printf("&gt;DmaChannelMgr::Open aOpenId=%d", aOpenId));
+
+    __DMA_ASSERTA(aOpenId &lt; static_cast&lt;TUint32&gt;(KChannelCount));
+
+    TDmaChannel* pC = Controller.iChannels + aOpenId;
+    if (pC-&gt;IsOpened())
+        pC = NULL;
+    else
+        {
+        pC-&gt;iController = &amp;Controller;
+        pC-&gt;iPslId = aOpenId;
+        }
+
+    return pC;
+    }
+      </pre>
+ <p>The template DMA channel manager returns a pointer to
+a DMA channel if the channel has not been previously allocated. Note that
+since channels possess preset priorities, the device drivers must be aware
+of which channel(s) they require DMA service from and configure the DMA controller
+to route sources to allocated channels accordingly. </p>
+ <p>The platform-specific
+cookies passed by client device drivers to the PSL must be defined somewhere
+so that client device drivers can access them. </p>
+ </div>
+
+<div class="section" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-6B35E9A7-11D6-5B26-B562-934169503412"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-6B35E9A7-11D6-5B26-B562-934169503412"><!-- --></a><h2 class="sectiontitle">[Optionally]
+implement channel cleanup</h2> <p>In the template PSL (platform-specific
+layer), the function <a href="GUID-176B8E0D-0422-341B-A134-7C85432E1303.html#GUID-176B8E0D-0422-341B-A134-7C85432E1303__GUID-909D795A-7303-3A76-9C8E-3B07A97DD716"><span class="apiname">DmaChannelMgr::Close()</span></a> is a no-operation.
+This function is called by the PIL (platform-independent layer) when client
+device drivers call <a href="GUID-83882548-FAC5-3EFF-92ED-14D1D9A85D37.html#GUID-83882548-FAC5-3EFF-92ED-14D1D9A85D37__GUID-8204AFBD-2A60-372E-B626-35BD19851FF7"><span class="apiname">TDmaChannel::Close()</span></a>. If the PSL needs
+to perform any hardware-specific operation when the channel is closed, then
+the implementation of <samp class="codeph">DmaChannelMgr::Close()</samp> should be updated
+to reflect that. </p>
+ </div>
+
+<div class="section" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C9439F04-0BCC-5BC7-B18B-5C1B88515340"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C9439F04-0BCC-5BC7-B18B-5C1B88515340"><!-- --></a><h2 class="sectiontitle">Implement the
+mandatory controller virtual functions</h2> <p>The <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html"><span class="apiname">TDmac</span></a> class
+contains several pure virtual functions that must be implemented by the PSL
+(platform-specific layer): </p>
+ <ul>
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-FF533DDF-E4B1-5AD1-9CBD-19A1D94AB07D"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-FF533DDF-E4B1-5AD1-9CBD-19A1D94AB07D"><!-- --></a><p> <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html#GUID-25398075-927B-36E4-B953-16785EC4086C__GUID-81921A9D-41F5-34BC-B882-60CC4CD807FB"><span class="apiname">TDmac::Transfer()</span></a>  </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-F6D6524A-09E3-54C0-AEB6-1D6BAB29210C"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-F6D6524A-09E3-54C0-AEB6-1D6BAB29210C"><!-- --></a><p> <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html#GUID-25398075-927B-36E4-B953-16785EC4086C__GUID-B738D1B9-80FA-334D-ABEB-DFFF093E0B9D"><span class="apiname">TDmac::StopTransfer()</span></a>  </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-6209F3C7-9E3C-58BF-ABA4-6DF4BBF44A82"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-6209F3C7-9E3C-58BF-ABA4-6DF4BBF44A82"><!-- --></a><p> <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html#GUID-25398075-927B-36E4-B953-16785EC4086C__GUID-7422834D-CE6B-32DB-A040-7762A8BAB7D7"><span class="apiname">TDmac::IsIdle()</span></a>  </p>
+ </li>
+
+</ul>
+ <p>These functions start and stop transfers on a DMA channel and are
+the main interface between the PIL (platform-independent layer) and the PSL.
+The implementation of these functions depends on the hardware available for
+performing DMA, and on the characteristics used to specify a DMA transfer: </p>
+ <ul>
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-81DA9FED-18F0-5205-9597-33542B0CB3CC"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-81DA9FED-18F0-5205-9597-33542B0CB3CC"><!-- --></a><p>the source and destination
+addresses </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-D6684249-31CC-544B-8CEE-DD1D7FC8A8A1"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-D6684249-31CC-544B-8CEE-DD1D7FC8A8A1"><!-- --></a><p>the burst size </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-91D910DB-E1D7-5993-9ADB-6823662249D0"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-91D910DB-E1D7-5993-9ADB-6823662249D0"><!-- --></a><p>the maximum transfer
+size </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C1926D7D-8349-5BA1-8E21-AB5D90486443"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C1926D7D-8349-5BA1-8E21-AB5D90486443"><!-- --></a><p>the transfer width,
+i.e. number of bits per memory access </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C091D505-1088-56CA-8630-F1099B0A2234"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C091D505-1088-56CA-8630-F1099B0A2234"><!-- --></a><p>the memory alignment
+and endianness. </p>
+ </li>
+
+</ul>
+ <p>The DMA Framework manages the transfer descriptors according to the
+descriptor parameter passed into the <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html"><span class="apiname">TDmac</span></a> constructor
+by the derived class constructor; the descriptor parameter is a <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html#GUID-25398075-927B-36E4-B953-16785EC4086C__GUID-BBD2153C-4B41-357C-9299-D710930AFCBE"><span class="apiname">TDmac::SCreateInfo</span></a> structure.
+The per-request transfer parameters are passed into the descriptors for each
+request issued by a driver. </p>
+ <p><strong>The
+transfer function: Transfer()</strong> </p>
+ <p>This function initiates a previously
+constructed request on a specific channel. This is the template implementation: </p>
+ <pre class="codeblock" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-80B95C0E-B30D-5A10-8512-68317D404DB3"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-80B95C0E-B30D-5A10-8512-68317D404DB3"><!-- --></a>void TTemplateDmac::Transfer(const TDmaChannel&amp; aChannel, const SDmaDesHdr&amp; aHdr)
+//
+// Initiates a (previously constructed) request on a specific channel.
+//
+    {
+    const TUint8 i = static_cast&lt;TUint8&gt;(aChannel.PslId());
+    TDmaDesc* pD = HdrToHwDes(aHdr);
+
+    __KTRACE_OPT(KDMA, Kern::Printf("&gt;TTemplateDmac::Transfer channel=%d des=0x%08X", i, pD));
+
+    // TO DO (for instance): Load the first descriptor address into the DMAC and start it
+    // by setting the RUN bit.
+    (void) *pD, (void) i;
+
+    }
+        </pre>
+ <p><strong>The
+stop transfer function: StopTransfer()</strong> </p>
+ <p>This function requires
+that the RUN mode is cleared. This is the template implementation: </p>
+ <pre class="codeblock" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-1BF7A5B4-2723-5A18-98E0-1F79A4928121"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-1BF7A5B4-2723-5A18-98E0-1F79A4928121"><!-- --></a>void TTemplateDmac::StopTransfer(const TDmaChannel&amp; aChannel)
+//
+// Stops a running channel.
+//
+    {
+    const TUint8 i = static_cast&lt;TUint8&gt;(aChannel.PslId());
+
+    __KTRACE_OPT(KDMA, Kern::Printf("&gt;TTemplateDmac::StopTransfer channel=%d", i));
+
+    // TO DO (for instance): Clear the RUN bit of the channel.
+    (void) i;
+
+    }
+        </pre>
+ <p><strong>The
+function: IsIdle()</strong> </p>
+ <p> <samp class="codeph">IsIdle()</samp> returns the state
+of a given channel. This is the template implementation: </p>
+ <pre class="codeblock" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C7CC986E-986B-5C5E-AA3D-86851131BE93"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C7CC986E-986B-5C5E-AA3D-86851131BE93"><!-- --></a>TBool TTemplateDmac::IsIdle(const TDmaChannel&amp; aChannel)
+//
+// Returns the state of a given channel.
+//
+    {
+    const TUint8 i = static_cast&lt;TUint8&gt;(aChannel.PslId());
+
+    __KTRACE_OPT(KDMA, Kern::Printf("&gt;TTemplateDmac::IsIdle channel=%d", i));
+
+    // TO DO (for instance): Return the state of the RUN bit of the channel.
+    // The return value should reflect the actual state.
+    (void) i;
+
+    return ETrue;
+    }
+        </pre>
+ </div>
+
+<div class="section" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-A362A7CF-3674-525C-8114-485315E6594B"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-A362A7CF-3674-525C-8114-485315E6594B"><!-- --></a><h2 class="sectiontitle">Implement the
+non-mandatory controller virtual functions</h2> <p>The following auxiliary
+functions are used to implement the scatter-gather transfer mode behaviour
+by creating and manipulating the linked list of transfer fragment headers
+that describe a given scatter-gather transaction. They are called by the <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html"><span class="apiname">TDmac</span></a> base
+class functions when the instance of the <samp class="codeph">TDmac</samp> derived class
+reports itself as being capable of scatter-gather operations. </p>
+ <ul>
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-D401D7C8-B086-56CD-BAE0-96EEB0AA7E38"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-D401D7C8-B086-56CD-BAE0-96EEB0AA7E38"><!-- --></a><p> <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html#GUID-25398075-927B-36E4-B953-16785EC4086C__GUID-90AC3E58-E589-3F91-85F7-16A4ADFFFA69"><span class="apiname">TDmac::InitHwDes()</span></a>  </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-58633367-FE56-53B7-A967-21828DA85F5C"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-58633367-FE56-53B7-A967-21828DA85F5C"><!-- --></a><p> <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html#GUID-25398075-927B-36E4-B953-16785EC4086C__GUID-05021B05-75DE-3F75-92C6-8B9445EB86D3"><span class="apiname">TDmac::ChainHwDes()</span></a>  </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-94F81366-77D4-5AF6-9933-53E964863301"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-94F81366-77D4-5AF6-9933-53E964863301"><!-- --></a><p> <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html#GUID-25398075-927B-36E4-B953-16785EC4086C__GUID-AFCDDA16-991D-3BDA-B90B-87BCAFF66E5C"><span class="apiname">TDmac::AppendHwDes()</span></a>  </p>
+ </li>
+
+</ul>
+ <p><strong>First
+scatter-gather support function: InitHwDes()</strong> </p>
+ <p>This is a function
+for creating a scatter-gather list. From the information in the passed-in
+request, the function sets up the descriptor with that fragment's: </p>
+ <ul>
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-098E886D-D98D-5AC9-BB25-7FF8E6F0D05B"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-098E886D-D98D-5AC9-BB25-7FF8E6F0D05B"><!-- --></a><p>source and destination
+address </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-83440454-B955-55C8-BF10-DF86CDA0C466"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-83440454-B955-55C8-BF10-DF86CDA0C466"><!-- --></a><p>size </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-294D3B08-0A64-534D-858F-F43759A2DC59"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-294D3B08-0A64-534D-858F-F43759A2DC59"><!-- --></a><p>driver/DMA controller
+specific transfer parameters: memory/peripheral, burst size, transfer width. </p>
+ </li>
+
+</ul>
+ <p>This is the template implementation: </p>
+ <pre class="codeblock" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-EB6F9C76-EC23-5464-A6C5-AB0B36717D2B"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-EB6F9C76-EC23-5464-A6C5-AB0B36717D2B"><!-- --></a>void TTemplateDmac::InitHwDes(const SDmaDesHdr&amp; aHdr, TUint32 aSrc, TUint32 aDest, TInt aCount,
+                              TUint aFlags, TUint32 aPslInfo, TUint32 /*aCookie*/)
+//
+// Sets up (from a passed in request) the descriptor with that fragment's source and destination address,
+// the fragment size, and the (driver/DMA controller) specific transfer parameters (mem/peripheral,
+// burst size, transfer width).
+//
+    {
+    TDmaDesc* pD = HdrToHwDes(aHdr);
+
+    __KTRACE_OPT(KDMA, Kern::Printf("TTemplateDmac::InitHwDes 0x%08X", pD));
+
+    // Unaligned descriptor? Error in generic layer!
+    __DMA_ASSERTD(IsHwDesAligned(pD));
+
+    pD-&gt;iSrcAddr = (aFlags &amp; KDmaPhysAddrSrc) ? aSrc : Epoc::LinearToPhysical(aSrc);
+    pD-&gt;iDestAddr = (aFlags &amp; KDmaPhysAddrDest) ? aDest : Epoc::LinearToPhysical(aDest);
+    pD-&gt;iCmd = DcmdReg(aCount, aFlags, aPslInfo);
+    pD-&gt;iDescAddr = TDmaDesc::KStopBitMask;
+    }
+
+          </pre>
+ <p><strong>Second
+scatter-gather support function: ChainHwDes()</strong> </p>
+ <p>If the framework
+needs to fragment the client’s request, for transfer size or memory discontiguousness
+reasons, then the framework calls this function. It chains hardware descriptors
+together by setting the next pointer of the original descriptor to the physical
+address of the descriptor to be chained. It assumes that the DMAC channel
+is quiescent when called. </p>
+ <p>This is the template implementation: </p>
+ <pre class="codeblock" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-7979A1FB-5FA1-5078-8762-3874A62E6C63"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-7979A1FB-5FA1-5078-8762-3874A62E6C63"><!-- --></a>void TTemplateDmac::ChainHwDes(const SDmaDesHdr&amp; aHdr, const SDmaDesHdr&amp; aNextHdr)
+//
+// Chains hardware descriptors together by setting the next pointer of the original descriptor
+// to the physical address of the descriptor to be chained.
+//
+    {
+    TDmaDesc* pD = HdrToHwDes(aHdr);
+    TDmaDesc* pN = HdrToHwDes(aNextHdr);
+
+    __KTRACE_OPT(KDMA, Kern::Printf("TTemplateDmac::ChainHwDes des=0x%08X next des=0x%08X", pD, pN));
+
+    // Unaligned descriptor? Error in generic layer!
+    __DMA_ASSERTD(IsHwDesAligned(pD) &amp;&amp; IsHwDesAligned(pN));
+
+    // TO DO: Modify pD-&gt;iCmd so that no end-of-transfer interrupt gets raised any longer.
+
+    pD-&gt;iDescAddr = DesLinToPhys(pN);
+    }
+
+</pre>
+ <p><strong>Third
+scatter-gather support function: AppendHwDes()</strong> </p>
+ <p>This function is
+called by the <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html"><span class="apiname">TDmac</span></a> base class when a driver request is
+called for a channel that is still active, i.e. where the intent is to provide
+data streaming so that the target device is constantly provided with data;
+for example, an audio device playing a track. In this case, the function provided
+by the derived class must: </p>
+ <ul>
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-F94FBAA8-2A0D-5863-BA09-0EC1D61005A9"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-F94FBAA8-2A0D-5863-BA09-0EC1D61005A9"><!-- --></a><p>stop the DMAC to prevent
+any corruption of the scatter-gather list while appending the new fragment
+descriptor </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-AEF81B78-73D8-5B70-AFE4-0AEA7862CB74"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-AEF81B78-73D8-5B70-AFE4-0AEA7862CB74"><!-- --></a><p>append the new descriptor </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-2304F2D4-833E-5F75-B88E-C794DF9D984E"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-2304F2D4-833E-5F75-B88E-C794DF9D984E"><!-- --></a><p>re-enable the channel,
+ideally before the target has detected the gap in service. </p>
+ </li>
+
+</ul>
+ <p>This is the template implementation: </p>
+ <pre class="codeblock" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-18512439-C781-5267-ADBC-B9047942F800"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-18512439-C781-5267-ADBC-B9047942F800"><!-- --></a>void TTemplateDmac::AppendHwDes(const TDmaChannel&amp; aChannel, const SDmaDesHdr&amp; aLastHdr,
+                                const SDmaDesHdr&amp; aNewHdr)
+//
+// Appends a descriptor to the chain while the channel is running.
+//
+    {
+    const TUint8 i = static_cast&lt;TUint8&gt;(aChannel.PslId());
+
+    TDmaDesc* pL = HdrToHwDes(aLastHdr);
+    TDmaDesc* pN = HdrToHwDes(aNewHdr);
+
+    __KTRACE_OPT(KDMA, Kern::Printf("&gt;TTemplateDmac::AppendHwDes channel=%d last des=0x%08X new des=0x%08X",
+                                    i, pL, pN));
+    // Unaligned descriptor? Error in generic layer!
+    __DMA_ASSERTD(IsHwDesAligned(pL) &amp;&amp; IsHwDesAligned(pN));
+
+    TPhysAddr newPhys = DesLinToPhys(pN);
+
+    const TInt irq = NKern::DisableAllInterrupts();
+    StopTransfer(aChannel);
+
+    pL-&gt;iDescAddr = newPhys;
+    const TTemplateSgChannel&amp; channel = static_cast&lt;const TTemplateSgChannel&amp;&gt;(aChannel);
+    TDmaDesc* pD = channel.iTmpDes;
+
+    // TO DO: Implement the appropriate algorithm for appending a descriptor here.
+    (void) *pD, (void) i;
+
+    NKern::RestoreInterrupts(irq);
+
+    __KTRACE_OPT(KDMA, Kern::Printf("&lt;TTemplateDmac::AppendHwDes"));
+    }
+    </pre>
+ </div>
+
+<div class="section" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-F5968000-0C3E-5E53-A2D5-120B81F3140F"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-F5968000-0C3E-5E53-A2D5-120B81F3140F"><!-- --></a><h2 class="sectiontitle">Implement an
+interrupt service routine</h2> <p>The interrupt service routine needs to
+do the following: </p>
+ <ul>
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-CE55E999-0886-5620-87BA-99A36D694FD4"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-CE55E999-0886-5620-87BA-99A36D694FD4"><!-- --></a><p>identify the channel
+that raised the interrupt </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-02467F17-DC1E-552C-B1C2-D3C2CCE12347"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-02467F17-DC1E-552C-B1C2-D3C2CCE12347"><!-- --></a><p>decide whether the interrupt
+was raised because of a successful data transfer or because of an error </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-0D5FDA57-A45E-54E5-A69C-64D22B916AB4"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-0D5FDA57-A45E-54E5-A69C-64D22B916AB4"><!-- --></a><p>call the base class
+function <samp class="codeph">TDmac::HandleIsr()</samp>, which queues a DFC, or increments
+the number of pending interrupts if a DFC is already queued. </p>
+ </li>
+
+</ul>
+ <p>This is the template implementation: </p>
+ <pre class="codeblock" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-4CFCA5A1-9657-55F1-BE3C-AFF1F3974F80"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-4CFCA5A1-9657-55F1-BE3C-AFF1F3974F80"><!-- --></a>void TTemplateDmac::Isr(TAny* aThis)
+//
+// This ISR reads the interrupt identification and calls back into the base class
+// interrupt service handler with the channel identifier and an indication whether the
+// transfer completed correctly or with an error.
+//
+    {
+    TTemplateDmac&amp; me = *static_cast&lt;TTemplateDmac*&gt;(aThis);
+
+    // TO DO: Implement the behaviour described above, call HandleIsr().
+
+    HandleIsr(me.iChannels[5], 0);                            // Example
+
+    }
+     </pre>
+ </div>
+
+<div class="section" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-D7F410A1-DC70-515D-A00D-3955B534C62F"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-D7F410A1-DC70-515D-A00D-3955B534C62F"><!-- --></a><h2 class="sectiontitle">Implement the
+test support table and function</h2> <p>The DMA Framework comes with a
+test harness that can be used to validate the port if the underlying DMA controller
+supports memory to memory transfers. </p>
+ <p>The test harness needs to know
+about the capabilities of the port being tested. The PSL provides the global
+function <a href="GUID-3D0A9A03-E210-30EE-A1A1-7DA06E668CAA.html"><span class="apiname">DmaTestInfo()</span></a> that returns a <a href="GUID-59EE15C1-19E7-3AA7-8339-A80CCC074D64.html"><span class="apiname">TDmaTestInfo</span></a> object
+that contains this information. In the template PSL, this structure is initialised
+to binary zeroes. Before using the test harness, it must be initialised with
+valid values. </p>
+ <p>See <a href="GUID-59EE15C1-19E7-3AA7-8339-A80CCC074D64.html"><span class="apiname">TDmaTestInfo</span></a>, <a href="GUID-3D0A9A03-E210-30EE-A1A1-7DA06E668CAA.html"><span class="apiname">DmaTestInfo()</span></a> and <a href="GUID-8552E66E-73D6-51DA-8F53-DDF437186CD6.html" title="Describes the DMA test code to validate the port of DMA framework.">Validation</a>. </p>
+ </div>
+
+<div class="section" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-D452D2CD-D251-50F4-818E-E7125501CE8F"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-D452D2CD-D251-50F4-818E-E7125501CE8F"><!-- --></a><h2 class="sectiontitle">Optimise the
+performance of critical functions</h2> <p>You can optionally optimise critical
+functions by writing them in assembler. The two candidates for an assembler
+rewrite are: </p>
+ <ul>
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-157E6F4A-0310-5923-B446-040F75E469D4"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-157E6F4A-0310-5923-B446-040F75E469D4"><!-- --></a><p>The interrupt service
+routine </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-74C9D4DB-9CA9-5C5E-A475-B6840EBC2245"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-74C9D4DB-9CA9-5C5E-A475-B6840EBC2245"><!-- --></a><p>In scatter-gather mode,
+the <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html#GUID-25398075-927B-36E4-B953-16785EC4086C__GUID-AFCDDA16-991D-3BDA-B90B-87BCAFF66E5C"><span class="apiname">TDmac::AppendHwDes()</span></a> function if it needs to suspend
+a transfer when appending a new descriptor chain to an existing one. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-A2AF293F-558A-5F69-821F-EC2B202A5A4F"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-A2AF293F-558A-5F69-821F-EC2B202A5A4F"><!-- --></a><h2 class="sectiontitle">Extend the
+framework with platform-specific functionality</h2> <p>There are two ways
+of extending the DMA Framework: </p>
+ <a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-D6C660FC-FF23-55B2-B91E-4BC04C592059"><!-- --></a><ol id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-D6C660FC-FF23-55B2-B91E-4BC04C592059">
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-4453F4C2-3444-5A3E-94C7-BE6320B1EF89"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-4453F4C2-3444-5A3E-94C7-BE6320B1EF89"><!-- --></a><p>to provide platform-specific
+functionality on a per-channel basis. </p>
+ </li>
+
+<li id="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C0C6A072-134A-5753-A6DC-185F3975C2A6"><a name="GUID-A4C19890-2380-5498-A5F8-3B6D95CEFEF4__GUID-C0C6A072-134A-5753-A6DC-185F3975C2A6"><!-- --></a><p>to provide platform-specific
+functionality on a <em>channel independent</em> basis. </p>
+ </li>
+
+</ol>
+ <p>In the first case, the PSL provides an implementation of the virtual
+function <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html#GUID-25398075-927B-36E4-B953-16785EC4086C__GUID-D6D011E9-9D75-3881-87D8-1986FFBBA106"><span class="apiname">TDmac::Extension()</span></a>. The default implementation
+just returns <a href="GUID-F89DA3F0-2A48-3F9B-8F08-29350E92D0E4.html"><span class="apiname">KErrNotSupported</span></a>. </p>
+ <p> <a href="GUID-83882548-FAC5-3EFF-92ED-14D1D9A85D37.html#GUID-83882548-FAC5-3EFF-92ED-14D1D9A85D37__GUID-2CF7498E-F5D2-3C4A-8E98-47504F9FC404"><span class="apiname">TDmaChannel::Extension()</span></a> calls <a href="GUID-25398075-927B-36E4-B953-16785EC4086C.html#GUID-25398075-927B-36E4-B953-16785EC4086C__GUID-D6D011E9-9D75-3881-87D8-1986FFBBA106"><span class="apiname">TDmac::Extension()</span></a>. </p>
+ <p>In the second case, the PSL provides an implementation of the static
+function <a href="GUID-176B8E0D-0422-341B-A134-7C85432E1303.html#GUID-176B8E0D-0422-341B-A134-7C85432E1303__GUID-C733B302-4269-3391-8ADE-617CFF198B56"><span class="apiname">DmaChannelMgr::StaticExtension()</span></a>. The template
+PSL implementation just returns <a href="GUID-F89DA3F0-2A48-3F9B-8F08-29350E92D0E4.html"><span class="apiname">KErrNotSupported</span></a>. </p>
+ <p> <a href="GUID-83882548-FAC5-3EFF-92ED-14D1D9A85D37.html#GUID-83882548-FAC5-3EFF-92ED-14D1D9A85D37__GUID-75562653-1F27-39D3-96D8-55A94BA9B68B"><span class="apiname">TDmaChannel::StaticExtension()</span></a> calls <a href="GUID-176B8E0D-0422-341B-A134-7C85432E1303.html#GUID-176B8E0D-0422-341B-A134-7C85432E1303__GUID-C733B302-4269-3391-8ADE-617CFF198B56"><span class="apiname">DmaChannelMgr::StaticExtension()</span></a>. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-3F47E907-975A-5739-9B03-042CB90D675D.html" title="Describes the steps to implement a port of the DMA Framework.">Port Implementation Tutorial</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

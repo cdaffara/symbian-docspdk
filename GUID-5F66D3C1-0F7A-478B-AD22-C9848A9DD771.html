@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="SMP Troubleshooting Guide"/>
+<meta name="abstract" content="This document describes a few common error patterns to help you identify and correct some of the problems you may have in writing SMP-safe code."/>
+<meta name="description" content="This document describes a few common error patterns to help you identify and correct some of the problems you may have in writing SMP-safe code."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-629EAA30-ED77-4CA9-91ED-36C818D7B4F4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-16AED228-539F-4BF7-A7FD-9A01FF1A9A84.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9D93F895-B975-4F2D-A2A3-817033EA5C12.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-5F66D3C1-0F7A-478B-AD22-C9848A9DD771"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>SMP Troubleshooting Guide</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-5F66D3C1-0F7A-478B-AD22-C9848A9DD771"><a name="GUID-5F66D3C1-0F7A-478B-AD22-C9848A9DD771"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2561665 id2563724 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-629EAA30-ED77-4CA9-91ED-36C818D7B4F4.html" title="Provides summary of documents to make SMP-safe applications.">SMP</a> &gt; <a href="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html" title="This section describes how SMP works and provides you with information on how to troubleshoot some problems you may have. This includes problems with driver closure ordering and how memory is shared between threads in a process">SMP Developer Tips</a> &gt; </div>
+<h1 class="topictitle1">SMP
+Troubleshooting Guide</h1>
+<div><p>This document describes a few common error patterns to help you
+identify and correct some of the problems you may have in writing SMP-safe
+code. </p>
+
+<div class="p">There are two main classes of programming errors that can occur in code
+running on an SMP device:<ul>
+<li><p>unsafe assumptions about thread execution order</p>
+</li>
+
+<li><p>unsafe assumptions about memory/data sharing.</p>
+</li>
+
+</ul>
+These errors can cause deadlocks or panics on a SMP system, or may cause
+data corruption or unexpected results. </div>
+
+<div class="section" id="GUID-5F66D3C1-0F7A-478B-AD22-C9848A9DD771__GUID-BC147BD0-8A99-44D7-AC73-B265C6C0E285"><a name="GUID-5F66D3C1-0F7A-478B-AD22-C9848A9DD771__GUID-BC147BD0-8A99-44D7-AC73-B265C6C0E285"><!-- --></a><h2 class="sectiontitle">Execution order
+assumptions</h2><p>Most of the errors found in code so far are not unique
+to SMP, but are more likely to be found on an SMP system. Some existing code
+makes assumptions about how threads are scheduled and how thread priority
+affects the sequence of operations across multiple threads.</p>
+<p>For example,
+one thread makes a request on a server. The developer assumes that the server
+will complete the request before the calling thread became active again. This
+is a dangerous assumption as the server might not be ready to run, or could
+pause while waiting for a resource. This would mean that the scheduler could
+continue executing the original calling thread before the server has completed
+the request. </p>
+<p>The above example would be even more likely to be an unsafe
+assumption on an SMP system because the scheduler could run the server on
+one CPU core and the original calling thread on another at the same time.
+This is why it is important for the calling thread to be written in a thread-safe
+manner which waits for the server to complete the request before continuing
+into code that requires that request to be complete.</p>
+<ul>
+<li><p><a href="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067.html" title="Describes a few common error patterns based on thread priority and multiple active threads in an SMP environment.">Common Error
+Patterns - Execution Order</a> describes a number of common error patterns
+that have been found during SMP testing.</p>
+</li>
+
+<li><p><a href="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB.html" title="Describes a few common error patterns that were found while testing code designed for use in an SMP environment.">Common Error
+Patterns - Case Studies</a> provides specific examples of common error
+patterns.</p>
+</li>
+
+</ul>
+</div>
+
+<div class="section" id="GUID-5F66D3C1-0F7A-478B-AD22-C9848A9DD771__GUID-9626880A-4D3A-4C16-8E4C-1256D2D33524"><a name="GUID-5F66D3C1-0F7A-478B-AD22-C9848A9DD771__GUID-9626880A-4D3A-4C16-8E4C-1256D2D33524"><!-- --></a><h2 class="sectiontitle">Shared data/memory</h2><p>Errors
+may occur if multiple threads try to update or delete the same memory areas
+at the same time.</p>
+<p>Good programming practice, whether for single core
+or multiple core, is to lock objects while they are being updated to prevent
+them being read by another thread in the middle of an update. For kernel-side
+code use a lock to ensure that a particular thread has exclusive access to
+data and interrupts.</p>
+  </div>
+
+<div class="section" id="GUID-5F66D3C1-0F7A-478B-AD22-C9848A9DD771__GUID-6EFA3D71-2254-4231-A375-3519F6A13FBF"><a name="GUID-5F66D3C1-0F7A-478B-AD22-C9848A9DD771__GUID-6EFA3D71-2254-4231-A375-3519F6A13FBF"><!-- --></a><h2 class="sectiontitle">Flexible Memory
+Model Problems</h2><p>One problem that has been found, though not specifically
+SMP related, is where the flexible memory model is being used. For global
+chunks, memory locations are accessed as an offset to a base address. However,
+each thread may have a different base address for the global chunk: if applications
+use absolute addresses, they will read the wrong data.</p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html" title="This section describes how SMP works and provides you with information on how to troubleshoot some problems you may have. This includes problems with driver closure ordering and how memory is shared between threads in a process">SMP Developer Tips</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-16AED228-539F-4BF7-A7FD-9A01FF1A9A84.html" title="This document describes SMP locks and outlines the need of introducing locks in the code.">Locking</a></div>
+<div><a href="GUID-9D93F895-B975-4F2D-A2A3-817033EA5C12.html" title="This topic explains how memory barriers are used to maintain data integrity in a multi-CPU system with shared memory and I/O.">Data Integrity
+and Memory Barriers</a></div>
+<div><a href="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html" title="This section describes how SMP works and provides you with information on how to troubleshoot some problems you may have. This includes problems with driver closure ordering and how memory is shared between threads in a process">SMP Developer
+Tips</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

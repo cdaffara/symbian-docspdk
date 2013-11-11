@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Writing a CSBEClient for Backup"/>
+<meta name="abstract" content="This section describes the recommended conn::CSBEClient function calls for a partial and incremental backup."/>
+<meta name="description" content="This section describes the recommended conn::CSBEClient function calls for a partial and incremental backup."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F9E9A096-6F70-5146-AE1E-49670905756D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A0D4B6EC-8FA7-5FD9-AE5A-E811D876D585.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-78045215-99B0-5D66-8E5F-5396E2D23259.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0FE60A65-6CB6-50AB-B85F-2B60FE96ECFE.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F9E9A096-6F70-5146-AE1E-49670905756D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0BD22FDB-1A5C-56AA-A7FC-BD2271B2F928.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Writing a CSBEClient for Backup</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2534806 id2534820 id2534828 id2534890 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-A0D4B6EC-8FA7-5FD9-AE5A-E811D876D585.html">Remote Connectivity Guide</a> &gt; <a href="GUID-78045215-99B0-5D66-8E5F-5396E2D23259.html">Backup and Restore</a> &gt; <a href="GUID-0FE60A65-6CB6-50AB-B85F-2B60FE96ECFE.html">Backup Engine</a> &gt; <a href="GUID-F9E9A096-6F70-5146-AE1E-49670905756D.html">Writing a Backup Engine Client (CSBEClient) Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Writing
+a CSBEClient for Backup</h1>
+<div><p>This section describes the recommended <samp class="codeph">conn::CSBEClient</samp> function
+calls for a partial and incremental backup. </p>
+
+<div class="section" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-A73F0F33-4FB2-464A-8457-4466D053A1D8"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-A73F0F33-4FB2-464A-8457-4466D053A1D8"><!-- --></a><h2 class="sectiontitle">Context</h2> <p>A partial backup backs up the data of specified
+data owners. Application developers provide a full list of data owners in
+the backup and restore registration file. To back up a subset of the list,
+the Security IDs (SIDs) of the specified data owners must be passed to the
+Backup Engine. </p>
+ <p>An incremental backup backs up files that are new or
+modified since the last backup. After each incremental backup, a snapshot,
+which saves a list of file names and details of each data owner, is saved.
+Before each incremental backup, the previously saved snapshots must be provided
+to the Backup Engine. </p>
+ </div>
+
+<div class="section" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-C3618C1C-8078-42BD-9CC2-4592EA560B3A"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-C3618C1C-8078-42BD-9CC2-4592EA560B3A"><!-- --></a><h2 class="sectiontitle">Steps</h2> <a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-C9A4B10B-8D7A-562E-A7FF-B5C039CE514E"><!-- --></a><ol id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-C9A4B10B-8D7A-562E-A7FF-B5C039CE514E">
+<li id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-3C3EA5AB-B255-55A6-BE4D-58EFF9B0CE50"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-3C3EA5AB-B255-55A6-BE4D-58EFF9B0CE50"><!-- --></a><p>The user application
+must instantiate <a href="GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2.html#GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2__GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C"><span class="apiname">conn::CSBEClient</span></a> to connect to the Backup
+Engine. </p>
+ <div class="p"><pre class="codeblock" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-E84080F8-2D77-5C9C-82EF-12D2CD6B4686"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-E84080F8-2D77-5C9C-82EF-12D2CD6B4686"><!-- --></a>iBackupClient = CSBEClient::NewL();</pre>
+ </div>
+ </li>
+
+<li id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-5F6972FC-9183-5908-9A3C-2FA45742A485"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-5F6972FC-9183-5908-9A3C-2FA45742A485"><!-- --></a><p>Get a list of registered
+data owners from the Backup Engine. </p>
+ <div class="p"><pre class="codeblock" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-E67258BD-A391-5378-A496-932097F22BE8"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-E67258BD-A391-5378-A496-932097F22BE8"><!-- --></a>iBackupClient-&gt;ListOfDataOwnersL(RPointerArray&lt;CDataOwnerInfo&gt;&amp; iDataOwners);</pre>
+ </div>
+ <p>The Backup Engine parses the backup registration files to return
+an array of <a href="GUID-DD6B46F8-8B3F-3BDD-A2C0-1B12287911D3.html"><span class="apiname">CDataOwnerInfo</span></a> objects. A <a href="GUID-DD6B46F8-8B3F-3BDD-A2C0-1B12287911D3.html"><span class="apiname">CDataOwnerInfo</span></a> object
+encapsulates all the information regarding a particular data owner on the
+phone, such as packages that the data owners belong to and data types (public
+data or private data). These objects can be internalized and externalized
+to create backup archives. </p>
+ </li>
+
+<li id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-51142C40-E334-5865-A07D-EC65ED8CDB95"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-51142C40-E334-5865-A07D-EC65ED8CDB95"><!-- --></a><p>Send a list of data
+owners to the Backup Engine. </p>
+ <p>To back up the data of specified data
+owners, pass the array of the Secure IDs (SID) of these data owners to the
+Backup Engine. </p>
+ <p> Note: Each Symbian process is identified by its SID. </p>
+ <div class="p"><pre class="codeblock" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-DC33230F-C5FD-5B4D-A083-C256B31D99C7"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-DC33230F-C5FD-5B4D-A083-C256B31D99C7"><!-- --></a>iBackupClient-&gt;SetSIDListForPartialBURL(RSIDArray&amp; aSIDs);</pre>
+ </div>
+ </li>
+
+<li id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-3FEC5DB5-BD3A-5BB4-8CBB-AF1E02CD13CF"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-3FEC5DB5-BD3A-5BB4-8CBB-AF1E02CD13CF"><!-- --></a><p>Set the Backup Engine
+to the backup mode which signals the start of a backup. </p>
+ <p>The Backup
+Engine <a href="GUID-88A5F321-17BA-566B-B025-22DB11664E54.html" title="This section describes the subscribe and publish flag for backup and restore.">publishes the
+mode to the subscribed data owners</a>. This gives the data owners some
+time to prepare for the backup, for example they can release resources in
+case of file lock or data conflict. </p>
+ <p>The mode contains the backup types:
+full or partial, base or incremental. </p>
+ <div class="p"><pre class="codeblock" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-26AD4017-DE62-5E24-8A24-AEF9B1748CF5"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-26AD4017-DE62-5E24-8A24-AEF9B1748CF5"><!-- --></a>iBackupClient-&gt;SetBURModeL (
+                             const TDriveList&amp; aDriveList,
+                             
+                             //Specify partial backup,
+                             //defined in epoc32/include/connect/sbdefs.h
+                             TBURPartType aBURType,      
+
+                             //Specify incremental backup,
+                             //defined in epoc32/include/connect/sbdefs.h
+                             TBackupIncType aBackupIncType
+                           );
+</pre>
+ </div>
+ </li>
+
+<li id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-04A8BE86-6D96-5ECF-9E7F-844DFEB6824C"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-04A8BE86-6D96-5ECF-9E7F-844DFEB6824C"><!-- --></a><p>Request the state of
+active data owners from the Backup Engine. </p>
+ <p>This step ensures that
+the data owners are ready to supply data in the following steps, for example
+file locks are released. </p>
+ <div class="p"><pre class="codeblock" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-06ECF9D7-D735-5B29-90A3-68FEFD3F31E0"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-06ECF9D7-D735-5B29-90A3-68FEFD3F31E0"><!-- --></a>iBackupClient-&gt;SIDStatusL(RSIDStatusArray&amp; aSIDStatus);</pre>
+ </div>
+ </li>
+
+<li id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-8BA8CC19-2324-5D0A-84B0-9F50BF10C6CD"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-8BA8CC19-2324-5D0A-84B0-9F50BF10C6CD"><!-- --></a><p>Supply data snapshots
+got from the host PC to the Backup Engine. </p>
+ <p>Before doing an incremental
+backup, the Backup Engine needs to know a list of the files included in the
+preceding backup. Refer to step 13 for saving snapshots after an incremental
+backup. </p>
+ <div class="p"><pre class="codeblock" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-D74CE5A8-CBB2-5217-8953-389EEC358E66"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-D74CE5A8-CBB2-5217-8953-389EEC358E66"><!-- --></a>iBackupClient-&gt;SupplyDataL(
+                             CSBGenericTransferType&amp; aSnapShotTransferType,
+                             TBool aFinished
+                           );</pre>
+ </div>
+ <p>A snapshot transfer type
+must be passed to the function above. For more information about creating
+snapshot transfer types, refer to the <a href="GUID-8BFC185E-91FD-5E04-A26C-728B06F31FDD-GENID-1-12-1-28-1-1-4-1-3-1-6-1-6-1.html" title="To transfer data between the Backup Engine and the backup server, a particular type of conn::CSBGenericTransferType must be created.">Creating
+transfer types</a> section. </p>
+ </li>
+
+<li id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-DB8A0DB8-2FD9-5F86-A791-960043DC8C78"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-DB8A0DB8-2FD9-5F86-A791-960043DC8C78"><!-- --></a><p>Inform the Backup Engine
+that all snapshots have been supplied and it is ready to do the backup. </p>
+ <div class="p"><pre class="codeblock" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-FEC18F5C-B2CE-5A97-B14C-0684F9839F7B"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-FEC18F5C-B2CE-5A97-B14C-0684F9839F7B"><!-- --></a>iBackupClient-&gt;AllSnapshotsSuppliedL();</pre>
+ </div>
+ </li>
+
+<li id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-6BE5428B-ADEC-514D-A3C5-43953E1911E0"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-6BE5428B-ADEC-514D-A3C5-43953E1911E0"><!-- --></a><p>Request the size of
+the data to be backed up from the Backup Engine. </p>
+ <p>The file size information
+can be sent to the PC to track the backup progress. </p>
+ <div class="p"><pre class="codeblock" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-C99CC93F-FD0F-508D-8638-F3D2C7885796"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-C99CC93F-FD0F-508D-8638-F3D2C7885796"><!-- --></a>iBackupClient-&gt;ExpectedDataSizeL(CSBGenericTransferType&amp; aGenericTransferType);</pre>
+ </div>
+ </li>
+
+<li id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-A3711593-3A3A-5A16-AB40-5CE79582509E"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-A3711593-3A3A-5A16-AB40-5CE79582509E"><!-- --></a><p>Get a list of public
+files to be backed up from the Backup Engine. </p>
+ <p>The file list can be
+sent to the PC to track backup progress. </p>
+ <div class="p"><pre class="codeblock" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-07D3F3B9-152A-582B-BF9C-8336FB73A0E9"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-07D3F3B9-152A-582B-BF9C-8336FB73A0E9"><!-- --></a>iBackupClient-&gt;PublicFileListL(
+                                TDriveNumber aDrive,
+                                CSBGenericDataType&amp; aGenericDataType,
+                                RFileArray&amp; aFiles
+                              );</pre>
+ </div>
+ <p>The Backup Engine can
+get a list of public files, but it does not supply public files directly to
+the backup server. Device creators must copy the public files from the device
+and supply them to the host PC in their backup server implementations. </p>
+ </li>
+
+<li id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-22A6F0AD-F0DF-56C9-8D91-DE3B1B96271C"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-22A6F0AD-F0DF-56C9-8D91-DE3B1B96271C"><!-- --></a><p>Request the system data
+from the Backup Engine for backup. </p>
+ <div class="p"><pre class="codeblock" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-270B8E6E-4E3E-51D0-8965-2A1CBB85655D"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-270B8E6E-4E3E-51D0-8965-2A1CBB85655D"><!-- --></a>iBackupClient-&gt;RequestDataL(CSBGenericTransferType&amp; aGenericTransferType);</pre>
+ </div>
+ <p> Note: Refer to the <a href="GUID-8BFC185E-91FD-5E04-A26C-728B06F31FDD-GENID-1-12-1-28-1-1-4-1-3-1-6-1-6-1.html" title="To transfer data between the Backup Engine and the backup server, a particular type of conn::CSBGenericTransferType must be created.">Creating
+transfer types</a> section for an example of creating the required <a href="GUID-2A9C2278-088A-3C16-BAA1-5E97DBBC4979.html"><span class="apiname">CSBGenericTransferType</span></a>. </p>
+ </li>
+
+<li id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-D449FECD-C8DE-53D9-9541-592526491E76"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-D449FECD-C8DE-53D9-9541-592526491E76"><!-- --></a><p>Request active private
+data from the backup Engine for backup. </p>
+ <div class="p"><pre class="codeblock" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-0E64EE9A-2756-551C-9442-A5BCEDABC2DC"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-0E64EE9A-2756-551C-9442-A5BCEDABC2DC"><!-- --></a>iBackupClient-&gt;RequestDataL(CSBGenericTransferType&amp; aGenericTransferType);</pre>
+ </div>
+ </li>
+
+<li id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-066A67CD-2E42-51E7-BCFB-6FE56B6F7613"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-066A67CD-2E42-51E7-BCFB-6FE56B6F7613"><!-- --></a><p>Request passive private
+data from the backup Engine for backup. </p>
+ <div class="p"><pre class="codeblock" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-5D16114E-9E66-52A2-BE25-1EDFFB245D95"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-5D16114E-9E66-52A2-BE25-1EDFFB245D95"><!-- --></a>iBackupClient-&gt;RequestDataL(CSBGenericTransferType&amp; aGenericTransferType);</pre>
+ </div>
+ </li>
+
+<li id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-6B33556D-7F5A-5F33-9695-BAE32A590796"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-6B33556D-7F5A-5F33-9695-BAE32A590796"><!-- --></a><p>Request the snapshots
+of all data owners. The backup server can then send the snapshots to the host
+PC for backup. </p>
+ <p>After an incremental backup, <a href="GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2.html#GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2__GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C"><span class="apiname">conn::CSBEClient</span></a> must
+request snapshots from the Backup Engine. The backup server sends the snapshots
+to the host PC and the host PC saves the information. </p>
+ <div class="p"><pre class="codeblock" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-110BD5E6-A2D7-5AF5-8F36-1E8C3B065877"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-110BD5E6-A2D7-5AF5-8F36-1E8C3B065877"><!-- --></a>iBackupClient-&gt;RequestDataL(CSBGenericTransferType&amp; aSnapShotTransferType);</pre>
+ </div>
+ </li>
+
+<li id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-D3528970-74F0-5F64-A2D4-0342C00E585C"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-D3528970-74F0-5F64-A2D4-0342C00E585C"><!-- --></a><p>Set the Backup Engine
+into the normal mode. </p>
+ <p>After the data is backed up on the PC, set the
+Backup Engine to the normal mode. The subscribed data owners respond to the
+signal and resume the state before the backup. For example, resume file locks
+or a GUI application recovers to the state and view prior to the backup. </p>
+ <div class="p"><pre class="codeblock" id="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-648F6685-01C3-5D17-98CB-9EACB8929C0F"><a name="GUID-F40BA7EA-AF7E-5BCF-96DD-9C4D8E947F0C__GUID-648F6685-01C3-5D17-98CB-9EACB8929C0F"><!-- --></a>iBackupClient-&gt;SetBURModeL(
+                             const TDriveList&amp; aDriveList, 
+                             TBURPartType aBURType,
+                             TBackupIncType aBackupIncType
+                           );
+</pre>
+ </div>
+ </li>
+
+</ol>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-F9E9A096-6F70-5146-AE1E-49670905756D.html">Writing a Backup Engine Client (CSBEClient) Tutorials</a></div>
+</div>
+<div class="relinfo reltasks"><strong>Related tasks</strong><br/>
+<div><a href="GUID-0BD22FDB-1A5C-56AA-A7FC-BD2271B2F928.html" title="The Backup Engine exports conn::CSBEClient, which provides data to a host PC for backup and receives data from a host PC while restoring data. Device creators can call this API to write a backup server that handles PC requests for backup and restore.">Writing a
+Backup Engine Client (CSBEClient)</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

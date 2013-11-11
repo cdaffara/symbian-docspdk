@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to store a compound object"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-79CE15C5-B595-5336-AE87-DE92990F6D47.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-FBCBF8A0-7922-5881-A1C5-5DB41630E75A.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F8824165-4B33-50D1-9706-BD2438B5A2EE.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3FAB9077-3EC3-5539-B391-D11456362513.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D7211372-9411-5A18-88F0-615F4983A2E0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-79CE15C5-B595-5336-AE87-DE92990F6D47.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to store a compound object</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2859821 id2860178 id2533897 id2534131 id2534192 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-FBCBF8A0-7922-5881-A1C5-5DB41630E75A.html" title="Provides services to enable and support persistence.">Persistent Data Services Guide</a> &gt; <a href="GUID-F8824165-4B33-50D1-9706-BD2438B5A2EE.html" title="The persistent storage collection.">Persistent Storage</a> &gt; <a href="GUID-3FAB9077-3EC3-5539-B391-D11456362513.html" title="Store provides structured data storage.">Store</a> &gt; <a href="GUID-D7211372-9411-5A18-88F0-615F4983A2E0.html" title="Provides swizzles, store streams, stream dictionaries, and store maps.">Store Streams</a> &gt; <a href="GUID-79CE15C5-B595-5336-AE87-DE92990F6D47.html">Storing and restoring</a> &gt; </div>
+<h1 class="topictitle1">How to store a compound object</h1>
+<div><p>The protocol for storing a compound object follows a standard pattern. However, the design of some compound objects may force deviations from this.</p>
+ <p>A compound object can be stored either in-line or out-of-line.</p>
+ <p>The basic protocol for storing is the <samp class="codeph">StoreL()</samp> function. This is true whether the object is stored in-line or out-of-line and should be prototyped as:</p>
+ <pre class="codeblock" id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-CDFAF7E5-5B4A-538F-B5C9-C90474D61A3A"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-CDFAF7E5-5B4A-538F-B5C9-C90474D61A3A"><!-- --></a>TStreamId StoreL(CStreamStore&amp; aStore) const;</pre>
+ <p>The function takes a reference to the store in which the stream or stream network is to be stored and returns the stream ID through which the object can be restored later.</p>
+ <div class="section"><h2 class="sectiontitle">Storing components in-line</h2> <p>Storing a compound object’s component objects in-line means writing all of these components to the same stream.</p>
+ <p>In general, this is achieved by defining and implementing a <samp class="codeph">StoreL()</samp> member function for the compound object's class.</p>
+ <p>For example, for a class <samp class="codeph">CCompound</samp> defined as:</p>
+ <pre class="codeblock" id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-A469CECC-7125-5A84-A23A-75EABBBA88F2"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-A469CECC-7125-5A84-A23A-75EABBBA88F2"><!-- --></a>CCompound class : public CBase
+    {
+    ...
+    TInt         iDdata;
+    CComponentA* iCompA;
+    CComponentB* iCompB;
+    ...
+    }</pre>
+ <p>where <samp class="codeph">CComponentA</samp> and <samp class="codeph">CComponentB</samp> are classes, the object's component objects can be stored in the same stream as the remainder of the component's data. The <samp class="codeph">StoreL()</samp> implementation is:</p>
+ <pre class="codeblock" id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-8FCF485C-7160-5EFE-BF41-58066948E4A9"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-8FCF485C-7160-5EFE-BF41-58066948E4A9"><!-- --></a>TStreamId CCompound::StoreL(CStreamStore&amp; aStore)
+    { 
+    RStoreWriteStream outstream;
+    TStreamId id = outstream.CreateLC(aStore); // Creates the write stream
+    ExternalizeL(outstream);                   // Externalises the object and all of its components
+    outstream.CommitL();                       // Commits the stream
+    CleanupStack::PopAndDestroy();             // Performs cleanup on the write stream object
+    return id;                                 // Returns the stream ID 
+    }</pre>
+ <p><samp class="codeph">ExternalizeL()</samp> externalises <samp class="codeph">CCompound</samp> ’s data members and components; the implementation is:</p>
+ <pre class="codeblock" id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-CB8D162A-D3D9-5055-9D39-2944FEFD86F5"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-CB8D162A-D3D9-5055-9D39-2944FEFD86F5"><!-- --></a>void CCompound::ExternalizeL(RWriteStream&amp; aStream) const
+    {
+    aStream &lt;&lt; iData;
+    aStream &lt;&lt; *iCompA;
+    aStream &lt;&lt; *iCompB;
+    }</pre>
+ <p>The stream can be visualised as:</p>
+ <div class="fignone" id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-5B3BAB7B-5CF2-5E1F-8A7D-A3A375E53EC8"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-5B3BAB7B-5CF2-5E1F-8A7D-A3A375E53EC8"><!-- --></a><img src="GUID-9E3D71A2-34FA-5A66-B0B9-550816021D79_d0e621478_href.png"/></div>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Storing components out-of-line</h2> <p>Storing a compound object’s component objects out-of-line means writing all of its component objects to a different stream from that to which it, itself, is written. Each component may be written to its own stream or to its own network of streams. The main advantage of this is that it allows for deferred loading of streams.</p>
+ <p>It is important to note that components are stored <em>before</em> the containing object.</p>
+ <p> The following code fragment defines an example class, CCompound, having two components, <samp class="codeph">CComponentA</samp> and <samp class="codeph">CComponentB</samp>. The components are defined as instances of the templated class TSwizzle.</p>
+ <pre class="codeblock" id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-B690B024-A3A0-57AC-B36B-4A7B2F3EAF39"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-B690B024-A3A0-57AC-B36B-4A7B2F3EAF39"><!-- --></a>CCompound class : public CBase
+    {
+    ...
+    TInt                  iDdata;
+    TSwizzle&lt;CComponentA&gt; iCompA;
+    TSwizzle&lt;CComponentB&gt; iCompB;
+    ...
+    }</pre>
+ <p>Storing is achieved by defining and implementing a <samp class="codeph">StoreL()</samp> member function for the compound object's class. In this example, the <samp class="codeph">StoreL()</samp> implementation is:</p>
+ <pre class="codeblock" id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-E59D8C65-8AD5-55BF-B996-1D91D62F5836"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-E59D8C65-8AD5-55BF-B996-1D91D62F5836"><!-- --></a>TStreamId CCompound::StoreL(CStreamStore&amp; aStore)
+    {
+    CStoreMap* map=CStoreMap::NewLC(aStore);
+    StoreComponentsL(*map);
+    RStoreWriteStream stream(*map);
+    TStreamId id=stream.CreateLC(aStore);
+    ExternalizeL(stream);
+    stream.CommitL();
+    map-&gt;Reset();
+    CleanupStack::PopAndDestroy(2);
+    return id;
+    }</pre>
+ <p>The <samp class="codeph">StoreL()</samp> function:</p>
+ <ul><li id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-0C8A4FE4-7D5E-5876-A65E-885AD0E5F76D"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-0C8A4FE4-7D5E-5876-A65E-885AD0E5F76D"><!-- --></a><p>writes the <samp class="codeph">CCompound</samp> components to their own streams.</p>
+ </li>
+ <li id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-0DFAD43D-8C0A-5B70-A087-13871A326317"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-0DFAD43D-8C0A-5B70-A087-13871A326317"><!-- --></a><p>writes <samp class="codeph">CCompound</samp> itself and its components’ stream IDs to a single stream.</p>
+ </li>
+ <li id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-CB63A225-714E-549C-B5DD-51A41B080EB5"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-CB63A225-714E-549C-B5DD-51A41B080EB5"><!-- --></a><p>returns the ID of the top-level stream.</p>
+ </li>
+ </ul>
+ <p>This can be visualised as:</p>
+ <div class="fignone" id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-038EC5C3-6C97-5B8B-A495-3C39EC459039"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-038EC5C3-6C97-5B8B-A495-3C39EC459039"><!-- --></a><img src="GUID-B12AAA82-0534-5FBB-B9BA-33056B988575_d0e621551_href.png"/></div>
+ <p><samp class="codeph">CCompound</samp> ’s components are stored to their own streams by defining and implementing a <samp class="codeph">StoreComponentsL()</samp> member function; this is prototyped as:</p>
+ <pre class="codeblock" id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-CF751ACF-736F-5A04-A275-8FA3D16A9F27"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-CF751ACF-736F-5A04-A275-8FA3D16A9F27"><!-- --></a>void StoreComponentsL(CStreamStore&amp; aStore,CStoreMap&amp; aMap)</pre>
+ <p>and implemented as:</p>
+ <pre class="codeblock" id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-69BE7DCB-6861-5BB3-84E4-CBCFFEF9C0B3"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-69BE7DCB-6861-5BB3-84E4-CBCFFEF9C0B3"><!-- --></a>void CCompound::StoreComponentsL(CStreamStore&amp; aStore,CStoreMap&amp; aMap)
+    {
+    TStreamId id;
+        
+    if (iCompA)
+          {
+          id = iCompA-&gt;StoreL(aStore); // store component
+          aMap.BindL(iCompA,id);       // connect the resulting stream id and component
+          }
+    if (iCompB)
+          {
+          id = iCompB-&gt;StoreL(aStore); // store component
+          aMap.BindL(iCompB,id);       // connect the resulting stream id and component
+          }
+    }</pre>
+ <p>The condition: <samp class="codeph">if (iCompA)</samp> is equivalent to: <samp class="codeph">if
+  (iCompA.IsPtr())</samp>, and returns true only if the Swizzle represents the <samp class="codeph">CComponentA</samp> object as a pointer. In an application where deferred loading is important, this allows for the possibility that the <samp class="codeph">CComponentA</samp> object is not loaded when the attempt to store the <samp class="codeph">CCompound</samp> object is made.</p>
+ <p>Although each of <samp class="codeph">CCompound</samp>'s components are shown stored in their own respective single streams, they may be stored into their own respective network of streams and the resulting stream IDs may be the IDs of head streams. A component can consist of further components.</p>
+ <p><samp class="codeph">StoreComponentsL()</samp> takes a reference to a store map, as well as the store. The store map is constructed by <samp class="codeph">StoreL()</samp> and is used to contain the association between internal objects and stored components (represented in the store by their stream IDs). These IDs are written by <samp class="codeph">CCompound</samp>'s <samp class="codeph">ExternalizeL()</samp> function and is implemented:</p>
+ <pre class="codeblock" id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-0ECDEF61-6CAC-5F6C-8326-53E902E5EECE"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-0ECDEF61-6CAC-5F6C-8326-53E902E5EECE"><!-- --></a>void CCompound::ExternalizeL(RWriteStream&amp; aStream) const
+    {
+    aStream &lt;&lt; iDdata;
+    aStream &lt;&lt; iCompA;
+    aStream &lt;&lt; iCompB;
+    }</pre>
+ <p>This simplicity is due to <samp class="codeph">RStoreWriteStream</samp> behaviour. The pointers are automatically looked up in the map associated with the stream, as they are being externalised.</p>
+ <p>The store map must be reset before destroying it because the store map’s destructor deletes any streams from the store that are still referenced in the map. This means that, should a leave occur during the storing operation, any streams that have been written are automatically cleaned up.</p>
+ <p>It is legitimate to define the <samp class="codeph">CCompound</samp> class without using Swizzles. If the class is defined as:</p>
+ <pre class="codeblock" id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-B2185546-B4D2-5554-9FF2-37E9F7369EB4"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-B2185546-B4D2-5554-9FF2-37E9F7369EB4"><!-- --></a>CCompound class : public CBase
+    {
+    ...
+    TInt         iDdata;
+    CComponentA* iCompA;
+    CComponentB* iCompB;
+    ...
+    }</pre>
+ <p> then the implementations of <samp class="codeph">CCompound::StoreL()</samp>, <samp class="codeph">CCompound::StoreComponentsL()</samp> remain the same, but <samp class="codeph">CCompound::ExternalizeL()</samp> has to change to:</p>
+ <pre class="codeblock" id="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-A8B102F4-B893-54CA-A052-0ABEBCC0240A"><a name="GUID-7767599C-7B77-5DD1-8E3E-7AD01EC6F6A1__GUID-A8B102F4-B893-54CA-A052-0ABEBCC0240A"><!-- --></a>void CCompound::ExternalizeL(RWriteStream&amp; aStream) const
+    {
+    aStream &lt;&lt; iDdata;
+    aStream &lt;&lt; *iCompA;
+    aStream &lt;&lt; *iCompB;
+    }</pre>
+ <p> However, this makes it more difficult to implement deferred loading.</p>
+ <p><strong>See also</strong> </p>
+ <p><a href="GUID-C1AA34CB-D63D-57E3-87F6-28AD22537D21.html" title="This documentation describes the Store Map.">Store map</a> </p>
+ <p><a href="GUID-53112730-5871-5920-8861-D2F6BF1595BC.html">Swizzles and deferred loading</a> </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-79CE15C5-B595-5336-AE87-DE92990F6D47.html">Storing and restoring</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

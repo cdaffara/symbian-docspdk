@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Common Error Patterns - Execution Order"/>
+<meta name="abstract" content="Describes a few common error patterns based on thread priority and multiple active threads in an SMP environment."/>
+<meta name="description" content="Describes a few common error patterns based on thread priority and multiple active threads in an SMP environment."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-629EAA30-ED77-4CA9-91ED-36C818D7B4F4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Common Error Patterns - Execution Order</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067"><a name="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2561665 id2563724 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-629EAA30-ED77-4CA9-91ED-36C818D7B4F4.html" title="Provides summary of documents to make SMP-safe applications.">SMP</a> &gt; <a href="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html" title="This section describes how SMP works and provides you with information on how to troubleshoot some problems you may have. This includes problems with driver closure ordering and how memory is shared between threads in a process">SMP Developer Tips</a> &gt; </div>
+<h1 class="topictitle1">Common
+Error Patterns - Execution Order</h1>
+<div><p>Describes a few common error patterns based on thread priority
+and multiple active threads in an SMP environment.</p>
+
+<p>The majority of errors found while testing SMP code are not actually caused
+by SMP but are multi-threaded code errors that become more likely to occur
+on an SMP system.</p>
+
+<p>Many of these errors are caused by the developer making assumptions about
+how the scheduler will prioritise some threads, and suspend execution of other
+threads while the higher priority thread completes. Even on a single core
+system these assumptions can fail if the higher priority thread is not ready
+to run or has to wait for a resource, and the scheduler continues execution
+of the original thread. </p>
+
+<p>Because many of the common error patterns are caused by the same thread
+execution assumptions and errors, the solution to many of them is the same:
+write good code that doesn't make assumptions but explicitly enforces execution
+order or waits until asynchronous events are complete.</p>
+
+<p>Examples of common errors that are caused by thread execution order are:</p>
+
+<ul>
+<li><p><a href="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067.html#GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-D4EBB98F-3B2E-496D-BFDC-2C67B973D7B2">Relying
+on linear execution</a></p>
+</li>
+
+<li><p><a href="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067.html#GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-5A105681-CB00-411A-B668-D40AE38AC670">Deleting/re-creating
+kernel objects</a></p>
+</li>
+
+<li><p><a href="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067.html#GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-23075EA6-3B4F-4643-AF48-543650D821D8">Passing
+stack variables or temporary variables to an asynchronous service</a></p>
+</li>
+
+<li><p><a href="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067.html#GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-E21B5F86-F54C-44A2-A470-4655A37C6DA3">Making
+asynchronous calls that pass a TRequestStatus without calling WaitForRequest()
+afterwards</a></p>
+</li>
+
+<li><p><a href="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067.html#GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-903D3074-254D-4639-9EBB-196A06736301">Relying
+on thread priority for execution order</a></p>
+</li>
+
+<li><p><a href="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067.html#GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-925A024E-06E4-439B-B324-E16BDF5C06BD">Relying
+on thread priority for publish and subscribe execution order</a></p>
+</li>
+
+<li><p><a href="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067.html#GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-C1A9B0A2-9423-468F-8B29-45001717B9C2">Other
+race conditions due to unexpected thread ordering</a></p>
+</li>
+
+<li><p><a href="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067.html#GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-ED30D34F-6976-493E-A869-9A906A5CBDA5">Using
+non-Symbian synchronisation APIs</a></p>
+</li>
+
+</ul>
+
+<div class="section" id="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-D4EBB98F-3B2E-496D-BFDC-2C67B973D7B2"><a name="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-D4EBB98F-3B2E-496D-BFDC-2C67B973D7B2"><!-- --></a><h2 class="sectiontitle">Relying on
+linear execution</h2><p>On a single-processor system, the scheduler usually
+grants execution to another thread when the active thread returns from a function
+or calls a waiting primitive. This can lead to two kinds of assumptions: assuming
+that the other thread will not execute until a later stage, or assuming that
+the active thread will block on an asynchronous function call. You must not
+rely on either of these, especially on an SMP system.</p>
+</div>
+
+<div class="section" id="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-5A105681-CB00-411A-B668-D40AE38AC670"><a name="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-5A105681-CB00-411A-B668-D40AE38AC670"><!-- --></a><h2 class="sectiontitle">Deleting/re-creating
+kernel objects</h2><p>Kernel objects are objects derived from <samp class="codeph">RHandleBase</samp>,
+such as threads, semaphores, mutexes. processes and timers. They each have
+a name that must be unique within the system and are managed by the supervisor
+thread. </p>
+<p>If you ask for such a kernel object to be deleted, there may
+be a delay before the asynchronous deletion completes. If you try to create
+an object with the same name before the kernel has deleted the original object,
+the creation will fail. In general it is not possible to determine whether
+the kernel has completed the deletion: although there are some APIs that can
+be used during development, they are not available for use on a live system. </p>
+<p>For
+that reason it is important to not reuse names, but to always create kernel
+objects with a new unique name for each object. There are APIs available for
+many kernel objects to provide new unique names. It is also possible for you
+to write your own unique name generator.</p>
+</div>
+
+<div class="section" id="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-23075EA6-3B4F-4643-AF48-543650D821D8"><a name="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-23075EA6-3B4F-4643-AF48-543650D821D8"><!-- --></a><h2 class="sectiontitle">Passing stack
+variables or temporary variables to an asynchronous service</h2><div class="fignone" id="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-693794EA-6FB9-489D-823C-C2EA7AA6ACC2"><a name="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-693794EA-6FB9-489D-823C-C2EA7AA6ACC2"><!-- --></a><span class="figcap">Figure 1. Passing data on the stack</span>
+
+<img src="GUID-0CDD535C-9F46-43F3-A1CC-1A4A0E74629A_d0e19892_href.png"/>
+</div>
+<p>When execution leaves a function, the variables that are local to
+the function are deallocated from the stack. If you pass local variables as
+parameters to an asynchronous function, you must make sure that the other
+thread's execution happens before the data is removed from the stack. It is
+much better to use objects that persist over the lifetime of an asynchronous
+call: for example, a class member variable..</p>
+<p>Likewise, deleting an object
+after it has been passed to an asynchronous function but before the service
+is provided will cause application errors and possibly device panics</p>
+</div>
+
+<div class="section" id="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-E21B5F86-F54C-44A2-A470-4655A37C6DA3"><a name="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-E21B5F86-F54C-44A2-A470-4655A37C6DA3"><!-- --></a><h2 class="sectiontitle">Making asynchronous
+calls that pass a TRequestStatus without calling WaitForRequest() afterwards</h2><p>On
+a single-processor system, calling a waiting primitive always relinquishes
+execution control to the scheduler. With adequate thread priorities, the scheduler
+may then run the thread in charge of the request. However, this assumption
+is not true on an SMP system, where both threads might execute at the same
+time. </p>
+<p>Therefore,  you must use a synchronisation primitive to ensure
+that the asynchronous request is complete before continuing on to any code
+that relies on the completion of that request.</p>
+<p>As for any other asynchronous
+request, it is important to wait for the request to complete. Use <a href="GUID-FF234B6F-8AFA-3CE7-A911-16BC4443702B.html"><span class="apiname">WaitForRequest()</span></a> to
+ensure that the other thread has finished processing the asynchronous call
+before the calling thread can safely progress.</p>
+</div>
+
+<div class="section" id="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-903D3074-254D-4639-9EBB-196A06736301"><a name="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-903D3074-254D-4639-9EBB-196A06736301"><!-- --></a><h2 class="sectiontitle">Relying on
+thread priority for execution order</h2><p>On an SMP system, you cannot
+assume execution order from thread priority. Use semaphores and mutexes to
+ensure that the execution order is safe.</p>
+</div>
+
+<div class="section" id="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-925A024E-06E4-439B-B324-E16BDF5C06BD"><a name="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-925A024E-06E4-439B-B324-E16BDF5C06BD"><!-- --></a><h2 class="sectiontitle">Relying on
+thread priority for publish and subscribe execution order</h2><p>As the
+notification thread and the subscription thread might execute at the same
+time, use synchronisation primitives to ensure that your listener is ready
+before publishing, and that it is notified before the publication channel
+is deleted.</p>
+<p>See <a href="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB.html" title="Describes a few common error patterns that were found while testing code designed for use in an SMP environment.">Common
+Error Patterns - Case Studies</a> for an example of a Publish and Subscribe
+error pattern.</p>
+</div>
+
+<div class="section" id="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-C1A9B0A2-9423-468F-8B29-45001717B9C2"><a name="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-C1A9B0A2-9423-468F-8B29-45001717B9C2"><!-- --></a><h2 class="sectiontitle">Other race
+conditions due to unexpected thread ordering </h2><p>It is expected that
+there may be other race conditions between threads and as these are identified
+this document will be updated to describe them.</p>
+</div>
+
+<div class="section" id="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-ED30D34F-6976-493E-A869-9A906A5CBDA5"><a name="GUID-93C75E31-6155-48F1-B99C-92ECD0B2C067__GUID-ED30D34F-6976-493E-A869-9A906A5CBDA5"><!-- --></a><h2 class="sectiontitle">Using non-Symbian
+synchronisation APIs</h2><p>The Symbian synchronisation and IPC primitives
+protect data and control thread execution on an SMP system. There is no guarantee
+that non-Symbian APIs will give the same protection. For SMP-safe code, only
+use the Symbian synchronisation APIs .</p>
+<p>See <a href="GUID-9D93F895-B975-4F2D-A2A3-817033EA5C12.html" title="This topic explains how memory barriers are used to maintain data integrity in a multi-CPU system with shared memory and I/O.">Data
+Integrity and Memory Barriers</a> , <a href="GUID-1F280171-A3F3-4129-8DBE-3B1C4D629C68.html" title="Describes the new atomic operations added to euser.dll and the kernel.">Atomic
+Operations</a> and <a href="GUID-16AED228-539F-4BF7-A7FD-9A01FF1A9A84.html" title="This document describes SMP locks and outlines the need of introducing locks in the code.">Locking</a> for
+useful synchronisation and atomic operation APIs.</p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html" title="This section describes how SMP works and provides you with information on how to troubleshoot some problems you may have. This includes problems with driver closure ordering and how memory is shared between threads in a process">SMP Developer Tips</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html" title="This section describes how SMP works and provides you with information on how to troubleshoot some problems you may have. This includes problems with driver closure ordering and how memory is shared between threads in a process">SMP Developer
+Tips</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

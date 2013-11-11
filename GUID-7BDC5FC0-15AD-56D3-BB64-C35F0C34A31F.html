@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="User Prompt Dialog Tutorial"/>
+<meta name="abstract" content="This task describes how to create dialog boxes to prompt the user when the un-signed applications require network access."/>
+<meta name="description" content="This task describes how to create dialog boxes to prompt the user when the un-signed applications require network access."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5BD9F31A-AA40-5F3B-8613-949C60792A88.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B144EAB9-53AB-579B-9E12-B16518E4FC01.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B5E17404-4D2D-5EE3-B30B-DFDC5E0739FF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5BD9F31A-AA40-5F3B-8613-949C60792A88.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-7BDC5FC0-15AD-56D3-BB64-C35F0C34A31F"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>User Prompt Dialog Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-7BDC5FC0-15AD-56D3-BB64-C35F0C34A31F"><a name="GUID-7BDC5FC0-15AD-56D3-BB64-C35F0C34A31F"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2398162 id2398193 id2398208 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-B144EAB9-53AB-579B-9E12-B16518E4FC01.html" title="Networking Services provides a standard framework for accessing network services and actual implementations of network protocols. The components of the Networking Services are closely related to the framework provided by the Communications Framework module.">Networking Services Guide</a> &gt; <a href="GUID-B5E17404-4D2D-5EE3-B30B-DFDC5E0739FF.html" title="This collection contains plugins which implement the Control plane part of a Network Layer protocol. These include the Connection Provider and Sub-connection Providers for the Quality of Service protocol and the Internet Protocol.">Network Control</a> &gt; <a href="GUID-5BD9F31A-AA40-5F3B-8613-949C60792A88.html" title="This section provides the documents related to the Comms User Prompt Manager.">Comms User Prompt Manager</a> &gt; </div>
+<h1 class="topictitle1">User
+Prompt Dialog Tutorial </h1>
+<div><p>This task describes how to create dialog boxes to prompt the user
+when the un-signed applications require network access. </p>
+
+<div class="section">The dialog creator creates the prompt with a set of response options
+for the user and streams it to the notifier. The notifier is used by the user
+ interface to display the available options to be selected by the user. When
+an  option is selected, the response is returned to the dialog creator by
+the notifier. The dialog creator processes the notifier response. The notifier
+framework is implemented by the UI creators. A reference  dialog creator is
+located at <span class="filepath">\release\&lt;target&gt;\urel\lilpupsdialog.dll</span>.
+The reference dialog creator can be used as a reference and customised by
+the licensees.</div>
+
+<div class="p" id="GUID-7BDC5FC0-15AD-56D3-BB64-C35F0C34A31F__GUID-769CFA7D-A974-4328-B07D-C5FA32903AB0"><a name="GUID-7BDC5FC0-15AD-56D3-BB64-C35F0C34A31F__GUID-769CFA7D-A974-4328-B07D-C5FA32903AB0"><!-- --></a><span> Call &lt;api-item&gt;CDialogCreator::PrepareDialog()&lt;/api-item&gt;
+to create the prompt for the notifier. </span>
+ <pre class="codeblock">void PrepareDialog(CPromptRequest&amp; aRequest,CPolicy&amp; aPolicy, RPointerArray&amp; aFingerprints, CClientEntity* aClientEntity, TAny* aEvalPrivateData, TRequestStatus&amp; aStatus);</pre>
+
+ <samp class="codeph">CDialogCreator::PrepareDialog()</samp> formats the data
+to be sent to the notifier using <samp class="codeph">CDialogCreator::DisplayDialog()</samp> method.<div class="p"><pre class="codeblock"> void DisplayDialog(CPolicy::TOptions&amp; aOptions, CFingerprint*&amp; aFingerprint, TUint&amp; aEvaluatorInfo, TRequestStatus&amp; aStatus);</pre>
+</div>
+
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-5BD9F31A-AA40-5F3B-8613-949C60792A88.html" title="This section provides the documents related to the Comms User Prompt Manager.">Comms User Prompt Manager</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Thread Termination"/>
+<meta name="abstract" content="This topic describes how and in what conditions to kill a kernel side thread."/>
+<meta name="description" content="This topic describes how and in what conditions to kill a kernel side thread."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DC8D3736-EDCF-54CB-A614-2AAC4664F1CA.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DC8D3736-EDCF-54CB-A614-2AAC4664F1CA.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-12EFB295-C527-5F96-81F1-6021D335D865"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Thread Termination</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-12EFB295-C527-5F96-81F1-6021D335D865"><a name="GUID-12EFB295-C527-5F96-81F1-6021D335D865"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388473 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-DC8D3736-EDCF-54CB-A614-2AAC4664F1CA.html" title="This section describes how device drivers can use the services that the Kernel provides.">Kernel-Side Services</a> &gt; </div>
+<h1 class="topictitle1">Thread
+Termination</h1>
+<div><p>This topic describes how and in what conditions to kill a kernel
+side thread. </p>
+
+<p>The only way to kill a kernel side thread is for code running in that thread
+to call <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-808B3622-BDC4-376D-96E9-16281BA28AF8"><span class="apiname">Kern::Exit()</span></a>. </p>
+
+<p>A kernel side thread can kill itself, but cannot kill any other kernel
+side thread. This avoids the overhead of critical sections. Remember that
+a kernel side thread <em>can</em> kill a user side thread. </p>
+
+<p>In practice, device drivers will create threads that can run queued DFCs
+(Deferred Function Calls) only if they choose not to use the two supplied
+DFC threads, known as DFC thread 0 and DFC thread 1. </p>
+
+<div class="section" id="GUID-12EFB295-C527-5F96-81F1-6021D335D865__GUID-A5B308C7-21CE-437E-A033-A373E1E2FE78"><a name="GUID-12EFB295-C527-5F96-81F1-6021D335D865__GUID-A5B308C7-21CE-437E-A033-A373E1E2FE78"><!-- --></a><h2 class="sectiontitle">How to kill a thread running queued DFCs</h2> <p>In principle
+the only way to kill a thread that runs queued DFCs is to schedule a DFC that
+simply calls <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-808B3622-BDC4-376D-96E9-16281BA28AF8"><span class="apiname">Kern::Exit()</span></a>. The DFC should have priority
+0 (the lowest). We refer to this as a 'kill' DFC. </p>
+ <p>In practice you
+create a 'kill' DFC by creating a <a href="GUID-A14562A5-3E91-3113-AB3C-71DBEA9D58EB.html"><span class="apiname">TDfc</span></a> object, and then
+make the DFC's callback function include a call to <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-808B3622-BDC4-376D-96E9-16281BA28AF8"><span class="apiname">Kern::Exit()</span></a>.
+You then queue the DFC onto the DFC queue, a <a href="GUID-24B2FEDB-9273-351F-A1C6-6F5F91BF83B7.html"><span class="apiname">TDfcQue</span></a> object,
+from the destructor of the logical device driver's factory class, i.e. the
+destructor of the class derived from <a href="GUID-7616AA05-83E6-3989-AB9D-11AE01245BEB.html"><span class="apiname">DLogicalDevice</span></a>. </p>
+ </div>
+
+<div class="section" id="GUID-12EFB295-C527-5F96-81F1-6021D335D865__GUID-3DB34648-94EC-4AF4-9550-EF7753FC18BE"><a name="GUID-12EFB295-C527-5F96-81F1-6021D335D865__GUID-3DB34648-94EC-4AF4-9550-EF7753FC18BE"><!-- --></a><h2 class="sectiontitle">Issues to be aware of</h2> <a name="GUID-12EFB295-C527-5F96-81F1-6021D335D865__GUID-6335774D-CEDB-52AE-BBED-AFA7CB55DFF5"><!-- --></a><ol id="GUID-12EFB295-C527-5F96-81F1-6021D335D865__GUID-6335774D-CEDB-52AE-BBED-AFA7CB55DFF5">
+<li id="GUID-12EFB295-C527-5F96-81F1-6021D335D865__GUID-0573932A-B43C-50B0-9458-B213A6C4346F"><a name="GUID-12EFB295-C527-5F96-81F1-6021D335D865__GUID-0573932A-B43C-50B0-9458-B213A6C4346F"><!-- --></a><p>You need to make sure
+that no other DFCs are on that DFC queue at the time that the 'kill' DFC runs
+as there is no automatic cleanup. </p>
+ <p>Perform cleanup by calling <samp class="codeph">Cancel()</samp> (i.e. <a href="GUID-A14562A5-3E91-3113-AB3C-71DBEA9D58EB.html#GUID-A14562A5-3E91-3113-AB3C-71DBEA9D58EB__GUID-9851B90B-8D05-3C86-B083-44C4564AC140"><span class="apiname">TDfc::Cancel()</span></a>)
+on all queued DFCs. </p>
+ </li>
+
+<li id="GUID-12EFB295-C527-5F96-81F1-6021D335D865__GUID-F9D0239F-9174-54B5-B39B-5D1E54FF6EF5"><a name="GUID-12EFB295-C527-5F96-81F1-6021D335D865__GUID-F9D0239F-9174-54B5-B39B-5D1E54FF6EF5"><!-- --></a><p>You need to make sure
+that the DFC queue object, i.e. the <a href="GUID-24B2FEDB-9273-351F-A1C6-6F5F91BF83B7.html"><span class="apiname">TDfcQue</span></a> object, and
+the 'kill' DFC object, i.e. the <a href="GUID-A14562A5-3E91-3113-AB3C-71DBEA9D58EB.html"><span class="apiname">TDfc</span></a> object, are not destroyed
+before the 'kill' DFC has a chance to run. </p>
+ <p>You can do this by making
+both the DFC queue object and the 'kill' DFC object static objects within
+the driver. The device driver will only be unloaded from RAM by the null thread.
+By queuing the 'kill' DFC on the DFC thread, you mark it ready-to-run, which
+means that your 'kill' DFC will run before the driver is unloaded and before
+the DFC queue object and the 'kill' DFC object vanish. </p>
+ </li>
+
+<li id="GUID-12EFB295-C527-5F96-81F1-6021D335D865__GUID-29195090-756E-5FB7-BF78-0F6C6C5A7983"><a name="GUID-12EFB295-C527-5F96-81F1-6021D335D865__GUID-29195090-756E-5FB7-BF78-0F6C6C5A7983"><!-- --></a><p>You need to make sure
+that any code queued to run on your DFC thread never hangs. </p>
+ <p>The important
+point is that <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-808B3622-BDC4-376D-96E9-16281BA28AF8"><span class="apiname">Kern::Exit()</span></a> can only be used by the thread
+itself, but if the thread hangs, then it can execute nothing. This means that
+kernel side threads must be written very carefully so they cannot hang. Any
+defect in kernel side code is likely to be fatal. </p>
+ <p>It may be that you
+have to consider writing defensive style code; for example, if your thread
+is waiting for an event, you could consider using a timer to wake it up in
+case the expected event never happens. Alternatively, you could consider moving
+some processing to the user side. </p>
+ </li>
+
+</ol>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-DC8D3736-EDCF-54CB-A614-2AAC4664F1CA.html" title="This section describes how device drivers can use the services that the Kernel provides.">Kernel-Side Services</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

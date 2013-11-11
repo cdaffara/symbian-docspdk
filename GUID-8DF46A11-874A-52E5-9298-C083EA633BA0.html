@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Implementing Dynamic DSA Allocation"/>
+<meta name="abstract" content="This topic describes how device creators can allocate the Direct Screen Access (DSA) buffer dynamically. This feature is new in Symbian^3 (S^3)."/>
+<meta name="description" content="This topic describes how device creators can allocate the Direct Screen Access (DSA) buffer dynamically. This feature is new in Symbian^3 (S^3)."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4C166A49-31F7-5315-B797-F97DB52600BC.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4797000B-B61D-5EF8-8C38-3159433C9C7B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4C166A49-31F7-5315-B797-F97DB52600BC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8C22AF20-EE0E-5AD2-BEFD-FED5A7DBB09B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-51514A4B-0220-557B-9F7A-FB110CEFEF10.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9AE254D4-AA60-579E-8D9D-F2797106A413.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4C166A49-31F7-5315-B797-F97DB52600BC.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Implementing Dynamic DSA Allocation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2384330 id2387319 id2387327 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html">Graphics Guide</a> &gt; <a href="GUID-4797000B-B61D-5EF8-8C38-3159433C9C7B.html" title="The Graphics Hardware Drivers collection provides optional hardware adaptation services.">Graphics Hardware Drivers Collection</a> &gt; <a href="GUID-4C166A49-31F7-5315-B797-F97DB52600BC.html" title="The Display Driver component (also known as the Display Channel Driver) is new in Symbian^3 and is for use in ScreenPlay only. The Display Driver component includes a reference implementation, which a composition implementation can use to display the composited output on the screen without tearing. However, the use of the Display Channel Driver is optional. Implementers of the Composition Interface are not required to use it.">Display Driver Component</a> &gt; </div>
+<h1 class="topictitle1">Implementing
+Dynamic DSA Allocation</h1>
+<div><p>This topic describes how device creators can allocate the Direct
+Screen Access (DSA) buffer dynamically. This feature is new in Symbian^3 (S^3). </p>
+
+<p> <strong>Target audience</strong>: Device creators. </p>
+
+<div class="section"><h2 class="sectiontitle">Overview</h2> <p>Before the introduction of ScreenPlay,
+applications (such as video and EGL games) that required high frame rates
+used Direct Screen Access (DSA) to bypass the Window Server and draw directly
+to the frame buffer (video memory). However, some interaction with the Window
+Server was necessary in order to prevent the application from drawing over
+other applications' data. The frame buffer was allocated at device startup
+and was never freed. </p>
+ <p>In ScreenPlay, applications that require a high
+frame rate can render directly to <a href="GUID-ADA8CECB-0E70-5B9C-8F36-0714AAF0CD13.html" title="This topic provides an introduction to graphics composition surfaces, which are usually simply called surfaces. Surfaces are pixel buffers that have associated metadata describing the width, height, stride and pixel format and are used as input to the composition components. Surfaces can be multi-buffered and are identified by a 128-bit identifier (called the surface ID).">composition
+surfaces</a>. In ScreenPlay the Window Server's content is also rendered
+to a composition surface, which is known as the <strong>UI surface</strong>. This means
+that the Window Server and its render stages do not render directly to the
+frame buffer. However, DSA is still supported in order to provide backwards
+compatibility. </p>
+ <p>The DSA buffer is now just another buffer (known as
+the <strong>DSA buffer</strong>), which the Window Server process makes use of only
+when a client uses DSA on a visible window. This means that it is no longer
+necessary to allocate the DSA buffer at startup and not free it. In fact to
+do so in ScreenPlay is wasteful of resources. </p>
+ <p>For this reason, it
+is now possible to allocate the DSA buffer as a <a href="GUID-51514A4B-0220-557B-9F7A-FB110CEFEF10.html" title="A shared chunk is a mechanism that kernel-side code uses to share memory buffers safely with user-side code.">shared
+chunk</a> and free it when it is not in use. This requires changes in the
+implementation of the LCD Driver (also known as the <a href="GUID-8C22AF20-EE0E-5AD2-BEFD-FED5A7DBB09B.html">LCD
+Extension</a>). For example, in order to free the DSA buffer when it is
+no longer in use, the LCD Driver must keep track of the processes that use
+the buffer and when they finish with it. These changes can be implemented
+regardless whether ScreenPlay is in use. </p>
+ <p> <em>Note</em>: Semi-transparent
+UI content over content provided by Direct Screen Access (DSA) has never been
+supported and ScreenPlay does not change this. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">DSA client-side API changes</h2> <p>To use DSA, the client
+creates an instance of <a href="GUID-24C7AE25-B44A-3B6F-AA05-EA90A8D36129.html"><span class="apiname">CDirectScreenAccess</span></a>. This allows
+the client to draw directly to the DSA buffer and to determine the visible
+area of its window and be notified when the visible area changes. DSA is typically
+performed by using the <a href="GUID-B229156F-2344-3F46-8542-AC65882D80DE.html"><span class="apiname">CFbsScreenDevice</span></a> returned by <a href="GUID-24C7AE25-B44A-3B6F-AA05-EA90A8D36129.html#GUID-24C7AE25-B44A-3B6F-AA05-EA90A8D36129__GUID-9528CBFF-7D01-3B62-81B1-7F9B2C799C14"><span class="apiname">CDirectScreenAccess::ScreenDevice()</span></a>. </p>
+ <p>However,
+applications can call the HAL user-side API (described below) to allocate
+the DSA buffer (if not already allocated) and obtain the DSA buffer's address
+directly. Clients that do this can now use DSA simply in order to be notified
+when the visible area changes and not for accessing the DSA buffer itself.
+This is called <strong>region-tracking DSA</strong>. (<a href="GUID-B229156F-2344-3F46-8542-AC65882D80DE.html"><span class="apiname">CFbsScreenDevice</span></a> also
+obtains the DSA address through the use of the HAL user-side API.) </p>
+ <p>To
+use region-tracking DSA, call the following overload of the <samp class="codeph">CDirectScreenAccess::NewL()</samp> function
+and pass <samp class="codeph">ETrue</samp> as the final argument: </p>
+ <p> <a href="GUID-24C7AE25-B44A-3B6F-AA05-EA90A8D36129.html#GUID-24C7AE25-B44A-3B6F-AA05-EA90A8D36129__GUID-6C26D5CD-0B55-3D30-B365-9C431BDD3721"><span class="apiname">CDirectScreenAccess::NewL(RWsSession&amp;,CWsScreenDevice&amp;,RWindowBase&amp;,MDirectScreenAccess&amp;,TBool)</span></a> </p>
+ <p>This does not allocate a screen device and graphics context. It
+therefore does not cause the DSA buffer to be allocated. </p>
+ <p>Here is an
+example that shows how to create a <a href="GUID-24C7AE25-B44A-3B6F-AA05-EA90A8D36129.html"><span class="apiname">CDirectScreenAccess</span></a> object
+to track visible regions only: </p>
+ <pre class="codeblock" id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-E378E1D5-C700-5AC6-AE3B-6CF9DA993671"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-E378E1D5-C700-5AC6-AE3B-6CF9DA993671"><!-- --></a>CDirectScreenAccess * cDsa = NULL;
+    
+// Specify additional parameter to NewL to indicate region tracking only.
+cDsa = CDirectScreenAccess::NewL(TheClient-&gt;iWs,*TheClient-&gt;iScreen,*win,
+           *this, ETrue); 
+   
+// In this mode, the client cannot get a screen device or graphics 
+// context from the DSA object.
+CFbsScreenDevice sd = cDsa-&gt;ScreenDevice();
+CFbsBitGc gc = cDsa-&gt;Gc();
+    
+ASSERT(sd == NULL)
+ASSERT(gc == NULL)
+</pre>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">User-side HAL API changes</h2>  <p>The user-side HAL API
+is a set of static functions that get and set the hardware attributes of the
+device. For general information about the interface to HAL, see <a href="GUID-9AE254D4-AA60-579E-8D9D-F2797106A413.html" title="Description of HAL types and interfaces.">User-Side
+Hardware Abstraction Technology</a>. </p>
+ <p>The <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-573C49D6-7763-37AE-B2B2-4C8FB1327E21"><span class="apiname">HAL::Get()</span></a> function
+is used to obtain information about the DSA buffer memory. </p>
+ <pre class="codeblock" id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-A50C3B6C-364C-58B8-B5FC-6472C5C8FF09"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-A50C3B6C-364C-58B8-B5FC-6472C5C8FF09"><!-- --></a>static IMPORT_C TInt Get(TAttribute aAttribute, TInt &amp;aValue); 
+static IMPORT_C TInt Get(TInt aDeviceNumber, TAttribute aAttribute, 
+     TInt &amp;aValue);</pre>
+ <p>In versions earlier than S^3, in order
+to obtain the memory address of the DSA buffer, a client calls <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-573C49D6-7763-37AE-B2B2-4C8FB1327E21"><span class="apiname">HAL::Get()</span></a> with
+an attribute of <a href="GUID-8BE90160-2C60-3582-82C8-4A108C7C0317.html#GUID-8BE90160-2C60-3582-82C8-4A108C7C0317__GUID-4702237B-185B-33B1-B0B6-DE388DBDE294"><span class="apiname">HALData::EDisplayMemoryAddress</span></a>. If successful,
+the call returns <samp class="codeph">KErrNone</samp> and sets the <samp class="codeph">aValue</samp> parameter
+to the virtual address of the DSA buffer in the caller’s process. If the DSA
+buffer cannot be allocated, the call returns <samp class="codeph">KErrNoMemory</samp> and
+sets the <samp class="codeph">aValue</samp> parameter to NULL. </p>
+ <p>From S^3 onwards,
+a client can obtain a handle to the DSA buffer by calling <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-573C49D6-7763-37AE-B2B2-4C8FB1327E21"><span class="apiname">HAL::Get()</span></a> with
+an attribute of <a href="GUID-8BE90160-2C60-3582-82C8-4A108C7C0317.html#GUID-8BE90160-2C60-3582-82C8-4A108C7C0317__GUID-6124E485-D8A6-3399-AA6C-7021D130591D"><span class="apiname">HALData::EDisplayMemoryHandle</span></a>. If successful,
+the call returns <samp class="codeph">KErrNone</samp> and sets the <samp class="codeph">aValue</samp> parameter
+to the value of an <a href="GUID-326A2F4D-0E99-31C0-A35D-E8BF45913F07.html"><span class="apiname">RChunk</span></a> handle in the caller’s process.
+If the DSA buffer cannot be allocated, the call returns <samp class="codeph">KErrNoMemory</samp> and
+sets the <samp class="codeph">aValue</samp> parameter to 0. </p>
+ <p>The advantage of
+using a handle is twofold: </p>
+ <ul>
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-187317E0-0EED-5C8F-AB31-542D6EA0CBF2"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-187317E0-0EED-5C8F-AB31-542D6EA0CBF2"><!-- --></a><p>The memory chunk exists
+for as long as the handle is open. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-7984A11D-F7A2-5C1A-AB11-628911BCA292"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-7984A11D-F7A2-5C1A-AB11-628911BCA292"><!-- --></a><p>The handle is automatically
+closed by the kernel if the process holding it exits prematurely. </p>
+ </li>
+
+</ul>
+ <p>When possible, legacy clients should be changed to take advantage
+of the new <a href="GUID-8BE90160-2C60-3582-82C8-4A108C7C0317.html#GUID-8BE90160-2C60-3582-82C8-4A108C7C0317__GUID-6124E485-D8A6-3399-AA6C-7021D130591D"><span class="apiname">HALData::EDisplayMemoryHandle</span></a> attribute. This
+means that you need to modify <samp class="codeph">HAL::Get(EDisplayMemoryAddress)</samp> calls
+to use <a href="GUID-8BE90160-2C60-3582-82C8-4A108C7C0317.html#GUID-8BE90160-2C60-3582-82C8-4A108C7C0317__GUID-6124E485-D8A6-3399-AA6C-7021D130591D"><span class="apiname">HALData::EDisplayMemoryHandle</span></a> to obtain a handle
+to the DSA's shared chunk. You also need to add code to close this handle
+when the memory is no longer required. </p>
+ <p>For example, replace the following
+code: </p>
+ <pre class="codeblock" id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-DAB0136B-A5A9-5B15-9C88-1A37B04804AB"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-DAB0136B-A5A9-5B15-9C88-1A37B04804AB"><!-- --></a>err = HAL::Get(screenId, HALData::EDisplayMemoryAddress, dsaAddr);</pre>
+ <p>With something like this: </p>
+ <pre class="codeblock" id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-BD8049BB-378C-5C56-A19B-96227C71A325"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-BD8049BB-378C-5C56-A19B-96227C71A325"><!-- --></a>err = HAL::Get(screenId, HALData::EDisplayMemoryHandle, val);
+if (err == KErrNone)
+    {
+    RChunk chunk;
+    err = chunk.SetReturnedHandle(val);
+    if (err == KErrNone)
+        {
+        iDSAChunk = chunk;
+        err = iDSAChunk.Duplicate(RThread(), EOwnerProcess);
+        chunk.Close();
+        if (err == KErrNone)
+            {
+            dsaAddr = (TInt) iDSAChunk.Base();
+            }
+else if (err == KErrNotSupported)
+    {
+    err = HAL::Get(screenId, HALData::EDisplayMemoryAddress, dsaAddr);
+    }
+</pre>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Kernel-side HAL changes</h2> <p>HAL requests are handled
+on the kernel side by HAL handlers. A single HAL handler deals with all the
+HAL attributes defined in a particular HAL group. Each HAL group has a one-to-one
+relationship with a HAL handler. <samp class="codeph">EHalGroupDisplay</samp> identifies
+the group associated with the HAL display attributes. </p>
+ <p>In S^3 the <a href="GUID-BB011D9B-105F-345C-9FC0-39B0BA509394.html"><span class="apiname">TDisplayHalFunction</span></a> enum
+has two new attributes—<samp class="codeph">EDisplayHalGetDisplayMemoryAddress</samp> and <samp class="codeph">EDisplayHalGetDisplayMemoryHandle</samp>.
+These allow the generic user-side HAL code to obtain the DSA buffer's address
+and handle independently of all of the other display attributes. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Handling HAL::Get(EDisplayMemoryAddress)</h2> <p>In versions
+earlier than S^3, the DSA buffer address is returned from the HAL handler
+as part of a <a href="GUID-C4712A78-6C58-39ED-AF84-11038DB8571D.html"><span class="apiname">TVideoInfoV01</span></a> class in response to an <samp class="codeph">EDisplayHalCurrentModeInfo</samp> request.
+The user-side HAL code then extracts the address from the <a href="GUID-C4712A78-6C58-39ED-AF84-11038DB8571D.html"><span class="apiname">TVideoInfoV01</span></a> structure
+and returns it. </p>
+ <p><strong>Configuration file setting </strong> </p>
+ <p>The HAL
+configuration file <span class="filepath">config.hcf</span> therefore includes the
+following: </p>
+ <pre class="codeblock" id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-F496B803-B7B8-57D4-B083-9219D4F849DB"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-F496B803-B7B8-57D4-B083-9219D4F849DB"><!-- --></a>EDisplayMemoryAddress=ProcessDisplayCurrentModeInfo</pre>
+ <p><strong>Modifications
+to generic HAL code </strong> </p>
+ <p>In S^3 the switch case for <samp class="codeph">EDisplayMemoryAddress</samp> in <samp class="codeph">ProcessDisplayCurrentModeInfo()</samp> is as follows: </p>
+ <pre class="codeblock" id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-7E2FC07B-670D-57BA-BF3E-A4432BF83E81"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-7E2FC07B-670D-57BA-BF3E-A4432BF83E81"><!-- --></a>case HAL::EDisplayMemoryAddress:
+    
+// If the address is zero, the actual address
+// is returned by EDisplayHalGetDisplayMemoryAddress
+if (info.iVideoAddress == 0)  
+    {
+    r = UserSvr::HalFunction(EHalGroupDisplay, 
+                             EDisplayHalGetDisplayMemoryAddress, 
+                             aInOut, (TAny*)EFalse, aDeviceNumber);
+    }
+else
+    {
+    *(TInt*)aInOut = info.iVideoAddress;
+    }
+break;
+</pre>
+ <p><strong>Dealing with HAL::GetAll() </strong> </p>
+ <p> <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-EF03B832-E9AA-32CF-903F-DFFA63A3E9AB"><span class="apiname">HAL::GetAll()</span></a> sets
+the input parameters passed to the HAL handler to -1. You can use this in
+the LCD Driver to determine whether the call for the DSA buffer's address
+is from <samp class="codeph">HAL::GetAll()</samp> and if it is, to not allocate the memory.
+For example: </p>
+ <pre class="codeblock" id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-8734B0EF-A2A2-5929-972F-56F7E0195940"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-8734B0EF-A2A2-5929-972F-56F7E0195940"><!-- --></a>case EDisplayHalGetDisplayMemoryAddress:
+    {
+    TInt val = 0;
+    TInt passedIn = 0;
+    kumemget32(&amp;passedIn, a1, sizeof(TInt));
+    
+    // Not from a GetAll().
+    if (passedIn != -1)    
+        {
+        r = DisplayMemoryAddress(aDeviceNumber, val);
+        }
+    else
+        {
+        r = KErrNone;
+        }
+    
+    // Write the value returned back to the user side.
+    kumemput32(a1, &amp;val, sizeof(TInt));
+    }
+    break;
+</pre>
+ <p><strong>Keeping track of processes that call HAL::Get(EDisplayMemoryAddress) </strong> </p>
+ <p>Legacy
+DSA clients request the DSA buffer address rather than the handle and assume
+that the address will remain valid for the lifetime of the process. The LCD
+Driver needs to keep track of processes that call <samp class="codeph">HAL::Get(EDisplayMemoryAddress)</samp> and
+free the DSA buffer when the last of these processes has exited. </p>
+ <p>The
+LCD Driver must therefore maintain a list of the relevant processes and the
+address of the DSA buffer for each one. When the number of processes using
+a buffer address returns to zero, the buffer is freed. </p>
+ <p>To track the
+usage, the LCD Driver creates a new shared chunk for each process that calls <samp class="codeph">HAL::Get(EDisplayMemoryAddress)</samp>.
+The LCD Driver then calls <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-BA56B205-60D8-326E-8340-3F78CCEA3DD1"><span class="apiname">Kern::MakeHandleAndOpen()</span></a> to
+create a user handle to the shared chunk for the calling process. The LCD
+Driver closes the kernel-side handle to the chunk. </p>
+ <p>There is then a
+handle to the shared chunk in the user process, which means that the shared
+chunk stays open for as long as the process exists. When the user process
+exits, the kernel closes any open handles that the process owns. This causes
+the deletion of the shared chunk and its Deferred Function Call (DFC) to run.
+The DFC removes the process from the list and decrements the reference count
+of users of the DSA memory. </p>
+ <p>Here is the sequence when a process calls <samp class="codeph">HAL::Get(EDisplayMemoryAddress)</samp> for
+the first time: </p>
+ <a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-DA7B9F91-6F52-532C-8E67-8DE89B1EFD42"><!-- --></a><ol id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-DA7B9F91-6F52-532C-8E67-8DE89B1EFD42">
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-2055954D-2B13-5307-93A6-78936172416C"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-2055954D-2B13-5307-93A6-78936172416C"><!-- --></a><p>Legacy process <em>X</em> implicitly
+calls <samp class="codeph">HAL::Get(EDisplayMemoryAddress)</samp> for the first time
+by creating a DSA session that creates a <a href="GUID-B229156F-2344-3F46-8542-AC65882D80DE.html"><span class="apiname">CFbsScreenDevice</span></a>. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-33A00E2F-B04C-51CE-9993-661DFF5BE00B"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-33A00E2F-B04C-51CE-9993-661DFF5BE00B"><!-- --></a><p>The driver looks for
+process <em>X</em> in the list of processes and addresses and does not find
+it. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-A8E33530-C089-5C85-9563-A39BBA9259F2"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-A8E33530-C089-5C85-9563-A39BBA9259F2"><!-- --></a><p>The driver creates a
+shared chunk for process <em>X</em> with a destruction DFC. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-19CDF330-315D-5806-AB3D-9AB8857A02A4"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-19CDF330-315D-5806-AB3D-9AB8857A02A4"><!-- --></a><p>The driver creates a
+user-side handle to the shared chunk. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-E13883F3-6418-5920-A16A-8327744E6AF1"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-E13883F3-6418-5920-A16A-8327744E6AF1"><!-- --></a><p>The driver closes its <a href="GUID-85454082-6734-3F1D-983F-734D4C2AB12D.html"><span class="apiname">DChunk</span></a> handle
+to the shared chunk. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-8CF22900-AD3C-528D-B88A-74AC59BAAA20"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-8CF22900-AD3C-528D-B88A-74AC59BAAA20"><!-- --></a><p>The driver calls <a href="GUID-AC098719-7AD6-3B48-9BE3-7DCEADA3530B.html#GUID-AC098719-7AD6-3B48-9BE3-7DCEADA3530B__GUID-0632CC60-AF0C-36F5-8E8F-3D8AD2568E31"><span class="apiname">TUint8*
+Kern::ChunkUserBase(DChunk*                 aChunk, DThread* aThread)</span></a> to
+get the address of the shared chunk in the user process . </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-0180A075-BF6B-53E4-8B6F-38BE083C58DA"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-0180A075-BF6B-53E4-8B6F-38BE083C58DA"><!-- --></a><p>The driver stores the
+calling process's ID and the address of the shared chunk in a table. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-3663A069-09FA-55DF-9EA7-F1875B379569"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-3663A069-09FA-55DF-9EA7-F1875B379569"><!-- --></a><p>The driver returns the
+address of the shared chunk to the calling process. </p>
+ </li>
+
+</ol>
+ <p>Here is the sequence when the same process calls <samp class="codeph">HAL::Get(EDisplayMemoryAddress)</samp> again: </p>
+ <a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-E7D5E120-364C-5CA6-BE4E-56563F58A293"><!-- --></a><ol id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-E7D5E120-364C-5CA6-BE4E-56563F58A293">
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-57947C06-0BA1-5CB0-AB3F-493D71510A95"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-57947C06-0BA1-5CB0-AB3F-493D71510A95"><!-- --></a><p>Legacy process <em>X</em> implicitly
+calls <samp class="codeph">HAL::Get(EDisplayMemoryAddress)</samp> again by creating a
+DSA session that creates a <a href="GUID-B229156F-2344-3F46-8542-AC65882D80DE.html"><span class="apiname">CFbsScreenDevice</span></a>. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-493E5ABC-5032-5653-A87B-27441F0AF88E"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-493E5ABC-5032-5653-A87B-27441F0AF88E"><!-- --></a><p>The driver looks for
+the process in the list of processes and addresses. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-6CF1A43C-966E-59EF-BA68-BB1D5CA5A4F0"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-6CF1A43C-966E-59EF-BA68-BB1D5CA5A4F0"><!-- --></a><p>The driver returns the
+address previously given to the process. </p>
+ </li>
+
+</ol>
+ <p>Here is the sequence when the same process exits: </p>
+ <a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-388DC71E-FD9B-5A56-8B3D-520159FA8939"><!-- --></a><ol id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-388DC71E-FD9B-5A56-8B3D-520159FA8939">
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-B95DB340-C730-5419-ADB8-0B5B10F46556"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-B95DB340-C730-5419-ADB8-0B5B10F46556"><!-- --></a><p>The kernel cleans up
+any open handles for the exiting process. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-E8654886-77E4-5748-A0BE-A0E3CCCC752A"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-E8654886-77E4-5748-A0BE-A0E3CCCC752A"><!-- --></a><p>The shared chunk destruction
+DFC executes and removes the process from the list and decrements the DSA
+usage count. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-68624448-1DCF-591E-97EF-F0B46F656FC8"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-68624448-1DCF-591E-97EF-F0B46F656FC8"><!-- --></a><p>The DFC checks the DSA
+usage count and if it is zero, the DFC frees the DSA memory. </p>
+ </li>
+
+</ol>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Handling HAL::Get(EDisplayMemoryHandle)</h2> <p>In S^3
+there is a new <samp class="codeph">GetDisplayMemoryHandle()</samp> function in the user-side
+HAL implementation. This function is the handler for the new <samp class="codeph">EDisplayMemoryHandle</samp> attribute. </p>
+ <p><strong>Configuration
+file setting </strong> </p>
+ <p>The following line therefore needs to be added to
+the <span class="filepath">config.hcf</span> file: </p>
+ <pre class="codeblock" id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-90AEC511-D592-5755-A569-7703A09EE40C"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-90AEC511-D592-5755-A569-7703A09EE40C"><!-- --></a>EDisplayMemoryHandle=GetDisplayMemoryHandle</pre>
+ <p><strong>Dealing with HAL::GetAll() </strong> </p>
+ <p> <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-EF03B832-E9AA-32CF-903F-DFFA63A3E9AB"><span class="apiname">HAL::GetAll()</span></a> sets
+the input parameters passed to the HAL handler to -1. You can use this in
+the LCD Driver to determine whether the call for the DSA buffer's address
+handle is from <samp class="codeph">HAL::GetAll()</samp> and to take appropriate action.
+For example: </p>
+ <pre class="codeblock" id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-22A22111-1B29-59F4-B3F7-83E43077E0FD"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-22A22111-1B29-59F4-B3F7-83E43077E0FD"><!-- --></a>case EDisplayHalGetDisplayMemoryHandle:
+    {
+    TInt val = 0;
+    TInt passedIn = 0;
+    kumemget32(&amp;passedIn, a1, sizeof(TInt));
+    
+    // Not from a GetAll().
+    if (passedIn != -1)    
+        {
+        r = CreateNewChunkToRepresentDSABuffer(aDeviceNumber,  val);
+        }
+    else
+        {
+        r = KErrNone;
+        }
+
+    
+    kumemput32(a1, &amp;val, sizeof(TInt));
+    }
+    break;
+</pre>
+ <p><strong>Keeping track of processes that call HAL::Get(EDisplayMemoryHandle) </strong> </p>
+ <p>New
+DSA clients request the DSA buffer handle rather than the address. After a
+process obtains the handle, the DSA buffer is in use for this process until
+the handle is closed or the process exits (which implicitly closes the handle). </p>
+ <p>To
+track the usage, the LCD Driver creates a new shared chunk every time a process
+calls <samp class="codeph">HAL::Get(EDisplayMemoryHandle)</samp>. The LCD Driver then
+calls <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-BA56B205-60D8-326E-8340-3F78CCEA3DD1"><span class="apiname">Kern::MakeHandleAndOpen()</span></a> to create a user handle
+to the shared chunk for the calling process. The LCD Driver closes the kernel-side
+handle to the shared chunk and returns the user-side handle to the calling
+process. </p>
+ <p>When the user process closes the handle, the shared chunk
+is deleted and its deletion DFC runs. The DFC decrements the reference count
+of users of the DSA memory. </p>
+ <p>Here is the sequence when a process calls <samp class="codeph">HAL::Get(EDisplayMemoryHandle)</samp> for
+the first time: </p>
+ <a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-A92B09E9-5E76-5B6C-B281-64A4F4A65467"><!-- --></a><ol id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-A92B09E9-5E76-5B6C-B281-64A4F4A65467">
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-0CF94725-F9BA-5C92-9429-4206D38040CF"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-0CF94725-F9BA-5C92-9429-4206D38040CF"><!-- --></a><p>The driver creates a
+new shared chunk for this process with a destruction DFC. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-8521F99F-A890-5F82-9EB0-C0C1E9ABDE5B"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-8521F99F-A890-5F82-9EB0-C0C1E9ABDE5B"><!-- --></a><p>The driver creates a
+user-side handle to the shared chunk. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-876EECF6-BC1C-5E57-8555-55D3F5AD01E3"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-876EECF6-BC1C-5E57-8555-55D3F5AD01E3"><!-- --></a><p>The driver closes its <a href="GUID-85454082-6734-3F1D-983F-734D4C2AB12D.html"><span class="apiname">DChunk</span></a> handle
+to the shared chunk. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-F705B1B9-F9F4-56F2-800B-93E4B8FBE75B"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-F705B1B9-F9F4-56F2-800B-93E4B8FBE75B"><!-- --></a><p>The driver returns the
+user-side handle to the calling process. </p>
+ </li>
+
+</ol>
+ <p>Here is the sequence when a process closes the DSA buffer: </p>
+ <a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-2310D2DC-76BA-5B87-A964-DCA01051CB3E"><!-- --></a><ol id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-2310D2DC-76BA-5B87-A964-DCA01051CB3E">
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-65CE3E41-D418-59C5-A0FA-A90195A7FE23"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-65CE3E41-D418-59C5-A0FA-A90195A7FE23"><!-- --></a><p>The shared chunk destruction
+DFC executes and decrements the DSA usage count. </p>
+ </li>
+
+<li id="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-96386F96-FF1E-5BD3-B98A-E0B180463AFB"><a name="GUID-8DF46A11-874A-52E5-9298-C083EA633BA0__GUID-96386F96-FF1E-5BD3-B98A-E0B180463AFB"><!-- --></a><p>The DFC checks the DSA
+usage count and if it is zero, the DFC frees the DSA memory. </p>
+ </li>
+
+</ol>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-4C166A49-31F7-5315-B797-F97DB52600BC.html" title="The Display Driver component (also known as the Display Channel Driver) is new in Symbian^3 and is for use in ScreenPlay only. The Display Driver component includes a reference implementation, which a composition implementation can use to display the composited output on the screen without tearing. However, the use of the Display Channel Driver is optional. Implementers of the Composition Interface are not required to use it.">Display Driver Component</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-8C22AF20-EE0E-5AD2-BEFD-FED5A7DBB09B.html">LCD Extension</a></div>
+<div><a href="GUID-51514A4B-0220-557B-9F7A-FB110CEFEF10.html" title="A shared chunk is a mechanism that kernel-side code uses to share memory buffers safely with user-side code.">Shared Chunks</a></div>
+<div><a href="GUID-9AE254D4-AA60-579E-8D9D-F2797106A413.html" title="Description of HAL types and interfaces.">User-Side
+Hardware Abstraction Technology</a></div>
+<div><a href="GUID-4C166A49-31F7-5315-B797-F97DB52600BC.html" title="The Display Driver component (also known as the Display Channel Driver) is new in Symbian^3 and is for use in ScreenPlay only. The Display Driver component includes a reference implementation, which a composition implementation can use to display the composited output on the screen without tearing. However, the use of the Display Channel Driver is optional. Implementers of the Composition Interface are not required to use it.">Display Driver
+Component</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

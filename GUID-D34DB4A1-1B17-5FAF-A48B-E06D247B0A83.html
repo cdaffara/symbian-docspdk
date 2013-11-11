@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Keyboard Mapping DLL Tutorial"/>
+<meta name="abstract" content=""/>
+<meta name="description" content=""/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D048E187-6B1C-5A80-9CD0-89CD10688C6F.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D048E187-6B1C-5A80-9CD0-89CD10688C6F.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Keyboard Mapping DLL Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2400154 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-D048E187-6B1C-5A80-9CD0-89CD10688C6F.html" title="A Keyboard Driver is a kernel extension that gets input from keyboard hardware, and makes these events available to other parts of the operating system and applications. This section describes how to implement a driver for your phone hardware.">Keyboard Driver</a> &gt; </div>
+<h1 class="topictitle1">Keyboard Mapping DLL Tutorial</h1>
+<div><p/>
+
+<p>A keyboard mapping DLL provides a set of lookup tables that the
+generic <span class="filepath">ektran.dll</span> uses to convert scancodes
+to keycodes. A keyboard mapping DLL is implemented in a base port. </p>
+
+<p>The basic purpose of the tables is to provide a mapping from scancodes
+to keycodes, so that, given a scancode, the corresponding keycode
+can be found. The tables are organized so that there is, in effect,
+one set of lookup tables for each likely combination of modifier key
+states. <span class="filepath">ektran.dll</span> compares the modifier keys
+that have been pressed with the stored modifier key state combinations
+to decide which set of lookup tables to use. </p>
+
+<p>An outline set of tables is provided in the template port.</p>
+
+<p>The following list outlines the structure of the tables. </p>
+
+<a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-54817A2B-F65D-5BDF-BFCF-3E68A582C91A"><!-- --></a><ol id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-54817A2B-F65D-5BDF-BFCF-3E68A582C91A">
+<li id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-0C32BD32-0EFD-5622-9C66-2610A3D7F660"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-0C32BD32-0EFD-5622-9C66-2610A3D7F660"><!-- --></a><p>The tables are
+organized in a hierarchical structure. The start of this hierarchy
+is the root table, defined by a <a href="GUID-F7DFE751-C534-36A8-9B57-9C8417B1BE06.html"><span class="apiname">SConvTable</span></a> struct.
+This contains: </p>
+ <ul>
+<li id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-98675F02-D273-5C0D-8AF1-A9F93F8A5AC2"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-98675F02-D273-5C0D-8AF1-A9F93F8A5AC2"><!-- --></a><p>an array of
+pointers to nodes, where each node is defined by the <a href="GUID-3D2F56DB-DD36-3787-8653-C5AC114D69A1.html"><span class="apiname">SConvTableNode</span></a> struct. Each node corresponds to a specific combination of modifier
+key states. </p>
+ </li>
+
+<li id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-8321989A-20FE-58C3-90D0-2D3BE29E11F6"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-8321989A-20FE-58C3-90D0-2D3BE29E11F6"><!-- --></a><p>a field containing
+the total number of such nodes. </p>
+ </li>
+
+</ul>
+ <div class="fignone" id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-A8C68654-2D56-501F-8D45-C0F75E63B630"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-A8C68654-2D56-501F-8D45-C0F75E63B630"><!-- --></a><span class="figcap">Figure 1. Keyboard Mapping Table</span>
+
+<img src="GUID-FB69F45C-2256-5F2D-8D2C-98C93B865962_d0e385988_href.png"/>
+</div>
+ </li>
+
+<li id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-C232C328-190D-59F1-A1CB-BC9D736367B0"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-C232C328-190D-59F1-A1CB-BC9D736367B0"><!-- --></a><p>The combination
+of modifier key states that each node represents is encapsulated by
+a <a href="GUID-7D0DE872-AC17-3045-9F97-E25A13B5CFB0.html"><span class="apiname">TMaskedModifiers</span></a> object. One of these objects
+is embedded within each node. </p>
+ <p>A <a href="GUID-7D0DE872-AC17-3045-9F97-E25A13B5CFB0.html"><span class="apiname">TMaskedModifiers</span></a> object consists of a mask, and a value for comparison. For example,
+if an instance is set to the following: </p>
+ <pre class="codeblock" id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-E53A8286-C304-50BD-9DB5-81777B48A2E3"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-E53A8286-C304-50BD-9DB5-81777B48A2E3"><!-- --></a>iMask = EModifierShift | EModifierCtrl | EModifierFunc
+iValue = EModifierShift | EModifierFunc</pre>
+ <p>then a match
+occurs only for the following combination of modifier key states: </p>
+ <p> <samp class="codeph">ctrl</samp> + <samp class="codeph">shift</samp> + <em>not</em> <samp class="codeph">Fn</samp>  </p>
+ <p>i.e. a match occurs only if <samp class="codeph">ctrl</samp>  <em>and</em> <samp class="codeph">shift</samp> are pressed, and only if <samp class="codeph">Fn</samp> is <em>not</em> pressed. Other modifier keys are ignored,
+i.e. it does not matter whether or not they are pressed. </p>
+ <p>In
+C++ code, this is expressed as: </p>
+ <pre class="codeblock" id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-E84542A2-932F-50C6-90B6-2AFC72CBE75F"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-E84542A2-932F-50C6-90B6-2AFC72CBE75F"><!-- --></a>inline TBool MatchesMaskedValue(TInt aModifiers,const TMaskedModifiers &amp;aMaskedModifiers)
+    {
+    return (TBool)((aModifiers &amp; aMaskedModifiers.iMask) == aMaskedModifiers.iValue);
+    }</pre>
+ <p>where <samp class="codeph">aModifiers</samp> contains the
+modifier key combination to be tested. </p>
+ </li>
+
+<li id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-C147C929-63EE-593B-8CB7-689E5E6E60C2"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-C147C929-63EE-593B-8CB7-689E5E6E60C2"><!-- --></a><p>In principle,
+each node represents scancode-to-keycode mappings by associating one
+or more <em>pairs</em> (or range) of scancodes with corresponding blocks
+of keycodes. Each pair represents an inclusive and contiguous range
+of scancodes. </p>
+ <p>Each pair (or range) of scancodes may be "discontiguous"
+from the next. </p>
+ <p>The association is made through a table defined
+by the <a href="GUID-35A21F70-F080-364D-8655-5E1781B378EB.html"><span class="apiname">SConvSubTable</span></a> struct. This has: </p>
+ <ul>
+<li id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-9A023CDD-FADF-5641-8DD8-30C11F73E8BE"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-9A023CDD-FADF-5641-8DD8-30C11F73E8BE"><!-- --></a><p>a <a href="GUID-DB86A3E5-D118-3A1D-8A76-BEC6111993E8.html"><span class="apiname">SScanCodeBlockList</span></a> object that contains pointers to a number of <a href="GUID-F18D6A71-122E-3202-927B-25DCEF1576A4.html"><span class="apiname">SScanCodeBlock</span></a> objects, each of which contains the start and end values defining
+a range of scancodes. </p>
+ </li>
+
+<li id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-AC4820E0-F3D9-547A-9437-964D5A7FE540"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-AC4820E0-F3D9-547A-9437-964D5A7FE540"><!-- --></a><p>a pointer to
+a table containing the target keycodes. The target keycodes are arranged
+so that successive scancode pairs are associated with successive blocks
+of keycodes as the following diagram shows. </p>
+ </li>
+
+</ul>
+ <div class="fignone" id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-4B2FBB49-6CBD-5030-82D0-9B4DDF2D3DBF"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-4B2FBB49-6CBD-5030-82D0-9B4DDF2D3DBF"><!-- --></a><span class="figcap">Figure 2. Target keycodes</span>
+
+<img src="GUID-DFADEB44-4D57-564F-ABDF-A3CCD38ACABC_d0e386102_href.png"/>
+</div>
+ <p>This means that successive scancodes, for example, from
+"A1" through to "B1" are represented by the successive keycodes "keycode
+for A1" through to "keycode for B1"; scancode "A2" is represented
+by "keycode for A2", which follows "keycode for B1" in the keycode
+table. </p>
+ </li>
+
+<li id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-68C8A342-A3D2-5975-82F1-F635E366F741"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-68C8A342-A3D2-5975-82F1-F635E366F741"><!-- --></a><p>To allow for
+possible reuse of keycode tables, a node can point to more than one <a href="GUID-35A21F70-F080-364D-8655-5E1781B378EB.html"><span class="apiname">SConvSubTable</span></a>. The following diagram shows an example of
+this: </p>
+ <div class="fignone" id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-3F5514B5-86E6-52BE-A4C2-38882A1CEACA"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-3F5514B5-86E6-52BE-A4C2-38882A1CEACA"><!-- --></a><span class="figcap">Figure 3. Reusing keycode tables</span>
+
+<img src="GUID-5FDAF564-6BE1-544A-B5C0-E0D6E25D82E7_d0e386123_href.png"/>
+</div>
+ </li>
+
+<li id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-C6001149-460A-57D4-A9FE-BCB050B49791"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-C6001149-460A-57D4-A9FE-BCB050B49791"><!-- --></a><p>If no keycode
+can be found that matches the scancode, for a given modifier combination,
+then the algorithm returns the <a href="GUID-76B2E62E-EC09-3CA9-8B2D-EBAC6BF1FFDB.html"><span class="apiname">EKeyNull</span></a> keycode. </p>
+ </li>
+
+</ol>
+
+<div class="section" id="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-A7823728-26DD-4C2F-A97F-91CC4D58B404"><a name="GUID-D34DB4A1-1B17-5FAF-A48B-E06D247B0A83__GUID-A7823728-26DD-4C2F-A97F-91CC4D58B404"><!-- --></a><h2 class="sectiontitle">See
+also</h2> <p> <a href="GUID-EB76FAF8-CD4B-5CB6-9F23-C852ED91866F.html" title="This section describes the architecture and behavior of the Keyboard Driver.">Concepts</a>  </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-D048E187-6B1C-5A80-9CD0-89CD10688C6F.html" title="A Keyboard Driver is a kernel extension that gets input from keyboard hardware, and makes these events available to other parts of the operating system and applications. This section describes how to implement a driver for your phone hardware.">Keyboard Driver</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

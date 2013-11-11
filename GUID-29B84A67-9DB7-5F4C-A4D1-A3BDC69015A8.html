@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Additional System Wide Power States"/>
+<meta name="abstract" content="A base port can add new power states to improve power management for phone hardware."/>
+<meta name="description" content="A base port can add new power states to improve power management for phone hardware."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Additional System Wide Power States</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8"><a name="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2400380 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html" title="This topic describes how to implement a power controller in a base port.">Power Management Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Additional
+System Wide Power States</h1>
+<div><p>A base port can add new power states to improve power management
+for phone hardware. </p>
+
+<p>The Kernel defines three system wide power states. A base port can add
+new power states to improve power management for phone hardware. </p>
+
+<p>The generic system wide power states that are defined are <em>Active</em>, <em>Standby</em> and <em>Off</em>.
+Any additional sub-states of the <em>Active</em> power state must be wholly
+managed by the base port. These states may not need to be declared explicitly
+and may result from peripherals, or groups of peripherals, having moved to
+their low power state (see also <a href="GUID-1D3E61BD-C09D-51FD-A10B-22392FDAEFEC.html#GUID-1D3E61BD-C09D-51FD-A10B-22392FDAEFEC__GUID-DCB8EA90-9B5F-5BA1-8D22-124980AC6B34">moving
+to their low power state</a>). The device will then “trickle“ into one
+of these sub-states instead of transitioning into them as a result of a user
+action or system policy decision. </p>
+
+<p>Usually, the transition of the system into one of the additional low power
+states happens when the CPU enters the idle mode. The transition may be automatic
+and wholly managed by the ASSP hardware or may result from an action taken
+by the software routine that prepares the CPU to go to idle mode. </p>
+
+<div class="section" id="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-22A20CBB-6BF2-495F-B32C-63834DD4624C"><a name="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-22A20CBB-6BF2-495F-B32C-63834DD4624C"><!-- --></a><h2 class="sectiontitle">Sleeping in idle mode</h2> <p>An example of this is when
+the base port uses the idle mode to put the CPU and the device into hardware
+“Sleep” mode similar to that which can be achieved with a transition to <em>Standby</em> mode
+as described in the implementation issues for <a href="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703.html#GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-1F77C71C-D226-58BB-ABAE-43F958CC0C61">implementing
+DPowerController::PowerDown()</a>  </p>
+ <p>When called, the power controller’s <a href="GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703.html#GUID-34D1D0BF-20DE-5677-A067-8FF9DD72E703__GUID-E2A072D0-A67F-5E6D-81ED-CFD77B6ED4F1">DPowerController::CpuIdle() </a> implementation
+could take the necessary steps to prepare the CPU and the platform to go to
+“Sleep”. </p>
+ <p>There is a balance between the power savings obtained from
+moving the CPU and platform into “Sleep” mode in Idle and the performance
+hit resulting from spending time restoring the status after coming out of
+“Sleep” mode. Usually the <samp class="codeph">CpuIdle()</samp> routine investigates
+the timer queue (using <a href="GUID-C54D99AA-FF6E-3023-8260-8F5A88FBFBE0.html#GUID-C54D99AA-FF6E-3023-8260-8F5A88FBFBE0__GUID-69103F26-2C21-3ECA-9DB5-C31A41F6C238"><span class="apiname">NTimerQ::IdleTime()</span></a>) for the next
+timer expiration and decides to move or not to move the CPU and platform into
+“Sleep” mode based on how much time there is before the next timer expiration.
+The threshold above which it is considered productive to move into “Sleep”
+is dependent on the base port. </p>
+ <p>The decision to move into “Sleep” mode
+may also be based on the current level of activity, or collected metrics on
+the length of time spent in Idle, or other historical information. This can
+be implemented entirely by the base port, or it may require the services of
+an external component (such as, for example, Speed Management). </p>
+ <p>The
+transition to a hardware “Sleep” mode may also depend on shared peripherals
+being in a particular state, for example, no pending requests from other peripherals.
+This means that the power controller may need to check with the peripheral
+driver before initiating the change. The power controller could use the ASSP/Variant
+method to access the resource manager and check the usage of a shared peripheral
+using its <samp class="codeph">GetCount()</samp> API. </p>
+ <p>The decision to move into
+“Sleep” mode could be dependent on a number of peripherals (shared and not
+shared) being in Standby and a number of controllable power resources being
+turned off. Therefore the power controller may also need to check with the
+resource manager (through the Variant or ASSP) for the state of a specific
+set of controllable power resources (using the <samp class="codeph">ResourceManager::GetResourceState()</samp> API). </p>
+ <p>On
+going to “Sleep”, an action or set of actions might need to be taken that
+would affect the whole platform. An example of this is when DRAM is put into
+self-refresh mode on entering the CPU Idle mode after all peripherals that
+might access it (including the LCD controller and DSP) are in low power state.
+Unused DRAM banks may also be powered down. </p>
+ <p>The following diagram
+exemplifies how the evolution of system power would look like on a system
+when the most power saving “Sleep” mode can only be reached – from Idle -
+when Peripherals A, B and C are already in their low power mode. On going
+to the most power saving “Sleep” mode, additional actions can be taken to
+lower the system power level: </p>
+ <div class="fignone" id="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-05ED7A51-E1A1-5D2E-AF81-A11A9EC80D7F"><a name="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-05ED7A51-E1A1-5D2E-AF81-A11A9EC80D7F"><!-- --></a><span class="figcap">Figure 1. System power use over time</span>
+
+<img src="GUID-BF157EE2-B680-554A-AE32-69C652B61FA6_d0e393871_href.png"/>
+</div>
+ <ul>
+<li id="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-FD4E14B6-9471-5A91-B215-E42595645A94"><a name="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-FD4E14B6-9471-5A91-B215-E42595645A94"><!-- --></a><p>The system is active
+when a request for service is made on peripheral A; the peripheral driver
+for peripheral A requests its transition to operational state increasing the
+system power requirement (a). </p>
+ </li>
+
+<li id="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-FB7914E6-13BC-57C7-BA02-A7DAA3A4F968"><a name="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-FB7914E6-13BC-57C7-BA02-A7DAA3A4F968"><!-- --></a><p>After a period of activity
+related to servicing the request, the system enters the idle thread; in <samp class="codeph">CpuIdle()</samp> the
+time for the next timer expiration is investigated and is found to be long
+enough to send the system to sleep, powering down peripherals A, B and C to
+their low power state and other system resources (b). </p>
+ </li>
+
+<li id="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-44F96E35-4DA5-5A34-8D12-6E99D4B96856"><a name="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-44F96E35-4DA5-5A34-8D12-6E99D4B96856"><!-- --></a><p>The timer expires and
+the system wakes up to the same power level as before (c). </p>
+ </li>
+
+<li id="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-61124A91-05C6-589D-884B-F4CE5FF9A970"><a name="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-61124A91-05C6-589D-884B-F4CE5FF9A970"><!-- --></a><p>The inactivity timer
+implemented in the peripheral driver for peripheral A expires: the peripheral
+is transitioned to the low power state (d). </p>
+ </li>
+
+<li id="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-1A1BF422-6C3A-5F90-BB8E-E84A31478723"><a name="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-1A1BF422-6C3A-5F90-BB8E-E84A31478723"><!-- --></a><p>At (e) the system enters
+the idle thread again: the timer queue is investigated and then enters sleep
+mode, waking up again when an interrupt occurs (f). </p>
+ </li>
+
+<li id="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-14C0126F-4333-5A96-93CE-7BBA17A422EF"><a name="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-14C0126F-4333-5A96-93CE-7BBA17A422EF"><!-- --></a><p>The inactivity timer
+associated with the peripheral drive for peripheral B expires and the peripheral
+is transitioned to its low power state (g). </p>
+ </li>
+
+<li id="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-3CC1A70B-832A-53EC-BD04-9FA58F58F97D"><a name="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-3CC1A70B-832A-53EC-BD04-9FA58F58F97D"><!-- --></a><p>On the next call to <samp class="codeph">CpuIdle()</samp> the
+time for the next timer expiration is not long enough to power off peripherals
+and other system resources: only limited power savings can be made (h) until
+the system wakes up again (i). </p>
+ </li>
+
+<li id="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-FC9FE747-CF6D-501A-B36F-4776F53E5317"><a name="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-FC9FE747-CF6D-501A-B36F-4776F53E5317"><!-- --></a><p>Finally, the inactivity
+timer for peripheral C expires and the peripheral is transitioned to low power
+state (j). On reaching another period of system idle all conditions are met
+to send the system to the deepest sleep mode available accompanied by the
+switching off other power resources (k). </p>
+ </li>
+
+<li id="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-6E283027-9516-50AA-94A7-BEA5C1A1E115"><a name="GUID-29B84A67-9DB7-5F4C-A4D1-A3BDC69015A8__GUID-6E283027-9516-50AA-94A7-BEA5C1A1E115"><!-- --></a><p>On waking up (l) the
+system resources are restored to the same power level as before. </p>
+ </li>
+
+</ul>
+ <p>Any transition to and from these low power states must be transparent
+to the rest of the system. A transparent transition is one that can be instantly
+reversed, perhaps automatically in hardware, and has no noticeable impact
+on system performance. In other words, it should be possible to wake the processor
+up and move the entire device to Active Mode as if coming from a “normal”
+Idle Mode. </p>
+ <p>To perform a system wide power change which is not transparent,
+peripherals that may be affected by the transition would need to be examined,
+and interfaces would have to be provided so that the users of these peripherals
+could query the peripheral and allow or disallow the system transition into
+that state. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html" title="This topic describes how to implement a power controller in a base port.">Power Management Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Using GThreads"/>
+<meta name="abstract" content=""/>
+<meta name="description" content=""/>
+<meta name="DC.Relation" scheme="URI" content="GUID-51FF9F99-8005-4480-9645-64476B953C57.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-94D67092-5EB3-4D83-A164-CA628F2E2DB0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-51FF9F99-8005-4480-9645-64476B953C57.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-A9A8C0C1-4B89-40FE-917E-7D4F7387DDA9"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Using GThreads</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-A9A8C0C1-4B89-40FE-917E-7D4F7387DDA9"><a name="GUID-A9A8C0C1-4B89-40FE-917E-7D4F7387DDA9"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2383355 id2383416 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-94D67092-5EB3-4D83-A164-CA628F2E2DB0.html" title="GLib is a general-purpose utility library, which provides many useful data types, macros, type conversions, string utilities, file utilities, a main loop abstraction, and so on. It works on many UNIX-like platforms, Windows, OS/2, and BeOS.">GLib</a> &gt; <a href="GUID-51FF9F99-8005-4480-9645-64476B953C57.html">GLib Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Using
+GThreads</h1>
+<div><p/>
+
+<p>GLib threads provide a portable way of writing multi-threaded applications.
+There are:</p>
+
+<ul>
+<li><p>primitives for mutexes to protect concurrent accesses to portions of
+the memory</p>
+</li>
+
+<li><p>primitives for conditional variables to allow synchronization between
+threads</p>
+</li>
+
+<li><p>primitives for thread-private data that every thread has an instance
+of</p>
+</li>
+
+<li><p>APIs for creating and managing threads. </p>
+</li>
+
+</ul>
+
+<p>To use thread-related APIs the application must link to <span class="filepath">libgthread.lib</span>.
+The function <samp class="codeph">g_thread_init()</samp> must be called to initialize
+the thread system before calling any other thread-related functions.</p>
+
+<div class="note"><span class="notetitle">Note:</span> The function <samp class="codeph">g_thread_init()</samp> must be called only once.
+The second call to it will abort the application.</div>
+
+<p>The code given below verifies whether the thread system is initialized.</p>
+
+<pre class="codeblock">if (!g_thread_supported ()) 
+	g_thread_init (NULL);
+</pre>
+
+<p><samp class="codeph">g_thread_init()</samp> can be called with a non-NULL parameter;
+however, the user must be sure of what is done since this will override the
+default thread implementation.</p>
+
+<p>The following example code explains the usage of some of the thread APIs.
+In the example code, create <samp class="codeph">NTHREADS</samp> thread and wait in the
+main thread for all the threads to start before proceeding with some other
+work. Finally, join to all the threads so that the main thread waits for all
+the other threads to terminate.</p>
+
+<pre class="codeblock">#include &lt;glib.h&gt;
+
+/* g_mutex_lock is a macro that uses the dll global variable
+ * g_thread_functions_for_glib_use. To use the global variable
+ * we must include glib_global.h.
+ */
+#include &lt;glib_global.h&gt; // Always include as the last include.
+
+#define NTHREADS 5
+
+int no_threads = 0;
+GMutex *mutex;
+GCond *cond; 
+
+void* thread_function(void *data)
+{
+	/*
+	.
+	local data declaration
+	.
+	 */
+	
+	// lock on the mutex before changing the global variable no_threads
+	g_mutex_lock(mutex);
+	no_threads++;
+	
+	//do a broadcast on the conditional variable once NTHREDS have been created
+	if(no_threads == NTHREADS)
+		g_cond_broadcast(cond);
+	
+	//unlock the mutex
+	g_mutex_unlock(mutex);
+
+	/*
+	.
+	some code
+	.
+	 */
+	
+	return NULL;
+ 	
+}
+
+int main ()
+{
+	int i;
+	GThread *thread[NTHREADS];
+	/*
+	 .
+	 other local data declaration
+	 .
+ 	 */ 
+
+	
+	if(!g_thread_supported())
+		g_thread_init (NULL);
+	
+	mutex = g_mutex_new ();
+	cond = g_cond_new (); 
+ 	
+	for(i=0; i&lt;NTHREADS; i++)
+		thread[i] = g_thread_create(thread_function, NULL,TRUE, NULL);
+	
+	g_mutex_lock (mutex);
+	
+	if (no_threads &lt; NTHREADS)
+g_cond_wait (cond, mutex);
+	
+	g_mutex_unlock (mutex);
+	
+	/*
+	.
+	some code
+	.
+	 */
+	 
+	for(i=0; i&lt;NTHREADS; i++)
+		g_thread_join(thread[i]);
+	 
+	g_mutex_free(mutex);
+	g_cond_free(cond);
+	
+	/*
+	.
+	some code
+	.
+	 */
+	 
+	return 0;
+}
+</pre>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-51FF9F99-8005-4480-9645-64476B953C57.html">GLib Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

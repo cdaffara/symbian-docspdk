@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CLbsBtGpsConfig"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF"/>
+
+<title>CLbsBtGpsConfig</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF"><a name="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2731347 id2731384 id2731389 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CLbsBtGpsConfig Class Reference</h1>
+	<table class="signature"><tr><td>class CLbsBtGpsConfig : public CBase</td></tr></table><div class="section"><div>
+			<p>LBS Bluetooth GPS Configuration API</p>
+
+			<p>API used to configure Bluetooth GPS devices for use with LBS, allowing a preferred list of devices to be maintined. When required, the LBS Bluetooth positioning plugin will attempt to connect to each device in the list in order, until a succesful connection to a GPS device is made.</p>
+
+			<p>Through this API an application can read, add to, remove from, and reorder the list of preferred Bluetooth GPS devices. Accessing this API requires the LocalServices capability, in addition, calling any methods which can modify the configuration requires the WriteDeviceData capability.</p>
+
+			<div class="p">
+				<pre class="codeblock">class CLbsBtGpsConfigExample : public CActive, public MLbsBtGpsConfigObserver
+	{
+
+public:
+
+	CLbsBtGpsConfigExample() : CActive(CActive::EPriorityStandard)
+		{
+		CActiveScheduler::Add(this);
+		
+		// Create an instance of the API
+		// NOTE: Our class implements the observer interface MLbsBtGpsConfigObserver
+		iConfig = CLbsBtGpsConfig::NewL(*this);
+
+		// ...
+		  
+		}
+
+	~CLbsBtGpsConfigExample()
+		{
+		delete iConfig;
+		iDeviceList.ResetAndDestroy();
+		iDeviceList.Close();
+		}
+	
+	void ExampleCode()
+		{
+		// Add a new device at the start of the list
+		TInt err;
+		TBTDevAddr deviceAddress;
+		TLbsBtGpsEntryKey key;
+		err = iConfig-&gt;AddDevice(deviceAddress, 0, key);
+		// NOTE: key contains the unique device key, used to identify the device
+
+		// Move the device around in the list
+		// This will move it into 8th place (index is zero based), or, if there are 
+		// currently less than 8 devices in the list, it will move it to the end. 
+		iConfig-&gt;ReorderDevice(key, 7);
+
+		// Remove the device from the list
+		iConfig-&gt;RemoveDevice(key);
+		}
+	
+	virtual void OnDeviceListUpdate()
+		{
+		test.Printf(_L(" --- OnDeviceListUpdate ---\n"));
+
+		// Retrieve the list of devices
+		iDeviceList.ResetAndDestroy();
+		iConfig-&gt;GetDeviceListL(iDeviceList);
+
+		// Loop through the devices
+		for (TInt index=0; index&lt;iDeviceList.Count(); ++index)
+			{
+			// Get at the device information from the list
+			const TLbsBtGpsDeviceInfo* deviceInfo = iDeviceList[index];
+			
+			// Do something (e.g. display on a GUI)
+
+			}
+
+		// Destroy the retrieved copy of the list now we have finished using it
+		iDeviceList.ResetAndDestroy();
+		}
+
+private:
+
+	CLbsBtGpsConfig* iConfig;
+	RPointerArray&lt;TLbsBtGpsDeviceInfo&gt; iDeviceList;
+
+	// ...
+	
+	};</pre>
+
+			</div>
+
+			<p>An application must wait for the RunL of the class implementing the <a href="GUID-75221780-805A-3DF5-853E-1A01B06C36ED.html#GUID-75221780-805A-3DF5-853E-1A01B06C36ED">MLbsBtGpsConfigObserver</a> interface to return before calling any other public methods on this class.</p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CLbsBtGpsConfig<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-5D32AC44-48CF-3E42-8715-A85079503AD8">~CLbsBtGpsConfig</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-FEFB4969-A181-3248-8041-11EBA7071B03">AddDevice</a>(const <a href="GUID-D6B126B5-A6AA-37E1-845F-4D650033C603.html">TBTDevAddr</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-D2638416-DD69-3A5E-BE54-3FC45515CFFC.html">TLbsBtGpsEntryKey</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-E45439CF-5624-34F0-AFA7-8064A9ECBCA3">EmptyDeviceList</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-E7BB0698-6DEA-398F-81FC-FE869A3E4799">GetDeviceCount</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-3D210968-9D02-39C1-B974-E35D5257CD42">GetDeviceListL</a>(<a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-BEC75264-9B15-3185-863B-7262ECBC56CA.html">TLbsBtGpsDeviceInfo</a> &gt; &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF.html">CLbsBtGpsConfig</a> *</td><td><a href="#GUID-AE4C17AC-B857-3EE3-9C0C-BB157CD09789">NewL</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF.html">CLbsBtGpsConfig</a> *</td><td><a href="#GUID-E4D77675-24B4-3337-9ABC-2D7FAD542AA2">NewL</a>(<a href="GUID-75221780-805A-3DF5-853E-1A01B06C36ED.html">MLbsBtGpsConfigObserver</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-9948BEF3-62B5-38B2-9537-9CCFF7B313AE">RemoveDevice</a>(<a href="GUID-D2638416-DD69-3A5E-BE54-3FC45515CFFC.html">TLbsBtGpsEntryKey</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-2CC8AA39-B654-30C0-80AA-C57FEE1B6460">ReorderDevice</a>(<a href="GUID-D2638416-DD69-3A5E-BE54-3FC45515CFFC.html">TLbsBtGpsEntryKey</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-F9815C4C-E0CB-329B-AAB3-779345771F8F">CLbsBtGpsConfig</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-409440EB-D0D6-31AF-9F7F-937607827F8A">ConstructL</a>(<a href="GUID-75221780-805A-3DF5-853E-1A01B06C36ED.html">MLbsBtGpsConfigObserver</a> *)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-C210F1BA-9223-37AA-8615-6266F34A0C44">CLbsBtGpsConfig</a>(const <a href="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF.html">CLbsBtGpsConfig</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td><a href="#GUID-36CE4EBE-089D-359E-B789-7FFA93C2545C">ExtendedInterface</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF.html">CLbsBtGpsConfig</a> &amp;</td><td><a href="#GUID-6CB3105E-6DA9-3D63-8584-928691735158">operator=</a>(const <a href="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF.html">CLbsBtGpsConfig</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-9A4DA943-C7FB-31EF-8BB8-7B93C9BC2A13.html">CLbsBtGpsConfigImpl</a> *</td><td><a href="#GUID-529A24BC-1AE7-305B-8951-D2C739618CCB">iImpl</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-F9815C4C-E0CB-329B-AAB3-779345771F8F"><a name="GUID-F9815C4C-E0CB-329B-AAB3-779345771F8F"><!-- --></a>
+		<h2 class="topictitle2">CLbsBtGpsConfig()</h2>
+		<table class="signature"><tr><td>CLbsBtGpsConfig</td><td>(</td><td>)</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Class constructor </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C210F1BA-9223-37AA-8615-6266F34A0C44"><a name="GUID-C210F1BA-9223-37AA-8615-6266F34A0C44"><!-- --></a>
+		<h2 class="topictitle2">CLbsBtGpsConfig(const CLbsBtGpsConfig &amp;)</h2>
+		<table class="signature"><tr><td>CLbsBtGpsConfig</td><td>(</td><td>const <a href="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF.html">CLbsBtGpsConfig</a> &amp;</td><td/><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Prohibit copy constructor </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF.html">CLbsBtGpsConfig</a> &amp; </td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5D32AC44-48CF-3E42-8715-A85079503AD8"><a name="GUID-5D32AC44-48CF-3E42-8715-A85079503AD8"><!-- --></a>
+		<h2 class="topictitle2">~CLbsBtGpsConfig()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CLbsBtGpsConfig</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Destructor   </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-FEFB4969-A181-3248-8041-11EBA7071B03"><a name="GUID-FEFB4969-A181-3248-8041-11EBA7071B03"><!-- --></a>
+		<h2 class="topictitle2">AddDevice(const TBTDevAddr &amp;, TInt, TLbsBtGpsEntryKey &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>AddDevice</td><td>(</td><td>const <a href="GUID-D6B126B5-A6AA-37E1-845F-4D650033C603.html">TBTDevAddr</a> &amp;</td><td>aAddress,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPosition,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-D2638416-DD69-3A5E-BE54-3FC45515CFFC.html">TLbsBtGpsEntryKey</a> &amp;</td><td>aKey</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Adds a new device at the specified position index within the list</p>
+
+				<p>The new device will assume the specified position in the list, shifting exsiting devices at this position or below one place towards the end of the list in order to achieve this.</p>
+
+				<p>Specifying aPosition = 0 will result in the device being added to the start of the list. Specifying aPosition &gt;= DeviceCount() will result in the device being added to the end of the list.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>LocalServices </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>WriteDeviceData</dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-D6B126B5-A6AA-37E1-845F-4D650033C603.html">TBTDevAddr</a> &amp; aAddress</td><td>[In] Address of the new device.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPosition</td><td>[In] Position in the list at which to add the device (where 0 indicates the start of the list).  </td></tr><tr><td class="parameter"><a href="GUID-D2638416-DD69-3A5E-BE54-3FC45515CFFC.html">TLbsBtGpsEntryKey</a> &amp; aKey</td><td>[Out] Recieves the unique key assigned to identify the new device. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-409440EB-D0D6-31AF-9F7F-937607827F8A"><a name="GUID-409440EB-D0D6-31AF-9F7F-937607827F8A"><!-- --></a>
+		<h2 class="topictitle2">ConstructL(MLbsBtGpsConfigObserver *)</h2>
+		<table class="signature"><tr><td>void</td><td>ConstructL</td><td>(</td><td><a href="GUID-75221780-805A-3DF5-853E-1A01B06C36ED.html">MLbsBtGpsConfigObserver</a> *</td><td>aObserver</td><td>)</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Second phase constructor</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrPermissionDenied Client does not have the required capabilities. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-75221780-805A-3DF5-853E-1A01B06C36ED.html">MLbsBtGpsConfigObserver</a> * aObserver</td><td>[IN] Optional observer, which will recieve update notifications. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E45439CF-5624-34F0-AFA7-8064A9ECBCA3"><a name="GUID-E45439CF-5624-34F0-AFA7-8064A9ECBCA3"><!-- --></a>
+		<h2 class="topictitle2">EmptyDeviceList()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>EmptyDeviceList</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Empties the device list, removing all device entries</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>LocalServices </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>WriteDeviceData</dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-36CE4EBE-089D-359E-B789-7FFA93C2545C"><a name="GUID-36CE4EBE-089D-359E-B789-7FFA93C2545C"><!-- --></a>
+		<h2 class="topictitle2">ExtendedInterface(TInt, TAny *, TAny *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>ExtendedInterface</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aFunctionNumber,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aPtr1,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aPtr2</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, virtual]</td></tr></table><div class="section"><div>
+				<p>This methods is reserved for future expansion and should not be used</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>LocalServices </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aFunctionNumber</td><td>Reserved for future expansion  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aPtr1</td><td>Reserved for future expansion  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aPtr2</td><td>Reserved for future expansion </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E7BB0698-6DEA-398F-81FC-FE869A3E4799"><a name="GUID-E7BB0698-6DEA-398F-81FC-FE869A3E4799"><!-- --></a>
+		<h2 class="topictitle2">GetDeviceCount(TInt &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>GetDeviceCount</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aCount</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns the number of devices present in the list</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>LocalServices</dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aCount</td><td>[Out] Revieves the number of devices in the list. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3D210968-9D02-39C1-B974-E35D5257CD42"><a name="GUID-3D210968-9D02-39C1-B974-E35D5257CD42"><!-- --></a>
+		<h2 class="topictitle2">GetDeviceListL(RPointerArray&lt; TLbsBtGpsDeviceInfo &gt; &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetDeviceListL</td><td>(</td><td><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-BEC75264-9B15-3185-863B-7262ECBC56CA.html">TLbsBtGpsDeviceInfo</a> &gt; &amp;</td><td>aList</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Retrieves the list of devices</p>
+
+				<p>The passed list is populated with <a href="GUID-BEC75264-9B15-3185-863B-7262ECBC56CA.html#GUID-BEC75264-9B15-3185-863B-7262ECBC56CA">TLbsBtGpsDeviceInfo</a> objects containing information for each device in the list. Ownership of these objects is returned, so they should be deleted by the client when they are no longer needed (this can be done easily using <a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html#GUID-9801FD5A-8708-3D2C-9DE0-CA07DB2044A0">RPointerArray::ResetAndDestroy</a>).</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrPermissionDenied if the client does not have the required capabilities.</dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>LocalServices</dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-BEC75264-9B15-3185-863B-7262ECBC56CA.html">TLbsBtGpsDeviceInfo</a> &gt; &amp; aList</td><td>[Out] Reference to an empty RPointerArray to populate with device entries from the list. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AE4C17AC-B857-3EE3-9C0C-BB157CD09789"><a name="GUID-AE4C17AC-B857-3EE3-9C0C-BB157CD09789"><!-- --></a>
+		<h2 class="topictitle2">NewL()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF.html">CLbsBtGpsConfig</a> *</td><td>NewL</td><td>(</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Static constructor (without observer) Creates an instance of the LBS Bluetooth GPS Configuration API. This version is for clients that do not require configuration update notifications.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrPermissionDenied Client does not have the required capabilities.</dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>LocalServices</dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-E4D77675-24B4-3337-9ABC-2D7FAD542AA2"><a name="GUID-E4D77675-24B4-3337-9ABC-2D7FAD542AA2"><!-- --></a>
+		<h2 class="topictitle2">NewL(MLbsBtGpsConfigObserver &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF.html">CLbsBtGpsConfig</a> *</td><td>NewL</td><td>(</td><td><a href="GUID-75221780-805A-3DF5-853E-1A01B06C36ED.html">MLbsBtGpsConfigObserver</a> &amp;</td><td>aObserver</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Static constructor (with observer) Creates an instance of the LBS Bluetooth GPS Configuration API, specifying a callback to recieve update notifications.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrPermissionDenied Client does not have the required capabilities.</dd>
+
+						
+					</dl>
+
+					<a href="GUID-75221780-805A-3DF5-853E-1A01B06C36ED.html#GUID-75221780-805A-3DF5-853E-1A01B06C36ED">MLbsBtGpsConfigObserver</a>
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>LocalServices</dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-75221780-805A-3DF5-853E-1A01B06C36ED.html">MLbsBtGpsConfigObserver</a> &amp; aObserver</td><td>[IN] Observer which will recieve update notifications. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9948BEF3-62B5-38B2-9537-9CCFF7B313AE"><a name="GUID-9948BEF3-62B5-38B2-9537-9CCFF7B313AE"><!-- --></a>
+		<h2 class="topictitle2">RemoveDevice(TLbsBtGpsEntryKey)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>RemoveDevice</td><td>(</td><td><a href="GUID-D2638416-DD69-3A5E-BE54-3FC45515CFFC.html">TLbsBtGpsEntryKey</a></td><td>aKey</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Removes a device from the list</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>LocalServices </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>WriteDeviceData</dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-D2638416-DD69-3A5E-BE54-3FC45515CFFC.html">TLbsBtGpsEntryKey</a> aKey</td><td>[In] The key identifying the device. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2CC8AA39-B654-30C0-80AA-C57FEE1B6460"><a name="GUID-2CC8AA39-B654-30C0-80AA-C57FEE1B6460"><!-- --></a>
+		<h2 class="topictitle2">ReorderDevice(TLbsBtGpsEntryKey, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ReorderDevice</td><td>(</td><td><a href="GUID-D2638416-DD69-3A5E-BE54-3FC45515CFFC.html">TLbsBtGpsEntryKey</a></td><td>aKey,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aNewPosition</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Reorders a device in the list by specifying a new position index</p>
+
+				<p>The device identified by the key will assume the specified position in the list, shifting exsiting devices as required in order to achieve this.</p>
+
+				<p>Specifying aNewPosition = 0 will result in the device being moved to the start of the list. Specifying aNewPosition &gt;= DeviceCount() will result in the device being moved to the end of the list.</p>
+
+				<p>When a device is moved towards the start of the list, other devices located between the old and new positions will be shifted towards the end of the list by one place. For example, starting with a list {A,B,C,D,E}, moving device D to position 1 would result in {A,D,B,C,E}.</p>
+
+				<p>Similarly, when a device is moved towards the end of the list, other devices located between the old and new positions will be shifted towards the start of the list by one place. For example, starting with a list {A,B,C,D,E}, moving device B to position 3 would result in {A,C,D,B,E}</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>LocalServices </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>WriteDeviceData</dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-D2638416-DD69-3A5E-BE54-3FC45515CFFC.html">TLbsBtGpsEntryKey</a> aKey</td><td>[In] The key identifying the device.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aNewPosition</td><td>[In] New position index for the device in the list (where 0 indicates the start of the list). </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6CB3105E-6DA9-3D63-8584-928691735158"><a name="GUID-6CB3105E-6DA9-3D63-8584-928691735158"><!-- --></a>
+		<h2 class="topictitle2">operator=(const CLbsBtGpsConfig &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF.html">CLbsBtGpsConfig</a> &amp;</td><td>operator=</td><td>(</td><td>const <a href="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF.html">CLbsBtGpsConfig</a> &amp;</td><td/><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Prohibit assigment operator </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-2D92CE4A-3784-35E6-969F-504888DFA4FF.html">CLbsBtGpsConfig</a> &amp; </td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-529A24BC-1AE7-305B-8951-D2C739618CCB"><a name="GUID-529A24BC-1AE7-305B-8951-D2C739618CCB"><!-- --></a>
+		<h2 class="topictitle2">
+					CLbsBtGpsConfigImpl * iImpl</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-9A4DA943-C7FB-31EF-8BB8-7B93C9BC2A13.html">CLbsBtGpsConfigImpl</a> *</td><td>iImpl</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Implementation pointer </p>
+
+			</div></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

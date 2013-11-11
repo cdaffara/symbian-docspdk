@@ -1,0 +1,706 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CBaseServerMtm"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD"/>
+
+<title>CBaseServerMtm</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD"><a name="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CBaseServerMtm Class Reference</h1>
+	<table class="signature"><tr><td>class CBaseServerMtm : public CActive</td></tr></table><div class="section"><div>
+			<p>Base class for Server-side MTM components. Server-side MTMs provide all message transport functionality for a particular messaging protocol.</p>
+
+			<p>MTM implementers implement a derived class to provide such functionality for their message protocol. Writers of message client applications are never concerned with this class and its sub-classes, as these are only accessed by the Message Server.</p>
+
+			<p>Each MTM interprets the generic commands in different ways. For example, a Fax MTM would transmit a fax when asked to copy a fax from a local folder to a fax service. For the same function, an IMAP MTM would create a copy of the message on the remote server and update the message index to show the copy of the message on the remote server. An important initial design task is to the map the functions to the functionality provided by the protocol.</p>
+
+			<p>Server-side MTM functions are called by the Message Server as a result of a client request that requires some remote operation with the MTM's protocol. The following steps give a simplified view of the usual sequence of events:</p>
+
+			<p>1. the Message Server instantiates a Server-side MTM object through the factory function</p>
+
+			<p>2. the Message Server calls the appropriate asynchronous function on the Server-side MTM interface, passing a <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html#GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646">TRequestStatus</a> argument</p>
+
+			<p>3. the Server-side MTM function typically starts whatever asynchronous communications it requires and returns</p>
+
+			<p>4. the Server-side MTM is signalled when the asynchronous communications complete, and handles the result</p>
+
+			<p>5. the Server-side MTM signals the Message Server, through the <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html#GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646">TRequestStatus</a> passed earlier</p>
+
+			<p>6. the Message Server deletes the Server-side MTM object</p>
+
+			<p>To qualify this somewhat:</p>
+
+			<p>1. it is up to the Server-side MTM implementation to decide how to translate data back and forth between the formats used by Message Server (index entry, message store, binary files), and that required by the protocol; this is another important design task</p>
+
+			<p>2. depending on the protocol being used, the communications sequence can be of considerable complexity; typically it requires division into a number of asynchronous steps</p>
+
+			<p>3. for greater efficiency where further commands are shortly expected, deletion of the Server-side MTM object can be prevented</p>
+
+			<p>For asynchronous requests, a Server-side MTM should always complete the <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html#GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646">TRequestStatus</a> with KErrNone. Any errors should be returned in the progress information.</p>
+
+			<p>Note the following significant groups of functions:</p>
+
+			<p>1. Copy and move from remote functions: <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-B5A1BCB5-C02D-3E70-B704-A671EF9F69A3">CopyToLocalL()</a> and <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-791790CE-D894-3A2B-BD74-706A8238F63E">MoveToLocalL()</a> are called by the Message Server to get a selection of entries from a remote location. For many protocols, this should be interpreted as message retrieval. For protocols where messages exist on a remote server, this function is typically used to download specific messages, after an initial connection has downloaded message headers.</p>
+
+			<p>2. Copy and move to remote functions: <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-7147A972-70BD-377A-A95C-087A8B37548E">CopyFromLocalL()</a> and <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-BEFF47CF-64C3-3803-9779-56BB35424865">MoveFromLocalL()</a> are called by the Message Server to copy/move a selection of entries to a remote location. For many protocols, this should be interpreted as message sending.</p>
+
+			<p>3. Copy and move within remote functions: <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-8685DC66-6DF5-3B66-99EA-F9B8CCAEB950">CopyWithinServiceL()</a> and <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-4A0AA0D6-5305-3963-B847-94571C709200">MoveWithinServiceL()</a> are called by the Message Server to copy a selection of entries within a remote service. An example of their use might be for a user rearranging messages within remote folders.   </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CBaseServerMtm<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive</a><ul class="derivation"><li class="derivation-depth-2 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-55AB8CF4-C3E6-3E7E-AFBD-C02E67F7957F">~CBaseServerMtm</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-C35C7B40-2E97-3F06-83F4-B51C7BC5B8F8">ChangeL</a>(<a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html">TMsvEntry</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-4AF5B0CD-C85F-37FE-BA02-7DBAFCDCC619">CommandExpected</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-7147A972-70BD-377A-A95C-087A8B37548E">CopyFromLocalL</a>(const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;, <a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-B5A1BCB5-C02D-3E70-B704-A671EF9F69A3">CopyToLocalL</a>(const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;, <a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-8685DC66-6DF5-3B66-99EA-F9B8CCAEB950">CopyWithinServiceL</a>(const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;, <a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-DDC3026D-AE21-32F7-9F14-16F6B603AFFB">CreateL</a>(<a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html">TMsvEntry</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-0E428D1A-4619-35C4-9BC7-3C219C73C292">DeleteAllL</a>(const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-CE156CA3-6470-3217-951E-ECB8425E7E3C">GetNonOperationMtmData</a>(<a href="GUID-4942DA6D-4ED6-3DE1-AF34-963252276D5C.html">TNonOperationMtmDataType</a> &amp;, <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-BEFF47CF-64C3-3803-9779-56BB35424865">MoveFromLocalL</a>(const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;, <a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-791790CE-D894-3A2B-BD74-706A8238F63E">MoveToLocalL</a>(const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;, <a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-4A0AA0D6-5305-3963-B847-94571C709200">MoveWithinServiceL</a>(const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;, <a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td><a href="#GUID-E38DE2F2-9BF2-388E-833D-1732FB28C583">Progress</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-E43193D9-FB73-3E2E-9333-CA3DD3776CB0">StartCommandL</a>(<a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-28C30823-7267-3E20-A975-D1AFA1402CF1">SystemProgress</a>(<a href="GUID-D31A16BD-787C-383E-B86C-AE35902FCDFA.html">TMsvSystemProgress</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-238A7FA6-6788-3DB9-AA53-9BAEE3EC548E">CBaseServerMtm</a>(<a href="GUID-0D5D7FAC-4F14-3046-92FB-873B8350FF4C.html">CRegisteredMtmDll</a> &amp;, <a href="GUID-681B56F3-B3A2-3147-B25A-FD69451F4A1D.html">CMsvServerEntry</a> *)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-851ED81F-7E90-330E-9586-A546584FCADF">DoComplete</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-F6D63F0C-ECC5-3042-B579-703BF75B924E">DoRunL</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-C312C343-CBA1-3CD7-ADFA-2060BAFB4CAA">Extension_</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *&amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td><a href="#GUID-842C0D89-51AD-35CE-9A74-A401CCA04AE1">GetInterface</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-E5C74B21-F989-39B9-B5D9-EA8DCE9474A2">RunError</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-865BA3F3-D727-30CF-962E-5DC2D8EDDD40">RunL</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::CActive(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Cancel()</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Deque()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::DoCancel()</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::IsActive()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::IsAdded()const</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Priority()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::SetActive()</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::SetPriority(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::~CActive()</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Enumerations</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive:TPriority</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-681B56F3-B3A2-3147-B25A-FD69451F4A1D.html">CMsvServerEntry</a> *</td><td><a href="#GUID-D5B95A55-1952-370C-80FA-02F0B5B5EB77">iServerEntry</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td><a href="#GUID-5322EE62-EA2D-35BD-9F86-C8E2D45C2687">iExtensionData</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-0D5D7FAC-4F14-3046-92FB-873B8350FF4C.html">CRegisteredMtmDll</a> &amp;</td><td><a href="#GUID-706C7C42-9CA7-347F-A9D1-E7ED67D29D4B">iRegisteredMtmDll</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Attributes</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::iStatus</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-238A7FA6-6788-3DB9-AA53-9BAEE3EC548E"><a name="GUID-238A7FA6-6788-3DB9-AA53-9BAEE3EC548E"><!-- --></a>
+		<h2 class="topictitle2">CBaseServerMtm(CRegisteredMtmDll &amp;, CMsvServerEntry *)</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>CBaseServerMtm</td><td>(</td><td><a href="GUID-0D5D7FAC-4F14-3046-92FB-873B8350FF4C.html">CRegisteredMtmDll</a> &amp;</td><td>aRegisteredMtmDll,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-681B56F3-B3A2-3147-B25A-FD69451F4A1D.html">CMsvServerEntry</a> *</td><td>aServerEntry</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected]</td></tr></table><div class="section"><div>
+				<p>Constructor.</p>
+
+				<p>The function is passed a <a href="GUID-681B56F3-B3A2-3147-B25A-FD69451F4A1D.html#GUID-681B56F3-B3A2-3147-B25A-FD69451F4A1D">CMsvServerEntry</a> object in aServerEntry. This object is used to access and change Message Server entries. Its context is initially set either to the parent of the entry or selection being operated on, or the entry itself. The constructor stores it in the protected iServerEntry member.</p>
+
+				<p>Derived classes can implement a constructor to perform any additional MTM-specific setup that can be safely carried out in a constructor. Such constructors must call the base class constructor function.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0D5D7FAC-4F14-3046-92FB-873B8350FF4C.html">CRegisteredMtmDll</a> &amp; aRegisteredMtmDll</td><td>Registration data for the MTM DLL  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-681B56F3-B3A2-3147-B25A-FD69451F4A1D.html">CMsvServerEntry</a> * aServerEntry</td><td>Context on which to operate  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-55AB8CF4-C3E6-3E7E-AFBD-C02E67F7957F"><a name="GUID-55AB8CF4-C3E6-3E7E-AFBD-C02E67F7957F"><!-- --></a>
+		<h2 class="topictitle2">~CBaseServerMtm()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CBaseServerMtm</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Destructor.</p>
+
+				<p>This cleans up the base class. CBaseServerMtm-derived objects are deleted by the Message Server when they are no longer required.</p>
+
+				<p>Derived classes can implement a destructor to do any additional clean up tasks that they require. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-C35C7B40-2E97-3F06-83F4-B51C7BC5B8F8"><a name="GUID-C35C7B40-2E97-3F06-83F4-B51C7BC5B8F8"><!-- --></a>
+		<h2 class="topictitle2">ChangeL(TMsvEntry, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ChangeL</td><td>(</td><td><a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html">TMsvEntry</a></td><td>aNewEntry,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Updates a remote entry with relevant data when called by the Message Server.</p>
+
+				<p>Implementations should provide this function if the messaging protocol supports updating of remote entries. If this is not supported, implementations should leave with KErrNotSupported.</p>
+
+				<p>The Server-side MTM implementation must decide what information in the <a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html#GUID-5A23B804-2C06-3407-9D48-1BFB212D699F">TMsvEntry</a> is relevant to the remote entry, and translate it appropriately for the specific protocol. Most of the data contained in the <a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html#GUID-5A23B804-2C06-3407-9D48-1BFB212D699F">TMsvEntry</a> is specific to the Symbian OS Message Server, and would probably have no direct correlation with the protocol's own storage format. Some entry data may however be useful. For example, if the protocol supports remote renaming of folders, the implementation could:</p>
+
+				<p>1. check for a folder type entry</p>
+
+				<p>2. extract the folder name from aNewEntry.iDetails</p>
+
+				<p>3. check if the folder name has changed by comparing the new name with iDetails in the index entry currently; if not, complete with KErrNone</p>
+
+				<p>4. initiate a protocol-specific action to rename the remote folder</p>
+
+				<p>The implementation should also always update the local Message Server index through CMsvServerEntry::ChangeL().</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The Server-side MTM does not support this operation </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html">TMsvEntry</a> aNewEntry</td><td>Data by which to update entry  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>Asynchronous completion word for the operation.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4AF5B0CD-C85F-37FE-BA02-7DBAFCDCC619"><a name="GUID-4AF5B0CD-C85F-37FE-BA02-7DBAFCDCC619"><!-- --></a>
+		<h2 class="topictitle2">CommandExpected()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>CommandExpected</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Tests if the Server-side MTM object should be deleted when called by the Message Server</p>
+
+				<p>It is useful to stop the MTM being deleted when more commands are expected shortly. This would be the case, for example, after receiving a command to go online.</p>
+
+				<p>If there are no more commands expected by the Server-side MTM object, then the function should return EFalse, and the Message Server will delete it.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-7147A972-70BD-377A-A95C-087A8B37548E"><a name="GUID-7147A972-70BD-377A-A95C-087A8B37548E"><!-- --></a>
+		<h2 class="topictitle2">CopyFromLocalL(const CMsvEntrySelection &amp;, TMsvId, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>CopyFromLocalL</td><td>(</td><td>const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;</td><td>aSelection,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a></td><td>aDestination,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Copies a selection of entries from a local location to a remote location.</p>
+
+				<p>Requirements:</p>
+
+				<p>Implementations should provide this function if the messaging protocol supports retrieval of remote entries. If this is not supported, implementations should leave with KErrNotSupported.</p>
+
+				<p>Implementations of this function have three fundamental steps:</p>
+
+				<p>1. reading entry data</p>
+
+				<p>2. converting entry data from the Message Server format into that required by the protocol</p>
+
+				<p>3. doing the transfer operation using the appropriate communications protocols</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The Server-side MTM does not support this operation </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp; aSelection</td><td>The collection of message index entries for which the copy is required  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a> aDestination</td><td>The entry ID of the service by which the entries should be transferred  </td></tr><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>Asynchronous completion word for the operation  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B5A1BCB5-C02D-3E70-B704-A671EF9F69A3"><a name="GUID-B5A1BCB5-C02D-3E70-B704-A671EF9F69A3"><!-- --></a>
+		<h2 class="topictitle2">CopyToLocalL(const CMsvEntrySelection &amp;, TMsvId, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>CopyToLocalL</td><td>(</td><td>const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;</td><td>aSelection,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a></td><td>aDestination,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Copies a selection of entries from a remote location to a local location. This will only be meaningful for some protocols.</p>
+
+				<p>Requirements:</p>
+
+				<p>Implementations should provide this function if the messaging protocol supports retrieval of remote entries. If this is not supported, implementations should leave with KErrNotSupported.</p>
+
+				<p>Implementations of this function have three fundamental steps:</p>
+
+				<p>1. doing the transfer operation using the appropriate communications protocols</p>
+
+				<p>2. converting protocol-specific data into the three-part storage format (index entry, message store, binary files) required by the Message Server</p>
+
+				<p>3. updating entries in the Message Server</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The Server-side MTM does not support this operation </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp; aSelection</td><td>The collection of message index entries for which the copy/moving is required.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a> aDestination</td><td>The entry ID to which the selection is to be copied  </td></tr><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>Asynchronous completion word for the operation  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8685DC66-6DF5-3B66-99EA-F9B8CCAEB950"><a name="GUID-8685DC66-6DF5-3B66-99EA-F9B8CCAEB950"><!-- --></a>
+		<h2 class="topictitle2">CopyWithinServiceL(const CMsvEntrySelection &amp;, TMsvId, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>CopyWithinServiceL</td><td>(</td><td>const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;</td><td>aSelection,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a></td><td>aDestination,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Copies a selection of entries within a remote location.</p>
+
+				<p>Requirements:</p>
+
+				<p>Implementations should provide this function if the messaging protocol supports the ability to copy entries within a remote service. If this is not supported, implementations should leave with KErrNotSupported.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The Server-side MTM does not support this operation </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp; aSelection</td><td>The collection of message index entries for which the copy is required  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a> aDestination</td><td>The server entry ID to which the selection is to be copied  </td></tr><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>Asynchronous completion word for the operation  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DDC3026D-AE21-32F7-9F14-16F6B603AFFB"><a name="GUID-DDC3026D-AE21-32F7-9F14-16F6B603AFFB"><!-- --></a>
+		<h2 class="topictitle2">CreateL(TMsvEntry, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>CreateL</td><td>(</td><td><a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html">TMsvEntry</a></td><td>aNewEntry,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Creates a new remote entry with relevant data when called by the Message Server.</p>
+
+				<p>Implementations should provide this function if the messaging protocol supports creation of remote entries. If this is not supported, implementations should leave with KErrNotSupported.</p>
+
+				<p>As with <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-C35C7B40-2E97-3F06-83F4-B51C7BC5B8F8">ChangeL()</a>, the Server-side MTM implementation must decide what information in the <a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html#GUID-5A23B804-2C06-3407-9D48-1BFB212D699F">TMsvEntry</a> is relevant to the remote entry, and translate it appropriately for the specific protocol. Most of the data contained in the <a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html#GUID-5A23B804-2C06-3407-9D48-1BFB212D699F">TMsvEntry</a> is specific to the Message Server, and would probably have no direct correlation with the protocol's own storage format. For example, for a folder, probably only the name and parent are needed, so if the protocol supports creation of remote folders, the implementation could:</p>
+
+				<p>1. check for a folder type entry</p>
+
+				<p>2. get the folder name and parent details from aNewEntry</p>
+
+				<p>3. initiate a protocol-specific action to create the remote folder</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The Server-side MTM does not support this operation </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html">TMsvEntry</a> aNewEntry</td><td>Data by which to create entry  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>Asynchronous completion word for the operation.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0E428D1A-4619-35C4-9BC7-3C219C73C292"><a name="GUID-0E428D1A-4619-35C4-9BC7-3C219C73C292"><!-- --></a>
+		<h2 class="topictitle2">DeleteAllL(const CMsvEntrySelection &amp;, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>DeleteAllL</td><td>(</td><td>const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;</td><td>aSelection,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Deletes each entry in the supplied selection when called by the message Server. If any of the entries in the selection is a parent entry, then all its children should also be deleted, recursively to the bottom of the ownership tree.</p>
+
+				<p>Implementations should provide this function if the messaging protocol supports deletion of remote entries. If this is not supported, implementations should leave with KErrNotSupported.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The Server-side MTM does not support this operation </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp; aSelection</td><td>The collection of entries that are to be deleted.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>Asynchronous completion object.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-851ED81F-7E90-330E-9586-A546584FCADF"><a name="GUID-851ED81F-7E90-330E-9586-A546584FCADF"><!-- --></a>
+		<h2 class="topictitle2">DoComplete(TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>DoComplete</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aError</td><td>)</td><td>[protected, pure virtual]</td></tr></table><div class="section"><div>
+				<p>Called by the base class <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-865BA3F3-D727-30CF-962E-5DC2D8EDDD40">RunL()</a> if <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-F6D63F0C-ECC5-3042-B579-703BF75B924E">DoRunL()</a> leaves.</p>
+
+				<p>It should be implemented to handle this error. For example, progress information could be updated to reflect the problem.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aError</td><td>The leave code given by DoRunL().  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F6D63F0C-ECC5-3042-B579-703BF75B924E"><a name="GUID-F6D63F0C-ECC5-3042-B579-703BF75B924E"><!-- --></a>
+		<h2 class="topictitle2">DoRunL()</h2>
+		<table class="signature"><tr><td>void</td><td>DoRunL</td><td>(</td><td>)</td><td>[protected, pure virtual]</td></tr></table><div class="section"><div>
+				<p>Handles the completion of any asynchronous requests that it makes. It is called from the base class <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-865BA3F3-D727-30CF-962E-5DC2D8EDDD40">RunL()</a> .</p>
+
+				<p>Note that any leaves made by this function result in <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-851ED81F-7E90-330E-9586-A546584FCADF">DoComplete()</a> being called with the leave code. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C312C343-CBA1-3CD7-ADFA-2060BAFB4CAA"><a name="GUID-C312C343-CBA1-3CD7-ADFA-2060BAFB4CAA"><!-- --></a>
+		<h2 class="topictitle2">Extension_(TUint, TAny *&amp;, TAny *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Extension_</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aExtensionId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *&amp;</td><td>a0,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>a1</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>The extension method provides a polymorphic behaviour to call the correct SystemProgress function. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aExtensionId</td><td>The Uid passed in as KUIDMsgMsvSystemProgress to obtain the System Progress.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *&amp; a0</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * a1</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-842C0D89-51AD-35CE-9A74-A401CCA04AE1"><a name="GUID-842C0D89-51AD-35CE-9A74-A401CCA04AE1"><!-- --></a>
+		<h2 class="topictitle2">GetInterface(TUid)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>GetInterface</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aUid</td><td>)</td><td>[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>Returns a pointer to the interface with the specified Uid.</p>
+
+				<p>This method is the first part of an extension pattern to allow for more functionality to be supported without adding virtual methods to this base class.</p>
+
+				<p>The default implementation returns a NULL pointer.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aUid</td><td>Uid of the extension interface  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CE156CA3-6470-3217-951E-ECB8425E7E3C"><a name="GUID-CE156CA3-6470-3217-951E-ECB8425E7E3C"><!-- --></a>
+		<h2 class="topictitle2">GetNonOperationMtmData(TNonOperationMtmDataType &amp;, TPtrC8 &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>GetNonOperationMtmData</td><td>(</td><td><a href="GUID-4942DA6D-4ED6-3DE1-AF34-963252276D5C.html">TNonOperationMtmDataType</a> &amp;</td><td>aMtmDataType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp;</td><td>aResultBuffer</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Call to this method leads to call Extension_ method of server MTMs, to which the thread handle of the client application is passed. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-4942DA6D-4ED6-3DE1-AF34-963252276D5C.html">TNonOperationMtmDataType</a> &amp; aMtmDataType</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp; aResultBuffer</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BEFF47CF-64C3-3803-9779-56BB35424865"><a name="GUID-BEFF47CF-64C3-3803-9779-56BB35424865"><!-- --></a>
+		<h2 class="topictitle2">MoveFromLocalL(const CMsvEntrySelection &amp;, TMsvId, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>MoveFromLocalL</td><td>(</td><td>const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;</td><td>aSelection,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a></td><td>aDestination,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Moves a selection of entries from a local location to a remote location.</p>
+
+				<p>Requirements:</p>
+
+				<p>Implementations should provide this function if the messaging protocol supports retrieval of remote entries. If this is not supported, implementations should leave with KErrNotSupported.</p>
+
+				<p>Implementations of this function have three fundamental steps:</p>
+
+				<p>1. reading entry data</p>
+
+				<p>2. converting entry data from the Message Server format into that required by the protocol</p>
+
+				<p>3. doing the transfer operation using the appropriate communications protocols</p>
+
+				<p>The implementation of <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-BEFF47CF-64C3-3803-9779-56BB35424865">MoveFromLocalL()</a> should differ from <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-7147A972-70BD-377A-A95C-087A8B37548E">CopyFromLocalL()</a> in additionally deleting the original local data.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The Server-side MTM does not support this operation </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp; aSelection</td><td>The collection of message index entries for which the move is required  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a> aDestination</td><td>The entry ID of the service by which the entries should be transferred  </td></tr><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>Asynchronous completion word for the operation  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-791790CE-D894-3A2B-BD74-706A8238F63E"><a name="GUID-791790CE-D894-3A2B-BD74-706A8238F63E"><!-- --></a>
+		<h2 class="topictitle2">MoveToLocalL(const CMsvEntrySelection &amp;, TMsvId, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>MoveToLocalL</td><td>(</td><td>const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;</td><td>aSelection,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a></td><td>aDestination,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Moves a selection of entries from a remote location to a local location.</p>
+
+				<p>Requirements:</p>
+
+				<p>Implementations should provide this function if the messaging protocol supports retrieval of remote entries. If this is not supported, implementations should leave with KErrNotSupported.</p>
+
+				<p>Implementations of this function have three fundamental steps:</p>
+
+				<p>1. doing the transfer operation using the appropriate communications protocols</p>
+
+				<p>2. converting protocol-specific data into the three-part storage format (index entry, message store, binary files) required by the Message Server</p>
+
+				<p>3. updating entries in the Message Server</p>
+
+				<p>
+					<a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-791790CE-D894-3A2B-BD74-706A8238F63E">MoveToLocalL()</a> should differ from <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-B5A1BCB5-C02D-3E70-B704-A671EF9F69A3">CopyToLocalL()</a> in additionally deleting the original remote data.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The Server-side MTM does not support this operation </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp; aSelection</td><td>The collection of message index entries for which the moving is required.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a> aDestination</td><td>The entry ID to which the selection is to be copied/moved  </td></tr><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>Asynchronous completion word for the operation  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4A0AA0D6-5305-3963-B847-94571C709200"><a name="GUID-4A0AA0D6-5305-3963-B847-94571C709200"><!-- --></a>
+		<h2 class="topictitle2">MoveWithinServiceL(const CMsvEntrySelection &amp;, TMsvId, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>MoveWithinServiceL</td><td>(</td><td>const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;</td><td>aSelection,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a></td><td>aDestination,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Moves a selection of entries within a remote location.</p>
+
+				<p>Requirements:</p>
+
+				<p>Implementations should provide this function if the messaging protocol supports the ability to move entries within a remote service. If this is not supported, implementations should leave with KErrNotSupported.</p>
+
+				<p>The implementation of <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-4A0AA0D6-5305-3963-B847-94571C709200">MoveWithinServiceL()</a> should differ from <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-8685DC66-6DF5-3B66-99EA-F9B8CCAEB950">CopyWithinServiceL()</a> in additionally deleting the original data.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The Server-side MTM does not support this operation </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp; aSelection</td><td>The collection of message index entries for which the move is required  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a> aDestination</td><td>The server entry ID to which the selection is to be moved  </td></tr><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>Asynchronous completion word for the operation  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E38DE2F2-9BF2-388E-833D-1732FB28C583"><a name="GUID-E38DE2F2-9BF2-388E-833D-1732FB28C583"><!-- --></a>
+		<h2 class="topictitle2">Progress()</h2>
+		<table class="signature"><tr><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>Progress</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>This function is called by the Message Server to get progress information for the current asynchronous operation.</p>
+
+				<p>The call is made as a response to a client program requesting progress information through <a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html#GUID-C7C7FEBB-7235-3328-8400-C29429923391">CMsvOperation::ProgressL()</a>. The packing format used in the <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html#GUID-FB97E0A3-352A-316F-97C6-69E4741A8120">TDesC8</a> is MTM-specific. Only the implementation of the <a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-C197C9A7-EA05-3F24-9854-542E984C612D">User</a> Interface MTM progress information functions need to understand the format.</p>
+
+				<p>The progress buffer should have a maximum size of 256 bytes.</p>
+
+				<p>CBaseMtmUi::DisplayProgressSummary() CBaseMtmUi::GetProgress() </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-E5C74B21-F989-39B9-B5D9-EA8DCE9474A2"><a name="GUID-E5C74B21-F989-39B9-B5D9-EA8DCE9474A2"><!-- --></a>
+		<h2 class="topictitle2">RunError(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>RunError</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aError</td><td>)</td><td>[private, virtual]</td></tr></table><div class="section"><div>
+				<p>Handles the cases where RunL is leaving. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aError</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-865BA3F3-D727-30CF-962E-5DC2D8EDDD40"><a name="GUID-865BA3F3-D727-30CF-962E-5DC2D8EDDD40"><!-- --></a>
+		<h2 class="topictitle2">RunL()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RunL</td><td>(</td><td>)</td><td>[private, virtual]</td></tr></table><div class="section"><div>
+				<p>Provides a simple implementation of <a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html#GUID-5D018F25-5173-36C1-A0B9-5C3A33211C5D">CActive::RunL()</a> that calls the derived class's <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-F6D63F0C-ECC5-3042-B579-703BF75B924E">DoRunL()</a> function. If that function leaves, then the leave is trapped, and <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-851ED81F-7E90-330E-9586-A546584FCADF">DoComplete()</a> is called to handle the error.</p>
+
+				<p>This implementation ensures that derived classes handle leave errors in <a href="GUID-D088273D-FAFE-30F6-8D0A-3A62D3DE62FD.html#GUID-865BA3F3-D727-30CF-962E-5DC2D8EDDD40">RunL()</a>, rather than the default of the error being passed to the active scheduler. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-E43193D9-FB73-3E2E-9333-CA3DD3776CB0"><a name="GUID-E43193D9-FB73-3E2E-9333-CA3DD3776CB0"><!-- --></a>
+		<h2 class="topictitle2">StartCommandL(CMsvEntrySelection &amp;, TInt, const TDesC8 &amp;, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>StartCommandL</td><td>(</td><td><a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;</td><td>aSelection,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aCommand,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aParameter,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Executes an MTM-specific operation on a selection of entries when called by the Message Server.</p>
+
+				<p>The call is made as a response to a client program invoking an MTM-specific operation through <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-2824C0F4-A066-342F-B692-EEB7DDF533D6">CBaseMtm::InvokeSyncFunctionL()</a>/InvokeAsyncFunctionL(). The aSelection, aCommand, and aParameter arguments pass the values of the original aSelection, aFunctionId, and aParameter respectively arguments from such a call. The use (if any) of the aSelection and aParameter arguments by the function depends on the command.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp; aSelection</td><td>A selection of message entries on which the command is to be executed  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aCommand</td><td>The MTM-specific command to be carried out  </td></tr><tr><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aParameter</td><td>Command-specific parameters  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>Asynchronous completion word for the operation  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-28C30823-7267-3E20-A975-D1AFA1402CF1"><a name="GUID-28C30823-7267-3E20-A975-D1AFA1402CF1"><!-- --></a>
+		<h2 class="topictitle2">SystemProgress(TMsvSystemProgress &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SystemProgress</td><td>(</td><td><a href="GUID-D31A16BD-787C-383E-B86C-AE35902FCDFA.html">TMsvSystemProgress</a> &amp;</td><td>aOutSysProg</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This call leads to calling one of the server Mtms to populate the <a href="GUID-D31A16BD-787C-383E-B86C-AE35902FCDFA.html#GUID-D31A16BD-787C-383E-B86C-AE35902FCDFA">TMsvSystemProgress</a> structure. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-D31A16BD-787C-383E-B86C-AE35902FCDFA.html">TMsvSystemProgress</a> &amp; aOutSysProg</td><td>The TMsvSystemProgress structure to be populated by the server  </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-5322EE62-EA2D-35BD-9F86-C8E2D45C2687"><a name="GUID-5322EE62-EA2D-35BD-9F86-C8E2D45C2687"><!-- --></a>
+		<h2 class="topictitle2">
+					TAny * iExtensionData</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>iExtensionData</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-706C7C42-9CA7-347F-A9D1-E7ED67D29D4B"><a name="GUID-706C7C42-9CA7-347F-A9D1-E7ED67D29D4B"><!-- --></a>
+		<h2 class="topictitle2">
+					CRegisteredMtmDll &amp; iRegisteredMtmDll</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-0D5D7FAC-4F14-3046-92FB-873B8350FF4C.html">CRegisteredMtmDll</a> &amp;</td><td>iRegisteredMtmDll</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-D5B95A55-1952-370C-80FA-02F0B5B5EB77"><a name="GUID-D5B95A55-1952-370C-80FA-02F0B5B5EB77"><!-- --></a>
+		<h2 class="topictitle2">
+					CMsvServerEntry * iServerEntry</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-681B56F3-B3A2-3147-B25A-FD69451F4A1D.html">CMsvServerEntry</a> *</td><td>iServerEntry</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>The entry on which to operate. It is set in the constructor.</p>
+
+				<p>The destructor deletes this member. </p>
+
+			</div></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Calling Symbian Asynchronous APIs in Applications"/>
+<meta name="abstract" content=""/>
+<meta name="description" content=""/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-B7B7F611-BCA0-498F-BEC1-16B276F680D5"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Calling Symbian Asynchronous APIs in Applications</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-B7B7F611-BCA0-498F-BEC1-16B276F680D5"><a name="GUID-B7B7F611-BCA0-498F-BEC1-16B276F680D5"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381193 id2381201 id2381344 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html">Generic Open Libraries</a> &gt; <a href="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html">Open Environment Core (P.I.P.S.)</a> &gt; <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Calling
+Symbian Asynchronous APIs in Applications</h1>
+<div><p/>
+
+<div class="p">When porting an P.I.P.S.-based C or C++ application on top of Symbian C++,
+the developer may need to make use of Symbian asynchronous APIs. If asynchronous
+APIs are made use of in an P.I.P.S. application, the application needs to
+wait for the completion of the asynchronous API. This can be done in two ways:
+ <ul>
+<li><p>Wait for the asynchronous request to complete. This can be achieved
+by making use of <samp class="codeph">User::WaitForRequest(iStatus)</samp>; where <samp class="codeph">iStatus</samp> is
+the <samp class="codeph">TRequestSemaphore</samp> used by the asynchronous API. </p>
+</li>
+
+<li><p>Call the asynchronous API in an active object, run an active scheduler,
+and let the active scheduler wait for the asynchronous operation to complete. </p>
+</li>
+
+</ul>
+</div>
+
+<p><strong>The problems with these approaches are: </strong></p>
+
+<p>The open source application would get blocked till the asynchronous operation
+completes in the first approach. In the second approach, the active scheduler
+would be running in a wait loop, checking for asynchronous API completion.
+Even in this case, the P.I.P.S. application would not be able to perform any
+other operations outside the active scheduler framework.</p>
+
+<p>The asynchronous APIs could be called in a separate process, and the P.I.P.S.
+application could communicate with this process by making use of the client/server
+framework of Symbian or by making use of other P.I.P.S. IPC mechanisms. However,
+making a different process for calling asynchronous APIs might pose a performance
+hit.</p>
+
+<p>One of the ways to solve these problems is to call the asynchronous APIs
+in a separate thread.</p>
+
+<p><strong>Example:</strong></p>
+
+<pre class="codeblock">class CActiveThread:  public CActive
+{
+public: 
+
+    enum TState
+    {
+    EInitialized = 0x0,
+    EDoFirst = 0x1,
+    EDoSecond = 0x2,
+    EDoThird = 0x4,
+    ECompleted = 0x8
+    };
+ 
+     // thread startup routine
+    static int StartMyThread(void* thisptr);
+    // leaving variant of the thread startup routine
+    static int StartMyThreadL(void* thisptr);
+    // Helper function to start the thread
+    void StartThread();    
+    // Do Function
+    void DoFunction(TState aState );      
+              
+    // CActive Functions
+    void RunL();
+    void DoCancel();
+    		
+    // Constructors and destructor      
+    static CActiveThread* NewL(); 
+    CActiveThread ();
+    void ConstructL();
+    ~ CActiveThread();      
+           
+private:    
+  
+    // Active Scheduler
+    CActiveSchedulerWait *iWait;          
+    // Command/State
+    TInt iState;        	    
+    TRequestStatus iThreadExitWait;	    
+    // my thread handle
+    RThread iActiveThread;    	    
+    sem_t iSem;
+};
+</pre>
+
+<p>The <samp class="codeph">StartThread</samp> member function of <a href="GUID-7968C6B4-3247-335A-845B-3D196E2EB14C.html"><span class="apiname">CActiveThread</span></a> creates
+the thread which runs the active scheduler. <samp class="codeph">StartMyThread</samp> is
+the entry point function for the new thread that starts an active scheduler
+and sets up the clean up stack. To call an asynchronous function, <samp class="codeph">DoFunction()</samp> needs
+to be called with the corresponding state. The parent thread signals the child
+thread using the child thread’s thread request semaphore. When the thread
+request semaphore is signaled, the child thread wakes up, calls the corresponding
+asynchronous API in <samp class="codeph">RunL()</samp> based on the <samp class="codeph">iState</samp> and
+again goes back to the active scheduler wait loop.  </p>
+
+<p>To synchronize between the parent thread and the child thread, a semaphore
+can be used as shown in the following code snippet. </p>
+
+<pre class="codeblock">CActiveThread* CActiveThread::NewL()
+{
+CActiveThread* self = new (ELeave) CActiveThread();
+self-&gt;ConstructL();
+return self;
+}
+     
+CActiveThread::CActiveThread():CActive(EPriorityStandard),iState(EInitialized)
+{       
+}
+
+void CActiveThread::ConstructL()
+{  
+// semaphore for Synching
+sem_init(&amp;iSem,0,0);  
+}
+     
+void CActiveThread::StartThread()
+{       
+//Create Thread 
+TInt err = iActiveThread.Create( KThreadName(),&amp;CActiveThread::StartMyThread, KDefaultStackSize, NULL, (TAny*)this );
+iActiveThread.Logon( iThreadExitWait );
+iActiveThread.Resume();
+sem_wait(&amp;iSem );    
+}
+ 
+int CActiveThread::StartMyThread( void* ptr )
+{
+CActiveScheduler* scheduler = new (ELeave) CActiveScheduler();
+CActiveScheduler::Install(scheduler);     
+CTrapCleanup* pCleanup = CTrapCleanup::New();
+TRAPD(err, StartMyThreadL(ptr));        
+}
+ 
+int CActiveThread::StartMyThreadL( void* ptr )
+{        
+CActiveThread *thisptr = (CActiveThread*)ptr;    
+CActiveScheduler::Add(thisptr);
+thisptr-&gt;iWait = new (ELeave) CActiveSchedulerWait();	    
+thisptr-&gt;iState = EInitialized;
+thisptr-&gt;iStatus = KRequestPending;
+thisptr-&gt;SetActive();
+sem_post( &amp;(thisptr-&gt;iSem ));    
+thisptr-&gt;iWait-&gt;Start();   
+}
+
+ void CActiveThread::RunL()
+ {
+ switch ( iState )
+     {
+     case  EDoFirst:
+     // Call 1st asynchronous function
+     break;
+     
+     case EDoSecond:
+     // Call 2nd asynchronous function
+     break;
+      
+     case EDoThird:
+     // Call 3rd asynchronous function
+     break;
+     
+     case ECompleted:
+     iWait-&gt;AsyncStop();    
+     return;			
+     }
+	
+iStatus = KRequestPending;
+SetActive();
+// wake up the waiting thread
+sem_post(&amp;iSem);
+}
+
+void CActiveThread::DoCancel()
+{    
+}
+
+void CActiveThread::DoFunction(TState aState )
+{
+iState = aState;
+TRequestStatus *reqPtr = &amp;iStatus;
+iActiveThread.RequestComplete( reqPtr, KErrNone );
+sem_wait(&amp;iSem);
+}    
+ 
+CActiveThread::~CActiveThread()
+{  
+if ( iState != EInitialized )
+    {
+    iState = ECompleted;
+    TRequestStatus *reqPtr = &amp;iStatus;	
+    iActiveThread.RequestComplete( reqPtr, KErrNone ); 
+    User::WaitForRequest( iThreadExitWait);
+    }    
+sem_destroy(&amp;iSem);
+}
+</pre>
+
+<p><strong>Using <a href="GUID-7968C6B4-3247-335A-845B-3D196E2EB14C.html"><span class="apiname">CActiveThread</span></a>:</strong></p>
+
+<pre class="codeblock">iMyAsyncIf = CActiveThread::NewL();   
+iMyAsyncIf-&gt;StartThread();    
+iMyAsyncIf-&gt;DoFunction(EDoFirst);
+</pre>
+
+<p><strong>Limitations: </strong></p>
+
+<p>In this approach, only the parent thread communicates with the child thread.
+There is no way for the child thread to communicate with the parent thread.
+ </p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

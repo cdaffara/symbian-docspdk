@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="RFeatureControl"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4"/>
+
+<title>RFeatureControl</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4"><a name="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2490214 id2490219 id2490224 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">RFeatureControl Class Reference</h1>
+	<table class="signature"><tr><td>class RFeatureControl</td></tr></table><div class="section"><div>
+			<p>The Feature Control API provides methods that can be used to query which features are supported on the device. The API also provides methods to get status flags that define that behaviour of the feature flag and data associated with the feature.</p>
+
+			<p>The Feature Control API provides methods to enable and disable features at runtime e.g. when new software is installed or uninstalled. The API provides also methods for setting feature data, adding a new feature to the device and listing all supported features on the device.</p>
+
+			<p>It is only possible to enable or disable a feature or set feature data at runtime if that feature is modifiable (this is defined by the status 32 bit word associated with the feature flag). It is also possible to enable or disable a feature UID that is not even defined in the device yet. When adding a new feature to the device status flags and data of the feature must be set.</p>
+
+			<p>The meaning of the bits of the 32-bit feature status flags are as follows:</p>
+
+			<div class="p">Bit Flag Name Meaning<ul><li><p>0 Supported If set, feature is supported and available for use; if not, feature is not supported.</p>
+</li>
+<li><p>1 Upgradeable If set, feature is upgradeable. The feature is known to the device but it must be upgraded to enable it. If a feature is blacklisted, its upgradeable flag is unset.</p>
+</li>
+<li><p>2 Modifiable If set, the feature is modifiable and may be enabled/disabled at run-time. The initial flag values for such a feature flag are defined in a ROM image obey file.</p>
+</li>
+<li><p>3 Blacklisted If set, the feature has been blacklisted, and may not be changed at run-time. This also prevents a feature from being upgraded.</p>
+</li>
+<li><p>4 Uninitialised If set, the status flag Supported is unknown at build-time and is initialised at run-time by system software. The Feature Manager will ignore the Supported flag in the file. A run-time call to <a href="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4.html#GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4">RFeatureControl</a> will be needed to set the feature's supported flag. Look ups of uninitialised features result in a KErrNotReady error code.</p>
+</li>
+<li><p>5 Persisted If set, this flag is saved to the system drive when modified preserving its value across reboots/power downs</p>
+</li>
+<li><p>6 ..23 Reserved for future use, always zero.</p>
+</li>
+<li><p>24..31 Reserved for internal use.</p>
+</li>
+</ul>
+</div>
+
+			<p>Enumeration TFeatureFlags defined in featurecmn.h should be used for accessing feature status flags e.g. flags.IsSet( EFeatureUpgradeable ), flags.IsSet( EFeatureModifiable ).</p>
+
+			<p>Feature data is 32-bit word for client read and write. Feature data can contain any data that needs to be associated with the Feature Flag. Feature data can only be set if the feature is modifiable or a new feature.</p>
+
+			<p>The use of the Feature Manager API to set the supported status of a feature, it in no way means that the functionality itself is modified on the device. All the corresponding DLLs, including feature functionality and resources still remain on the device. To properly support runtime activation/deactivation of the feature, all feature APIs need to implement runtime checking of the feature status in their code.</p>
+
+			<p>The API consists of the <a href="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4.html#GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4">RFeatureControl</a> class which is used together with feature UIDs defined in featureUIDs.h, TFeatureFlags, <a href="GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE.html#GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE">TFeatureEntry</a> and RFeatureUidArray defined in featurecmn.h.</p>
+
+			<p>Usage:</p>
+
+			<p>Before calling any other methods the client must call the <a href="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4.html#GUID-94FBB83F-137D-3FE1-A95B-0A7F5235EE0A">Open()</a> method that connects to the Feature Manager Server. When the client has finished using the <a href="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4.html#GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4">RFeatureControl</a> it should disconnect using the <a href="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4.html#GUID-A15DEFE6-3B3D-3833-8A5A-F464804A5E6F">Close()</a> method.</p>
+
+		</div></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-5DE3F562-76FA-3F9D-96E5-E8A588FFBA2D">RFeatureControl</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-DDEE4AAB-4C6B-3BAB-8310-79DD9EE608AB">AddFeature</a>(<a href="GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE.html">TFeatureEntry</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-A15DEFE6-3B3D-3833-8A5A-F464804A5E6F">Close</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-468EBECF-D66D-3207-B8B3-EC1A93C2DDDA">Connect</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-0B6E4D2D-729F-3BF8-88C1-E1990CF1C1FF">DeleteFeature</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-09158840-974E-3E24-BFE7-C8901B920C83">DisableFeature</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-D85BA012-E312-3727-A1B8-9BDA20E9D30A">EnableFeature</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-C1664FB9-77DE-3640-8336-D65B1EAF1381">FeatureSupported</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-C04BC949-75FD-312B-ACE6-23B074861F03">FeatureSupported</a>(<a href="GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE.html">TFeatureEntry</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-17E5AB15-42CB-39D3-94F0-D2A11A114029">FeaturesSupported</a>(<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RFeatureArray</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-6ACFF1D7-D37B-3ADE-B414-1C7934A5C840">ListSupportedFeatures</a>(<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RFeatureUidArray</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-94FBB83F-137D-3FE1-A95B-0A7F5235EE0A">Open</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-AEF3321E-5C9D-3A66-903F-D31FF1A00F22">SWIEnd</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-B1693FD3-F625-3485-A8CC-F6F905BC3337">SWIStart</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-B4AD30DA-5E87-39F6-A4E8-2F9C6085637D">SetFeature</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-E182EC5D-E621-3634-8DCD-71E96BD01F32">SetFeature</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-B5A35B17-53BE-3824-B32C-982ED0234A8E">iInitialized</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>
+				</td><td><a href="#GUID-F75B2067-AC37-356A-B72A-077C7CDB8F10">iReserved1</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>
+				</td><td><a href="#GUID-786F3D4E-7424-32B2-9FDB-D912C04292CE">iReserved2</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-5DE3F562-76FA-3F9D-96E5-E8A588FFBA2D"><a name="GUID-5DE3F562-76FA-3F9D-96E5-E8A588FFBA2D"><!-- --></a>
+		<h2 class="topictitle2">RFeatureControl()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>RFeatureControl</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>C++ default constructor. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-DDEE4AAB-4C6B-3BAB-8310-79DD9EE608AB"><a name="GUID-DDEE4AAB-4C6B-3BAB-8310-79DD9EE608AB"><!-- --></a>
+		<h2 class="topictitle2">AddFeature(TFeatureEntry &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>AddFeature</td><td>(</td><td><a href="GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE.html">TFeatureEntry</a> &amp;</td><td>aFeature</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Adds a new feature and sets status flags and data of the feature. Note: When adding a new feature to the device status flags and data of the feature must be set. WriteDeviceData capability required.</p>
+
+				<p>
+					<a href="GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE.html#GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE">TFeatureEntry</a> <a href="GUID-16AB0F9D-CD43-3AF9-A23F-377744655D23.html#GUID-48487A58-6C4F-3E33-ACAE-D9E1EE26CAD4">TFeatureFlags</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE.html">TFeatureEntry</a> &amp; aFeature</td><td>A reference to a client owned TFeatureEntry object. Must contain UID, status flags and data of the feature.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A15DEFE6-3B3D-3833-8A5A-F464804A5E6F"><a name="GUID-A15DEFE6-3B3D-3833-8A5A-F464804A5E6F"><!-- --></a>
+		<h2 class="topictitle2">Close()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Close</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Remember to call Close after using <a href="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4.html#GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4">RFeatureControl</a>. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-468EBECF-D66D-3207-B8B3-EC1A93C2DDDA"><a name="GUID-468EBECF-D66D-3207-B8B3-EC1A93C2DDDA"><!-- --></a>
+		<h2 class="topictitle2">Connect()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Connect</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>
+					<a href="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4.html#GUID-468EBECF-D66D-3207-B8B3-EC1A93C2DDDA">Connect()</a> must be called before calling any other methods of <a href="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4.html#GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4">RFeatureControl</a>. It connects to the Feature Manager Server. After usage <a href="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4.html#GUID-A15DEFE6-3B3D-3833-8A5A-F464804A5E6F">Close()</a> function must be called.</p>
+
+				<p>Use <a href="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4.html#GUID-94FBB83F-137D-3FE1-A95B-0A7F5235EE0A">Open()</a> instead. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-0B6E4D2D-729F-3BF8-88C1-E1990CF1C1FF"><a name="GUID-0B6E4D2D-729F-3BF8-88C1-E1990CF1C1FF"><!-- --></a>
+		<h2 class="topictitle2">DeleteFeature(TUid)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>DeleteFeature</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aFeature</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Deletes a feature. Note: WriteDeviceData capability required.</p>
+
+				<p>
+					<a href="GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE.html#GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE">TFeatureEntry</a> <a href="GUID-16AB0F9D-CD43-3AF9-A23F-377744655D23.html#GUID-48487A58-6C4F-3E33-ACAE-D9E1EE26CAD4">TFeatureFlags</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aFeature</td><td>Feature UID.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-09158840-974E-3E24-BFE7-C8901B920C83"><a name="GUID-09158840-974E-3E24-BFE7-C8901B920C83"><!-- --></a>
+		<h2 class="topictitle2">DisableFeature(TUid)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>DisableFeature</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aFeature</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Disables the specified feature. WriteDeviceData capability required.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aFeature</td><td>Feature UID.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D85BA012-E312-3727-A1B8-9BDA20E9D30A"><a name="GUID-D85BA012-E312-3727-A1B8-9BDA20E9D30A"><!-- --></a>
+		<h2 class="topictitle2">EnableFeature(TUid)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>EnableFeature</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aFeature</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Enables the specified feature. WriteDeviceData capability required.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aFeature</td><td>Feature UID.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C1664FB9-77DE-3640-8336-D65B1EAF1381"><a name="GUID-C1664FB9-77DE-3640-8336-D65B1EAF1381"><!-- --></a>
+		<h2 class="topictitle2">FeatureSupported(TUid)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>FeatureSupported</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aFeature</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This method returns the supported status on the device of the feature specified in the aFeature parameter.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aFeature</td><td>Feature UID.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C04BC949-75FD-312B-ACE6-23B074861F03"><a name="GUID-C04BC949-75FD-312B-ACE6-23B074861F03"><!-- --></a>
+		<h2 class="topictitle2">FeatureSupported(TFeatureEntry &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>FeatureSupported</td><td>(</td><td><a href="GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE.html">TFeatureEntry</a> &amp;</td><td>aFeature</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This method returns the supported status on the device of the feature described by the aFeature parameter. The feature UID should be set in <a href="GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE.html#GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE">TFeatureEntry</a> class before the FeatureSupported method is called. If FeatureSupported returns successufully the <a href="GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE.html#GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE">TFeatureEntry</a> parameter will also have been populated with the feature's status flags and the data word associates with the feature.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE.html">TFeatureEntry</a> &amp; aFeature</td><td>A reference to a a client owned TFeatureEntry object. Must contain UID of the queried feature. After returning contains status flags and data of the feature.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-17E5AB15-42CB-39D3-94F0-D2A11A114029"><a name="GUID-17E5AB15-42CB-39D3-94F0-D2A11A114029"><!-- --></a>
+		<h2 class="topictitle2">FeaturesSupported(RFeatureArray &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>FeaturesSupported</td><td>(</td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RFeatureArray</a> &amp;</td><td>aFeatures</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This method allows the user to pass an array of type <a href="GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE.html#GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE">TFeatureEntry</a> to Feature Manager. In this way the user can retrieve the supported status and associated information for the features whose UIDs have been set in <a href="GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE.html#GUID-80C51259-F2C4-3877-97B4-EC0C85DE93DE">TFeatureEntry</a> classes. In order for the client to know whether feature is just disabled or does not exist at all it must check this from response feature array. If the feature exists the EFeatureSupported status bit will contain the support status. If the feature does not exist it will be removed from array after the query. For this reason instead of hard coding array accesses for features the Find method should always be used to query feature index in array after query.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RFeatureArray</a> &amp; aFeatures</td><td>A reference to a a client owned RFeatureArray array. Must contain UIDs of the queried features.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6ACFF1D7-D37B-3ADE-B414-1C7934A5C840"><a name="GUID-6ACFF1D7-D37B-3ADE-B414-1C7934A5C840"><!-- --></a>
+		<h2 class="topictitle2">ListSupportedFeatures(RFeatureUidArray &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ListSupportedFeatures</td><td>(</td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RFeatureUidArray</a> &amp;</td><td>aSupportedFeatures</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Lists all supported features.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RFeatureUidArray</a> &amp; aSupportedFeatures</td><td>A reference to a client owned RFeatureUidArray array which will be filled with the UIDs of supported features.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-94FBB83F-137D-3FE1-A95B-0A7F5235EE0A"><a name="GUID-94FBB83F-137D-3FE1-A95B-0A7F5235EE0A"><!-- --></a>
+		<h2 class="topictitle2">Open()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Open</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>
+					<a href="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4.html#GUID-94FBB83F-137D-3FE1-A95B-0A7F5235EE0A">Open()</a> must be called before calling any other methods of <a href="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4.html#GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4">RFeatureControl</a>. After usage <a href="GUID-F6AAAC24-4A62-383A-86C6-2E46335C3FD4.html#GUID-A15DEFE6-3B3D-3833-8A5A-F464804A5E6F">Close()</a> function must be called.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-AEF3321E-5C9D-3A66-903F-D31FF1A00F22"><a name="GUID-AEF3321E-5C9D-3A66-903F-D31FF1A00F22"><!-- --></a>
+		<h2 class="topictitle2">SWIEnd()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SWIEnd</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Mandates Feature Manager to stop caching and prepare to commit the cached feature manipulations performed by the executable launched by SWI during installation into Feature Manager. The cached features are committed only after that installation of the executable is successfully completed. This API must be called before a timeout managed by Feature Manager times out. Otherwise the cached features will be dumped.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-B1693FD3-F625-3485-A8CC-F6F905BC3337"><a name="GUID-B1693FD3-F625-3485-A8CC-F6F905BC3337"><!-- --></a>
+		<h2 class="topictitle2">SWIStart()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SWIStart</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Calling this method informs Feature Manager that a software installer (SWI) launched executable is going to set, add, delete, enable or disable features in Feature Manager. This mandates Feature Manager to cache all modification calls issued by that executable until a call to SWIEnd is made to commit them to Feature Manager. This prevents against situations where the installation is user-aborted without being able to roll back direct feature manipulations.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-B4AD30DA-5E87-39F6-A4E8-2F9C6085637D"><a name="GUID-B4AD30DA-5E87-39F6-A4E8-2F9C6085637D"><!-- --></a>
+		<h2 class="topictitle2">SetFeature(TUid, TBool, TUint32)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SetFeature</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aFeature,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aEnabled,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aData</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Enables or disables the specified feature and sets feature data. WriteDeviceData capability required.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aFeature</td><td>Feature UID.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aEnabled</td><td>ETrue if enabling the feature, EFalse if disabling.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aData</td><td>Feature data.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E182EC5D-E621-3634-8DCD-71E96BD01F32"><a name="GUID-E182EC5D-E621-3634-8DCD-71E96BD01F32"><!-- --></a>
+		<h2 class="topictitle2">SetFeature(TUid, TUint32)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SetFeature</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aFeature,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aData</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Sets feature data. WriteDeviceData capability required.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aFeature</td><td>Feature UID.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aData</td><td>Feature data.  </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-B5A35B17-53BE-3824-B32C-982ED0234A8E"><a name="GUID-B5A35B17-53BE-3824-B32C-982ED0234A8E"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iInitialized</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iInitialized</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Used for resource counting. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-F75B2067-AC37-356A-B72A-077C7CDB8F10"><a name="GUID-F75B2067-AC37-356A-B72A-077C7CDB8F10"><!-- --></a>
+		<h2 class="topictitle2">
+					TUint32
+				 iReserved1</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>
+				</td><td>iReserved1</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Reserved for future use. Initialised to 0 on construction. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-786F3D4E-7424-32B2-9FDB-D912C04292CE"><a name="GUID-786F3D4E-7424-32B2-9FDB-D912C04292CE"><!-- --></a>
+		<h2 class="topictitle2">
+					TUint32
+				 iReserved2</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>
+				</td><td>iReserved2</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Reserved for future use. Initialised to 0 on construction. </p>
+
+			</div></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Writing a Parser Plug-in"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-82AF5F49-EE25-54C7-AEE9-D1F41BD5190F.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A25E730C-F34D-5464-BE78-650B3DEA4A88.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AF28D930-6BD1-5DC5-9BE5-7512241E90CD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Writing a Parser Plug-in</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3"><a name="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2436889 id2436897 id2436992 id2437012 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-82AF5F49-EE25-54C7-AEE9-D1F41BD5190F.html">XML Services Guide</a> &gt; <a href="GUID-A25E730C-F34D-5464-BE78-650B3DEA4A88.html">XML</a> &gt; <a href="GUID-AF28D930-6BD1-5DC5-9BE5-7512241E90CD.html">XML Framework</a> &gt; <a href="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html">XML Framework Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Writing a Parser Plug-in</h1>
+<div><p>This section describes how to write a parser plug-in. </p>
+ <div class="section"><h2 class="sectiontitle">Introduction</h2> <p>The Symbian XML framework supplies an XML parser plug-in which is based on <a href="http://expat.sourceforge.net/" target="_blank">Expat</a>. The framework provides plug-ins with standard features. However a user can customize a plug-in according to his requirement such as parsing only a part of a document or releasing a specific resource. </p>
+ <p>The Symbian platform XML framework defines certain standard features which a parser may have, and while designing a parser, consider the features it provides. The following is a list of standard features provided by a parser: </p>
+ <ul><li id="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-86B70B90-0CAA-53CE-9B81-1B22A9B83A89"><a name="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-86B70B90-0CAA-53CE-9B81-1B22A9B83A89"><!-- --></a><p>Report unrecognised tags, namespace, namespace prefix and mappings. </p>
+ </li>
+ <li id="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-20C1FD61-F800-57D0-A489-5C4243D661CA"><a name="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-20C1FD61-F800-57D0-A489-5C4243D661CA"><!-- --></a><p>Convert elements and attributes to lower case, that is, it is case-insensitive like an HTML parser. </p>
+ </li>
+ <li id="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-D67D42B2-0B50-5F2A-A41F-57D04FDEB610"><a name="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-D67D42B2-0B50-5F2A-A41F-57D04FDEB610"><!-- --></a><p>Describe the data in a specified encoding: the default is UTF-8. </p>
+ </li>
+ <li id="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-99EA2A0E-D83E-5E1A-8E81-B1005AEE67E8"><a name="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-99EA2A0E-D83E-5E1A-8E81-B1005AEE67E8"><!-- --></a><p>Accept XML 1.0 and XML 1.1. The default is to accept XML 1.0 only. </p>
+ </li>
+ </ul>
+ <p>A user defined parser plug-in must implement the <a href="GUID-6F334B00-8026-3FA3-AE96-B0A511030B7B.html"><span class="apiname">MParser</span></a> interface which has six pure virtual APIs. Three of them concern the parser features listed above. Two other methods perform the parsing; their purpose is to implement the parse functions of the <a href="GUID-3C824E3B-68AB-31C5-A3D7-26A73B53D076.html"><span class="apiname">CParser</span></a> class discussed in <a href="GUID-E16070E5-379A-5818-81CC-B00059A40084.html">Choosing a Parser Plug-in</a> and one method is for releasing resources. The following is the list of APIs of <a href="GUID-6F334B00-8026-3FA3-AE96-B0A511030B7B.html"><span class="apiname">MParser</span></a>: </p>
+ 
+<div class="tablenoborder"><a name="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-66D19903-DB61-5E37-B79E-65DD12F80A7C"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-66D19903-DB61-5E37-B79E-65DD12F80A7C" frame="border" border="1" rules="all"><thead align="left"><tr><th class="cellrowborder" valign="top" id="d1827227e77">Class</th>
+ <th class="cellrowborder" valign="top" id="d1827227e80">Description</th>
+ </tr>
+ </thead>
+ <tbody><tr><td class="cellrowborder" valign="top" headers="d1827227e77 "><p> <a href="GUID-7A7E7EF1-BF0B-32E7-B278-2E0D32B51629.html"><span class="apiname">EnableFeature()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1827227e80 "><p>Enables the feature. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1827227e77 "><p> <a href="GUID-E5481858-1D95-3870-B0E9-66DFA521E873.html"><span class="apiname">DisableFeature()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1827227e80 "><p>Disables the feature. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1827227e77 "><p> <a href="GUID-F593E8CE-4D9C-39B6-9CE1-AA4CA6D5A240.html"><span class="apiname">IsFeatureEnabled()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1827227e80 "><p>Checks if the feature is enabled. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1827227e77 "><p> <a href="GUID-E603C5F8-7D4E-3857-A82F-45C78D654C68.html"><span class="apiname">ParseChunkL()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1827227e80 "><p>Parses part of a document. Implements <a href="GUID-3C824E3B-68AB-31C5-A3D7-26A73B53D076.html#GUID-3C824E3B-68AB-31C5-A3D7-26A73B53D076__GUID-ED062E34-DE9F-3191-952C-9E5DB081E389"><span class="apiname">CParser::ParseL()</span></a>. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1827227e77 "><p> <a href="GUID-FC9D6980-D12C-39DE-9DE3-C3236D699EFB.html"><span class="apiname">ParseLastChunkL()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1827227e80 "><p>Parses the last part of a document. Implements <samp class="codeph">CParser::ParseEndL()</samp>. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1827227e77 "><p> <a href="GUID-7F8FDB43-B847-3AFF-A78F-48F2E3DBFDC2.html"><span class="apiname">Release()</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1827227e80 "><p>Must be called to release resources when the framework has finished using the parser implementation. </p>
+ </td>
+ </tr>
+ </tbody>
+ </table>
+</div>
+ <p>Some documents contain markups from more than one XML application, which means that the parser may encounter tags and attributes which look the same but belong to different namespaces. This is why the <a href="GUID-6F334B00-8026-3FA3-AE96-B0A511030B7B.html"><span class="apiname">MParser</span></a> interface provides a feature for the reporting of namespaces. XML associates tags and attributes with namespaces by adding a prefix to them, and the prefixes are mapped to the URI where the namespace is defined. The class <a href="GUID-6CEDFB6D-16B6-3860-922B-15A23C182DB2.html"><span class="apiname">RTagInfo</span></a> is provided to hold this information. It is initialised with three strings representing the URI, prefix and local name, and these information can be retrieved by <a href="GUID-DA922EE4-F0EB-38BA-9A68-08B9AD536E22.html"><span class="apiname">Uri()</span></a>, <a href="GUID-C9E56BB6-4DD9-3735-84F6-48C671B7270E.html"><span class="apiname">Prefix()</span></a> and <a href="GUID-BE775E7E-560D-3B41-9BE3-87F7495808C3.html"><span class="apiname">LocalName()</span></a> respectively. If the application has to parse documents which combine multiple namespaces, then the implementation of <a href="GUID-6F334B00-8026-3FA3-AE96-B0A511030B7B.html"><span class="apiname">MParser</span></a> must hold a parsed tag and attributes in an <a href="GUID-6CEDFB6D-16B6-3860-922B-15A23C182DB2.html"><span class="apiname">RTagInfo</span></a> object. The content handler will then have sufficient information to react differently to tags in different namespaces. </p>
+ <p>Some XML applications, notably WBXML, extend XML syntax by adding extension tokens to the markup language. The <a href="http://www.w3.org/TR/wbxml/" target="_blank">WBXML specification</a> defines nine global extension tokens but does not assign semantics to them. The meaning of extension tokens is specific to the document in which they are used, but they are typically used for compression to identify certain data which must be compressed in a specific way. For instance, extension tokens are sometimes used to identify data as being variables not constants, or as having a particular data type. To handle extension tokens, a parser plugin must implement the method <a href="GUID-9D19F08C-CB2F-3644-A74F-8A7C453690B5.html#GUID-9D19F08C-CB2F-3644-A74F-8A7C453690B5__GUID-60CBCF44-5675-359A-8626-58BDEF767C0C"><span class="apiname">WbxmlExtensionHandler::OnExtensionL()</span></a> with three parameters <a href="GUID-33D3FD1B-06E6-38A5-9446-571A116894B0.html"><span class="apiname">aData</span></a>, <a href="GUID-52E94B14-A781-3645-8794-1442A1B05D71.html"><span class="apiname">aToken</span></a>, <a href="GUID-A7FB1F60-B735-37BC-ACEA-675C4B44CCF8.html"><span class="apiname">aErrorCode</span></a>. The first parameter holds the actual data, the second specifies the global extension token and the third is the error code. </p>
+ <p> </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Procedure</h2> <p>To write a parser plug-in, follow the steps given below: </p>
+ <a name="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-33F33876-0B72-528F-AAF5-3AC785AF7ED7"><!-- --></a><ol id="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-33F33876-0B72-528F-AAF5-3AC785AF7ED7"><li id="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-92AFD990-5EE3-5244-9DD7-38E3730A5352"><a name="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-92AFD990-5EE3-5244-9DD7-38E3730A5352"><!-- --></a><p>Encapsulate the data structures in <samp class="codeph">TParserInitParams</samp>. </p>
+ <p>The main data structures required are contained in the <a href="GUID-5F929E9F-E895-3DA6-8072-28C4B8B1CF81.html"><span class="apiname">TParserInitParams</span></a> class, which is typically passed as a parameter to the constructor method of an <a href="GUID-6F334B00-8026-3FA3-AE96-B0A511030B7B.html"><span class="apiname">MParser</span></a> implementation. <a href="GUID-5F929E9F-E895-3DA6-8072-28C4B8B1CF81.html"><span class="apiname">TParserInitParams</span></a> has the following member classes: </p>
+ 
+<div class="tablenoborder"><a name="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-342A5B66-015B-5490-BDDA-B5ED84068652"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-342A5B66-015B-5490-BDDA-B5ED84068652" frame="border" border="1" rules="all"><thead align="left"><tr><th class="cellrowborder" valign="top" id="d1827227e309">API</th>
+ <th class="cellrowborder" valign="top" id="d1827227e312">Description</th>
+ </tr>
+ </thead>
+ <tbody><tr><td class="cellrowborder" valign="top" headers="d1827227e309 "><p> <a href="GUID-E221E7DA-BDB3-3B92-9D96-5D4605CBF195.html"><span class="apiname">CCharSetConverter</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1827227e312 "><p>Used to convert text to and from Unicode. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1827227e309 "><p> <a href="GUID-A6B8386B-29F6-3BEC-9D77-D8E0900DEAC2.html"><span class="apiname">MContentHandler</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1827227e312 "><p>Interface to the application which is writen to handle the output of the parser. It is discussed in Using Symbian XML Framework. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1827227e309 "><p> <a href="GUID-094A4884-182E-3A10-80F5-85A925020BC1.html"><span class="apiname">RStringDictionaryCollection</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1827227e312 "><p>A collection of string dictionaries discussed in <a href="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142.html">Customising a Parser</a>. A string dictionary is an implementation of the <a href="GUID-AC915E8D-8B87-3A83-BF28-6C0B3B6CFB89.html"><span class="apiname">MStringDictionary</span></a> interface which is used to tokenise XML input into tagged elements in accordance with the DTD associated with the document to be parsed. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d1827227e309 "><p> <a href="GUID-AE53784D-B405-34D8-9A93-ACDE6F8ECA44.html"><span class="apiname">RElementStack</span></a>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d1827227e312 "><p>An array structure used to stack elements in the order in which the parser encounters them. </p>
+ </td>
+ </tr>
+ </tbody>
+ </table>
+</div>
+ <pre class="codeblock" id="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-EC2BA881-38B9-5E89-AB69-03CF224998DF"><a name="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-EC2BA881-38B9-5E89-AB69-03CF224998DF"><!-- --></a>
+MParser* CMyParser::NewL(TAny* aInitParams)
+    {
+     CMyParser* self = new( ELeave ) CMyParser( reinterpret_cast&lt;TParserInitParams*&gt;( aInitParams ) );
+     return( static_cast&lt;MParser*&gt;( self ) );
+    }
+CMyParser::CMyParser( TParserInitParams* aInitParams )
+:   iContentHandler( reinterpret_cast&lt;MContentHandler*&gt;( aInitParams-&gt;iContentHandler ) ),
+    iStringDictionaryCollection( reinterpret_cast&lt;RStringDictionaryCollection*&gt;( aInitParams-&gt;iStringDictionaryCollection ) ),
+    iCharSetConverter( reinterpret_cast&lt;CCharSetConverter*&gt;( aInitParams-&gt;iCharSetConverter ) ),
+    iElementStack( reinterpret_cast&lt;RElementStack*&gt;( aInitParams-&gt;iElementStack ) )
+    {
+    }</pre>
+ </li>
+ <li id="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-1C9D73E8-1A14-51EF-9E41-03E6EFA3165B"><a name="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-1C9D73E8-1A14-51EF-9E41-03E6EFA3165B"><!-- --></a><p>Select XML parser features. </p>
+ </li>
+ <li id="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-B5493F5A-41CF-5A3A-806C-D7A56C26B981"><a name="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-B5493F5A-41CF-5A3A-806C-D7A56C26B981"><!-- --></a><p>Implement CMyParser derived from <samp class="codeph">MParser</samp>. </p>
+ <pre class="codeblock" id="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-2D9DFA8A-A6E1-5279-AAD3-870AB12387BF"><a name="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-2D9DFA8A-A6E1-5279-AAD3-870AB12387BF"><!-- --></a>
+class CMyParser : public MParser
+    {
+    static MParser* NewL(TAny* aInitParams);
+    virtual ~CMyParser();
+    
+    public:
+        /** Enable a feature. */
+        TInt EnableFeature( TInt aParserFeature )
+            { 
+            // your code here to enable the specified feature
+            }
+       /** Disable a feature. */
+       TInt DisableFeature( TInt aParserFeature )
+            { 
+            // your code here to disable the specified feature
+            }
+       /** See if a feature is enabled. */
+       TBool IsFeatureEnabled( TInt aParserFeature ) const
+            { 
+            // your code here to check if the specified feature is enabled
+            } 
+       /** Parses a descriptor that contains part of a document. */
+       void ParseChunkL( const TDesC8&amp; aChunk )
+            { 
+            // your code here
+            } 
+       /** Parses a descriptor that contains the last  part of a document. */
+       void ParseLastChunkL( const TDesC8&amp; aFinalChunk )
+            { 
+            // your code here
+            } 
+       /** Interfaces don't have a destructor, so we have an explicit method instead. */
+       void Release()
+            { 
+            // your code here 
+            }
+    };</pre>
+ </li>
+ <li id="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-B6B9ED7E-EFD0-5788-A0BE-6C8911FBF66E"><a name="GUID-CB568D14-1B0C-568F-B9CA-DDD15C53EEF3__GUID-B6B9ED7E-EFD0-5788-A0BE-6C8911FBF66E"><!-- --></a><p>Release resources using <a href="GUID-7F8FDB43-B847-3AFF-A78F-48F2E3DBFDC2.html"><span class="apiname">Release()</span></a>. </p>
+ <p>When a parse fails, the parser object must be destroyed. This means that the implementation of the <a href="GUID-6F334B00-8026-3FA3-AE96-B0A511030B7B.html"><span class="apiname">MParser</span></a> and <a href="GUID-A6B8386B-29F6-3BEC-9D77-D8E0900DEAC2.html"><span class="apiname">MContentHandler</span></a> methods must contain calls to <a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-C197C9A7-EA05-3F24-9854-542E984C612D__GUID-96AFAC46-F3AD-392B-8A97-AFCBF2978CFB"><span class="apiname">User::LeaveIfError()</span></a> with an error code as parameter. Specific error codes are supplied for various cases as discussed in the <a href="GUID-5DACAB53-6D32-5250-9BC2-3E8597C3E2B2.html">Error Codes</a> section of this document. </p>
+ </li>
+ </ol>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html">XML Framework Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

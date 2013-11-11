@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CHeartbeat"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB"/>
+
+<title>CHeartbeat</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB"><a name="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2557087 id2441463 id2441468 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CHeartbeat Class Reference</h1>
+	<table class="signature"><tr><td>class CHeartbeat : public CTimer</td></tr></table><div class="section"><div>
+			<p>Heatbeat timer.</p>
+
+			<p>This class generates regular heartbeat events on a fixed fraction of a second. It is more accurate than a <a href="GUID-3CECC9FC-58C1-3117-AAF2-FDF88341F56F.html#GUID-3CECC9FC-58C1-3117-AAF2-FDF88341F56F">CPeriodic</a> timer, because it provides a function to restore timer accuracy if it gets out of synchronisation with the system clock.</p>
+
+			<p>The protected <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-3F5F1480-FFFE-3276-97B0-D8DED04622E4">RunL()</a> function is called when the timer completes. The <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-3F5F1480-FFFE-3276-97B0-D8DED04622E4">RunL()</a> function in turn calls either the <a href="GUID-6DE7027A-54C0-33F1-B184-7070B1A85709.html#GUID-9DD4288E-8F0F-3C0B-8A35-05D53400C3E3">MBeating::Beat()</a> or the <a href="GUID-6DE7027A-54C0-33F1-B184-7070B1A85709.html#GUID-1D2A71E2-2254-3FC1-8C0F-EFC330532574">MBeating::Synchronize()</a> functions; <a href="GUID-6DE7027A-54C0-33F1-B184-7070B1A85709.html#GUID-6DE7027A-54C0-33F1-B184-7070B1A85709">MBeating</a> is specified as a parameter to the <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-7AF9B2AC-2A43-3DC2-B172-83E2FD3AD34C">Start()</a> function used to start the heartbeat timer.</p>
+
+			<p>The relevant <a href="GUID-6DE7027A-54C0-33F1-B184-7070B1A85709.html#GUID-6DE7027A-54C0-33F1-B184-7070B1A85709">MBeating</a> function may not be called immediately after the signal from the timer request has been generated, for the following reasons:</p>
+
+			<p>1. the <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-3F5F1480-FFFE-3276-97B0-D8DED04622E4">RunL()</a> of another active object may be running at the time of the signal</p>
+
+			<p>2. other active objects may have a higher priority than the <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-12C497F2-DB51-3740-972C-11ACD6501DAB">CHeartbeat</a></p>
+
+			<p>If no heartbeat is missed, then the Beat() function is called.</p>
+
+			<p>If one or more heartbeats are missed then the Synchronize() function is called. It is important to bear in mind that the machine might be switched off after a few beats of the heart, and then Synchronize() will be called several days later. It is therefore essential that synchronisation is achieved as quickly as possible, rather than trying to catch up a tick at a time. In the context of an analogue clock, for instance, the clock should just redraw itself with the current time - rather than moving the hands round in steps until the time is correct.</p>
+
+			<p>
+				<a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-12C497F2-DB51-3740-972C-11ACD6501DAB">CHeartbeat</a> is an active object, derived from <a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html#GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F">CActive</a> (via <a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html#GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A">CTimer</a>). You should be familiar with <a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html#GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F">CActive</a> in order to understand <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-12C497F2-DB51-3740-972C-11ACD6501DAB">CHeartbeat</a> behaviour, but not necessarily with <a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html#GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A">CTimer</a>.</p>
+
+			<p>
+				<a href="GUID-6DE7027A-54C0-33F1-B184-7070B1A85709.html#GUID-6DE7027A-54C0-33F1-B184-7070B1A85709">MBeating</a> </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CHeartbeat<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer</a><ul class="derivation"><li class="derivation-depth-2 "><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive</a><ul class="derivation"><li class="derivation-depth-3 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-CBC87E5B-2052-37B3-BB55-CB60750B1199">~CHeartbeat</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html">CHeartbeat</a> *</td><td><a href="#GUID-CE22EACA-1B4D-3589-998E-7012BC019404">New</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html">CHeartbeat</a> *</td><td><a href="#GUID-7CE8E4AA-75BC-334B-BCC9-D71681657AE0">NewL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-7AF9B2AC-2A43-3DC2-B172-83E2FD3AD34C">Start</a>(<a href="GUID-76A2B8B4-CFF7-3094-833D-96D261EAC253.html">TTimerLockSpec</a>, <a href="GUID-6DE7027A-54C0-33F1-B184-7070B1A85709.html">MBeating</a> *)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-F08C8ABF-7DE0-3266-AC5B-6BD518553BCE">CHeartbeat</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-3F5F1480-FFFE-3276-97B0-D8DED04622E4">RunL</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::CActive(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Cancel()</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Deque()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::IsActive()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::IsAdded()const</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Priority()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::RunError(TInt)</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::SetActive()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::SetPriority(TInt)</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::~CActive()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::After(TTimeIntervalMicroSeconds32)</a></td></tr><tr><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::At(const TTime &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::AtUTC(const TTime &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::CTimer(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::ConstructL()</a></td></tr><tr><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::DoCancel()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::HighRes(TTimeIntervalMicroSeconds32)</a></td></tr><tr><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::Inactivity(TTimeIntervalSeconds)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::Lock(TTimerLockSpec)</a></td></tr><tr><td> </td><td><a href="GUID-5733DF34-5B54-3044-BBED-3BFECB7ACE7A.html">CTimer::~CTimer()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Enumerations</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive:TPriority</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-6DE7027A-54C0-33F1-B184-7070B1A85709.html">MBeating</a> *</td><td><a href="#GUID-2A006C59-945A-3C84-9BE4-A67451EA920C">iBeating</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-76A2B8B4-CFF7-3094-833D-96D261EAC253.html">TTimerLockSpec</a>
+				</td><td><a href="#GUID-1222083C-4E7F-33ED-8F21-7EA54098F678">iLock</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Attributes</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::iStatus</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-F08C8ABF-7DE0-3266-AC5B-6BD518553BCE"><a name="GUID-F08C8ABF-7DE0-3266-AC5B-6BD518553BCE"><!-- --></a>
+		<h2 class="topictitle2">CHeartbeat(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>CHeartbeat</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPriority</td><td>)</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Protected constructor with a priority. Use this constructor to set the priority of the active object.</p>
+
+				<p>Classes derived from <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-12C497F2-DB51-3740-972C-11ACD6501DAB">CHeartbeat</a> must define and provide a constructor through which the priority of the active object can be passed. Such a constructor can call CHeartbeat's constructor in its constructor initialisation list.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPriority</td><td>The priority of the timer.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CBC87E5B-2052-37B3-BB55-CB60750B1199"><a name="GUID-CBC87E5B-2052-37B3-BB55-CB60750B1199"><!-- --></a>
+		<h2 class="topictitle2">~CHeartbeat()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CHeartbeat</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Destructor.</p>
+
+				<p>Frees resources prior to destruction. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-CE22EACA-1B4D-3589-998E-7012BC019404"><a name="GUID-CE22EACA-1B4D-3589-998E-7012BC019404"><!-- --></a>
+		<h2 class="topictitle2">New(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html">CHeartbeat</a> *</td><td>New</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPriority</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Allocates and constructs a <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-12C497F2-DB51-3740-972C-11ACD6501DAB">CHeartbeat</a> object - non-leaving.</p>
+
+				<p>Specify a high priority so the callback function is scheduled as soon as possible after the timer events complete.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPriority</td><td>The priority of the active object. If timing is critical, it should be higher than that of all other active objects owned by the scheduler. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7CE8E4AA-75BC-334B-BCC9-D71681657AE0"><a name="GUID-7CE8E4AA-75BC-334B-BCC9-D71681657AE0"><!-- --></a>
+		<h2 class="topictitle2">NewL(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html">CHeartbeat</a> *</td><td>NewL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPriority</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Allocates and constructs a <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-12C497F2-DB51-3740-972C-11ACD6501DAB">CHeartbeat</a> object - leaving.</p>
+
+				<p>Specify a high priority so the callback function is scheduled as soon as possible after the timer events complete.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPriority</td><td>The priority of the active object. If timing is critical, it should be higher than that of all other active objects owned by the scheduler. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3F5F1480-FFFE-3276-97B0-D8DED04622E4"><a name="GUID-3F5F1480-FFFE-3276-97B0-D8DED04622E4"><!-- --></a>
+		<h2 class="topictitle2">RunL()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RunL</td><td>(</td><td>)</td><td>[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>Handles an active object's request completion event.</p>
+
+				<p>A derived class must provide an implementation to handle the completed request. If appropriate, it may issue another request.</p>
+
+				<p>The function is called by the active scheduler when a request completion event occurs, i.e. after the active scheduler's WaitForAnyRequest() function completes.</p>
+
+				<p>Before calling this active object's <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-3F5F1480-FFFE-3276-97B0-D8DED04622E4">RunL()</a> function, the active scheduler has:</p>
+
+				<p>1. decided that this is the highest priority active object with a completed request</p>
+
+				<p>2. marked this active object's request as complete (i.e. the request is no longer outstanding)</p>
+
+				<p>
+					<a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-3F5F1480-FFFE-3276-97B0-D8DED04622E4">RunL()</a> runs under a trap harness in the active scheduler. If it leaves, then the active scheduler calls <a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html#GUID-49FE8001-39DC-389F-851D-44C74BCE55D2">RunError()</a> to handle the leave.</p>
+
+				<p>Note that once the active scheduler's <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-7AF9B2AC-2A43-3DC2-B172-83E2FD3AD34C">Start()</a> function has been called, all user code is run under one of the program's active object's <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-3F5F1480-FFFE-3276-97B0-D8DED04622E4">RunL()</a> or <a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html#GUID-49FE8001-39DC-389F-851D-44C74BCE55D2">RunError()</a> functions.</p>
+
+				<p>
+					<a href="GUID-B4C76104-EA1B-3FC3-A31E-86A976598171.html#GUID-3281C85C-1A45-3049-B711-64CA8BFBC452">CActiveScheduler::Start</a> <a href="GUID-B4C76104-EA1B-3FC3-A31E-86A976598171.html#GUID-C081C83E-D7DB-37FC-B902-2E210FFE45F8">CActiveScheduler::Error</a> <a href="GUID-B4C76104-EA1B-3FC3-A31E-86A976598171.html#GUID-01A006BB-9973-31EF-9409-CA7F83E0B721">CActiveScheduler::WaitForAnyRequest</a> TRAPD </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-7AF9B2AC-2A43-3DC2-B172-83E2FD3AD34C"><a name="GUID-7AF9B2AC-2A43-3DC2-B172-83E2FD3AD34C"><!-- --></a>
+		<h2 class="topictitle2">Start(TTimerLockSpec, MBeating *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Start</td><td>(</td><td><a href="GUID-76A2B8B4-CFF7-3094-833D-96D261EAC253.html">TTimerLockSpec</a></td><td>aLock,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-6DE7027A-54C0-33F1-B184-7070B1A85709.html">MBeating</a> *</td><td>aBeating</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Starts generating heartbeat events. The event results in calls to the Beat() and Synchronize() functions specified by aBeating.</p>
+
+				<p>The first event is generated on the first fraction of a second corresponding to aLock that occurs after <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-7AF9B2AC-2A43-3DC2-B172-83E2FD3AD34C">Start()</a> has returned; subsequent events are generated regularly thereafter at one second intervals on the second fraction specified by aLock.</p>
+
+				<p>The aBeating mixin must be written by the user. Most of the time, its Beat() function is called which trivially updates the tick count. Occasionally, synchronisation is lost, and the Synchronize() function is called instead: this must find out from the system time how many ticks should have been counted, and update things accordingly.</p>
+
+				<p>Once started, heartbeat events are generated until the <a href="GUID-12C497F2-DB51-3740-972C-11ACD6501DAB.html#GUID-12C497F2-DB51-3740-972C-11ACD6501DAB">CHeartbeat</a> object is destroyed.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-76A2B8B4-CFF7-3094-833D-96D261EAC253.html">TTimerLockSpec</a> aLock</td><td>The fraction of a second at which the timer completes.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-6DE7027A-54C0-33F1-B184-7070B1A85709.html">MBeating</a> * aBeating</td><td>Provides the Beat() and Synchronize() functions.  </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-2A006C59-945A-3C84-9BE4-A67451EA920C"><a name="GUID-2A006C59-945A-3C84-9BE4-A67451EA920C"><!-- --></a>
+		<h2 class="topictitle2">
+					MBeating * iBeating</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-6DE7027A-54C0-33F1-B184-7070B1A85709.html">MBeating</a> *</td><td>iBeating</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-1222083C-4E7F-33ED-8F21-7EA54098F678"><a name="GUID-1222083C-4E7F-33ED-8F21-7EA54098F678"><!-- --></a>
+		<h2 class="topictitle2">
+					TTimerLockSpec
+				 iLock</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-76A2B8B4-CFF7-3094-833D-96D261EAC253.html">TTimerLockSpec</a>
+				</td><td>iLock</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

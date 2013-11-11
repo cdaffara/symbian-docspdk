@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to Implement a LBS Set Clock Plug-in DLL"/>
+<meta name="abstract" content="This topic describes how to implement a LBS set clock plug-in class."/>
+<meta name="description" content="This topic describes how to implement a LBS set clock plug-in class."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9B31F685-0E00-5614-AC6D-9B1FF00497D6.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-7F476137-5E7F-5288-9F4A-6C20F0A1AD9B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-55F5F029-6A00-5894-8892-90836DE4BA40.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-45980E0C-4DA4-5AC1-8721-490442DA7F3C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9B31F685-0E00-5614-AC6D-9B1FF00497D6.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A5510456-A5EB-59EC-B146-74D58A118875.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to Implement a LBS Set Clock Plug-in DLL</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4"><a name="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2402590 id2402946 id2402960 id2403132 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-7F476137-5E7F-5288-9F4A-6C20F0A1AD9B.html">Location Based Services (LBS) Guide</a> &gt; <a href="GUID-55F5F029-6A00-5894-8892-90836DE4BA40.html" title="The Location Management collection contains components to manage location requests and to interface with a network. It also contains several common core LBS libraries that are used by many components of the LBS subsystem.">Location Management</a> &gt; <a href="GUID-45980E0C-4DA4-5AC1-8721-490442DA7F3C.html" title="Location Admin is an LBS component that contains several common LBS libraries grouped for convenience in a single system component.">Location Admin</a> &gt; <a href="GUID-9B31F685-0E00-5614-AC6D-9B1FF00497D6.html">LBS System Clock Synchronisation</a> &gt; </div>
+<h1 class="topictitle1">How
+to Implement a LBS Set Clock Plug-in DLL</h1>
+<div><p>This topic describes how to implement a LBS set clock plug-in class. </p>
+
+<div class="section"><h2 class="sectiontitle">Required background</h2> <p><a href="GUID-A5510456-A5EB-59EC-B146-74D58A118875.html" title="This topic describes how LBS synchronises the system clock with time data received as part of the GPS signal.">LBS
+system clock adjustment overview</a> describes the set clock plug-in interface. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Introduction </h2> <p>LBS contains a default implementation
+of a set clock module that sets the system clock time by calling <a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-C197C9A7-EA05-3F24-9854-542E984C612D__GUID-145F52E6-2A29-3FF1-8AD1-7009BE0074D7"><span class="apiname">User::SetUTCTime()</span></a>. </p>
+ <p>To
+set the system clock by some other method, a licensee must create a set clock
+plug-in DLL and configure LBS to use it. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Implementing the plug-in class</h2> <p>Licensee set clock
+plug-in classes must derive from the abstract base class <samp class="codeph">CGPSSetClockBase</samp> shown
+in figure 1. </p>
+ <p> <samp class="codeph">CGPSSetClockBase</samp> is packaged in <span class="filepath">GPSSetClock.dll</span>.
+An implementation includes <span class="filepath">GPSSetClockBase.h</span> and links
+with <span class="filepath">GPSSetClock.lib</span>. </p>
+ <div class="fignone" id="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-CAE2F49D-6B7A-5F6F-A0BD-25A8475CDE32"><a name="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-CAE2F49D-6B7A-5F6F-A0BD-25A8475CDE32"><!-- --></a><span class="figcap">Figure 1.               Figure 1. CGPSSetClockBase is the base class for LBS
+set clock              plug-in classes.            </span>
+
+<img src="GUID-9BA295BC-627C-5B82-B669-F4F7B55E3F82_d0e451423_href.png"/>
+</div>
+ <p>To implement a set clock plug-in a developer must follow the steps
+in the next section. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Procedure</h2> <a name="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-657B1DA8-2A2B-583B-AADD-3E94AEE04751"><!-- --></a><ol id="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-657B1DA8-2A2B-583B-AADD-3E94AEE04751">
+<li id="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-D2515C64-C814-53BB-B161-DB571F4FE42B"><a name="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-D2515C64-C814-53BB-B161-DB571F4FE42B"><!-- --></a><p>Create a class derived
+from <samp class="codeph">CGPSSetClockBase</samp>: </p>
+ <pre class="codeblock" id="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-E4FE605C-689D-5A68-9FA4-E394DB366C5B"><a name="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-E4FE605C-689D-5A68-9FA4-E394DB366C5B"><!-- --></a>#include &lt;GPSSetClockBase.h&gt;
+
+class CGPSSetClockImpl : public CGPSSetClockBase
+{
+    
+    public:
+  static CGPSSetClockImpl* NewL();
+     
+  virtual TInt SetUTCTime(const TTime&amp; aTime);
+  virtual ~CGPSSetClockImpl();
+  
+ private:
+  CGPSSetClockImpl();
+  void ConstructL();
+     
+};
+</pre>
+ <p> <em>Note that the implementation class must only allocate
+memory on construction</em>, not when <a href="GUID-E5ED4ACA-5EC4-3AE2-862A-AC204DCA83B5.html#GUID-E5ED4ACA-5EC4-3AE2-862A-AC204DCA83B5__GUID-F6922F15-F4D3-31D9-86AD-B2809AA111A1"><span class="apiname">CGPSSetClockBase::SetUTCTime()</span></a> is
+called. This is because LBS must always be able to respond to emergency services
+location requests and so must never run out of memory at runtime. Memory for
+the set clock plug-in DLL must therefore be allocated on startup of the LBS
+subsystem when the ECom framework loads the plug-in DLL and calls the <samp class="codeph">NewL()</samp> function
+on the implementation class. </p>
+ <pre class="codeblock" id="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-4A865931-1C48-5396-BD5B-BF590CE031E9"><a name="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-4A865931-1C48-5396-BD5B-BF590CE031E9"><!-- --></a>CGPSSetClockImpl* CGPSSetClockImpl::NewL()
+{
+    // Allocate all required memory here or in ConstructL()
+ ...
+}
+</pre>
+ </li>
+
+<li id="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-AF16291B-786D-5E90-917C-ABE8F38D664D"><a name="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-AF16291B-786D-5E90-917C-ABE8F38D664D"><!-- --></a><p>Implement the virtual
+method <a href="GUID-E5ED4ACA-5EC4-3AE2-862A-AC204DCA83B5.html#GUID-E5ED4ACA-5EC4-3AE2-862A-AC204DCA83B5__GUID-F6922F15-F4D3-31D9-86AD-B2809AA111A1"><span class="apiname">CGPSSetClockBase::SetUTCTime()</span></a>. The implementation
+of this method is licensee specific and depends on the method that the licensee
+uses to set the system clock. </p>
+ <pre class="codeblock" id="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-F5B3CC27-D8C1-5302-8AFE-CF92A2FEFD82"><a name="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-F5B3CC27-D8C1-5302-8AFE-CF92A2FEFD82"><!-- --></a>
+TInt CGPSSetClockImpl::SetUTCTime(const TTime&amp; aTime)
+{
+    // Licensee method of setting the system clock
+ // Do not allocate any additional memory!
+    ...
+}
+</pre>
+ </li>
+
+<li id="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-25E5345F-9B40-55B2-9FE4-4EBF5549DB59"><a name="GUID-F0BDE1EC-5042-5328-9290-22BB2189F6B4__GUID-25E5345F-9B40-55B2-9FE4-4EBF5549DB59"><!-- --></a><p>Package the class as
+an ECom plug-in DLL. </p>
+ <p>See <a href="GUID-7B304B12-D597-550C-9EAA-AB8B2A6A8531.html">How
+to create implementation collections</a> for information on how to package
+an implementation class as an ECom plug-in DLL. </p>
+ <p> <strong>Note:</strong> LBS
+must be configured to use the licensee set clock plug-in DLL to set the system
+clock. <a href="GUID-23BBC1D8-B3A0-5148-A4F1-22ECF3043E4E.html" title="The documents in this section explain how to configure LBS by using the LBS Administration API or by using a repository initialisation file.">LBS administration</a> describes
+how to configure LBS system clock synchronisation settings using either the
+LBS Administration API or a repository initialisation file. </p>
+ </li>
+
+</ol>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-9B31F685-0E00-5614-AC6D-9B1FF00497D6.html">LBS System Clock Synchronisation</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-A5510456-A5EB-59EC-B146-74D58A118875.html" title="This topic describes how LBS synchronises the system clock with time data received as part of the GPS signal.">LBS System
+Clock Synchronisation Overview</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

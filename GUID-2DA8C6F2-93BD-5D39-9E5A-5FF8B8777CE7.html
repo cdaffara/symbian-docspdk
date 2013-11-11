@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to create a CryptoSPI plug-in"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5B112A34-1CBA-5B28-A941-27847FC1D30A.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5B112A34-1CBA-5B28-A941-27847FC1D30A.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to create a CryptoSPI plug-in</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2858558 id2859177 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html">OS Security Guide</a> &gt; <a href="GUID-5B112A34-1CBA-5B28-A941-27847FC1D30A.html">Cryptography overview</a> &gt; </div>
+<h1 class="topictitle1">How
+to create a CryptoSPI plug-in</h1>
+<div>
+<div class="section" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-B0B7D886-8759-4806-9BB2-CC378B3A37CC"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-B0B7D886-8759-4806-9BB2-CC378B3A37CC"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p><strong>Note</strong>:
+this document is intended for device manufacturers. </p>
+ <p>The purpose of
+a CryptoSPI plug-in is to implement one or more cryptographic algorithms. </p>
+ <p>Symbian
+provides a plug-in called <span class="filepath">softwarecrypto.dll</span> that implements
+all algorithms supported by the legacy (pre-Symbian^3) cryptography APIs.
+In Symbian^3, the legacy APIs have all been re-implemented to use this plug-in
+DLL. The source code for <span class="filepath">softwarecrypto.dll</span> is located
+under <span class="filepath">src/common/generic/security/cryptospi/source/softwarecrypto/</span>. </p>
+ <p>This
+is a summary of the steps involved in creating a plug-in, in no particular
+order. Details of each step are given in the rest of the document. </p>
+ <ul>
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-9E62C60F-AE68-57D4-939A-43631715D89C"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-9E62C60F-AE68-57D4-939A-43631715D89C"><!-- --></a><p> <a href="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7.html#GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-FFA64681-40E3-5DCE-A4EC-3EEC75A35D63">Create the MMP file</a>. </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-3726FB61-4B29-5AAF-AB57-A665DB1F6C0A"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-3726FB61-4B29-5AAF-AB57-A665DB1F6C0A"><!-- --></a><p> <a href="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7.html#GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-4B845864-BB8E-5207-8210-A3F608DF6E69">Define the characteristics of the algorithms.</a>  </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-66A983CE-8D31-5B73-A326-4601B24F4C6B"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-66A983CE-8D31-5B73-A326-4601B24F4C6B"><!-- --></a><p> <a href="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7.html#GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-CA441465-BDAB-5B7A-B75D-3B877EBE346F">Implement all or a subset of the functions defined in pluginentrydef.h</a>. </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-AE856A3F-122C-50AF-BBB4-5A6136CA64B5"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-AE856A3F-122C-50AF-BBB4-5A6136CA64B5"><!-- --></a><p> <a href="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7.html#GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-6ECA8DAB-37C4-5D83-9DBC-10641AA7B636">Implement the MPlugin-derived objects</a>. </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-FE96900F-EBF2-528A-B0C6-2BA32DB65C77"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-FE96900F-EBF2-528A-B0C6-2BA32DB65C77"><!-- --></a><p> <a href="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7.html#GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-661CE3E1-2FAE-58E1-BBB7-2F72AA8714A2">Update the ROM configuration file</a>. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-FFA64681-40E3-5DCE-A4EC-3EEC75A35D63"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-FFA64681-40E3-5DCE-A4EC-3EEC75A35D63"><!-- --></a><h2 class="sectiontitle">How to create
+the MMP file</h2> <p>See for instance <span class="filepath">src/common/generic/security/cryptospi/group/softwarecrypto.mmp</span>. </p>
+ <pre class="codeblock" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-842C71A7-45F4-5BFA-A088-BC4424741296"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-842C71A7-45F4-5BFA-A088-BC4424741296"><!-- --></a>TARGET softwarecrypto.dll
+TARGETTYPE dll
+
+UID        0x1000008d 0x102835C2
+VENDORID     0x70000001
+
+CAPABILITY    All
+
+DEFFILE        softwarecrypto.def
+
+USERINCLUDE        .
+USERINCLUDE        ..\inc 
+USERINCLUDE        ..\inc\spi
+SYSTEMINCLUDE    \epoc32\include
+SYSTEMINCLUDE    \epoc32\include\cryptospi
+
+SOURCEPATH    ..\source\softwarecrypto
+SOURCE pluginentry.cpp
+SOURCE md2impl.cpp md5impl.cpp sha1impl.cpp hmacimpl.cpp
+SOURCE 3desimpl.cpp desimpl.cpp rc2impl.cpp rijndaelimpl.cpp arc4impl.cpp symmetriccipherimpl.cpp
+SOURCE randomimpl.cpp dsasignerimpl.cpp dsaverifyimpl.cpp rsaimpl.cpp rsafunction.cpp
+SOURCE signerimpl.cpp verifierimpl.cpp asymmetriccipherimpl.cpp
+
+LIBRARY euser.lib cryptospi.lib
+
+// Depends on bigint and padding code
+LIBRARY cryptography.lib
+//Depends on random server for random number generation
+LIBRARY random.lib</pre>
+ <p>Key points: </p>
+ <ul>
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-0C322CF3-197E-5773-A4BB-CDF4943BE588"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-0C322CF3-197E-5773-A4BB-CDF4943BE588"><!-- --></a><p> <samp class="codeph">0x1000008d</samp> identifies
+the DLL as static (not polymorphic or an ECOM plug-in) and <samp class="codeph">0x102835C2</samp> is
+unique to this plug-in, allocated by Symbian Signed. </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-3D1094C3-A59C-58D0-9873-E5A24935785A"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-3D1094C3-A59C-58D0-9873-E5A24935785A"><!-- --></a><p>It is recommended that
+plug-ins have <samp class="codeph">ALL</samp> capabilities because this ensures that
+they can be loaded by client applications with any capabilities. </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-47338BE3-4A8C-5B17-BF37-184F996B0A2C"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-47338BE3-4A8C-5B17-BF37-184F996B0A2C"><!-- --></a><p>The project needs to
+link against <span class="filepath">cryptospi.lib</span>, the CryptoSPI library. </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-1A985A73-A776-5AE1-A4BD-4CC3227CE223"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-1A985A73-A776-5AE1-A4BD-4CC3227CE223"><!-- --></a><p>The plug-in needs to
+link against <span class="filepath">cryptography.lib</span> because big integers (<samp class="codeph">RInteger</samp>)
+are implemented in <span class="filepath">cryptography.dll</span>. </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-7DEC5079-A30D-5D16-B2EC-FA03605691ED"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-7DEC5079-A30D-5D16-B2EC-FA03605691ED"><!-- --></a><p> <samp class="codeph">SYSTEMINCLUDE
+\epoc32\include\cryptospi</samp> allows code to <samp class="codeph">#include</samp> the
+CryptoSPI header files, which are all exported to <span class="filepath">epoc32\include\cryptospi\</span>. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-4B845864-BB8E-5207-8210-A3F608DF6E69"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-4B845864-BB8E-5207-8210-A3F608DF6E69"><!-- --></a><h2 class="sectiontitle">How to define
+the algorithm's characteristics</h2> <p>All plug-ins must define the characteristics
+of their algorithm implementations that are fixed at compile time, as constant
+data. Some characteristics are common to all interface types, for instance
+the name and UID of the algorithm implemented, the name of the plug-in vendor,
+whether the plug-in uses hardware acceleration, and whether it is FIPS certified.
+Common characteristics are defined in <a href="GUID-48BB2346-6840-3A26-B43C-4DF70A322B17.html#GUID-48BB2346-6840-3A26-B43C-4DF70A322B17__GUID-38201D43-59F9-34A1-9940-14997613998F"><span class="apiname">CryptoSpi::TCommonCharacteristics</span></a>: </p>
+ <pre class="codeblock" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-EAEADE27-C875-5713-92DC-050460D22ED5"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-EAEADE27-C875-5713-92DC-050460D22ED5"><!-- --></a>class TCommonCharacteristics
+    {
+    public:
+      ...
+      TInt32 iInterfaceUID;
+      TInt32 iAlgorithmUID;
+      TInt32 iImplementationUID;
+      const TRomLitC16* iCreatorName;
+      TBool iIsFIPSApproved;
+      TBool iIsHardwareSupported;
+      TUint iMaxConcurrencySupported;
+      const TRomLitC16* iAlgorithmName;
+      TInt iLatency;
+      TInt iThroughput;
+      };
+</pre>
+ <p>Other characteristics are specific to a particular interface.
+For each interface type, a T class is defined as an aggregation of a <a href="GUID-BB5BF1BA-686D-30DC-AB50-9F1F58F78051.html"><span class="apiname">TCommonCharacteristics</span></a> object
+and some additional characteristics particular to that interface. For instance, <a href="GUID-F8CF1F2E-E6EC-3ABE-B18A-C4821115E0AD.html"><span class="apiname">THashCharacteristics</span></a> includes
+a block size, output size and operation mode. (The operation mode can be either <samp class="codeph">KHashMode</samp> or <samp class="codeph">KHmacMode</samp>,
+and indicates whether the hash algorithm is an HMAC or not.) </p>
+ <pre class="codeblock" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-628BA925-B38B-54F1-B69A-E630E50BB6BF"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-628BA925-B38B-54F1-B69A-E630E50BB6BF"><!-- --></a>class THashCharacteristics
+    {
+    public:
+      IMPORT_C TBool IsOperationModeSupported(TUid aOperationMode) const;        
+        
+    public:
+      TCommonCharacteristics cmn;
+      TUint iBlockSize;
+      TUint iOutputSize;
+      const TInt32* iSupportedOperationModes;
+      TUint iOperationModeNum;
+      };
+</pre>
+ <p>All the data types relating to characteristics are defined
+in <span class="filepath">plugincharacteristics.h</span>. </p>
+ <p>For an example, see <span class="filepath">src/common/generic/security/cryptospi/source/softwarecrypto/pluginconfig.h</span>. </p>
+ </div>
+
+<div class="section" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-CA441465-BDAB-5B7A-B75D-3B877EBE346F"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-CA441465-BDAB-5B7A-B75D-3B877EBE346F"><!-- --></a><h2 class="sectiontitle">How to implement
+the framework code</h2> <p>Plug-in modules must implement a defined set
+of functions exported at defined ordinals. The function prototypes and the
+ordinals (see <a href="GUID-8C054BE1-1F0D-362D-A8CD-B868488FAAE2.html"><span class="apiname">TPluginEntryOrdinal</span></a>) are defined in <span class="filepath">pluginentrydef.h</span>.
+When a client requests an algorithm, these functions are used by CryptoSPI
+to query and instantiate algorithm implementations. The simplest way to ensure
+that functions are assigned the correct ordinal is to copy the <span class="filepath">softwarecryptoU.def</span> exports
+file, which can be found in the <span class="filepath">EABI</span> and <span class="filepath">BWINS</span> directories
+in the CryptoSPI source code. </p>
+ <p>Minimally, the plug-in DLL must implement
+the function exported at ordinal 1, whose prototype is: </p>
+ <pre class="codeblock" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-A6D535EF-5657-5195-A375-5465B588427E"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-A6D535EF-5657-5195-A375-5465B588427E"><!-- --></a>typedef const TCharacteristics** (*EnumerateCharacteristicsFunc)(TUid, TInt&amp;);</pre>
+ <p>and at least one of the algorithm factory functions. See for example
+class <samp class="codeph">CCryptoPluginEntry</samp> (<span class="filepath">pluginentry.h</span> / <span class="filepath">pluginentry.cpp</span>). </p>
+ <p>If
+the plug-in DLL does not support a particular algorithm, the <samp class="codeph">ABSENT</samp> keyword
+should be used in its <span class="filepath">.def</span> file to ensure any subsequent
+exports are at the correct ordinals. </p>
+ <p><strong>Querying the characteristics
+of plug-ins</strong> </p>
+ <p>CryptoSPI builds up a list of the characteristics
+of all the plug-in DLLs by calling the function exported at ordinal 1 (<samp class="codeph">EEnumerateCharacteristicsOrdinal</samp>)
+for each DLL and for each interface type. Here is an example implementation: </p>
+ <pre class="codeblock" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-02B7F687-19A5-527D-922E-09A32FC728C1"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-02B7F687-19A5-527D-922E-09A32FC728C1"><!-- --></a>EXPORT_C const TCharacteristics** CCryptoPluginEntry::Enumerate(TUid aInterface, TInt&amp; aNumPlugins)
+    {
+    const TCharacteristics** ptr(0);
+    switch (aInterface.iUid)
+        {
+    case KHashInterface:
+        {
+        aNumPlugins=sizeof(KHashCharacteristics)/sizeof(THashCharacteristics*);
+        ptr = (const TCharacteristics**) &amp;KHashCharacteristics[0];
+        }
+        break;
+
+    case KRandomInterface:
+        {
+        aNumPlugins=sizeof(KRandomCharacteristics)/sizeof(TRandomCharacteristics*);
+        ptr= (const TCharacteristics**) &amp;KRandomCharacteristics[0];
+        }
+        break;
+  ...
+  }
+ return ptr;
+ }
+</pre>
+ <p>Key points: </p>
+ <ul>
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-CBAC6B6F-30CC-5B57-BF58-A4B14C94A04A"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-CBAC6B6F-30CC-5B57-BF58-A4B14C94A04A"><!-- --></a><p>Every plug-in must implement
+this function. </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-E263363A-4137-5D7E-8988-4B25E492D39F"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-E263363A-4137-5D7E-8988-4B25E492D39F"><!-- --></a><p> <samp class="codeph">TUid aInterface</samp> is
+the interface UID, as defined in <samp class="codeph">CryptoSpi::KInterfacesUids</samp>. </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-C7A913A0-DD63-599F-8A34-EA2D7466B050"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-C7A913A0-DD63-599F-8A34-EA2D7466B050"><!-- --></a><p> <samp class="codeph">TInt&amp; aNumPlugins</samp> should
+be set to the number of algorithms of that interface type implemented by the
+plug-in. </p>
+ </li>
+
+</ul>
+ <p><strong>Extended characteristics</strong> </p>
+ <p>Extended characteristics
+are those which can only be determined at runtime. They are retrieved on demand
+by CryptoSPI or clients can call the plug-in's implementation of <samp class="codeph">CryptoSpi::CCryptoBase::GetExtendedCharacteristicsL()</samp>. </p>
+ <p>The
+function exported at ordinal 2 has this prototype: </p>
+ <pre class="codeblock" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-5A10F3D2-DAE9-55F6-BF1A-A0E001637ACE"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-5A10F3D2-DAE9-55F6-BF1A-A0E001637ACE"><!-- --></a>typedef void (*GetExtendedCharacteristicsFuncL)(TUid, CExtendedCharacteristics*&amp;);</pre>
+ <p>Symbian defines 2 extended characteristics: </p>
+ <ul>
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-DFCA6450-2121-5257-9F26-A11FD8995E5D"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-DFCA6450-2121-5257-9F26-A11FD8995E5D"><!-- --></a><p> <samp class="codeph">TInt iAvailableConcurrency;</samp>  </p>
+ <p>The
+number of available resources for processing the operation for the requested
+plug-in. This could be zero even if no operations are in progress; for instance
+cryptographic acceleration hardware is turned off to save battery power. </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-FEA9BD5F-B264-5316-9B15-FD5E0E51CAC2"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-FEA9BD5F-B264-5316-9B15-FD5E0E51CAC2"><!-- --></a><p> <samp class="codeph">TBool iExclusiveUse;</samp>  </p>
+ <p>Whether
+it is possible for the application to reserve exclusive use of hardware resources
+used by the plug-in. </p>
+ </li>
+
+</ul>
+ <p>Additional plug-in specific characteristics may be defined. The plug-in
+creator needs to define UIDs for each of these and specify the UID when calling <samp class="codeph">CryptoSpi::CExtendedCharacteristics::AddCharacteristicL()</samp>. </p>
+ <p><strong>Algorithm instantiation</strong> </p>
+ <p>A plug-in must implement
+one or more factory methods for instantiating algorithms. The functions exported
+at ordinals 3 to 20 have the following declarations. (Note that symmetric
+key generation is not yet implemented by Symbian's software crypto plug-in,
+so the ordinals <samp class="codeph">ECreateSymmetricKeyGeneratorOrdinal</samp> and <samp class="codeph">ECreateAsyncSymmetricKeyGeneratorOrdinal</samp> have
+no corresponding declarations). </p>
+ <pre class="codeblock" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-A6330276-FB1A-5C14-A2BF-5BBCD452614B"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-A6330276-FB1A-5C14-A2BF-5BBCD452614B"><!-- --></a>typedef void (*CreateRandomFuncL)(MRandom*&amp;, TUid, const CCryptoParams*);
+typedef void (*CreateHashFuncL)(MHash*&amp;, TUid, TUid, const CKey*, const CCryptoParams*);
+typedef void (*CreateSymmetricCipherFuncL)(MSymmetricCipher*&amp;, TUid, const CKey&amp;, TUid, TUid, TUid, const CCryptoParams*);
+typedef void (*CreateAsymmetricCipherFuncL)(MAsymmetricCipher*&amp;, TUid, const CKey&amp;, TUid, TUid, const CCryptoParams*);
+typedef void (*CreateSignerFuncL)(MSigner*&amp;, TUid, const CKey&amp;, TUid, const CCryptoParams*);
+typedef void (*CreateVerifierFuncL)(MVerifier*&amp;, TUid, const CKey&amp;, TUid, const CCryptoParams*);
+typedef void (*CreateKeyAgreementFuncL)(MKeyAgreement*&amp;, TUid, const CKey&amp;, const CCryptoParams*);
+typedef void (*CreateKeyPairGeneratorFuncL)(MKeyPairGenerator*&amp;, TUid, const CCryptoParams*);
+typedef void (*CreateAsyncRandomFuncL)(MAsyncRandom*&amp;, TUid, const CCryptoParams*);
+typedef void (*CreateAsyncHashFuncL)(MAsyncHash*&amp;, TUid, TUid, const CKey*, const CCryptoParams*);
+typedef void (*CreateAsyncSymmetricCipherFuncL)(MAsyncSymmetricCipher*&amp;, TUid, const CKey&amp;, TUid, TUid, TUid, const CCryptoParams*);
+typedef void (*CreateAsyncAsymmetricCipherFuncL)(MAsyncAsymmetricCipher*&amp;, TUid, const CKey&amp;, TUid, TUid, const CCryptoParams*);
+typedef void (*CreateAsyncSignerFuncL)(MAsyncSigner*&amp;, TUid, const CKey&amp;, TUid, const CCryptoParams*);
+typedef void (*CreateAsyncVerifierFuncL)(MAsyncVerifier*&amp;, TUid, const CKey&amp;, TUid, const CCryptoParams*);
+typedef void (*CreateAsyncKeyAgreementFuncL)(MAsyncKeyAgreement*&amp;, TUid, const CKey&amp;, const CCryptoParams*);
+typedef void (*CreateAsyncKeyPairGeneratorFuncL)(MAsyncKeyPairGenerator*&amp;, TUid, const CCryptoParams*);</pre>
+ <p>Clients
+instantiate algorithms by calling one of the CryptoSPI factory methods, for
+instance <a href="GUID-FF3CFE33-C90A-328C-BF80-0A03B821AE1C.html#GUID-FF3CFE33-C90A-328C-BF80-0A03B821AE1C__GUID-D91B2099-C9F4-3B7C-843F-39A654DC0555"><span class="apiname">CHashFactory::CreateHashL()</span></a>. All CryptoSPI factory
+methods take a <a href="GUID-C3704390-D2DD-3DFF-A1E3-433C5030044B.html"><span class="apiname">CCryptoParams</span></a> parameter. This class allows
+clients to supply arbitrary, algorithm-specific data to plug-ins, for instance
+the effective key length for RC2, or the number of bytes to discard from the
+keystream for ARC4. </p>
+ <p>The data type of each parameter can be integer
+(<samp class="codeph">TInt</samp>), big integer (<samp class="codeph">RInteger</samp>), or 8/16
+bit descriptor. Additional data types could be added in future, by extending
+the <samp class="codeph">TParamType</samp> enum in <samp class="codeph">CCryptoParam</samp> and
+deriving a class from <samp class="codeph">CCryptoParam</samp>, but this is unlikely
+to be necessary. </p>
+ </div>
+
+<div class="section" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-6ECA8DAB-37C4-5D83-9DBC-10641AA7B636"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-6ECA8DAB-37C4-5D83-9DBC-10641AA7B636"><!-- --></a><h2 class="sectiontitle">How to implement
+the MPlugin-derived class</h2> <p>All concrete algorithm classes are derived
+from one of the abstract base classes listed below, which are in turn all
+derived from <samp class="codeph">MPlugin</samp>. </p>
+ <ul>
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-83E757D2-E70D-51D3-BF46-53A2F8A8A3E9"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-83E757D2-E70D-51D3-BF46-53A2F8A8A3E9"><!-- --></a><p>Random (<a href="GUID-53D7EA29-2736-3B19-AA69-915FAD2A7130.html"><span class="apiname">MRandom</span></a> /<a href="GUID-A19A4B6F-CCF2-3167-B757-F8308B7B7C26.html"><span class="apiname">MAsyncRandom</span></a>) </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-ABDD0216-BA34-5DD1-8D07-064B3F1EAB02"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-ABDD0216-BA34-5DD1-8D07-064B3F1EAB02"><!-- --></a><p>Hash (<a href="GUID-6896A7F0-AE37-369E-AB54-F069A7DE3FDB.html"><span class="apiname">MHash</span></a> /<a href="GUID-A4B3807A-82D1-39D3-8D00-D2A1D41EFEA5.html"><span class="apiname">MAsyncHash</span></a>) </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-5611F951-0471-5A54-BCFE-4DBDB9FF7B1A"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-5611F951-0471-5A54-BCFE-4DBDB9FF7B1A"><!-- --></a><p>Symmetric cipher (<a href="GUID-733DAE85-68B3-3211-808A-4FBD9C1E1F05.html"><span class="apiname">MSymmetricCipher</span></a> /<a href="GUID-545AE46E-8CF1-3470-8F10-5FCB6D79859E.html"><span class="apiname">MAsyncSymmetricCipher</span></a>) </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-C87B0A48-C66F-5E5E-BEA4-BB3F187AA59D"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-C87B0A48-C66F-5E5E-BEA4-BB3F187AA59D"><!-- --></a><p>Asymmetric cipher (<a href="GUID-C044BB6D-6E78-3698-8710-89FFB7A6CDFD.html"><span class="apiname">MAsymmetricCipher</span></a> /<a href="GUID-EE7FCCA6-D86F-30E2-BB6A-862BAE111344.html"><span class="apiname">MAsyncAsymmetricCipher</span></a>) </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-EE95A2C8-4F9C-5052-8709-AD7C1D2A5E6F"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-EE95A2C8-4F9C-5052-8709-AD7C1D2A5E6F"><!-- --></a><p>Signer (<a href="GUID-59F2E24A-5F48-383F-95C6-88A5B432E121.html"><span class="apiname">MSigner</span></a> /<a href="GUID-B0EC8744-B525-3599-B1B4-00E4A9C62C7A.html"><span class="apiname">MAsyncSigner</span></a>) </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-717313C9-B2A3-5E78-8A61-A4C3093627BF"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-717313C9-B2A3-5E78-8A61-A4C3093627BF"><!-- --></a><p>Verifier (<a href="GUID-98E08EBD-3758-39D6-A2B1-EC42F66D2F84.html"><span class="apiname">MVerifier</span></a> /<a href="GUID-BCCA1F97-B568-3B75-9974-5E70F1ADDEFA.html"><span class="apiname">MAsyncVerifier</span></a>) </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-8EA174F1-16A5-5364-9672-5AF6644EC19A"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-8EA174F1-16A5-5364-9672-5AF6644EC19A"><!-- --></a><p>Key agreement (<a href="GUID-A47EF879-B23E-339A-9EBC-3622668B83FB.html"><span class="apiname">MKeyAgreement</span></a> /<a href="GUID-E70B8C8A-384F-39F0-8845-4CE53E86B286.html"><span class="apiname">MAsyncKeyAgreement</span></a>) </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-3988580D-047C-5492-9493-0A5365FEFB84"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-3988580D-047C-5492-9493-0A5365FEFB84"><!-- --></a><p>Key pair generator (<a href="GUID-238EBB3C-0ECC-38A5-848E-28716B75931B.html"><span class="apiname">MKeyPairGenerator</span></a> /<a href="GUID-5B2CE80F-536F-3B75-9FD9-3C0C98EE3D09.html"><span class="apiname">MAsyncKeyPairGenerator</span></a>) </p>
+ </li>
+
+<li id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-05483361-4043-5FC4-A134-AAEA2E31E872"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-05483361-4043-5FC4-A134-AAEA2E31E872"><!-- --></a><p>Key generator (<a href="GUID-1492AF86-FD98-3219-B46B-543DD7066801.html"><span class="apiname">MSymmetricKeyGenerator</span></a> /<a href="GUID-A3F12E4C-51D7-3007-A53E-EC53FAEA3D9C.html"><span class="apiname">MAsyncSymmetricKeyGenerator</span></a>) </p>
+ </li>
+
+</ul>
+ <p> <a href="GUID-6BD89347-671F-3518-9777-55801A090C79.html"><span class="apiname"/></a><a href="GUID-47357E35-5781-3093-80FD-052EC7F0DF3F.html"><span class="apiname">MPlugin</span></a> (<span class="filepath">cryptoplugin.h</span>)
+declares the following pure virtual functions: </p>
+ <pre class="codeblock" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-6CDA7919-C31E-50EB-8D67-7A142297DBAF"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-6CDA7919-C31E-50EB-8D67-7A142297DBAF"><!-- --></a>virtual void Close() = 0;
+virtual void Reset() = 0;
+virtual void GetCharacteristicsL(const TCharacteristics*&amp; aPluginCharacteristics) = 0;
+virtual const CExtendedCharacteristics&amp; GetExtendedCharacteristicsL() = 0;
+virtual TAny* GetExtension(TUid aExtensionId) = 0;</pre>
+ <p>For example,
+the random number generator plug-in implemented in <span class="filepath">softwarecrypto.dll</span> implements
+these functions as follows: </p>
+ <pre class="codeblock" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-A18C6FDA-4E3C-570E-B700-7680F91D397D"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-A18C6FDA-4E3C-570E-B700-7680F91D397D"><!-- --></a>void CRandomImpl::Close()
+    {
+    delete this;
+    }
+
+void CRandomImpl::Reset()
+    { //Not required
+    }
+
+const CExtendedCharacteristics* CRandomImpl::GetExtendedCharacteristicsL()
+ // All Symbian software plug-ins have unlimited concurrency and cannot be reserved
+    // for exclusive use 
+    {
+    return CExtendedCharacteristics::NewL(KMaxTInt, EFalse);
+    }
+
+//Get the plug-in characteristics (defined at compile time)
+void CRandomImpl::GetCharacteristicsL(const TCharacteristics*&amp; aPluginCharacteristics)
+    {
+ //Find out how many algorithms are implemented by the plug-in
+    TInt randomNum = sizeof(KRandomCharacteristics)/sizeof(TRandomCharacteristics*);
+    for (TInt i = 0; i &lt; randomNum; i++)
+        {
+  //Compare implementation UIDs
+  //ImplementationUid() is a helper function that returns KCryptoPluginRandomUid
+        if (KRandomCharacteristics[i]-&gt;cmn.iImplementationUID == ImplementationUid().iUid)
+            {
+            aPluginCharacteristics = KRandomCharacteristics[i];
+            break;
+            }
+        }
+    }
+
+TAny* CRandomImpl::GetExtension(TUid /*aExtensionId*/)
+    {
+    return NULL;
+    }</pre>
+ <p>The main purpose of <samp class="codeph">MPlugin::Reset()</samp> is
+to reset the hardware, so is usually not relevant to a software-only implementation. <samp class="codeph">GetExtension()</samp> is
+intended for internal use, and may be removed from the API in future. </p>
+ <p>These
+functions are called through the client API to CryptoSPI, in other words <samp class="codeph">CCryptoBase</samp> and
+the various classes derived from it, in this case, <samp class="codeph">CRandom</samp>.
+For instance when the client calls <a href="GUID-ED01CE2C-30E8-344F-B3C9-895FA576D33F.html#GUID-ED01CE2C-30E8-344F-B3C9-895FA576D33F__GUID-8D93089E-1F97-376B-8CC0-08E0E34158F4"><span class="apiname">CCryptoBase::GetCharacteristicsL()</span></a>,
+this calls <samp class="codeph">GetCharacteristicsL()</samp> in the plug-in, or calling <a href="GUID-CD88247C-561B-3AB4-BF77-AFD322F860A4.html#GUID-CD88247C-561B-3AB4-BF77-AFD322F860A4__GUID-F251BF16-E212-3595-9FE8-C7BC754972E1"><span class="apiname">CRandom::GenerateRandomBytesL()</span></a>,
+calls <samp class="codeph">GenerateRandomBytesL()</samp> in the plug-in. </p>
+ </div>
+
+<div class="section" id="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-661CE3E1-2FAE-58E1-BBB7-2F72AA8714A2"><a name="GUID-2DA8C6F2-93BD-5D39-9E5A-5FF8B8777CE7__GUID-661CE3E1-2FAE-58E1-BBB7-2F72AA8714A2"><!-- --></a><h2 class="sectiontitle">The configuration
+file</h2> <p>The set of available plug-ins is listed in the configuration
+file <span class="filepath">z:\resource\cryptospi\plug-ins.txt</span>. Each line in
+the file contains the filename of a single plug-in DLL, without the path.
+The path is not required because the DLLs are assumed to be located in <span class="filepath">z:\sys\bin</span>.
+The configuration file must be on the <span class="filepath">Z:</span> drive and therefore
+additional plug-ins cannot be installed post-manufacture. Depending on the
+plug-in selector in use, plug-ins may be loaded individually, as required,
+or all at once when CryptoSPI is initialized. The default selector implemented
+by Symbian (<samp class="codeph">CLegacySelector</samp>) loads plug-in DLLs as required. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-5B112A34-1CBA-5B28-A941-27847FC1D30A.html">Cryptography overview</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

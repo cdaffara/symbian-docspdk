@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Kernel-side Implementation"/>
+<meta name="abstract" content="This document describes kernel-side implementation of requests to device drivers."/>
+<meta name="description" content="This document describes kernel-side implementation of requests to device drivers."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-79620372-BADC-4826-A3AC-7FDBCFF98DA9.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-79620372-BADC-4826-A3AC-7FDBCFF98DA9.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-FD8634B8-E522-4AC4-8129-ED807A7754A2"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Kernel-side Implementation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-FD8634B8-E522-4AC4-8129-ED807A7754A2"><a name="GUID-FD8634B8-E522-4AC4-8129-ED807A7754A2"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388009 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-79620372-BADC-4826-A3AC-7FDBCFF98DA9.html" title="This section describes the Device Driver concepts.">Device Driver Concepts</a> &gt; </div>
+<h1 class="topictitle1">Kernel-side
+Implementation</h1>
+<div><p>This document describes kernel-side implementation of requests
+to device drivers.</p>
+
+<p>Requests from the user-side are initially handled by the driver
+in the context of the client user-side thread. All requests are passed to
+the "gateway" function: <a href="GUID-E7550422-5121-3393-A85E-BB797969CD2A.html#GUID-E7550422-5121-3393-A85E-BB797969CD2A__GUID-FD4DA73F-45E7-37BE-9380-1D8ED36114F7"><span class="apiname">DLogicalChannelBase::Request()</span></a>.
+This is defined as pure virtual in <samp class="codeph">DLogicalChannelBase</samp>, and
+needs to be implemented in a derived class as part of your logical channel
+implementation. </p>
+
+<div class="fignone" id="GUID-FD8634B8-E522-4AC4-8129-ED807A7754A2__GUID-0DEEF003-53B6-5892-8FF2-6684BC424E27"><a name="GUID-FD8634B8-E522-4AC4-8129-ED807A7754A2__GUID-0DEEF003-53B6-5892-8FF2-6684BC424E27"><!-- --></a><span class="figcap">Figure 1.                  Device driver logical channel communication      
+        </span>
+
+<img src="GUID-4A2E212E-BC1B-5965-9A62-6309CC7CAAAB_d0e293008_href.png"/>
+</div>
+
+<p>There are two options for implementing this: </p>
+
+<a name="GUID-FD8634B8-E522-4AC4-8129-ED807A7754A2__GUID-F9FDC221-82F8-569E-B12A-969194137E24"><!-- --></a><ol id="GUID-FD8634B8-E522-4AC4-8129-ED807A7754A2__GUID-F9FDC221-82F8-569E-B12A-969194137E24">
+<li id="GUID-FD8634B8-E522-4AC4-8129-ED807A7754A2__GUID-A58B2511-6058-5DE6-8407-0ED4EB7A0112"><a name="GUID-FD8634B8-E522-4AC4-8129-ED807A7754A2__GUID-A58B2511-6058-5DE6-8407-0ED4EB7A0112"><!-- --></a><p>Use the ready-made framework
+provided by the <a href="GUID-A3CC1D95-4681-3349-A67C-F113A614041D.html"><span class="apiname">DLogicalChannel</span></a> class, which handles a
+request in the context of a single kernel-side thread. This framework uses
+the kernel-side messaging mechanism for queuing requests on a DFC that runs
+in that single kernel-side thread. </p>
+ <p>In practice, this model makes the
+writing of device drivers easier because the same kernel thread can be used
+to process requests from (potentially multiple) user-side clients and DFCs,
+thus in effect serialising access to the device driver, and eliminating thread-related
+issues, such as the need to know about mutexes, pre-emption, etc. Several
+drivers can use the same request/DFC kernel thread to reduce resource usage. </p>
+ </li>
+
+<li id="GUID-FD8634B8-E522-4AC4-8129-ED807A7754A2__GUID-DE277962-5BDC-5CD7-9868-65FA576E11AD"><a name="GUID-FD8634B8-E522-4AC4-8129-ED807A7754A2__GUID-DE277962-5BDC-5CD7-9868-65FA576E11AD"><!-- --></a><p>Derive your own logical
+channel class from <a href="GUID-E7550422-5121-3393-A85E-BB797969CD2A.html"><span class="apiname">DLogicalChannelBase</span></a> to handle requests.
+This allows you to build your own thread model for running DFCs to handle
+requests and to handle request completion. This requires that you manage inter-thread
+conflicts. However, your design may give you the chance to do some optimisation
+by handling some requests in the context of the user-side thread, minimising
+context-switching overhead. </p>
+ </li>
+
+</ol>
+
+<p>Option 1 lets you get a new driver up and running quickly. Option 2 gives
+you greater flexibility if the requirements of your driver demand it. </p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-79620372-BADC-4826-A3AC-7FDBCFF98DA9.html" title="This section describes the Device Driver concepts.">Device Driver Concepts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

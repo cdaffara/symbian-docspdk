@@ -1,0 +1,978 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to Configure Multithreaded C32 Serial Comms: Tutorial"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9B83CDD4-FC94-51A0-AC67-CD04BCAFEF08.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9B83CDD4-FC94-51A0-AC67-CD04BCAFEF08.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to Configure Multithreaded C32 Serial Comms: Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2682451 id2518666 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html" title="The Communications Framework is the base for all communications, network and telephony services that Symbian platform provides. The Communications Framework manages the communications threads and the flow of information between those threads. The Framework also manages and stores the communications related settings.">Communications Framework Guide</a> &gt; <a href="GUID-9B83CDD4-FC94-51A0-AC67-CD04BCAFEF08.html">Serial Communications Server</a> &gt; </div>
+<h1 class="topictitle1">How
+to Configure Multithreaded C32 Serial Comms: Tutorial</h1>
+<div><div><div>This page describes how a device manufacturer can configure
+the grouping of CSYs into various threads. </div>
+ <p>The Serial Server
+on Symbian platform supports the use of multiple threads in order to separate
+the serial plug-in CSY modules. The first section provides a brief migration
+guide, while the subsequent sections provide more detail on the specific parameters
+and behaviour, and other advanced information. </p>
+ </div>
+
+
+<div class="section" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-4109EB99-A9A8-597B-BF42-89CF6AD7DB73"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-4109EB99-A9A8-597B-BF42-89CF6AD7DB73"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p>The
+Comms Configurator (<samp class="codeph">c32start</samp>) uses a configuration Comms
+Module Ini file (.CMI) to load Comms Provider Modules (CPMs) into the Rootserver
+process. Each CMI file represents exactly one CPM loaded inside Rootserver.
+CPMs are the name given to threads running inside the Rootserver process,
+since they extend the thread concept by adding a wrapper of extra information
+and functionality used to manage the threads. </p>
+ <p>The Comms Configurator
+searches for the CMI files in the <samp class="codeph">\private\101f7988</samp> folders
+by searching from Y: to A: and then Z:. The folder <span class="filepath">101f7988</span> is
+the secure area for the Comms Configurator process and its name derives from
+the UID for the process - as specified by the requirements for <a href="GUID-1E7AA950-06C2-599C-BCC2-12BB99306E1B.html#GUID-1E7AA950-06C2-599C-BCC2-12BB99306E1B__GUID-03558B99-2B98-579C-AD59-CF66BD98F69F">Data Caging</a>. If the files are found in the ROM (usually Z:) they are <em>not</em> then
+copied to any other drive but only read in-place. Thus, a later configuration
+of CMI files installed on another media/drive other than the ROM drive can
+be used to override the original ROM configuration. The Configurator reads
+these files only once during boot so any further changes will not take effect
+until the next system boot. </p>
+ </div>
+
+<div class="section" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-B742D7C6-ACA3-40CD-8D2D-B8E8AB4F1885"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-B742D7C6-ACA3-40CD-8D2D-B8E8AB4F1885"><!-- --></a><h2 class="sectiontitle">Quick Migration Guide</h2> <p>This section provides a brief
+description of how to migrate a configuration from the old single-threaded
+C32 Serial Server to the new multi-threaded server. As there are numerous
+potential configurations with the multi-threaded server, this migration guide
+should be used as a first step to getting any old settings migrated over and
+thus allowing the server to continue working after an upgrade of Symbian platform. </p>
+ <p>Once
+migrated, the other sections in this article provide further useful information
+regarding configuring CMI files for better performance in line with the requirements
+of the particular device. </p>
+ <p>The quick migration involves two steps: </p>
+ <ul>
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-07F882AE-797F-5326-A4C3-DC596F3BC888"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-07F882AE-797F-5326-A4C3-DC596F3BC888"><!-- --></a><p>apply any special configuration
+used with the previous single-threaded C32 Serial Server to the new configuration
+files supplied with the multi-threaded server </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-423E4236-73EA-51CA-B9E3-03761078DF86"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-423E4236-73EA-51CA-B9E3-03761078DF86"><!-- --></a><p>adjust the default set
+of configuration files supplied with the multi-threaded server to suit the
+particular serial plug-ins in use </p>
+ </li>
+
+</ul>
+ <p>These two steps are explained in more detail in the following sections. </p>
+ <p><strong>Migrating settings</strong> </p>
+ <p>The original single-threaded Serial Server
+was controlled by a single configuration file called (by default) <span class="filepath">c32.cmi</span>,
+located in <span class="filepath">\private\101f7988</span>. A default version of this
+file shipped with Symbian platform, although a device manufacturer could change
+this file. The default version of this file was: </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-897E8787-4E34-5D80-B04F-85E94EE5B570"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-897E8787-4E34-5D80-B04F-85E94EE5B570"><!-- --></a>## Comms Configurator config file for the C32 server
+
+[Loader]
+Name=CCommServer
+FileName=c32.dll
+ThreadFunctionOrdinal=87
+IsServer=1
+IsSticky=1
+Priority=EPriorityMuchMore
+StackSize=8192
+ScaledStartupState=0x1085
+HeapOption=EDefaultHeap
+MinHeapSize=256
+MaxHeapSize=524288
+SystemCritical=1</pre>
+ <p>The multi-threaded C32 Serial Server (C32MT)
+ships by default with five configuration files, since by default it supports
+five different threads. These configuration files are: </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-AE8071D9-1ECD-58EF-AC33-713B42EDB7F8"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-AE8071D9-1ECD-58EF-AC33-713B42EDB7F8"><!-- --></a>\private\101f7988\c32.cmi
+\private\101f7988\c32_first.cmi
+\private\101f7988\c32_second.cmi
+\private\101f7988\c32_third.cmi
+\private\101f7988\c32_fourth.cmi</pre>
+ <p>They are an extended version
+of the original CMI file that shipped with the single-threaded C32. For example,
+the first of these configuration files (c32.cmi) looks like: </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-6B6FF51B-A9CC-5D9D-99B0-A98BA1634FA2"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-6B6FF51B-A9CC-5D9D-99B0-A98BA1634FA2"><!-- --></a># c32_main - Comms Configurator config file forming part of the Default C32 server configuration
+
+[Loader]
+Name=C32_Main
+FileName=c32.dll
+ThreadFunctionOrdinal=87
+IsSticky=0
+IsServer=1
+Priority=EPriorityMuchMore
+StackSize=16384
+ScaledStartupState=0x1085
+HeapOption=ENewHeap
+MinHeapSize=256
+MaxHeapSize=524288
+SystemCritical=1
+Group=C32SerComms
+OnDemand=0
+# Don't check heap if shutting down with EImmediate (KCF_ModuleImmediateNoCheck)
+ControlFlags=4
+[IniData]
+Role=Dealer
+WorkerId=0</pre>
+ <p>The first step in migrating is to ensure that any
+unique configuration used with the old server is migrated across to the new
+server. The particular parameters that should be considered in this procedure
+are: </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-8E2C24C0-8770-57CD-8064-5D85F4096DAE"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-8E2C24C0-8770-57CD-8064-5D85F4096DAE"><!-- --></a>Priority
+StackSize
+ScaledStartupState
+MinHeapSize
+MaxHeapSize
+SystemCritical</pre>
+ <p>These parameters would need migrating to each
+of the five new CMI files. The following notes relate to deliberate changes
+to parameter values between the single and multi-threaded servers: </p>
+ <dl>
+
+<dt class="dlterm"><strong>HeapOption</strong> </dt>
+
+<dd><p>The value of <samp class="codeph">HeapOption</samp> is different between the old
+and new files - this was made to aid in debugging the new multi-threaded server
+by separating its memory from the rest of the comms system. It can be safely
+changed back if desired. </p>
+ </dd>
+
+
+
+<dt class="dlterm"><strong>IsSticky</strong> </dt>
+
+<dd><p>The value of <samp class="codeph">IsSticky</samp> has changed from 1 to 0. The <samp class="codeph">IsSticky</samp> parameter
+is normally unused in a production system for the Serial Server since the
+server runs as a <samp class="codeph">SystemCritical</samp> thread and thus cannot be
+shutdown and, if it panics, the phone would reboot. The change was made to
+facilitate testing, since in a test environment the Serial Server can be shutdown,
+and to facilitate this the value of <samp class="codeph">IsSticky</samp> must be set
+to 0. </p>
+ </dd>
+
+
+
+<dt class="dlterm"><strong>StackSize</strong> </dt>
+
+<dd><p>The value of <samp class="codeph">StackSize</samp> has increased from 8192 for
+the single-threaded C32 to 16384 for C32MT. This change is due to the increased
+stack usage of the multi-threaded C32. The value used - 16384 - was based
+on the value proven to work with the similar ESock multi-threaded server.
+It is possible that this value could be trimmed back towards 8192 to save
+memory depending on the CSYs being used, since the ECUART CSY has been tested
+to work with the multi-threaded C32 server with a stack size of just 8192,
+and CSYs are usually much less memory-demanding than the protocols being used
+in ESock. </p>
+ </dd>
+
+
+</dl>
+ <p><strong>Assigning
+CSY plug-ins to threads</strong> </p>
+ <p>The second part of migration to the new
+multi-threaded serial server is to alter the default set of CMI files to match
+the plug-ins (CSYs) in use and the desired operation. This step is not mandatory
+since by default C32 will load all plug-ins correctly. But, it is worth considering
+at this stage whether the default configuration needs some changes to match
+the requirements of the device. </p>
+ <p>There are three broad configurations
+available, which are defined by whether one or more CSYs are run in the main
+thread for efficiency. The default configuration supplied with Symbian platform
+runs all the CSYs outside the main thread since this ensures that no CSY can
+deny service to the main server thread. It is expected that this configuration
+will suit most situations, but for more information on the other configurations,
+see the later section <a href="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566.html#GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-5A5FEA44-F43B-51BE-9736-7FC76901DB02">Typical
+Thread Configuration Examples</a>. </p>
+ <p>As mentioned earlier, the default
+configuration uses five threads. The description for each of these is given
+in the following table: </p>
+ 
+<div class="tablenoborder"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-0F03B8CD-0142-595A-874F-A35C80F8C991"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-0F03B8CD-0142-595A-874F-A35C80F8C991" frame="border" border="1" rules="all">
+<thead align="left">
+<tr>
+<th class="cellrowborder" valign="top" id="d112195e205">Worker ID</th>
+
+<th class="cellrowborder" valign="top" id="d112195e208">Summary</th>
+
+<th class="cellrowborder" valign="top" id="d112195e211">CMI file</th>
+
+<th class="cellrowborder" valign="top" id="d112195e214">Description</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top" headers="d112195e205 "><p>0</p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e208 "><p>Main thread </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e211 "><p> <span class="filepath">c32.cmi</span>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e214 "><p>Runs the serial server to service client requests and pass on to
+the CSYs, possibly in other threads. This thread is expected to be started
+at device boot. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d112195e205 "><p>1</p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e208 "><p>USB thread </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e211 "><p> <span class="filepath">c32_first.cmi</span>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e214 "><p>Runs the USB CSY (ECACM). This is separated from all other threads
+so that USB can run at high-speed uninterrupted. This thread is only started
+when a client requires a USB connection. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d112195e205 "><p>2</p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e208 "><p>Baseband thread </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e211 "><p> <span class="filepath">c32_second.cmi</span>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e214 "><p>Runs the RS232 CSY (ECUART). This thread runs the ECUART plug-in
+separately since ECUART is sometimes used to connect to the baseband. If a
+different CSY is being used to connect to the baseband, it can be added to
+this CMI file and ECUART either moved to another thread, or removed altogether.
+As the baseband requires a high speed and fast response time, it is recommended
+that the baseband CSY should be run in this thread to separate it from all
+other CSYs. This thread is only started when a client requires the CSY. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d112195e205 "><p>3</p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e208 "><p>Bluetooth and IrDA thread </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e211 "><p> <span class="filepath">c32_third.cmi</span>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e214 "><p>Runs the Bluetooth and IrDA CSYs. These CSYs usually do not have
+high requirements for throughput or response and thus can run together. This
+thread is only started when one of its CSYs is required by a client. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d112195e205 "><p>4</p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e208 "><p>Default thread </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e211 "><p> <span class="filepath">c32_fourth.cmi</span>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e214 "><p>Runs any unlisted CSYs. If C32 is asked to load a CSY for which
+no thread has been identified in a CMI file, then C32 will load the CSY in
+this thread. This thread is only started when required. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p>For a particular device, the above configuration may need to be
+changed to address the requirements of the device. Typical adjustments to
+consider are: </p>
+ <a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-FB351652-6FBA-5176-9C51-AAC40752C333"><!-- --></a><ol id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-FB351652-6FBA-5176-9C51-AAC40752C333">
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-EA20A49C-FB32-5BC6-B47A-24F0487F65FD"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-EA20A49C-FB32-5BC6-B47A-24F0487F65FD"><!-- --></a><p>Change the CSY name
+for Worker ID 2 to match the baseband CSY, and then either move ECUART to
+Worker ID 3 or into its own new thread, or don't add it to any CMI file if
+the device doesn't use the ECUART CSY </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-E08331AD-4AEA-5CAA-8C28-8B3001E1FAEC"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-E08331AD-4AEA-5CAA-8C28-8B3001E1FAEC"><!-- --></a><p>Add any extra low-performance
+CSYs to Worker ID 3 so that they run together with Bluetooth and IrDA. Extra
+CSYs could be run in a new separate thread but there is a memory cost for
+each new thread added so this should be considered (8K is typically allocated
+to a new thread, see <a href="GUID-49379616-C235-598D-AE43-668998AD072B.html#GUID-49379616-C235-598D-AE43-668998AD072B__GUID-5A573FEB-A274-5C0F-A6B6-87D5BAD8A21C">Process,
+thread, stack and memory useful information</a>, and there is a limit to
+the number of threads with their own heaps that can be started in the Root
+Server). </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-45D296E1-654C-5181-A38E-4D0AFC23A4A6"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-45D296E1-654C-5181-A38E-4D0AFC23A4A6"><!-- --></a><p>For any extra high-performance
+CSYs, create a new CMI file so that these can run separately from the other
+CSYs. See <a href="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566.html#GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-C8EA2AA7-28CB-5F89-A0CC-CF20EF21AE6D">Creating
+A New CMI</a> below </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-BC119A2C-445A-5EF7-92DF-17D7E28A1A3B"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-BC119A2C-445A-5EF7-92DF-17D7E28A1A3B"><!-- --></a><p>Prioritise important
+threads (or reduce the priority of lesser threads). Candidates for increased
+priority would be the Main, USB and Baseband threads. Care should be taken
+when adjusting thread priorities since these affect the whole Comms system
+- more guidance on setting thread priorities is available in the document <em>How
+To Assign Thread Priorities</em> elsewhere in this developer library. </p>
+ </li>
+
+</ol>
+ <p>When making these adjustments note that there is no cost involved
+with mentioning CSYs that may never be loaded. </p>
+ </div>
+
+<div class="section" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-E7F95EA1-D91D-4623-B163-8BE198CC991C"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-E7F95EA1-D91D-4623-B163-8BE198CC991C"><!-- --></a><h2 class="sectiontitle">Overview of the C32 multi-threaded CMI files</h2> <p>C32
+Multithreading uses the same Dealer/Player terminology/concepts as Esock Multithreading.
+The <strong>Dealer</strong> is the main C32 Comms Provider Module (CPM) which runs the
+C32 server; a Player is a C32 CPM that only runs one or more CSYs and takes
+the client requests from the Dealer module. </p>
+ <p>For example: </p>
+ <p> <strong>C32.cmi</strong>  </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-569AA81E-8689-5B15-A2C8-24E9163398A7"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-569AA81E-8689-5B15-A2C8-24E9163398A7"><!-- --></a>[Loader]
+Name=C32_Main
+FileName=c32.dll
+ThreadFunctionOrdinal=87
+IsServer=1
+IsSticky=0
+ThreadPriority=EPriorityMuchMore
+StackSize=16384
+ScaledStartupState=0x1085
+HeapOption=ENewHeap
+MinHeapSize=256
+MaxHeapSize=524288
+SystemCritical=1
+Group=C32SerComms
+OnDemand=0
+[IniData]
+Role=Dealer
+WorkerId=0
+</pre>
+ <p>The <a href="GUID-83297976-F146-3B82-BE1C-C1E8F8B9DEE5.html"><span class="apiname">ThreadFunctionOrdinal</span></a> identifier must
+refer to the correct ordinal number of the main thread function for the DLL
+file containing the Comms Provider Module. Due to binary compatibility considerations
+this must be placed at ordinal "87" in the export table. A Comms Provider
+Module/CPM is essentially a thread managed by the Comms Configurator. </p>
+ <p>The
+description of each of the settings under <samp class="codeph">[Loader]</samp> that are
+specific to C32 and the settings under <samp class="codeph">[IniData]</samp> are described
+in further detail below. </p>
+ <p>As well as the C32 server thread, any other
+CPMs that C32 needs must also have their own CMI file. One such example file
+is: </p>
+ <p> <strong>C32_Default.cmi</strong>  </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-7E488DEF-535C-5C13-9DEA-246B11DF39E4"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-7E488DEF-535C-5C13-9DEA-246B11DF39E4"><!-- --></a>[Loader]
+Name=C32_Default
+FileName=c32.dll
+ThreadFunctionOrdinal=87
+IsServer=1
+IsSticky=0
+ThreadPriority=EPriorityMuchMore
+StackSize=16384
+ScaledStartupState=0x3040
+HeapOption=EShareHeap
+SharedHeapName=C32_Main
+MinHeapSize=256
+MaxHeapSize=524288
+SystemCritical=0
+Group=C32SerComms
+OnDemand=1
+Binding0=C32_Default:4,C32_Main:0,ECustom,42,42
+[IniData]
+Role=Player
+WorkerId=4
+CSYList=*</pre>
+ </div>
+
+<div class="section" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-AEEFD832-108E-5CC2-AD5D-5CF6414CA720"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-AEEFD832-108E-5CC2-AD5D-5CF6414CA720"><!-- --></a><h2 class="sectiontitle">C32 CMI Parameter
+Descriptions</h2> <p>This section gives details about the parameters available
+in the CMI file relevant to C32. The CMI file has two sections - a <samp class="codeph">[Loader]</samp> section
+and an <samp class="codeph">[IniData]</samp> section. The <samp class="codeph">[Loader]</samp> section
+parameters are defined for the CPM, and the ones relevant to C32MT are detailed
+below. The <samp class="codeph">[IniData]</samp> section contains parameters specific
+to a CPM. If further information on the format of the CMI file itself or the <samp class="codeph">[Loader]</samp> parameters
+is required, please refer to the document <em>Comms Process Starter/Config
+Design Document</em> section <em>3.1.1</em>. This document is located in this
+developer library as well as in the <span class="filepath">comms-infras\rootserver\Documentation</span> folder. </p>
+ <p><strong>A note on CMI processing</strong> </p>
+ <p>No mechanism is provided to change
+CMI files at run-time, since they are designed to be configured for inclusion
+in a ROM and then not changed through the life of a phone product. After-market
+changing of the configuration is supported via the installation of CMI files
+in a non-ROM folder which then take precedence over the ROM files when the
+device is next rebooted. Thus, any CMI configuration file problems should
+become apparent during the early stages of phone development. </p>
+ <p>A bad
+configuration will panic in debug builds to signal the user to change/edit
+the <samp class="codeph">.CMI</samp> files in order to make a desired and correct configuration.
+In <samp class="codeph">urel</samp> builds a bad configuration may survive (unless the <samp class="codeph">.CMI</samp> files
+are very malformed) but at a cost that all CSYs are loaded in the Dealer Thread
+(<samp class="codeph">Workerid=0</samp>) making it in effect a single threaded system. </p>
+ <p>The
+panic numbers used by the C32 Serial Server for internal server faults are
+defined in the enum <a href="GUID-FED70722-0258-3B96-A941-1F7C13699002.html"><span class="apiname">TECommFault</span></a>. </p>
+ <p><strong> CMI [Loader] Parameters relevant to C32</strong> </p>
+ <p><strong>OnDemand </strong> </p>
+ <p>This indicates whether the CPM is started as part
+of the Configurator’s CPM load on boot ("0"), or whether the CPM should only
+be loaded via an explicit request to Configurator ("1"). The default value
+is "0". The <samp class="codeph">OnDemand</samp> parameter for the main thread can only
+be "0" if mentioned. For Player modules the setting can be either "0" or "1".
+If a Player thread is not marked as <samp class="codeph">OnDemand=1</samp> then it will
+load during the boot sequence. If the main thread (<samp class="codeph">Workerid=0</samp>)
+is marked as <samp class="codeph">OnDemand=1</samp>, then this is a configuration error
+and C32 can never be started (although in theory this is possible - see <a href="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566.html#GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-6350761E-18F6-53B7-98F8-C6E2EB5DA942">Footnote
+1</a> below). Players marked to load at boot up do not load any CSYs implicitly
+as part of the boot load. </p>
+ <p>All Player modules for C32 must be marked
+with <samp class="codeph">OnDemand=1</samp> since the C32 Dealer must instigate a Player
+load. If a Player thread is not marked as <samp class="codeph">OnDemand=0</samp> then
+it will load during the boot sequence. </p>
+ <p><strong>Group </strong> </p>
+ <p>All CMI files for C32 must map to the same Group ID.
+The actual Group ID for the C32 group is <samp class="codeph">C32SerComms</samp>. CMI
+files for C32 Players that do not have a Group member will never be loaded
+by C32 (assuming <samp class="codeph">OnDemand=1</samp> is set for the Player threads). </p>
+ <p>If
+there is no group defined in any CMI files and therefore no <strong>[IniData]</strong> is
+processed for any of them, then C32 will simply assign all CSYs to load into
+the Dealer thread. </p>
+ <p> <strong>Name</strong>  </p>
+ <p>This parameter is used to
+identify the CPM to the Configurator and is used to name the thread for the
+kernel. It is stored by C32 for all CMI files in the C32SerComms group for
+use when requesting Configurator to load or unload a CPM. As this value is
+easily configurable and is used to name the thread to the kernel, software
+should not rely on the name of any C32 thread being any particular string.
+Prior to the multithreaded C32 (C32MT), the C32 thread was conventionally
+known as <samp class="codeph">CCommServer</samp>. However, with C32 now potentially having
+a multiplicity of threads, other schemes are probable such as <samp class="codeph">C32_Main,
+C32_USB and C32_BaseBand</samp> or <samp class="codeph">C32_BT-IR and              C32_Default</samp>  </p>
+ <p>The
+Dealer and all Players in the C32 group can have any name since C32 will find
+them as part of the same group (see Group above). The names in the C32 group
+should all be unique – if the same name is found twice or more C32 will panic
+in debug builds but attempt to recover in release builds by only processing
+the first that it finds. This is still a highly risky situation since if C32
+needs to start that module in order to accommodate a CSY, Configurator may
+load the wrong CMI file when creating the new thread. </p>
+ <p>When introducing
+new CMIs, care should be taken to change the <samp class="codeph">BindingN</samp> line
+in CMI to reflect the new modulename and WorkerId. </p>
+ <p><strong>CMI [IniData] Parameters relevant to C32</strong> </p>
+ <p>In the case where
+C32 has a CMI file that loads the C32 binary during boot up, but the CMI file
+does not have an <samp class="codeph">[IniData]</samp> section, C32 will assume that
+this CMI is for the main thread and that the CMI is a pre-C32MT file. However,
+for C32MT, this is an undesired configuration and should be rectified. Old
+versions of <samp class="codeph">c32.cmi</samp> are only kept in the source distribution
+to support backwards compatibility and should not be used in a system which
+has C32MT present. In such backwards-compatible modes of C32MT, the main thread
+will host a Player in case no other CMI files are present. </p>
+ <p> <strong>Role</strong>  </p>
+ <p>The
+value for this parameter should be either <samp class="codeph">Dealer</samp> or <samp class="codeph">Player</samp>.
+Only one <samp class="codeph">Dealer</samp> can exist in a C32 system, but there can
+be any number of <samp class="codeph">Player</samp> s. If there are two or more <samp class="codeph">Dealer</samp> CMI
+files, the <samp class="codeph">ScaledStartupState</samp> determines which Dealer CMI
+starts first. If both the CMIs have the same <samp class="codeph">ScaledStartupState</samp>,
+then they are loaded in alphabetical order. Configurator is guaranteed to
+start a C: CMI file before the Z: one. If they both have the same module name
+then it is safe since Rootserver will refuse the load of the second module
+with the same name failing with <samp class="codeph">KErrAlreadyExists</samp>. However,
+if the module name is different Rootserver will load them both and C32 will
+detect that an instance of itself is already running and exit the second thread.
+Only the IniData for the CMI file that was used to start the Dealer will be
+processed, with all other Dealer CMI files being ignored. If the main thread
+is to include a co-resident Player, the iniData should include the <samp class="codeph">CSYList</samp> key-value
+pair discussed below. </p>
+ <p> <strong>WorkerId</strong>  </p>
+ <p>The ID number of this
+thread inside the C32 system. The Id numbers should be a positive integer
+or "0" in the case of the main thread (In case CMI file of <samp class="codeph">WorkerId=0</samp> has
+anything else than Dealer as role, it is overridden with Role=Dealer, logging
+a warning). The system expects subsequent ID numbers to be incremented up
+from the main thread's ID. Where a CMI file in the C32 group does not have
+a WorkerId, it is a bad configuration and will panic in debug builds. Allocating
+the next higher number is not possible as this Player needs to be bound with
+the Dealer using the <samp class="codeph">BindingN</samp> line which accepts <samp class="codeph">WorkerId</samp> parameter.
+In case of duplicate <samp class="codeph">WorkerId</samp>, a panic occurs as the second
+module cannot be bound to the Dealer as the binding for the main thread has
+already been done. </p>
+ <p> <strong>CSYList</strong>  </p>
+ <p>A comma-separated list
+of the filenames of the CSYs this thread will own. All CMIs in the C32 group
+must have a CSY list, except for the Dealer which can optionally have a <samp class="codeph">CSYList</samp>.
+A Player with no <samp class="codeph">CSYList</samp> represents a bad configuration as
+a Player’s sole purpose is to load CSYs. Such a Player with no CSY list will
+never be started by C32. A Dealer with no CSY list will act purely as a Dealer.
+A Dealer with a CSY list becomes a Dealer with a co-resident Player inside
+its thread. <samp class="codeph">CSYList</samp> param determines if the CPM will host
+a Player or not. </p>
+ <p>If a CSY appears in more than one CMI file, then
+the CSY will be assigned to one thread, but not necessarily that with the
+least number of CSYs in it. </p>
+ <p>The comma-separated list should not have
+any spaces or other white space in it, and each CSY name must be an alphanumeric
+string. The CSY name is not case sensitive, and should not have the <samp class="codeph">.CSY</samp> extension.
+C32 does not check whether the supplied CSY names actually exist as binaries,
+since it only refers to the list when a client asks to load a particular CSY. </p>
+ <p>If
+an asterix ("*") appears as a CSY name in the CSY list, this is inferred by
+C32 as meaning that this thread is also to be used to load any CSYs not mentioned
+in any CMI file, and is known as the <em>default</em> thread. If two different
+CMI files in the C32 group have the wildcard then only one CMI file will be
+marked as being the host for unknown CSYs – it is not defined as to which
+one. If no CMI file has a wildcard then C32 will assign the wildcard to an
+unused Player thread so that all unlisted CSYs are isolated into their own
+thread. This is overridden if the only CMI file is for the Dealer, in which
+case the Dealer will load all CSYs into its own co-resident Player, since
+the Dealer cannot request the Configurator to start a module for which there
+is not an associated CMI file. </p>
+ </div>
+
+<div class="section" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-8E49AE8A-E940-52F3-ADA5-0332DA1D58D2"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-8E49AE8A-E940-52F3-ADA5-0332DA1D58D2"><!-- --></a><h2 class="sectiontitle">Important Notes</h2> <p>Field
+names in the <samp class="codeph">[IniData]</samp> are case sensitive, but fields values
+are not. </p>
+ <p>The <samp class="codeph">BindingN</samp> line is responsible for binding
+the Player CPM with Dealer. If you leave out the <samp class="codeph">BindingN</samp> line
+from the CMI then the new Player will in essence remain as an island and no
+requests for loading or any subsequent operation can be passed to it from
+Dealer. This will not result in a panic. </p>
+ <p>The <samp class="codeph">C32_Main.cmi</samp> doesn’t
+have a <samp class="codeph">BindingN</samp> line since it is a Dealer and thus does not
+need to bind to another Dealer. </p>
+ </div>
+
+<div class="section" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-C8EA2AA7-28CB-5F89-A0CC-CF20EF21AE6D"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-C8EA2AA7-28CB-5F89-A0CC-CF20EF21AE6D"><!-- --></a><h2 class="sectiontitle">Creating A
+New CMI</h2> <p>To create a new CMI file, copy an existing Player CMI file,
+rename it and change the necessary parameters as detailed below. The examples
+below assume that the base CMI used was the supplied <samp class="codeph">c32_fourth.cmi</samp>.
+The following parameters need to be changed to make a valid configuration
+file: </p>
+ <p>In <strong>[Loader] </strong> section are: </p>
+ <ul>
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-6C3E5830-9A7A-5D84-B4A5-FCA7FD66E31A"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-6C3E5830-9A7A-5D84-B4A5-FCA7FD66E31A"><!-- --></a><p> <strong>Name</strong> - This
+is the module name of CPM. </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-D5BDBEAC-A417-5D39-BB85-4E5AB9DDD36A"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-D5BDBEAC-A417-5D39-BB85-4E5AB9DDD36A"><!-- --></a><p> <strong>BindingN</strong> - BindingN
+line is changed to reflect the new module name and <samp class="codeph">WorkerId</samp> value </p>
+ </li>
+
+</ul>
+ <p>In<strong> [IniData] </strong> section: </p>
+ <ul>
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-3855C593-297D-5360-9926-0A1BFFAC3B12"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-3855C593-297D-5360-9926-0A1BFFAC3B12"><!-- --></a><p> <strong>WorkerId</strong> - This
+value is numeric and must be unique </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-EA091203-C0E9-5303-9FD5-924F3C67FB55"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-EA091203-C0E9-5303-9FD5-924F3C67FB55"><!-- --></a><p> <strong>CSYList</strong> - Contains
+CSYs which you want to load in this new CPM, separated by commas, no white
+spaces allowed. </p>
+ </li>
+
+</ul>
+ <p>Since the additional CMI being added is a <samp class="codeph">Player</samp>,
+the Role field remains the same and it can not be changed to <samp class="codeph">Dealer</samp> as
+the CPM with <samp class="codeph">WorkerId=0</samp> is the one and only Dealer in the
+C32MT. </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-8722A0B7-FB88-5516-846B-BCC4E11D0EEE"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-8722A0B7-FB88-5516-846B-BCC4E11D0EEE"><!-- --></a>[Loader]
+# Change the Name value to your CSY name
+Name=C32_Default  // </pre>
+ <p>Change the <samp class="codeph">Name</samp> value
+to the name of your CSY, e.g. </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-EDCEA3C0-D4E6-5075-9FDE-65425194D6E5"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-EDCEA3C0-D4E6-5075-9FDE-65425194D6E5"><!-- --></a>Name=C32_MyCSYs</pre>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-B7D87670-C791-533F-A8F1-6135050387E2"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-B7D87670-C791-533F-A8F1-6135050387E2"><!-- --></a>FileName=c32.dll
+ThreadFunctionOrdinal=87
+ThreadPriority=EPriorityMuchMore
+StackSize=16384
+ScaledStartupState=0x3040
+HeapOption=ENewHeap
+MinHeapSize=256
+MaxHeapSize=524288
+SystemCritical=1
+Group=C32SerComms
+OnDemand=1</pre>
+ <p>Change the BindingN line to refer to your CSY, for
+example change from </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-81BEFC33-67EE-5547-8C7C-E473F902F145"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-81BEFC33-67EE-5547-8C7C-E473F902F145"><!-- --></a># Change the BindingN line to refer to your CSYs
+Binding0=C32_Default:4,C32_Main:0,ECustom,42,42</pre>
+ <p>to </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-2B7683AF-E01F-5C7A-896B-E3E4F37FAF23"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-2B7683AF-E01F-5C7A-896B-E3E4F37FAF23"><!-- --></a>Binding0=C32_MyCSYs:5,C32_Main:0,ECustom,42,42</pre>
+ <p>And
+in the <strong>[IniData]</strong> section: </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-A0AA8BA4-AA45-5FAE-95D4-24764695F04B"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-A0AA8BA4-AA45-5FAE-95D4-24764695F04B"><!-- --></a>[IniData]
+# Make sure Role is set to "Player"
+Role=Player</pre>
+ <p>Change the <strong>WorkerId</strong>, for example from <samp class="codeph">WorkerId=4</samp> to </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-D334F3C3-38B7-578F-8E9C-2C4FBBB05C06"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-D334F3C3-38B7-578F-8E9C-2C4FBBB05C06"><!-- --></a>WorkerId=5</pre>
+ <p>and
+change the <strong>CSYList</strong> to specify your CSYs, e.g. change "CSYList=XX,YY,zz"
+to </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-9AAAD2C9-A0D0-5733-8EFC-1CB848DB8785"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-9AAAD2C9-A0D0-5733-8EFC-1CB848DB8785"><!-- --></a>CSYList=MyCSY1,MyCSY2</pre>
+ </div>
+
+<div class="section" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-5A5FEA44-F43B-51BE-9736-7FC76901DB02"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-5A5FEA44-F43B-51BE-9736-7FC76901DB02"><!-- --></a><h2 class="sectiontitle">Typical Thread
+Configuration Examples</h2> <p>This section describes the three broad configurations
+for threading available for the C32 Serial Server. Each has different potential
+effects on the performance of C32. </p>
+ <p>The three broad configurations
+available, with a summary of their costs and benefits, are detailed in the
+following table: </p>
+ 
+<div class="tablenoborder"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-5552EBC6-3387-59E6-85AC-9585F31C6ABB"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-5552EBC6-3387-59E6-85AC-9585F31C6ABB" frame="border" border="1" rules="all">
+<thead align="left">
+<tr>
+<th class="cellrowborder" valign="top" id="d112195e895">&#xA0;</th>
+
+<th class="cellrowborder" valign="top" id="d112195e897">Configuration</th>
+
+<th class="cellrowborder" valign="top" id="d112195e900">Advantages</th>
+
+<th class="cellrowborder" valign="top" id="d112195e903">Disadvantages</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top" headers="d112195e895 "><p>1</p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e897 "><p>Run all CSYs outside the main thread <strong>[Default supplied CMI set]</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e900 "><ul>
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-3BD88C6F-9C4E-5001-B7D1-2A9DC3BBE649"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-3BD88C6F-9C4E-5001-B7D1-2A9DC3BBE649"><!-- --></a><p>Some CSYs can be promoted
+ahead of others using thread priorities </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-1C1C0DF2-5EED-5AE4-820A-B3020AF66AE6"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-1C1C0DF2-5EED-5AE4-820A-B3020AF66AE6"><!-- --></a><p>Main thread cannot ever
+stall when any CSY stalls </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-F4331549-9283-5E78-AEE1-32C4CF0F11E3"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-F4331549-9283-5E78-AEE1-32C4CF0F11E3"><!-- --></a><p>Stackable CSYs are possible:
+a CSY can connect to another CSY through the C32 API as long as both are in
+different threads </p>
+ </li>
+
+</ul>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e903 "><ul>
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-898ED70D-CCB3-5D56-A9A9-49C19BC3C5DC"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-898ED70D-CCB3-5D56-A9A9-49C19BC3C5DC"><!-- --></a><p>Operations on CSYs are
+a bit slower due to increased overhead of inter-thread communication </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-DA120612-E01B-51A4-8B77-F582D8170318"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-DA120612-E01B-51A4-8B77-F582D8170318"><!-- --></a><p>Complex to debug </p>
+ </li>
+
+</ul>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d112195e895 "><p>2</p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e897 "><p>Run some CSYs in the main thread </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e900 "><ul>
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-70EFC61A-5D52-55D1-B364-096F84D0EBDF"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-70EFC61A-5D52-55D1-B364-096F84D0EBDF"><!-- --></a><p>CSYs in the main thread
+avoid the overhead of inter-thread communication </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-63D0CE88-5B6D-5787-A2B4-936B48D16FB2"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-63D0CE88-5B6D-5787-A2B4-936B48D16FB2"><!-- --></a><p>Some CSYs can be promoted
+ahead of others using thread priorities </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-71641750-5882-53FC-9B40-0421050E5355"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-71641750-5882-53FC-9B40-0421050E5355"><!-- --></a><p>Main thread cannot stall
+when a CSY in a separate thread stalls </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-88EEE21E-42CF-5401-B985-427E7B3641E9"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-88EEE21E-42CF-5401-B985-427E7B3641E9"><!-- --></a><p>Stackable CSYs are possible:
+a CSY can connect to another CSY through the C32 API as long as both are in
+different threads </p>
+ </li>
+
+</ul>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e903 "><ul>
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-70FDC4C2-FACB-592F-AA96-9C3F980FA842"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-70FDC4C2-FACB-592F-AA96-9C3F980FA842"><!-- --></a><p>If any CSY in the main
+thread stalls, the whole server stalls </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-E5F158D5-4720-5869-9B67-7FC3001B75F2"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-E5F158D5-4720-5869-9B67-7FC3001B75F2"><!-- --></a><p>No means to prioritise
+one CSY ahead of others (without changing the CSY code) </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-A773FE9F-AC77-59B0-AECB-FB5C8174583C"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-A773FE9F-AC77-59B0-AECB-FB5C8174583C"><!-- --></a><p>Operations on CSYs outside
+the main thread are a bit slower due to the increased overhead of inter-thread
+communication </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-C0505A00-C777-582A-8B98-C1E53AC094B7"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-C0505A00-C777-582A-8B98-C1E53AC094B7"><!-- --></a><p>Complex to debug </p>
+ </li>
+
+</ul>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d112195e895 "><p>3</p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e897 "><p>Run all CSYs in the main thread <strong>[Default configuration when any
+CMI files are corrupt]</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e900 "><ul>
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-537C35E5-041E-5BDC-9298-26F89CE5E51F"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-537C35E5-041E-5BDC-9298-26F89CE5E51F"><!-- --></a><p>Simplest to debug since
+no inter-thread communication </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-EFDEEA79-10D8-5FBF-B630-268F14362C0D"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-EFDEEA79-10D8-5FBF-B630-268F14362C0D"><!-- --></a><p>All CSYs avoid the overhead
+of inter-thread communication </p>
+ </li>
+
+</ul>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d112195e903 "><ul>
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-F0C2BD50-CFAD-5E99-AFDF-65BF96B5BB67"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-F0C2BD50-CFAD-5E99-AFDF-65BF96B5BB67"><!-- --></a><p>If any CSY stalls, the
+whole server stalls </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-83EDBE8F-17BD-514A-B0D5-5A6020A8DF56"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-83EDBE8F-17BD-514A-B0D5-5A6020A8DF56"><!-- --></a><p>No means to prioritise
+one CSY ahead of others (without changing the CSY code) </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-BE4157B4-0D0D-5520-8E85-A6C4755410B3"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-BE4157B4-0D0D-5520-8E85-A6C4755410B3"><!-- --></a><p>No stackable CSYs are
+possible </p>
+ </li>
+
+</ul>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p>The default set of CMI files supplied with Symbian platform
+is based on the first broad configuration since it was decided that the small
+cost of running all CSYs outside the main thread is justified by the increased
+reliability to the whole C32 system of ensuring no CSY can deny service to
+the C32 server. Each of these configurations is explained in more detail below. </p>
+ <div class="fignone" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-BC275667-5D19-56CA-ABD9-68265A852282"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-BC275667-5D19-56CA-ABD9-68265A852282"><!-- --></a><span class="figcap">Figure 1.               Figure 1 - No CSYs in main thread: RootServer with 4
+C32 CPMs            </span>
+
+<img src="GUID-085CD9C3-706F-51E7-A1D5-95483D3C9254_d0e147958_href.png"/>
+</div>
+ <p>Referring to Figure 1, the following can be observed: </p>
+ <a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-DA3BC841-1BE9-5483-8EC0-7BA479D85C14"><!-- --></a><ol id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-DA3BC841-1BE9-5483-8EC0-7BA479D85C14">
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-EAD7752C-A094-51CA-903C-52DCF2AB5353"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-EAD7752C-A094-51CA-903C-52DCF2AB5353"><!-- --></a><p>The Main Thread has <samp class="codeph">WorkerId=0</samp>,
+Role as Dealer and is configured to load no CSY </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-CE4A7176-2BD6-5149-B24A-45DCD0945C76"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-CE4A7176-2BD6-5149-B24A-45DCD0945C76"><!-- --></a><p>The Player Thread 1
+has <samp class="codeph">WorkerId=1</samp>, Role as Player and is configured to load
+ECACM CSY </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-A327174B-CA1A-5AD8-92E9-9895363D7851"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-A327174B-CA1A-5AD8-92E9-9895363D7851"><!-- --></a><p>The Player Thread 2
+has <samp class="codeph">WorkerId=2</samp>, Role as Player and is configured to load
+ECUART CSY </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-6015DA12-C259-5B9F-9D72-CFF86AA91435"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-6015DA12-C259-5B9F-9D72-CFF86AA91435"><!-- --></a><p>The Player Thread 3
+has <samp class="codeph">WorkerId=3</samp>, Role as Player and is configured to load <em>unlisted</em> csy.
+What unlisted csy means here is that apart from ECACM and ECUART, if any new
+csy is to be loaded, it will get loaded in this thread. </p>
+ </li>
+
+</ol>
+ <p>The <strong>[IniData]</strong> section for the above CPMs would look like: </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-CE1D7541-5103-5E9B-A20A-11A6C17ABFCA"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-CE1D7541-5103-5E9B-A20A-11A6C17ABFCA"><!-- --></a>[IniData]
+Role=Dealer
+WorkerId=0
+</pre>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-51C4FC4E-1F85-59D3-9F9D-FC6868042363"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-51C4FC4E-1F85-59D3-9F9D-FC6868042363"><!-- --></a>[IniData]
+Role=Player
+WorkerId=1
+CSYList=ECACM
+</pre>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-F21BBEC3-482A-59C4-BBE7-9B304F07EDB3"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-F21BBEC3-482A-59C4-BBE7-9B304F07EDB3"><!-- --></a>[IniData]
+Role=Player
+WorkerId=2
+CSYList=ECUART
+</pre>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-74C70C5D-2B37-5AF8-B703-4072610C6C3E"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-74C70C5D-2B37-5AF8-B703-4072610C6C3E"><!-- --></a>[IniData]
+Role=Player
+WorkerId=3
+CSYList=*
+</pre>
+ <div class="fignone" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-92921AF5-D056-52A9-B10E-80760DE9CD2F"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-92921AF5-D056-52A9-B10E-80760DE9CD2F"><!-- --></a><span class="figcap">Figure 2.               Figure 2 - All CSYs in main thread: RootServer with single
+C32 CPM            </span>
+
+<img src="GUID-E808AB2B-3A2D-5C91-9047-A74AAA770CE6_d0e148025_href.png"/>
+</div>
+ <p>In Figure 2 the CPM loads any CSYs, and so should contain <samp class="codeph">CSYList</samp> tag
+in the IniData section. </p>
+ <p>The Main Thread has <samp class="codeph">WorkerId=0</samp>,
+Role as Dealer and is configured to load <em>any</em> CSY. In this configuration
+since it is a single thread, all the CSYs will be loaded in the same thread. </p>
+ <p>The <strong>[IniData]</strong> section
+for above CPM would look like: </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-BCDEB67F-85D0-560A-AC5B-7D05B807B857"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-BCDEB67F-85D0-560A-AC5B-7D05B807B857"><!-- --></a>[IniData]
+Role=Dealer
+WorkerId=0
+CSYList=*
+</pre>
+ <div class="fignone" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-8F658644-2E07-53A3-A003-C1F015E1396B"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-8F658644-2E07-53A3-A003-C1F015E1396B"><!-- --></a><span class="figcap">Figure 3.                  Figure 3 - Some CSYs in main thread: RootServer with
+3 CPMs               </span>
+
+<img src="GUID-F2D96A30-7264-5CAF-9CC7-8AF05EF978E1_d0e148057_href.png"/>
+</div>
+ <p>From Figure 3, the following can be observed. </p>
+ <a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-E945237B-900A-588A-A3FF-C0B75A43BB4A"><!-- --></a><ol id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-E945237B-900A-588A-A3FF-C0B75A43BB4A">
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-0A3CEB52-2C0F-5BB9-A271-756F9F374111"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-0A3CEB52-2C0F-5BB9-A271-756F9F374111"><!-- --></a><p>The Main Thread has <samp class="codeph">WorkerId=0</samp>,
+Role as Dealer and is configured to load HSDPA csy </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-34EF4E58-A6DB-5EFB-8C13-EE8064A7E3F7"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-34EF4E58-A6DB-5EFB-8C13-EE8064A7E3F7"><!-- --></a><p>The Player Thread 1
+has <samp class="codeph">WorkerId=1</samp>, Role as Player and is configured to load
+ECACM csy </p>
+ </li>
+
+<li id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-BFF9FDF7-C714-5D0A-B8B3-DC4CCB2EC8FB"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-BFF9FDF7-C714-5D0A-B8B3-DC4CCB2EC8FB"><!-- --></a><p>The Player Thread 2
+has <samp class="codeph">WorkerId=2</samp>, Role as Player and is configured to load
+an unlisted csy </p>
+ </li>
+
+</ol>
+ <p>The IniData section for above CPMs would look like: </p>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-E5A77235-60E5-526D-A95C-750FCDCA96BE"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-E5A77235-60E5-526D-A95C-750FCDCA96BE"><!-- --></a>[IniData]
+Role=Dealer
+WorkerId=0
+CSYList=HSDPA
+</pre>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-ED3EE5DE-65C4-50CB-AEA1-59D89FBC0EF3"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-ED3EE5DE-65C4-50CB-AEA1-59D89FBC0EF3"><!-- --></a>[IniData]
+Role=Player
+WorkerId=1
+CSYList=ECACM</pre>
+ <pre class="codeblock" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-00F4F479-B153-5F05-8E13-D2276D70B605"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-00F4F479-B153-5F05-8E13-D2276D70B605"><!-- --></a>[IniData]
+Role=Player
+WorkerId=2
+CSYList=*</pre>
+ </div>
+
+<div class="section" id="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-6350761E-18F6-53B7-98F8-C6E2EB5DA942"><a name="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566__GUID-6350761E-18F6-53B7-98F8-C6E2EB5DA942"><!-- --></a><h2 class="sectiontitle">Footnotes</h2> <dl>
+
+<dt class="dlterm"><strong>Footnote 1</strong> </dt>
+
+<dd><p>In theory the C32 main thread (<samp class="codeph">Workerid=0</samp>) could be
+marked as on-demand and started by the first client to connect to it. This
+might be useful since it would save device boot time for a device that does
+not need serial comms as part of boot up. The process would require the client
+to connect to Configurator and load the C32 main module explicitly. For this
+to work the main Module’s name would have to be fixed (the reference system
+uses “<samp class="codeph">C32_Main</samp> ”) so that the client can identify it to Configurator
+- which is not a big problem, and the client would need the appropriate capabilities
+(also not a big problem as the client could well be inside Rootserver too).
+The other problem is that making it on-demand requires that it is still started
+by a priviledged process before any unpriviledged process attempts to use
+the C32 API (since this will fail unless no CSYs require any capabilities).
+Therefore, for on-demand main thread-loading to work, intimate details about
+the specific configuration of CSYs for a device and their potential clients
+would be needed. </p>
+ </dd>
+
+
+</dl>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-9B83CDD4-FC94-51A0-AC67-CD04BCAFEF08.html">Serial Communications Server</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

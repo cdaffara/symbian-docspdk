@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="conn::CSBEClient"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C"/>
+
+<title>conn::CSBEClient</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C"><a name="GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2391687 id2391691 id2391696 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">conn::CSBEClient Class Reference</h1>
+	<table class="signature"><tr><td>class conn::CSBEClient : public CBase</td></tr></table><div class="section"><div>
+			<p>The client to the Secure Backup Engine. This class is for use by a Secure Backup Server. It provides backup data and receives restore data. It encapsulates some state information as backup or restore operations require a range of actions to be undertaken in the correct order.</p>
+
+			<p>It is loaded into the same process as the Secure Backup Server - this is the client interface of the server that is the Secure Backup Engine.</p>
+
+			<p>Methods that transfer large amounts of data are asynchronous (to allow the Secure Backup Engine to carry out asynchronous operations) but synchronous versions are included for the benefit of clients that cannot handle asynchronous methods. The asynchronous methods should be used if possible.</p>
+
+			<p>Because of the potential large size of backup data it is not copied into descriptors but is located in a transfer buffer.</p>
+
+			<p>When requesting backup data the asynchronous call is made and the relevant AO (whose <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html#GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646">TRequestStatus</a> was supplied) will be activated when the data is available and the completion code will indicate success or failure. If successful, the data can be accessed by means of the GetTransferDataInfo() method and the SignalTransferDataComplete() method is used to indicate that the transfer is complete and the transfer buffer can be re-used.</p>
+
+			<p>When supplying snapshot data or restore data the data is copied into a transfer buffer and the asynchronous call is made. Then the relevant AO will be activated when the data has been absorbed by the Secure Backup Engine. An error completion code is supplied. The Secure Backup Server must assume that the transfer buffer is in use until the AO is completed.</p>
+
+			<p>During a backup operation, all snapshot data should be provided (or data owners told that they will be doing a base backup) before any data is requested. This is because providing snapshots allows data owners to calculate their data and their data sizes. We cannot provide the expected data sizes until we have received all snapshots.</p>
+
+			<p>Once all snapshots have been provided, the order in which backup data is requested is not constrained (except that one multi-chunk set of data must be fully retrieved before the next is requested.</p>
+
+			<p>During a restore operation, the Secure Backup Engine expects data in the following order:</p>
+
+			<p>1) Registration files</p>
+
+			<p>2) Hash data for signed system files.</p>
+
+			<p>3) System files for all required data owners.</p>
+
+			<p>4) Data for data owners.</p>
+
+			<p>Stages (1) through (3) are required in a fixed order. Once stage (4) has been reached the SBE does not impose an order between data owners and does not require that all data from a specific data owner be restored before the next one be started, i.e. it is possible to send base data to all data owners and then increments (but this is not recommended).</p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">conn::CSBEClient<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-3C6A66B3-F468-303C-B437-55AAF681831F">~CSBEClient</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-93DF48FC-B156-3D7C-89B0-ED008ADD789E">AllSnapshotsSuppliedL</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-30DFF694-68D7-3623-8113-78684D085B4F">AllSnapshotsSuppliedL</a>(<a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-3BE78865-5D99-3ED2-AFA4-C3CDC59EB3CC">AllSystemFilesRestored</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-3D2854D2-FF01-31F5-8AB3-D69C608E573F">AllSystemFilesRestoredL</a>(<a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td><a href="#GUID-BDD61A61-9588-346D-AB8B-6D01166279BD">DataChecksum</a>(<a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a>, <a href="GUID-E924490C-D174-3CE8-98BB-85A1D10BC90B.html">TSecureId</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td><a href="#GUID-CB15F92F-5A86-370E-9C7C-7599F18C7656">ExpectedDataSizeL</a>(<a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-6E420CD6-CB19-3E06-9DBA-8088DC39332D">ListOfDataOwnersL</a>(<a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-16D655BB-5F25-35F1-8A0F-3F66F32BAC2C.html">CDataOwnerInfo</a> &gt; &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-FA3DDB4C-4303-331D-AB9C-27935181290D">ListOfDataOwnersL</a>(<a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-16D655BB-5F25-35F1-8A0F-3F66F32BAC2C.html">CDataOwnerInfo</a> &gt; &amp;, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C.html">CSBEClient</a> *</td><td><a href="#GUID-AFDA593D-15C7-34C5-8AFA-582833015308">NewL</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-BAD71222-E223-3F18-A9F1-D21C3A27B4EC">PublicFileListL</a>(<a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a>, <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html">CSBGenericDataType</a> &amp;, <a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RFileArray</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-D41F3392-64A1-3C1B-9AC1-1E8F22701540">PublicFileListL</a>(<a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a>, <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html">CSBGenericDataType</a> &amp;, <a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RFileArray</a> &amp;, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-0BB063AD-49F0-3C59-8500-0A9ECB7D9769">PublicFileListL</a>(<a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a>, <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html">CSBGenericDataType</a> &amp;, <a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-34E3CB6B-8003-3B24-BEEA-86D9B8F84850.html">CSBEFileEntry</a> &gt; &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F526B0A9-6BB3-3D2E-ADEA-DE7C9DB42D28">PublicFileListXMLL</a>(<a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a>, <a href="GUID-E924490C-D174-3CE8-98BB-85A1D10BC90B.html">TSecureId</a>, <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *&amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-7F1D4F8D-E34E-3E88-9B96-8299C575BA14">RawPublicFileListL</a>(<a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a>, <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html">CSBGenericDataType</a> &amp;, <a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RRestoreFileFilterArray</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-8B96E933-ECC2-3580-848A-E9A1CBB16765">RequestDataL</a>(<a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp;, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-CBB7D2F7-6691-3401-9FD6-C3CA93F45010">RequestDataL</a>(<a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-D8DACE8D-B018-3B9C-9C8D-CBB13EEF5976">SIDStatusL</a>(<a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RSIDStatusArray</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-3B6FE76B-6256-3B73-8555-AD8AFABB8F96">SetBURModeL</a>(const <a href="GUID-78E993D5-A845-32B4-B41A-947ABEF16AA0.html">TDriveList</a> &amp;, <a href="GUID-116DAFF8-6AA2-3AE0-B5B7-3E05738B0399.html">TBURPartType</a>, <a href="GUID-116DAFF8-6AA2-3AE0-B5B7-3E05738B0399.html">TBackupIncType</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-52418136-D95C-3A19-8F69-E41E89F032B5">SetBURModeL</a>(const <a href="GUID-78E993D5-A845-32B4-B41A-947ABEF16AA0.html">TDriveList</a> &amp;, <a href="GUID-116DAFF8-6AA2-3AE0-B5B7-3E05738B0399.html">TBURPartType</a>, <a href="GUID-116DAFF8-6AA2-3AE0-B5B7-3E05738B0399.html">TBackupIncType</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F03C8455-341D-3233-819B-486BC0789432">SetSIDListForPartialBURL</a>(<a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RSIDArray</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-71241A82-EE79-3E7D-A53D-B9931F9343E3">SupplyDataL</a>(<a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-1DC02453-8E9D-3E92-B7DF-32D7AF6112E4">SupplyDataL</a>(<a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-C0D29B11-1535-3D11-B318-B18D30A6120B.html">TPtr8</a> &amp;</td><td><a href="#GUID-FC138871-2DFA-3ABD-806A-E3C21F57428B">TransferDataAddressL</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp;</td><td><a href="#GUID-B8EBF044-69A8-3312-84A0-19614D80F564">TransferDataInfoL</a>(<a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> *&amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-7BF583AB-3E06-3FD2-9956-D4950786C034">CSBEClient</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-B2EA2B7D-484D-30EE-BDE6-7CB914202E73">ConstructL</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-6AA7D056-5269-3931-83F7-D6188BAABABA.html">RSBEClientSession</a> *</td><td><a href="#GUID-5BCF681D-6999-3295-813F-B16FD049A649">iClientSession</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-7BF583AB-3E06-3FD2-9956-D4950786C034"><a name="GUID-7BF583AB-3E06-3FD2-9956-D4950786C034"><!-- --></a>
+		<h2 class="topictitle2">CSBEClient()</h2>
+		<table class="signature"><tr><td>CSBEClient</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Class constructor. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-3C6A66B3-F468-303C-B437-55AAF681831F"><a name="GUID-3C6A66B3-F468-303C-B437-55AAF681831F"><!-- --></a>
+		<h2 class="topictitle2">~CSBEClient()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CSBEClient</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Standard destructor </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-93DF48FC-B156-3D7C-89B0-ED008ADD789E"><a name="GUID-93DF48FC-B156-3D7C-89B0-ED008ADD789E"><!-- --></a>
+		<h2 class="topictitle2">AllSnapshotsSuppliedL()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AllSnapshotsSuppliedL</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This method sets the type of backup to base for this particular data owner. The whole device may be subject to an incremental backup but a particular data owner may be subject to a base backup (if they have not been backed up previously). The reverse is not true.</p>
+
+				<p>This method must only be called when the device has just been put into backup mode. It must only be called once for a SID for a backup operation. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-30DFF694-68D7-3623-8113-78684D085B4F"><a name="GUID-30DFF694-68D7-3623-8113-78684D085B4F"><!-- --></a>
+		<h2 class="topictitle2">AllSnapshotsSuppliedL(TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AllSnapshotsSuppliedL</td><td>(</td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This method which sets the type of backup to base for this particular data owner asynchronously. The whole device may be subject to an incremental backup but a particular data owner may be subject to a base backup (if they have not been backed up previously). The reverse is not true.</p>
+
+				<p>This method must only be called when the device has just been put into backup mode. It must only be called once for a SID for a backup operation.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>is TRequestStatus&amp;  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3BE78865-5D99-3ED2-AFA4-C3CDC59EB3CC"><a name="GUID-3BE78865-5D99-3ED2-AFA4-C3CDC59EB3CC"><!-- --></a>
+		<h2 class="topictitle2">AllSystemFilesRestored()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AllSystemFilesRestored</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This method is called when all system files have been provided to allow the Secure Backup Engine to start active data owners. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-3D2854D2-FF01-31F5-8AB3-D69C608E573F"><a name="GUID-3D2854D2-FF01-31F5-8AB3-D69C608E573F"><!-- --></a>
+		<h2 class="topictitle2">AllSystemFilesRestoredL(TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AllSystemFilesRestoredL</td><td>(</td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This method is called asynchronously when all system files have been provided to allow the Secure Backup Engine to start active data owners.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>is TRequestStatus&amp;  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B2EA2B7D-484D-30EE-BDE6-7CB914202E73"><a name="GUID-B2EA2B7D-484D-30EE-BDE6-7CB914202E73"><!-- --></a>
+		<h2 class="topictitle2">ConstructL()</h2>
+		<table class="signature"><tr><td>void</td><td>ConstructL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Construct this instance of <a href="GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C.html#GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C">CSBEClient</a> </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-BDD61A61-9588-346D-AB8B-6D01166279BD"><a name="GUID-BDD61A61-9588-346D-AB8B-6D01166279BD"><!-- --></a>
+		<h2 class="topictitle2">DataChecksum(TDriveNumber, TSecureId)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>DataChecksum</td><td>(</td><td><a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a></td><td>aDrive,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E924490C-D174-3CE8-98BB-85A1D10BC90B.html">TSecureId</a></td><td>aSID</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Get a 32-bit checksum for private data. This routine is for test purposes. It must be implemented but an invariant checksum value can be provided. Some tests may cause checksum values to be compared.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a> aDrive</td><td>the drive containing data being checksummed  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E924490C-D174-3CE8-98BB-85A1D10BC90B.html">TSecureId</a> aSID</td><td>the data owner.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CB15F92F-5A86-370E-9C7C-7599F18C7656"><a name="GUID-CB15F92F-5A86-370E-9C7C-7599F18C7656"><!-- --></a>
+		<h2 class="topictitle2">ExpectedDataSizeL(CSBGenericTransferType &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>ExpectedDataSizeL</td><td>(</td><td><a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp;</td><td>aGenericTransferType</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This method returns the expected size of package data that will be supplied. The size data will be used for the purpose of tracking progess during a backup. If it is inaccurate then the user may see irregular progress but the actual backup data will not be affected so it is acceptable to return an estimated value.</p>
+
+				<p>This method must only be called during a backup operation. If it is called when the data owner is not ready for backup then the call will fail.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp; aGenericTransferType</td><td>Reference to a CSBGenericTransferType object  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6E420CD6-CB19-3E06-9DBA-8088DC39332D"><a name="GUID-6E420CD6-CB19-3E06-9DBA-8088DC39332D"><!-- --></a>
+		<h2 class="topictitle2">ListOfDataOwnersL(RPointerArray&lt; CDataOwnerInfo &gt; &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ListOfDataOwnersL</td><td>(</td><td><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-16D655BB-5F25-35F1-8A0F-3F66F32BAC2C.html">CDataOwnerInfo</a> &gt; &amp;</td><td>aDataOwners</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Gets a list of all registered data owners. This method can be called regardless of backup or restore mode. N.B. If it is called before a restore the set may not include all data owners that are to be restored.</p>
+
+				<p>If the Secure Backup Engine has not parsed backup registration files then this call will trigger scanning and parsing.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-16D655BB-5F25-35F1-8A0F-3F66F32BAC2C.html">CDataOwnerInfo</a> &gt; &amp; aDataOwners</td><td>on return an array of information about backup data owners.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-FA3DDB4C-4303-331D-AB9C-27935181290D"><a name="GUID-FA3DDB4C-4303-331D-AB9C-27935181290D"><!-- --></a>
+		<h2 class="topictitle2">ListOfDataOwnersL(RPointerArray&lt; CDataOwnerInfo &gt; &amp;, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ListOfDataOwnersL</td><td>(</td><td><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-16D655BB-5F25-35F1-8A0F-3F66F32BAC2C.html">CDataOwnerInfo</a> &gt; &amp;</td><td>aDataOwners,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Gets a list of all registered data owners asynchronously. This method can be called regardless of backup or restore mode. N.B. If it is called before a restore the set may not include all data owners that are to be restored.</p>
+
+				<p>If the Secure Backup Engine has not parsed backup registration files then this call will trigger scanning and parsing.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-16D655BB-5F25-35F1-8A0F-3F66F32BAC2C.html">CDataOwnerInfo</a> &gt; &amp; aDataOwners</td><td>on return an array of information about backup data owners.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>is TRequestStatus&amp;  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AFDA593D-15C7-34C5-8AFA-582833015308"><a name="GUID-AFDA593D-15C7-34C5-8AFA-582833015308"><!-- --></a>
+		<h2 class="topictitle2">NewL()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C.html">CSBEClient</a> *</td><td>NewL</td><td>(</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Standard creation method.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-BAD71222-E223-3F18-A9F1-D21C3A27B4EC"><a name="GUID-BAD71222-E223-3F18-A9F1-D21C3A27B4EC"><!-- --></a>
+		<h2 class="topictitle2">PublicFileListL(TDriveNumber, CSBGenericDataType &amp;, RFileArray &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>PublicFileListL</td><td>(</td><td><a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a></td><td>aDrive,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html">CSBGenericDataType</a> &amp;</td><td>aGenericDataType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RFileArray</a> &amp;</td><td>aFiles</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Gets a list of actual public files associated with an SID for partial backup. This allows a client to backup only the public files associated with an SID. This method must only be called when the device is in backup mode as the set of files may not be final until then. This method takes no account of any snapshots - the full list of candidate public files is returned and it is up to the Secure Backup Server to check file attributes if an incremental backup is required.</p>
+
+				<p>If the Secure Backup Engine has not parsed backup registration files then this call will trigger scanning and parsing.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a> aDrive</td><td>the drive concerned.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html">CSBGenericDataType</a> &amp; aGenericDataType</td><td>reference to the data type.  </td></tr><tr><td class="parameter"><a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RFileArray</a> &amp; aFiles</td><td>on return an array of information about files.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D41F3392-64A1-3C1B-9AC1-1E8F22701540"><a name="GUID-D41F3392-64A1-3C1B-9AC1-1E8F22701540"><!-- --></a>
+		<h2 class="topictitle2">PublicFileListL(TDriveNumber, CSBGenericDataType &amp;, RFileArray &amp;, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>PublicFileListL</td><td>(</td><td><a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a></td><td>aDrive,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html">CSBGenericDataType</a> &amp;</td><td>aGenericDataType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RFileArray</a> &amp;</td><td>aFiles,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Gets a list of actual public files associated with an SID for partial backup asynchronously. This allows a client to backup only the public files associated with an SID. This method must only be called when the device is in backup mode as the set of files may not be final until then. This method takes no account of any snapshots - the full list of candidate public files is returned and it is up to the Secure Backup Server to check file attributes if an incremental backup is required.</p>
+
+				<p>If the Secure Backup Engine has not parsed backup registration files then this call will trigger scanning and parsing.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a> aDrive</td><td>the drive concerned.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html">CSBGenericDataType</a> &amp; aGenericDataType</td><td>reference to the data type.  </td></tr><tr><td class="parameter"><a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RFileArray</a> &amp; aFiles</td><td>on return an array of information about files.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>is TRequestStatus&amp;  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0BB063AD-49F0-3C59-8500-0A9ECB7D9769"><a name="GUID-0BB063AD-49F0-3C59-8500-0A9ECB7D9769"><!-- --></a>
+		<h2 class="topictitle2">PublicFileListL(TDriveNumber, CSBGenericDataType &amp;, RPointerArray&lt; CSBEFileEntry &gt; &amp;, TBool &amp;, TInt, TInt, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>PublicFileListL</td><td>(</td><td><a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a></td><td>aDrive,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html">CSBGenericDataType</a> &amp;</td><td>aGenericDataType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-34E3CB6B-8003-3B24-BEEA-86D9B8F84850.html">CSBEFileEntry</a> &gt; &amp;</td><td>aFileList,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp;</td><td>aFinished,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aTotalListCursor,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aMaxResponseSize,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>This asynchronous method is used to retrieve the list of public files for the specified data owner on the specified drive. Upon completion of aStatus, the caller should check aFileList </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a> aDrive</td><td>The drive that contains the public files being retrieved  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html">CSBGenericDataType</a> &amp; aGenericDataType</td><td>The identifier for the data owner that owns the public files  </td></tr><tr><td class="parameter"><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-34E3CB6B-8003-3B24-BEEA-86D9B8F84850.html">CSBEFileEntry</a> &gt; &amp; aFileList</td><td>Upon completion of aStatus, this array will contain the list of public files returned  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp; aFinished</td><td>Upon completion of aStatus, this flag will be set to indicate that there are more file entries available for this data owner and another call to this method should be made  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aTotalListCursor</td><td>Specifies the index into the complete list of public files for this data owner to start the next chunk of file entries from. The number of entries returned by a call to this method can be determined by querying the count of aFileList  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aMaxResponseSize</td><td>The maximum total size in bytes of externalised CSBEFileEntry objects that will be returned  </td></tr><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>The TRequestStatus that will be completed once the engine has fully processed this request  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F526B0A9-6BB3-3D2E-ADEA-DE7C9DB42D28"><a name="GUID-F526B0A9-6BB3-3D2E-ADEA-DE7C9DB42D28"><!-- --></a>
+		<h2 class="topictitle2">PublicFileListXMLL(TDriveNumber, TSecureId, HBufC *&amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>PublicFileListXMLL</td><td>(</td><td><a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a></td><td>aDrive,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E924490C-D174-3CE8-98BB-85A1D10BC90B.html">TSecureId</a></td><td>aSID,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *&amp;</td><td>aFileList</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Gets a list of public files and directories associated with an SID for partial backup or restore. This method returns the data in the form of an XML description for compatibility with older devices.</p>
+
+				<p>This method can be called regardless of the backup or restore mode as it does not rely on the set of public files being final.</p>
+
+				<p>If the Secure Backup Engine has not parsed backup registration files then this call will trigger scanning and parsing.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a> aDrive</td><td>the drive concerned.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E924490C-D174-3CE8-98BB-85A1D10BC90B.html">TSecureId</a> aSID</td><td>the data owner.  </td></tr><tr><td class="parameter"><a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *&amp; aFileList</td><td>on return a description of the list of files and directories. Must be NULL  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7F1D4F8D-E34E-3E88-9B96-8299C575BA14"><a name="GUID-7F1D4F8D-E34E-3E88-9B96-8299C575BA14"><!-- --></a>
+		<h2 class="topictitle2">RawPublicFileListL(TDriveNumber, CSBGenericDataType &amp;, RRestoreFileFilterArray &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RawPublicFileListL</td><td>(</td><td><a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a></td><td>aDrive,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html">CSBGenericDataType</a> &amp;</td><td>aGenericDataType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RRestoreFileFilterArray</a> &amp;</td><td>aFileFilter</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Gets a list of public files and directories associated with an SID for partial restore. This method must only be called when the device is in restore mode. This method must only be called after a registration file has been supplied and parsed. Directories can be distinguished from files by a terminating slash.</p>
+
+				<p>During a restore operation, the client will have the archive or public files available but the Secure Backup Engine does not. Therefore, the engine cannot list the exact files. This method returns the list of files or directories that were specified in the backup registration file without further analysis and the client can use this information to filter public files for restore.</p>
+
+				<p>This allows a client that has taken a full backup to be selective about restore .</p>
+
+				<p>If the Secure Backup Engine has not parsed backup registration files then this call will trigger scanning and parsing.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-A69F16E2-34B8-339D-995A-C9F1BC4800A9.html">TDriveNumber</a> aDrive</td><td>the drive concerned.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html">CSBGenericDataType</a> &amp; aGenericDataType</td><td>reference to the data type.  </td></tr><tr><td class="parameter"><a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RRestoreFileFilterArray</a> &amp; aFileFilter</td><td>on return an array of names of files or directories for restore.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8B96E933-ECC2-3580-848A-E9A1CBB16765"><a name="GUID-8B96E933-ECC2-3580-848A-E9A1CBB16765"><!-- --></a>
+		<h2 class="topictitle2">RequestDataL(CSBGenericTransferType &amp;, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RequestDataL</td><td>(</td><td><a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp;</td><td>aGenericTransferType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>This method requests package data from the Secure Backup Engine asynchronously. When the relevant AO completes the returned data (and information about it) can be accessed by calling <a href="GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C.html#GUID-B8EBF044-69A8-3312-84A0-19614D80F564">TransferDataInfoL()</a>.</p>
+
+				<p>Some forms of backup data may be larger than can be handled in one transfer, in which case this method should be called again with the same arguments until all data is signalled as supplied.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp; aGenericTransferType</td><td>Reference to a CSBGenericTransferType object  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>the request status of an Active Object to be completed when the data has been received  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CBB7D2F7-6691-3401-9FD6-C3CA93F45010"><a name="GUID-CBB7D2F7-6691-3401-9FD6-C3CA93F45010"><!-- --></a>
+		<h2 class="topictitle2">RequestDataL(CSBGenericTransferType &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RequestDataL</td><td>(</td><td><a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp;</td><td>aGenericTransferType</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This synchronous method requests backup data from the Secure Backup Engine. When the method returns the returned data (and information about it) can be accessed by calling <a href="GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C.html#GUID-B8EBF044-69A8-3312-84A0-19614D80F564">TransferDataInfoL()</a>.</p>
+
+				<p>Some forms of backup data may be larger than can be handled in one transfer, in which case this method should be called again with the same arguments until all data is signalled as supplied.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp; aGenericTransferType</td><td>Reference to a CSBGenericTransferType object  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D8DACE8D-B018-3B9C-9C8D-CBB13EEF5976"><a name="GUID-D8DACE8D-B018-3B9C-9C8D-CBB13EEF5976"><!-- --></a>
+		<h2 class="topictitle2">SIDStatusL(RSIDStatusArray &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SIDStatusL</td><td>(</td><td><a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RSIDStatusArray</a> &amp;</td><td>aSIDStatus</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Gets the status of a set of data owners. This method must only be called in backup or restore mode.</p>
+
+				<p>You must populate the array with the TDataOwnerAndStatus's for each secure id the client is interested in.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RSIDStatusArray</a> &amp; aSIDStatus</td><td>an array of structures for information about data owners. On return the status information is filled in.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3B6FE76B-6256-3B73-8555-AD8AFABB8F96"><a name="GUID-3B6FE76B-6256-3B73-8555-AD8AFABB8F96"><!-- --></a>
+		<h2 class="topictitle2">SetBURModeL(const TDriveList &amp;, TBURPartType, TBackupIncType)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetBURModeL</td><td>(</td><td>const <a href="GUID-78E993D5-A845-32B4-B41A-947ABEF16AA0.html">TDriveList</a> &amp;</td><td>aDriveList,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-116DAFF8-6AA2-3AE0-B5B7-3E05738B0399.html">TBURPartType</a></td><td>aBURType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-116DAFF8-6AA2-3AE0-B5B7-3E05738B0399.html">TBackupIncType</a></td><td>aBackupIncType</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Sets B&amp;R on or off and sets the base / increment and full / partial mode and the affected drives</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-78E993D5-A845-32B4-B41A-947ABEF16AA0.html">TDriveList</a> &amp; aDriveList</td><td>the drives affected.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-116DAFF8-6AA2-3AE0-B5B7-3E05738B0399.html">TBURPartType</a> aBURType</td><td>is a full or partial backup or restore desired or normal operation.  </td></tr><tr><td class="parameter"><a href="GUID-116DAFF8-6AA2-3AE0-B5B7-3E05738B0399.html">TBackupIncType</a> aBackupIncType</td><td>is a backup base or incremental (ignored for restore operations).  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-52418136-D95C-3A19-8F69-E41E89F032B5"><a name="GUID-52418136-D95C-3A19-8F69-E41E89F032B5"><!-- --></a>
+		<h2 class="topictitle2">SetBURModeL(const TDriveList &amp;, TBURPartType, TBackupIncType, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetBURModeL</td><td>(</td><td>const <a href="GUID-78E993D5-A845-32B4-B41A-947ABEF16AA0.html">TDriveList</a> &amp;</td><td>aDriveList,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-116DAFF8-6AA2-3AE0-B5B7-3E05738B0399.html">TBURPartType</a></td><td>aBURType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-116DAFF8-6AA2-3AE0-B5B7-3E05738B0399.html">TBackupIncType</a></td><td>aBackupIncType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Sets B&amp;R on or off and sets the base / increment and full / partial mode and the affected drives asynchronously.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-78E993D5-A845-32B4-B41A-947ABEF16AA0.html">TDriveList</a> &amp; aDriveList</td><td>the drives affected.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-116DAFF8-6AA2-3AE0-B5B7-3E05738B0399.html">TBURPartType</a> aBURType</td><td>is a full or partial backup or restore desired or normal operation.  </td></tr><tr><td class="parameter"><a href="GUID-116DAFF8-6AA2-3AE0-B5B7-3E05738B0399.html">TBackupIncType</a> aBackupIncType</td><td>is a backup base or incremental (ignored for restore operations).  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>is TRequestStatus&amp;  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F03C8455-341D-3233-819B-486BC0789432"><a name="GUID-F03C8455-341D-3233-819B-486BC0789432"><!-- --></a>
+		<h2 class="topictitle2">SetSIDListForPartialBURL(RSIDArray &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetSIDListForPartialBURL</td><td>(</td><td><a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RSIDArray</a> &amp;</td><td>aSIDs</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>If a partial backup is required then this sets the list of data owners. This method must only be called when the device has just been put into backup or restore mode. It must only be called once for a backup or restore operation.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2C1597FD-8F42-308C-A0C4-9969388538E8.html">RSIDArray</a> &amp; aSIDs</td><td>array of affected data owners.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-71241A82-EE79-3E7D-A53D-B9931F9343E3"><a name="GUID-71241A82-EE79-3E7D-A53D-B9931F9343E3"><!-- --></a>
+		<h2 class="topictitle2">SupplyDataL(CSBGenericTransferType &amp;, TBool, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SupplyDataL</td><td>(</td><td><a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp;</td><td>aGenericTransferType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aFinished,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>This method supplies some form of package data during a backup or restore operation asynchronously.</p>
+
+				<p>When the relevant Active Object is completed the Secure Backup Engine has absorbed the supplied data.</p>
+
+				<p>Some forms of data may be larger than can be handled in one transfer, in which case this method should be called again with the same arguments until all data has been supplied.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp; aGenericTransferType</td><td>Reference to a CSBGenericTransferType object  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aFinished</td><td>ETrue if this buffer is the last one for this package uid, drive and data type  </td></tr><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>the request status of an Active Object to be completed when the data has been transferred  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1DC02453-8E9D-3E92-B7DF-32D7AF6112E4"><a name="GUID-1DC02453-8E9D-3E92-B7DF-32D7AF6112E4"><!-- --></a>
+		<h2 class="topictitle2">SupplyDataL(CSBGenericTransferType &amp;, TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SupplyDataL</td><td>(</td><td><a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp;</td><td>aGenericTransferType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aFinished</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>This synchronous method supplies some form of package data during a backup or restore operation.</p>
+
+				<p>When the method returns the Secure Backup Engine has absorbed the supplied data.</p>
+
+				<p>Some forms of data may be larger than can be handled in one transfer, in which case this method should be called again with the same arguments until all data has been supplied.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> &amp; aGenericTransferType</td><td>Reference to a CSBGenericTransferType object  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aFinished</td><td>ETrue if this buffer is the last one for this package uid, drive and data type  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-FC138871-2DFA-3ABD-806A-E3C21F57428B"><a name="GUID-FC138871-2DFA-3ABD-806A-E3C21F57428B"><!-- --></a>
+		<h2 class="topictitle2">TransferDataAddressL()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-C0D29B11-1535-3D11-B318-B18D30A6120B.html">TPtr8</a> &amp;</td><td>TransferDataAddressL</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Provides access to the base of the global chunk used to transfer data between the Secure Backup Engine and a Secure Backup Server. This method should be used when the Secure Backup Server is providing data to the Secure Backup Engine (either as part of a restore operation or when supplying snapshots during a backup operation.</p>
+
+				<p>The Secure Backup Engine only uses one global chunk at a time. It is not permissible to try to carry out multiple backup or restore operations in parallel. Normally a chunk of global heap would be protected by a mutex. In this case, all the methods of the Secure Backup Engine must be regarded as synchronous and mutually exclusive - it is not permissible to make parallel calls.</p>
+
+				<p>The global chunk used during a backup or restore operation may change and so the address must be requested whenever required rather than being cached.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-B8EBF044-69A8-3312-84A0-19614D80F564"><a name="GUID-B8EBF044-69A8-3312-84A0-19614D80F564"><!-- --></a>
+		<h2 class="topictitle2">TransferDataInfoL(CSBGenericTransferType *&amp;, TBool &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp;</td><td>TransferDataInfoL</td><td>(</td><td><a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> *&amp;</td><td>aGenericTransferType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp;</td><td>aFinished</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Provides access to the data received from the Secure Backup Engine during a backup operation.</p>
+
+				<p>This method should be called after a synchronous or asynchronous request for data has completed.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html">CSBGenericTransferType</a> *&amp; aGenericTransferType</td><td>Reference to a CSBGenericTransferType pointer. Must be NULL  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp; aFinished</td><td>ETrue if the data is the last chunk, EFalse if there is more to request.  </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-5BCF681D-6999-3295-813F-B16FD049A649"><a name="GUID-5BCF681D-6999-3295-813F-B16FD049A649"><!-- --></a>
+		<h2 class="topictitle2">
+					RSBEClientSession * iClientSession</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-6AA7D056-5269-3931-83F7-D6188BAABABA.html">RSBEClientSession</a> *</td><td>iClientSession</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Pointer to the client session R class wrapped by this class </p>
+
+			</div></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

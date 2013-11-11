@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Converting to and from Transformation Formats Using CnvUtfConverter"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5BE31242-78A2-584B-BF00-B7805C219E40.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1DCA2F4D-ABE6-52A0-AC4E-5AAC1AB5909D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F3406651-0B57-50FD-81CA-A3D4000D5625.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E64C06D7-B138-5BCC-A814-3F9E2C517404.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5BE31242-78A2-584B-BF00-B7805C219E40.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Converting to and from Transformation Formats Using CnvUtfConverter</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788"><a name="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2535736 id2436351 id2436372 id2436386 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-1DCA2F4D-ABE6-52A0-AC4E-5AAC1AB5909D.html">Text and Localization Guide</a> &gt; <a href="GUID-F3406651-0B57-50FD-81CA-A3D4000D5625.html">Character Conversion (Charconv) Framework Collection</a> &gt; <a href="GUID-E64C06D7-B138-5BCC-A814-3F9E2C517404.html">Character Encoding and Conversion Framework Component</a> &gt; <a href="GUID-5BE31242-78A2-584B-BF00-B7805C219E40.html">Character Encoding and Conversion Framework Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Converting to and from Transformation Formats Using CnvUtfConverter</h1>
+<div><p>This section describes the way in which <samp class="codeph">CnvUtfConverter</samp> can be used to convert chunks of text from Unicode to the UTF-7 or UTF-8 transformation format, from the UTF-7 or UTF-8 transformation format to Unicode, and from the UTF-7 or UTF-8 transformation format to Unicode when the text is arriving in fragments. </p>
+ <div class="section"><h2 class="sectiontitle">Introduction</h2> <p>The <samp class="codeph">CnvUtfConverter</samp> class is provided for converting text between Unicode (UCS-2) and the two Unicode transformation formats UTF-7 and UTF-8. The four conversion functions are all static, are <samp class="codeph">ConvertFromUnicodeToUtf7()</samp>, <samp class="codeph">ConvertFromUnicodeToUtf8()</samp>, <samp class="codeph">ConvertToUnicodeFromUtf7()</samp>, and <samp class="codeph">ConvertToUnicodeFromUtf8()</samp>. </p>
+ <p> <strong>Note</strong>: there is no direct way to convert between UTF-7 and UTF-8. Though it is possible to convert from one transformation format to UCS-2 and then from UCS-2 to the other transformation format. </p>
+ <p>The examples in the below sections describes how to convert to and from UTF-7. Converting to and from UTF-8 is almost identical. The only differences being in the use of a third parameter to <samp class="codeph">ConvertFromUnicodeToUtf7()</samp>, and also that <samp class="codeph">ConvertToUnicodeFromUtf8()</samp> does not use a ‘state’ parameter. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Converting Unicode to UTF-7</h2> <p>The text is converted in chunks, and it is not necessary to guess the full size of the converted output text in advance. </p>
+ <a name="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-481722AF-CD6D-5383-B381-EF9C79416AE0"><!-- --></a><ol id="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-481722AF-CD6D-5383-B381-EF9C79416AE0"><li id="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-CFB5B1ED-749D-518D-84E7-62E345BD99D1"><a name="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-CFB5B1ED-749D-518D-84E7-62E345BD99D1"><!-- --></a><p>The function below creates an output descriptor and a ‘remainder’ buffer for holding the unconverted Unicode characters. This remainder buffer is initialised with the text in the input descriptor. </p>
+ <pre class="codeblock" id="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-B19F8A17-A52D-57C6-8801-522408FD78E0"><a name="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-B19F8A17-A52D-57C6-8801-522408FD78E0"><!-- --></a>LOCAL_C void EncodeL(const TDesC16&amp; aUnicodeText)
+    {
+    // Create a small output buffer
+    TBuf8&lt;20&gt; outputBuffer;
+    // Create a buffer for the unconverted text - initialised with the input text
+    TPtrC16 remainderOfUnicodeText(aUnicodeText);</pre>
+ </li>
+ <li id="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-FEB17712-19E8-5609-A785-5520CCD3C040"><a name="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-FEB17712-19E8-5609-A785-5520CCD3C040"><!-- --></a><p>A loop is set up to convert the text in the remainder buffer — which initially contains all the information in the input descriptor. </p>
+ <p> <samp class="codeph">ConvertFromUnicodeToUtf7()</samp> converts characters from the remainder buffer until the small output buffer is full — the Unicode contents of the output buffer are then safely stored. The remainder buffer is reset so that it only contains unconverted text. This process is repeated until the remainder buffer is empty, and the function completes. Note that the code fragment below also includes code to check for corrupted characters. </p>
+ <pre class="codeblock" id="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-DBE3B2D3-BCF9-5D97-9E09-9E925FE8E4BF"><a name="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-DBE3B2D3-BCF9-5D97-9E09-9E925FE8E4BF"><!-- --></a>    for(;;) // conversion loop
+        {
+        // Start conversion. When the output buffer is full, return the 
+        // number of characters that were not converted
+        const TInt returnValue=CnvUtfConverter::ConvertFromUnicodeToUtf7(outputBuffer, 
+                                remainderOfUnicodeText, ETrue);
+
+        // check to see that the descriptor isn’t corrupt - leave if it is
+        if (returnValue==CnvUtfConverter::EErrorIllFormedInput)
+            User::Leave(KErrCorrupt);
+        else if (returnValue&lt;0) // future-proof against "TError" expanding
+            User::Leave(KErrGeneral);
+
+        // Do something here to store the contents of the output buffer.
+
+        // Finish conversion if there are no unconverted characters in the remainder buffer
+        if (returnValue==0)
+            break; 
+
+        // Remove the converted source text from the remainder buffer.
+        // The remainder buffer is then fed back into loop
+        remainderOfUnicodeText.Set(remainderOfUnicodeText.Right(returnValue));
+        }
+    }</pre>
+ </li>
+ </ol>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Converting UTF-7 to Unicode</h2> <p>The text is converted in chunks so that it is not necessary to guess the full size of the converted output text in advance. The process is similar to that given in the previous example. </p>
+ <ul><li id="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-396AAFEB-0A49-5532-ABC4-00EC534C5151"><a name="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-396AAFEB-0A49-5532-ABC4-00EC534C5151"><!-- --></a><p>The function below first creates an output descriptor, a state variable, and a ‘remainder’ buffer for holding the unconverted characters — this is initialised with the text in the input descriptor. The state variable is initialised with <samp class="codeph">CnvUtfConverter::KStateDefault</samp> — after initialisation this should not be tampered with, but simply be passed into subsequent calls to <samp class="codeph">ConvertToUnicode()</samp>. </p>
+ <pre class="codeblock" id="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-7B5BED89-3E99-5FBE-BEAC-AD978900A14E"><a name="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-7B5BED89-3E99-5FBE-BEAC-AD978900A14E"><!-- --></a>LOCAL_C void DecodeL(const TDesC8&amp; aUtf7)
+    {
+    // Create a small output buffer
+    TBuf16&lt;20&gt; outputBuffer;
+    // Create a buffer for the unconverted text - initialised with the input text
+    TPtrC8 remainderOfUtf7(aUtf7);
+
+    // Create a "state" variable and initialise it with CnvUtfConverter::KStateDefault
+    // After initialisation the state variable must not be tampered with.
+    // Simply pass into each subsequent call of ConvertToUnicodeFromUtf7()
+    TInt state=CnvUtfConverter::KStateDefault;</pre>
+ </li>
+ <li id="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-902EA75D-8237-5408-B8BE-7EAEBDE611F2"><a name="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-902EA75D-8237-5408-B8BE-7EAEBDE611F2"><!-- --></a><p>A loop is then set up to convert the text in the remainder buffer — which initially contains all the information in the input descriptor. </p>
+ <p> <samp class="codeph">ConvertToUnicodeFromUtf7()</samp> converts characters from the remainder buffer until the small output buffer is full — the Unicode contents of the output buffer are then safely stored. The remainder buffer is reset so that it only contains unconverted text. This process is repeated until the remainder buffer is empty, and the function completes. Note that the code fragment below also includes code to check for corrupted characters. </p>
+ <pre class="codeblock" id="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-8AEE6B69-E867-534D-AF83-7A77E1E3F0BD"><a name="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-8AEE6B69-E867-534D-AF83-7A77E1E3F0BD"><!-- --></a>    for(;;)  // conversion loop
+        {
+        // Start conversion. When the output buffer is full, return the 
+        // number of characters that were not converted
+        const TInt returnValue=CnvUtfConverter::ConvertToUnicodeFromUtf7(outputBuffer,remainderOfUtf7,state);
+
+        // check to see that the descriptor isn't corrupt - leave if it is
+        if (returnValue==CnvUtfConverter::EErrorIllFormedInput)
+            User::Leave(KErrCorrupt);
+        else if (returnValue&lt;0) // future-proof against "TError" expanding
+            User::Leave(KErrGeneral);
+
+        // Do something here to store the contents of the output buffer.
+
+        // Finish conversion if there are no unconverted characters in the remainder buffer
+        if (returnValue==0)
+            break; 
+
+        // Remove the converted source text from the remainder buffer.
+        // The remainder buffer is then fed back into loop
+        remainderOfUtf7.Set(remainderOfUtf7.Right(returnValue));
+        }
+    }</pre>
+ </li>
+ </ul>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Converting fragmented UTF-7 to Unicode</h2> <p>The main difficulty in converting fragmented text is that received chunks may begin or end with bytes from an incomplete character. </p>
+ <p>To overcome this problem, implementations must ensure that the descriptors passed to <samp class="codeph">ConvertToUnicodeFromUtf7()</samp> always begin with a complete character, (making the output descriptor at least 20 elements long should be enough to ensure this) and that conversions only progress to completion for the final chunk of text— in which the last character is complete. In the function below this is achieved by beginning the buffer for each chunk with a small amount of unconverted text from the previous chunk. The buffer is then guaranteed to begin with a complete character. Any ‘loose’ bytes from the end of the last chunk and the beginning of the new one combine to form a complete character. </p>
+ <p>The function first creates a buffer to hold both the unconverted text fragment from the previous chunk, and the new chunk. </p>
+ <pre class="codeblock" id="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-E6FA1A78-EDD9-504E-B4D7-956B306D4705"><a name="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-E6FA1A78-EDD9-504E-B4D7-956B306D4705"><!-- --></a>LOCAL_C void DecodeL()
+    {
+    // Create a buffer for holding UTF-7 text to be converted
+    const TInt KMaximumLengthOfBufferForUtf7=200;
+    TUint8 bufferForUtf7[KMaximumLengthOfBufferForUtf7];
+    // Create a variable for indicating the actual amount of text in the buffer
+    TInt lengthOfBufferForUtf7=0;</pre>
+ <p>A loop is then set up to get a new chunk and append it to the unconverted text fragment from the previous chunk. The code also contains a placeholder to find out whether the current chunk is the last chunk, and stores this information in a flag. In addition, it creates an output descriptor, a state variable, and a ‘remainder’ buffer for holding the unconverted text. The state variable is initialised with <samp class="codeph">CnvUtfConverter::KStateDefault</samp> — after initialisation this should not be tampered with, but simply be passed into subsequent calls to <samp class="codeph">ConvertToUnicodeFromUtf7()</samp>. </p>
+ <pre class="codeblock" id="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-BF7937D9-1E25-5B57-9DDB-712D6CAFBB11"><a name="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-BF7937D9-1E25-5B57-9DDB-712D6CAFBB11"><!-- --></a>    // Outer loop.
+    // Appends new chunk to fragment from previous chunk
+    // Then passes the buffer to the conversion loop.
+    for(;;)  
+        {
+        // Create a modifiable pointer descriptor for the next chunk of non-Unicode text
+        TPtr8 nextChunkOfUtf7(bufferForUtf7+lengthOfBufferForUtf7,
+                            KMaximumLengthOfBufferForUtf7-lengthOfBufferForUtf7);
+
+        // Insert code to load next chunk of Utf7 here
+
+        // Calculate the length of the next chunk of text to be processed
+        const TInt lengthOfNextChunkOfUtf7=nextChunkOfUtf7.Length();
+        // Specify the length of the buffer for Utf7 text
+        lengthOfBufferForUtf7+=lengthOfNextChunkOfUtf7;
+
+        // Set whether this is the last chunk - find out from source of text
+        const TBool isLastChunkOfUtf7=  ; // ?
+            // e.g. the source may define that the last chunk is of length zero, in which case
+            // the expression "(lengthOfNextChunkOfUtf7==0)" would be assigned to 
+            // this variable; note that even if the length of this chunk is zero, 
+            // dont just exit this function here as bufferForUtf7
+            // may not be empty (i.e. lengthOfBufferForUtf7&gt;0)
+
+        // Create a small output buffer
+        TBuf16&lt;20&gt; outputBuffer;
+        // Create a remainder buffer for the unconverted text - used in conversion loop
+        TPtrC8 remainderOfUtf7(bufferForUtf7, lengthOfBufferForUtf7);
+
+        // Create a "state" variable and initialise it with CnvUtfConverter::KStateDefault
+        // After initialisation the state variable must not be tampered with.
+        // Simply pass into each subsequent call of ConvertToUnicodeFromUtf7()
+        TInt state=CnvUtfConverter::KStateDefault;</pre>
+ <p>The remainder buffer is passed to the conversion loop. </p>
+ <p> <samp class="codeph">ConvertToUnicodeFromUtf7()</samp> converts characters from the remainder buffer until the output buffer is full — the Unicode contents of the output buffer are then safely stored. Then the remainder buffer is reset so that it only contains unconverted text. This process is repeated until the remainder buffer contains less than 20 bytes. The remainder of the unconverted bytes are copied into the main UTF-7 buffer, and the function returns to the outer loop. The process then repeats itself, with a new chunk being added to the UTF-7 buffer etc. </p>
+ <p>If the ‘last chunk’ flag is set— in the main loop— then the conversion continues until the remainder buffer is empty. The function then completes. The code fragment below also includes code to check for corrupted characters. </p>
+ <pre class="codeblock" id="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-C89BA03E-493A-5F17-8B65-BA6BD92A8368"><a name="GUID-3FAECE72-FCC6-5C58-B724-C9A9DE485788__GUID-C89BA03E-493A-5F17-8B65-BA6BD92A8368"><!-- --></a>// The conversion loop. This loop takes chunks of text prepared by the previous loop and converts them
+        for(;;)
+            {
+            const TInt lengthOfRemainderOfUtf7=remainderOfUtf7.Length();
+            if (isLastChunkOfUtf7)
+                {
+                if (lengthOfRemainderOfUtf7==0)
+                    return; // the single point of exit of this function
+                }
+            else
+                {
+                // As this isn't the last chunk, we don't want ConvertToUnicodeFromUtf7 to return
+                // CnvUtfConverter::EErrorIllFormedInput if the input descriptor ends with an
+                // incomplete sequence - but it will only do this if *none* of the input
+                // descriptor can be consumed. Therefore if the input descriptor is long enough
+                // (20 elements or longer is adequate) there is no danger of this error
+                // being returned for this reason. If it's shorter than that, we'll simply put it
+                // at the start of the buffer so that it gets converted with the next chunk.
+                if (lengthOfRemainderOfUtf7&lt;20)
+                    {
+                    // put any remaining UTF-7 at the start of bufferForUtf7
+                    lengthOfBufferForUtf7=lengthOfRemainderOfUtf7;
+                    Mem::Copy(bufferForUtf7, remainderOfUtf7.Ptr(), lengthOfBufferForUtf7);
+                    break;
+                    }
+                }
+
+            const TInt returnValue=CnvUtfConverter::ConvertToUnicodeFromUtf7(outputBuffer, remainderOfUtf7, state);
+            if (returnValue==CnvUtfConverter::EErrorIllFormedInput)
+                User::Leave(KErrCorrupt);
+            else if (returnValue&lt;0) // future-proof against "TError" expanding
+                User::Leave(KErrGeneral);
+
+            // Do something here to store the contents of the output buffer.
+
+            remainderOfUtf7.Set(remainderOfUtf7.Right(returnValue));
+            }
+        }
+    }</pre>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-5BE31242-78A2-584B-BF00-B7805C219E40.html">Character Encoding and Conversion Framework Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

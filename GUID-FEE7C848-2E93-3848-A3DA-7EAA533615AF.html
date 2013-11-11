@@ -1,0 +1,1553 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CTextLayout"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF"/>
+
+<title>CTextLayout</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF"><a name="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CTextLayout Class Reference</h1>
+	<table class="signature"><tr><td>class CTextLayout : public CBase</td></tr></table><div class="section"><div>
+			<p>Text layout.</p>
+
+			<p>
+				<a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> is the lowest-level text formatting class in the Text Views API. It obtains text and formatting attributes via the <a href="GUID-51B3C34F-2F8E-3181-93C4-00F073B1207C.html#GUID-51B3C34F-2F8E-3181-93C4-00F073B1207C">MLayDoc</a> interface class and formats the text to a certain width.</p>
+
+			<p>It has functions for drawing the text and performing hit-detection that is, converting x-y coordinates to document positions, and vice versa. It defines many public functions that are not generally useful, but are called by the higher-level <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> class, or exist only for the convenience of closely associated classes like the printing and pagination systems. These are identified in the documentation by the text "not generally useful".</p>
+
+			<p>When using the <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> class, you must be aware of what functions have previously been called. For example:</p>
+
+			<p>1) Formatting and scrolling functions must not be called if a <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> object owns the <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object, because the <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> object may be reformatting the <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object asynchronously by means of an active object, or may hold some state information about the <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object that would be invalidated by reformatting. These functions are identified in the documentation by the text "Do not use if a CTextView object owns this CTextLayout object.".</p>
+
+			<p>2) Functions that raise out of memory exceptions can leave the object in an inconsistent state; these functions can be identified as usual by their trailing L. When this occurs, it is necessary to discard the formatting information by calling <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-2DF4DA6C-9420-313F-A4E7-DFC1BA57D99F">DiscardFormat()</a>.</p>
+
+			<p>3) Some functions change formatting parameters like the wrap width or band height, but do not reformat to reflect the change. These functions are identified in the documentation by the text "Reformat needed".   </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CTextLayout<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section nested"><h2 class="sectiontitle">Nested Classes and Structures</h2><ul><li><a href="GUID-17F53C30-C5F5-351D-8ED8-A227D59DDCC4.html">CTextLayout::TRangeChange</a></li><li><a href="GUID-177EB614-9187-3B70-8344-78B7F370157B.html">CTextLayout::TTagmaForwarder</a></li><li><a href="GUID-8679EE5D-7696-3718-9CBC-7D3DD28719E7.html">CTextLayout::TUtf32SourceCache</a></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-F65E7AEC-2984-394D-9B06-E2749FA2B208">~CTextLayout</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-5ECBB172-07FD-39CE-ACB9-819716429017">AdjustVerticalAlignment</a>(<a href="GUID-2F795E02-0704-39AE-8EC6-06CB5D5D670F.html">CParaFormat::TAlignment</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-14CCB13E-0F9D-3270-8F8A-FC973DF50AB4">CalculateHorizontalExtremes</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-AC55F284-E002-3D8B-AA7B-52CC344D8EB3">CalculateHorizontalExtremesL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-B0ACC0AD-FEDC-3446-9CAE-D713221A41DE">ChangeBandTopNoLimitBorderL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C const <a href="GUID-324383D3-E56D-3575-9A80-62863267BEA3.html">MFormCustomWrap</a> *</td><td><a href="#GUID-65581F1C-BB74-3D70-89D4-28414577EE4B">CustomWrap</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-9A47B8CA-EACD-3598-9831-4E974DA9ED06">DrawBackground</a>(<a href="GUID-DAD09DCF-3123-38B4-99E9-91FB24B92138.html">CGraphicsContext</a> &amp;, const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;, const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;, const <a href="GUID-0C6B5C9F-9FFB-3F9B-A782-A455E4ADE2BA.html">TLogicalRgb</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-2D6CBE31-62B9-38A8-ACE1-8002668CC771">DrawBorders</a>(const <a href="GUID-4791F2C1-C351-3824-8784-3161F5B65DCA.html">MGraphicsDeviceMap</a> *, <a href="GUID-DAD09DCF-3123-38B4-99E9-91FB24B92138.html">CGraphicsContext</a> &amp;, const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;, const <a href="GUID-D082BE17-16E0-3684-BE53-809FA9D9EDC7.html">TParaBorderArray</a> &amp;, const <a href="GUID-F84C7F40-6DEB-39D1-B172-CB0CC3918E27.html">TRgb</a> *, <a href="GUID-740A218E-76FB-31BF-BD91-BA6780AC4DEE.html">TRegion</a> *, const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-EB387B4A-BFA5-3747-86C5-79A872A90EE8">DrawL</a>(const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;, const <a href="GUID-3D722378-7912-33EA-B97B-211F4ABE4AE0.html">TDrawTextLayoutContext</a> *, const <a href="GUID-E2ED2E4B-C428-355D-84CC-A4FA0ED50B74.html">TCursorSelection</a> *)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-B208BABC-8C03-30D2-8E5F-A4350930553E">EndRedraw</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-706504D8-D9AE-39C9-9970-FD8BB07DFF83">ExcludingPartialLines</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-CB8A6BA9-68E6-3BD8-ACF9-B69011F62204">ExtendFormattingToCoverPosL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-466BABDF-FC7A-35C4-B77A-2EF14C181F3C">ExtendFormattingToCoverYL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-C43E79A8-3BE8-358A-A175-F0A2571391CC">FindXyPos</a>(const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;, <a href="GUID-1BA3C7D7-CEB0-3605-8BCB-71FBCB007C27.html">TTmPosInfo2</a> &amp;, <a href="GUID-CAE563D8-8D92-3C26-9B5C-0D6B625A1EBE.html">TTmLineInfo</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-3A5BEA0A-18CD-33FA-8224-C70F37CB6E19">FormatCharRangeL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-C59D75F8-AD08-373C-9E1D-B51F287D92C9">FormatNextLineL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-E783D5AD-2D58-3B81-B732-F4FD8D3415FC">FormattedLength</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-57DC1B26-8C3E-3F49-AEA3-BF6AA5CD4B7D">GetCharacterHeightAndAscentL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-EEA08CB5-6AD2-305F-A7AC-9AFCED964E68">GetCursor</a>(const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp;, <a href="GUID-E7DBAB32-C4BD-37A9-A028-EBD83FFD59BC.html">TTmCursorPlacement</a>, <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;, <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-FC183CF4-B4D2-3D0B-91B0-D288F353E8D6">GetFontHeightAndAscentL</a>(const <a href="GUID-052E4F6B-71C5-304C-B387-07A2F6F9900B.html">TFontSpec</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-690CD52D-C032-3400-9082-E76A8793B437">GetLineNumber</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-F7396E87-EFA0-3AC4-B676-C9642A627453">GetLineRect</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a></td><td><a href="#GUID-6BA681AF-A09D-3542-9D3A-1E06EEC6FC2D">GetLineRectL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-85A823EB-B401-328B-9CD7-A32B4FFA7D51">GetMinimumSizeL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-4CBDD498-514D-3BA1-B57F-76B1F4DBFF2F">GetNextVisualCursorPos</a>(const <a href="GUID-90BADC65-874E-3C0F-9C1D-B0C40991A39F.html">TTmDocPosSpec</a> &amp;, <a href="GUID-1BA3C7D7-CEB0-3605-8BCB-71FBCB007C27.html">TTmPosInfo2</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-ED3F4715-6D2F-32F0-A246-9D36A35D15D6">GetOrigin</a>(<a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-1EAA02D4-A38A-3025-B9B6-CB878DAC8F8C">GetParagraphRect</a>(const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp;, <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-51FC88FD-DB2B-3942-A60F-14DA487A1F85">HandleAdditionalCharactersAtEndL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-1431C3C9-EE3F-3D85-9529-E15D5E0425B8">HandleBlockChangeL</a>(<a href="GUID-E2ED2E4B-C428-355D-84CC-A4FA0ED50B74.html">TCursorSelection</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-B12169A7-6472-33A1-A49A-3D70E65E65EA.html">TViewRectChanges</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-BF378F1B-D6C0-394E-848C-69785BFB63D1">HandleCharEditL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-4F559059-A1EE-341D-A57C-C1026A0000A7">Highlight</a>(const <a href="GUID-17F53C30-C5F5-351D-8ED8-A227D59DDCC4.html">TRangeChange</a> &amp;, const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;, const <a href="GUID-3D722378-7912-33EA-B97B-211F4ABE4AE0.html">TDrawTextLayoutContext</a> *)</td></tr><tr class="bg"><td align="right" class="code">const <a href="GUID-56EC79BB-B2E4-3116-82E5-8F4F41BF083B.html">TTmHighlightExtensions</a> &amp;</td><td><a href="#GUID-201463B4-94FA-3F2C-8CA0-0970D45FE1E2">HighlightExtensions</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-517B3A90-2ED7-30E5-A635-23976D232A6B">HighlightUsingExtensions</a>(const <a href="GUID-17F53C30-C5F5-351D-8ED8-A227D59DDCC4.html">CTextLayout::TRangeChange</a> &amp;, const <a href="GUID-17F53C30-C5F5-351D-8ED8-A227D59DDCC4.html">TRangeChange</a> &amp;, const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;, const <a href="GUID-3D722378-7912-33EA-B97B-211F4ABE4AE0.html">TDrawTextLayoutContext</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-7FD79643-AB72-3069-A954-647285B55CC7">InvertRangeL</a>(const <a href="GUID-E2ED2E4B-C428-355D-84CC-A4FA0ED50B74.html">TCursorSelection</a> &amp;, const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;, const <a href="GUID-3D722378-7912-33EA-B97B-211F4ABE4AE0.html">TDrawTextLayoutContext</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-7ACD168E-06F9-36C2-8389-EC40710EBFC2">IsWrapping</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-7C56B30E-4055-3626-BC7B-35C3CF9B77A8">MajorVersion</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-6C5579B6-2BC0-3616-924E-D0A1602C0204">MakeVisible</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-BF0C33C7-26C3-3421-AF47-13E049F5CE58">MinimumLineDescent</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">CTextLayout</a> *</td><td><a href="#GUID-D3636093-A0E8-3A97-9516-94A61266F289">NewL</a>(<a href="GUID-51B3C34F-2F8E-3181-93C4-00F073B1207C.html">MLayDoc</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-C2E48D9A-4BA8-3860-9F47-F465A6B087B3.html">TNonPrintingCharVisibility</a></td><td><a href="#GUID-37AD6FAB-A269-3C64-8B34-C457C13E7B52">NonPrintingCharsVisibility</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-6ED56179-6717-3A35-B657-AFF3E921A67F">NotifyTerminateBackgroundFormatting</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-9BCFD05C-FCA7-33C9-9BF7-17836CBC2956">NumFormattedLines</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-55E9C648-2270-37F3-9052-EE6116CD637E">PageDownL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-52D32DE7-E058-3BC6-8FF0-B4BE3C433823">PageUpL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-9BDAD542-0350-320A-9DD5-F13694A11466">Panic</a>(<a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TPanicNumber</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-DD4BEDBD-CABB-396D-A865-1DA596AF0237">ParagraphHeight</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a></td><td><a href="#GUID-105167D9-BD54-39F2-A6E6-3524F0713D4B">ParagraphRectL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-59AB2F4A-3C17-3613-ACB8-8057000C8BCC">PictureRectangleAndPosL</a>(const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;, <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-25864338-F030-3876-809B-84CDC16F2168">PictureRectangleL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-D0777BBA-3C72-3AD6-A102-E6FADD4E9928">PictureRectangleL</a>(const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;, <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-3779C4CF-AB8D-397F-BC16-EDC3C49B9219">PosInBand</a>(const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp;, <a href="GUID-CAE563D8-8D92-3C26-9B5C-0D6B625A1EBE.html">TTmLineInfo</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-B46B3076-3866-3E01-9765-CE25AD36D1E6">PosInBand</a>(<a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a>, <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-10490F50-A199-39B2-B9E6-1F56BAAB3EAF">PosIsFormatted</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-0A83C61D-388C-30F0-8C2A-7895AD7B80E2">PosRangeInBand</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-64E38C3C-0886-3BC8-8B70-9CDFDB7AF316">ReformatVerticalSpaceL</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-AF01DAAF-854D-32AF-9B47-022331226DEF">ResetExternalDraw</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-51191C72-4B7F-327F-842B-41FCE6E624AC">RestrictScrollToTopsOfLines</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-DE5DB775-069B-3CB2-BDF3-50BC23748138">ScrollDocPosIntoViewL</a>(const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-EE5FD3F8-15D8-30D5-840A-E51B4EAED463">ScrollLinesL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TAllowDisallow</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-E029E4E3-521F-30C2-9433-5DE2D0897727">ScrollParagraphsL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TAllowDisallow</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F65E488E-8562-3D0B-A249-7CC3FA7E3A9D">SetAmountToFormat</a>(<a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TAmountFormatted</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-478553B3-06F0-3EFC-96A3-BC6B6AB50290">SetBandHeight</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-B8E1A94F-C773-3CD7-BD43-EB5B2A0303AA">SetCustomDraw</a>(const <a href="GUID-AF2B465F-EFC3-3205-A6D8-2EE19E738385.html">MFormCustomDraw</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-8B6B831E-1722-3678-8CA2-380DAB4E6353">SetCustomInvisibleCharacterRemapper</a>(<a href="GUID-BF88B3D0-5D45-3FDC-A373-4BFF4F49EE6D.html">MFormCustomInvisibleCharacterRemapper</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-E8921F50-1875-33E5-AC0D-B35EEC7D8957">SetCustomWrap</a>(const <a href="GUID-324383D3-E56D-3575-9A80-62863267BEA3.html">MFormCustomWrap</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-E127AB1A-1C05-3C04-A556-F48EA3A44384">SetExcludePartialLines</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-13CCAEA6-7121-36F9-8A92-276ED1E1BBD4">SetExternalDraw</a>(const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-E03EAAE1-9F23-3C54-B6F0-F4F5D57C77D0">SetFontHeightIncreaseFactor</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-13031F0E-8F39-37E9-9203-E0D0E6FAD52C">SetFormatMode</a>(<a href="GUID-F42796E8-C11B-35C0-BF24-0C12C1E82C16.html">CLayoutData::TFormatMode</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-4791F2C1-C351-3824-8784-3161F5B65DCA.html">MGraphicsDeviceMap</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-C7D3BCB4-6C39-3A7F-A81A-27075B89AD49">SetHighlightExtensions</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-283C51C0-6E99-3F34-94BA-65D8B01F4C21">SetImageDeviceMap</a>(<a href="GUID-4791F2C1-C351-3824-8784-3161F5B65DCA.html">MGraphicsDeviceMap</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F2F92C9E-2690-3BB6-AF9B-386AF773E1ED">SetInterfaceProvider</a>(<a href="GUID-49AE91C2-4B33-31D0-A6CE-8E4DEF252E76.html">MFormCustomInterfaceProvider</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-5FEF06F3-134D-37AA-A9F9-C4E015CE8C97">SetLabelsDeviceMap</a>(<a href="GUID-4791F2C1-C351-3824-8784-3161F5B65DCA.html">MGraphicsDeviceMap</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-56613E1C-3BD3-350A-9D38-678ACA6B427F">SetLayDoc</a>(<a href="GUID-51B3C34F-2F8E-3181-93C4-00F073B1207C.html">MLayDoc</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-EFC499AA-2FD2-32C3-9DC3-3BB346DCF549">SetMinimumLineDescent</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-CE444335-50E5-3355-AF15-80BD5284B220">SetNonPrintingCharsVisibility</a>(<a href="GUID-C2E48D9A-4BA8-3860-9F47-F465A6B087B3.html">TNonPrintingCharVisibility</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-98C1A732-8304-3A6D-AD69-F98EB0961A68">SetOpaqueLC</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-47F0F463-E32D-3720-9243-2C898AEFEED0">SetReadyToRedraw</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-2530AB03-4D14-3411-8760-3B14344FDDD3">SetTextViewCursorPos</a>(<a href="GUID-DD726512-BCE4-3C4F-88AF-9947FC1CE07B.html">TCursorPosition</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-EC66E4BE-BA4D-32CB-9A02-12A5ADAD6E11">SetTruncating</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-B606889C-E982-320A-A8C4-063144961930">SetViewL</a>(const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-F1C52CB4-116D-3915-8F9B-9AF27E31600E.html">TViewYPosQualifier</a>, <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TDiscard</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-C2CE8940-4496-3A22-A986-39FE0D13909F">SetViewL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-F1C52CB4-116D-3915-8F9B-9AF27E31600E.html">TViewYPosQualifier</a>, <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TDiscard</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-D4E661D0-4E0D-39DC-8DD2-BFDCDD22B9C8">SetWindow</a>(<a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html">RWindow</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-A5C8021D-E9B4-314A-A8DE-368975C585BB">SetWrapWidth</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">const <a href="GUID-0B7F472C-BE91-3D6D-94B8-7924E10559CF.html">CTmTextLayout</a> &amp;</td><td><a href="#GUID-D0C70E64-2434-3670-AE1A-C08FFD7C90AC">TagmaTextLayout</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-F1C6C6AE-569C-36FD-AD54-5B5AB546449A">ToParagraphStart</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-EE978A2F-9739-38D2-A531-445145D6CBC6">Truncating</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-CDCFA2A5-EA8A-3B39-B90F-77AC41571E2D.html">TChar</a></td><td><a href="#GUID-4ADD1132-85BC-3DEF-B08E-33E62CD8BF56">TruncatingEllipsis</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-B1DC7647-15FC-37EC-8B21-F3DC2CD8DA04">WrapWidth</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-DD22C2DC-9583-3CC3-BA85-9842E2B47C88">XyPosToDocPosL</a>(<a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-B8627C05-3659-34B0-82CD-27AFB3AC3BF3">YBottomLastFormattedLine</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-937E433B-5E7A-32AE-BB15-9DE25EED7D76">CTextLayout</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-09B1DD14-4212-3A61-A9C1-F34D47B323B8">AddFormattingAtEndL</a>(<a href="GUID-227E292A-BF51-3733-A336-285E05D3E01B.html">TTmFormatParamBase</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-815DF7C8-A651-3865-A3FC-AEFD46A0B8BB">InitFormatParam</a>(<a href="GUID-227E292A-BF51-3733-A336-285E05D3E01B.html">TTmFormatParamBase</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-2A0D971E-6018-3711-A388-5045C3CD5595">PruneFormatL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-D686E125-E658-394C-9F2E-D0800431C21E">ResetOpaque</a>(void *)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-665A2202-0E2F-377D-8E2C-0CC3BA34D1BB">ScrollL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TAllowDisallow</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-CEC0A588-033F-3290-B6C5-9CB69FD30F9E">SetBandTop</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-09BF0256-E6E0-3B7E-940D-235FE74BE599">SuggestCursorPos</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-86DF134C-2F06-3DF4-85D6-A660B6AB72AD">VisibleHeightInPixels</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Enumerations</th></tr></thead><tbody><tr><td align="right" valign="top">enum</td><td><a href="#GUID-F0EF4902-58E8-3B17-BACC-6A3E123DEEC3">anonymous</a> { <a href="#GUID-915607A5-2753-38E1-B0E6-28A5A11D7E4F">EFCharacterInsert</a>, <a href="#GUID-C5658403-B557-3C31-A7BC-51C3D254223F">EFParagraphDelimiter</a>, <a href="#GUID-7F5C7214-277B-3F25-80AB-17C544915FE7">EFLeftDelete</a>, <a href="#GUID-E88B42D9-F4AE-3091-ACC5-4EB1EC551628">EFRightDelete</a> }</td></tr><tr class="bg"><td align="right" valign="top">enum</td><td><a href="#GUID-33EF1A9D-273A-32FA-9B52-A0D07A98D7C3">anonymous</a> { <a href="#GUID-E6D4A80F-161C-3B4E-9366-7267E9EAADFD">EFScrollRedrawWholeScreen</a> = CLayoutData::EFLargeNumber, <a href="#GUID-DAFDEAFD-9FE8-3B04-90AD-F3767AAA1A53">EFMaximumLineWidth</a> = CLayoutData::EFBodyWidthForNoWrapping }</td></tr><tr><td align="right" valign="top">enum</td><td><a href="#GUID-C1F5B652-0739-3A82-945B-F38B2CF361A8">anonymous</a> { <a href="#GUID-CCFF22FE-A651-33BF-ADCC-FB6300EB8072">EFAllParagraphsNotWrapped</a> = TRUE, <a href="#GUID-0CDEFB80-381E-3D58-9C05-C8BF60AF9AAA">EFParagraphsWrappedByDefault</a> = FALSE }</td></tr><tr class="bg"><td align="right" valign="top">enum</td><td><a href="#GUID-44242243-4EDC-3C1C-8236-9C176332D12F">anonymous</a> {  }</td></tr><tr><td align="right" valign="top">enum</td><td><a href="#GUID-3F851EB8-6A67-31F4-9BB7-9D1189BA6D8F">anonymous</a> {  }</td></tr><tr class="bg"><td align="right" valign="top">enum</td><td><a href="#GUID-88CDE0DF-52D7-3BB1-B67F-7FB2076E7B76">anonymous</a> {  }</td></tr><tr><td align="right" valign="top">enum</td><td><a href="#GUID-1FE26FF7-0805-351B-A334-C99E8F5BADBD">TAllowDisallow</a> { <a href="#GUID-6B04A5DA-7AE9-3E57-B9C8-F429995CD44E">EFAllowScrollingBlankSpace</a> = TRUE, <a href="#GUID-566E1730-5BCD-333B-97A8-19326E21747D">EFDisallowScrollingBlankSpace</a> = FALSE }</td></tr><tr class="bg"><td align="right" valign="top">enum</td><td><a href="#GUID-E67797B8-0D37-34E3-A4BC-AEF42F7D1713">TAmountFormatted</a> { <a href="#GUID-D2B5B857-45D7-38A3-9247-A88C970CBAA4">EFFormatAllText</a> = FALSE, <a href="#GUID-6E9D798B-CAE4-30B8-8088-A670D6EF9B02">EFFormatBand</a> = TRUE }</td></tr><tr><td align="right" valign="top">enum</td><td><a href="#GUID-229E6565-8402-3D72-B8AD-E33407A2736D">TCurrentFormat</a> { <a href="#GUID-FC420E7A-42E1-31C8-96E4-9F220AE42641">EFNoCurrentFormat</a> = -1, <a href="#GUID-90E4608F-D442-35B3-95B6-968345EDDFFE">EFNotInCurrentFormat</a> = 0 }</td></tr><tr class="bg"><td align="right" valign="top">enum</td><td><a href="#GUID-FB0613B4-EF9D-32ED-BA81-99CF8F98111B">TDiscard</a> { <a href="#GUID-3C4C2766-5EE2-3B8A-B763-151735ABEC3A">EFViewDiscardAllFormat</a> = TRUE, <a href="#GUID-5D00A60E-99BD-3F88-9623-76143C467130">EFViewDontDiscardFormat</a> = FALSE }</td></tr><tr><td align="right" valign="top">enum</td><td><a href="#GUID-748FE9A9-60C1-3E50-9EC7-CE1C5DB1F9FB">TPanicNumber</a> { <br/><a href="#GUID-57A11C3F-42C1-3257-8ACB-214640196298">EUnimplemented</a>, <a href="#GUID-09AE938B-F405-3836-9B5C-EA222ECD5B75">ENoMemory</a>, <a href="#GUID-36039EC2-376A-3974-8CBD-A93AA6727323">EDrawingBorderError</a>, <a href="#GUID-AB571B0A-A092-3192-AF0A-4864A2010111">EFormatDeviceNotSet</a>, <a href="#GUID-5D99046A-DB12-3EBC-BE60-B4336A7CCC75">EImageDeviceNotSet</a>, <a href="#GUID-548DC990-7769-3F98-AA77-94D1CE8912BF">EPixelNotInFormattedLine</a>, <a href="#GUID-845A6E2F-D8AD-3E2E-AC94-2AFA91E2FD9B">EInvalidDocPos</a>, <a href="#GUID-AA1A7DF0-F016-3FDB-9B1D-2757BE6B4933">ENoCharRangeToFormat</a>, <a href="#GUID-6710B6F7-3B7A-3A88-82BE-CAB36C9EF938">ECharacterNotFormatted</a>, <a href="#GUID-67E3C2C7-37EF-3EC5-A295-EEE3B87721C8">EPrintPreviewModeError</a>, <a href="#GUID-37819F56-3BB6-3132-9AA8-EA428CAEDEDB">EBadCharacterEditType</a>, <a href="#GUID-3062E72D-463B-3F62-85EF-348C3587F4F9">EInvalidLineNumber</a>, <a href="#GUID-ED8F5B1E-FD46-3DA4-8C33-A79AF77FD5D3">EPosNotFormatted</a>, <a href="#GUID-5D4D69F0-FDFB-3813-BCFD-1B923B2F4459">EMustFormatAllText</a>, <a href="#GUID-03BA2EEA-5474-38C5-A5A8-9B1E97D24FCE">EPageScrollError</a>, <a href="#GUID-765EEE7D-5B22-3387-9249-750089661B79">EInvalidRedraw</a><br/> }</td></tr><tr class="bg"><td align="right" valign="top">enum</td><td><a href="#GUID-2FE46986-8236-3D23-BEDD-7BCD40ACA132">TScrollFlags</a> { <a href="#GUID-CE347C7E-D550-30B0-8E33-9EFA28AAF307">EFScrollOnlyToTopsOfLines</a> = 1 }</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-3F09678B-5C4F-33A8-8EB1-0D11A8A19689">iBandHeight</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-2B531260-1BF9-3233-8A1E-2C1814218097">iBandTop</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-169EC580-ABC0-39EE-B952-890A0E9FCC77">iBeginRedrawCount</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-42125979-74FB-3A82-B2D7-DF39F7940BF4">iDmmyForIHighlightExtensions</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-1F8C9721-6E59-3883-8925-9437D11399AF">iDmmyForISource</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-FC38BA54-77C4-353A-8EAE-D66EA3AC112D">iDummy</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-AF58EB97-E292-3431-BD97-522DF3287CE8">iDummyForIText</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-BB72E82E-45BD-3C5C-8FB4-13BA47BC15DD">iExcessHeightRequired</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-56EC79BB-B2E4-3116-82E5-8F4F41BF083B.html">TTmHighlightExtensions</a> *</td><td><a href="#GUID-E1F97289-4096-3978-8EEE-6EF8E017D07E">iHighlightExtensions</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-B469CC33-00DC-3476-86AD-1CA3A5B8F6A2">iIsWndInExternalRedraw</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-5BCC5B06-37F4-383B-AC32-93C81AA83A68">iParInvalid</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-727A484A-6B92-3F64-9F0C-F02026D2049E">iReadyToRedraw</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a>
+				</td><td><a href="#GUID-79FF947A-7B66-321E-A713-57F12EB42831">iRedrawRect</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-884B3C90-71C4-388C-ACC6-28D686C6142B">iScrollFlags</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-CA9A233E-A605-3C3B-B39B-C351B5664891.html">TLayDocTextSource</a> *</td><td><a href="#GUID-894AC402-DB64-3984-A5F9-94D7319CE2CC">iSource</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-0B7F472C-BE91-3D6D-94B8-7924E10559CF.html">CTmTextLayout</a> *</td><td><a href="#GUID-7DBEA19D-7D70-3E85-B9C7-C655CC391BC9">iText</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-DD726512-BCE4-3C4F-88AF-9947FC1CE07B.html">TCursorPosition</a> *</td><td><a href="#GUID-03C66843-4DE7-3789-8BF9-14E486020244">iTextViewCursorPos</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-6ABBA299-9B76-3BF8-9CFE-067803DF7B87">iUnformattedStart</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-2C80B1DE-512B-3A43-80DD-78FDCAE25BFF">iVisibleHeight</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html">RWindow</a> *</td><td><a href="#GUID-67154AFE-DBD8-39C8-87FB-4219D32EC9EB">iWnd</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-937E433B-5E7A-32AE-BB15-9DE25EED7D76"><a name="GUID-937E433B-5E7A-32AE-BB15-9DE25EED7D76"><!-- --></a>
+		<h2 class="topictitle2">CTextLayout()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>CTextLayout</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-F65E7AEC-2984-394D-9B06-E2749FA2B208"><a name="GUID-F65E7AEC-2984-394D-9B06-E2749FA2B208"><!-- --></a>
+		<h2 class="topictitle2">~CTextLayout()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CTextLayout</td><td>(</td><td>)</td><td/></tr></table><div class="section"></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-09B1DD14-4212-3A61-A9C1-F34D47B323B8"><a name="GUID-09B1DD14-4212-3A61-A9C1-F34D47B323B8"><!-- --></a>
+		<h2 class="topictitle2">AddFormattingAtEndL(TTmFormatParamBase &amp;, TInt &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>AddFormattingAtEndL</td><td>(</td><td><a href="GUID-227E292A-BF51-3733-A336-285E05D3E01B.html">TTmFormatParamBase</a> &amp;</td><td>aFormatParam,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aHeightIncrease,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aParagraphsIncrease</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-227E292A-BF51-3733-A336-285E05D3E01B.html">TTmFormatParamBase</a> &amp; aFormatParam</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aHeightIncrease</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aParagraphsIncrease</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5ECBB172-07FD-39CE-ACB9-819716429017"><a name="GUID-5ECBB172-07FD-39CE-ACB9-819716429017"><!-- --></a>
+		<h2 class="topictitle2">AdjustVerticalAlignment(CParaFormat::TAlignment)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AdjustVerticalAlignment</td><td>(</td><td><a href="GUID-2F795E02-0704-39AE-8EC6-06CB5D5D670F.html">CParaFormat::TAlignment</a></td><td>aVerticalAlignment</td><td>)</td><td/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2F795E02-0704-39AE-8EC6-06CB5D5D670F.html">CParaFormat::TAlignment</a> aVerticalAlignment</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-14CCB13E-0F9D-3270-8F8A-FC973DF50AB4"><a name="GUID-14CCB13E-0F9D-3270-8F8A-FC973DF50AB4"><!-- --></a>
+		<h2 class="topictitle2">CalculateHorizontalExtremes(TInt &amp;, TInt &amp;, TBool)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>CalculateHorizontalExtremes</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aLeftX,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aRightX,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aOnlyVisibleLines</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aLeftX</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aRightX</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aOnlyVisibleLines</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AC55F284-E002-3D8B-AA7B-52CC344D8EB3"><a name="GUID-AC55F284-E002-3D8B-AA7B-52CC344D8EB3"><!-- --></a>
+		<h2 class="topictitle2">CalculateHorizontalExtremesL(TInt &amp;, TInt &amp;, TBool, TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>CalculateHorizontalExtremesL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aLeftX,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aRightX,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aOnlyVisibleLines,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aIgnoreWrapCharacters = FALSE</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<p>Returns the left and right extremes, in layout coordinates, of the formatted text.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aLeftX</td><td>On return, contains the x coordinate of the leftmost point of the formatted text.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aRightX</td><td>On return, contains the x coordinate of the rightmost point of the formatted text.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aOnlyVisibleLines</td><td>If ETrue, only scans partially or fully visible lines. If EFalse, scans all the formatted text.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aIgnoreWrapCharacters = FALSE</td><td>If ETrue, does not include wrap characters in the measurement (paragraph delimiters, forced line breaks, etc.). If EFalse, includes them.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B0ACC0AD-FEDC-3446-9CAE-D713221A41DE"><a name="GUID-B0ACC0AD-FEDC-3446-9CAE-D713221A41DE"><!-- --></a>
+		<h2 class="topictitle2">ChangeBandTopNoLimitBorderL(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ChangeBandTopNoLimitBorderL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPixels</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Scrolls the text up or down by aPixels pixels, allowing blank space at top and bottom of the visible area, which means the scrolling can go beyond the top or bottom border.</p>
+
+				<p>Do not use if a <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> object owns this <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPixels</td><td>The number of pixels to scroll; may be a positive or negative value. The actual scrolled pixel number is always identical to aPixels  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-65581F1C-BB74-3D70-89D4-28414577EE4B"><a name="GUID-65581F1C-BB74-3D70-89D4-28414577EE4B"><!-- --></a>
+		<h2 class="topictitle2">CustomWrap()</h2>
+		<table class="signature"><tr><td>IMPORT_C const <a href="GUID-324383D3-E56D-3575-9A80-62863267BEA3.html">MFormCustomWrap</a> *</td><td>CustomWrap</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-9A47B8CA-EACD-3598-9831-4E974DA9ED06"><a name="GUID-9A47B8CA-EACD-3598-9831-4E974DA9ED06"><!-- --></a>
+		<h2 class="topictitle2">DrawBackground(CGraphicsContext &amp;, const TPoint &amp;, const TRect &amp;, const TLogicalRgb &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>DrawBackground</td><td>(</td><td><a href="GUID-DAD09DCF-3123-38B4-99E9-91FB24B92138.html">CGraphicsContext</a> &amp;</td><td>aGc,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aTopLeft,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aClipRect,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-0C6B5C9F-9FFB-3F9B-A782-A455E4ADE2BA.html">TLogicalRgb</a> &amp;</td><td>aBackground</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-DAD09DCF-3123-38B4-99E9-91FB24B92138.html">CGraphicsContext</a> &amp; aGc</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aTopLeft</td><td> </td></tr><tr><td class="parameter">const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aClipRect</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-0C6B5C9F-9FFB-3F9B-A782-A455E4ADE2BA.html">TLogicalRgb</a> &amp; aBackground</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2D6CBE31-62B9-38A8-ACE1-8002668CC771"><a name="GUID-2D6CBE31-62B9-38A8-ACE1-8002668CC771"><!-- --></a>
+		<h2 class="topictitle2">DrawBorders(const MGraphicsDeviceMap *, CGraphicsContext &amp;, const TRect &amp;, const TParaBorderArray &amp;, const TRgb *, TRegion *, const TRect *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>DrawBorders</td><td>(</td><td>const <a href="GUID-4791F2C1-C351-3824-8784-3161F5B65DCA.html">MGraphicsDeviceMap</a> *</td><td>aGd,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-DAD09DCF-3123-38B4-99E9-91FB24B92138.html">CGraphicsContext</a> &amp;</td><td>aGc,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aRect,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-D082BE17-16E0-3684-BE53-809FA9D9EDC7.html">TParaBorderArray</a> &amp;</td><td>aBorder,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-F84C7F40-6DEB-39D1-B172-CB0CC3918E27.html">TRgb</a> *</td><td>aBackground = NULL,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-740A218E-76FB-31BF-BD91-BA6780AC4DEE.html">TRegion</a> *</td><td>aClipRegion = NULL,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> *</td><td>aDrawRect = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Draws paragraph borders, optionally with a background colour for the border and a clip region. Provided for applications that display a menu of border styles, like a wordprocessor.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-4791F2C1-C351-3824-8784-3161F5B65DCA.html">MGraphicsDeviceMap</a> * aGd</td><td>Provides twip-to-pixel conversion.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-DAD09DCF-3123-38B4-99E9-91FB24B92138.html">CGraphicsContext</a> &amp; aGc</td><td>Graphics context to which to draw the border. Its pen settings are overridden by the values specified by aBorder and its draw mode is set to CGraphicsContext::EDrawModePEN.  </td></tr><tr><td class="parameter">const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aRect</td><td>The outer bounds of the border.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-D082BE17-16E0-3684-BE53-809FA9D9EDC7.html">TParaBorderArray</a> &amp; aBorder</td><td>Specifies the four sides of the border.  </td></tr><tr><td class="parameter">const <a href="GUID-F84C7F40-6DEB-39D1-B172-CB0CC3918E27.html">TRgb</a> * aBackground = NULL</td><td>If not null, the background colour, (used between double border lines, or between dots or dashes).  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-740A218E-76FB-31BF-BD91-BA6780AC4DEE.html">TRegion</a> * aClipRegion = NULL</td><td>If non-null, specifies a clip region.  </td></tr><tr><td class="parameter">const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> * aDrawRect = NULL</td><td>If non-null, and if aClipRegion is non-null, specifies a rectangle to be subtracted from the clip region.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EB387B4A-BFA5-3747-86C5-79A872A90EE8"><a name="GUID-EB387B4A-BFA5-3747-86C5-79A872A90EE8"><!-- --></a>
+		<h2 class="topictitle2">DrawL(const TRect &amp;, const TDrawTextLayoutContext *, const TCursorSelection *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>DrawL</td><td>(</td><td>const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aDrawRect,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-3D722378-7912-33EA-B97B-211F4ABE4AE0.html">TDrawTextLayoutContext</a> *</td><td>aDrawTextLayoutContext,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-E2ED2E4B-C428-355D-84CC-A4FA0ED50B74.html">TCursorSelection</a> *</td><td>aHighlight = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Draws the text. Draws any lines that intersect aDrawRect, which is specified in window coordinates. The drawing parameters, including the graphics context, are given in aDrawTextLayoutContext. If aHighlight is non-null, highlights (by exclusive-ORing) the specified range of text.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aDrawRect</td><td>The function draw the lines within the visible area, which intersect this rectangle (which is specified in window coordinates).  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-3D722378-7912-33EA-B97B-211F4ABE4AE0.html">TDrawTextLayoutContext</a> * aDrawTextLayoutContext</td><td>Provides a graphics context and other parameters for the function.  </td></tr><tr><td class="parameter">const <a href="GUID-E2ED2E4B-C428-355D-84CC-A4FA0ED50B74.html">TCursorSelection</a> * aHighlight = NULL</td><td>If not NULL, this range of text is drawn highlighted.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B208BABC-8C03-30D2-8E5F-A4350930553E"><a name="GUID-B208BABC-8C03-30D2-8E5F-A4350930553E"><!-- --></a>
+		<h2 class="topictitle2">EndRedraw()</h2>
+		<table class="signature"><tr><td>void</td><td>EndRedraw</td><td>(</td><td>)</td><td/></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-706504D8-D9AE-39C9-9970-FD8BB07DFF83"><a name="GUID-706504D8-D9AE-39C9-9970-FD8BB07DFF83"><!-- --></a>
+		<h2 class="topictitle2">ExcludingPartialLines()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>ExcludingPartialLines</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Tests whether partial lines at the top and bottom of the view are currently excluded.</p>
+
+				<p>7.0 </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-CB8A6BA9-68E6-3BD8-ACF9-B69011F62204"><a name="GUID-CB8A6BA9-68E6-3BD8-ACF9-B69011F62204"><!-- --></a>
+		<h2 class="topictitle2">ExtendFormattingToCoverPosL(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ExtendFormattingToCoverPosL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aDocPos</td><td>)</td><td/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aDocPos</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-466BABDF-FC7A-35C4-B77A-2EF14C181F3C"><a name="GUID-466BABDF-FC7A-35C4-B77A-2EF14C181F3C"><!-- --></a>
+		<h2 class="topictitle2">ExtendFormattingToCoverYL(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ExtendFormattingToCoverYL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aYPos</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Makes sure the line that aYPos is in (if it exists) is covered by the formatting. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aYPos</td><td>Y pixel position in window-relative co-ordinates.   </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C43E79A8-3BE8-358A-A175-F0A2571391CC"><a name="GUID-C43E79A8-3BE8-358A-A175-F0A2571391CC"><!-- --></a>
+		<h2 class="topictitle2">FindXyPos(const TPoint &amp;, TTmPosInfo2 &amp;, TTmLineInfo *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>FindXyPos</td><td>(</td><td>const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aXyPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-1BA3C7D7-CEB0-3605-8BCB-71FBCB007C27.html">TTmPosInfo2</a> &amp;</td><td>aPosInfo,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-CAE563D8-8D92-3C26-9B5C-0D6B625A1EBE.html">TTmLineInfo</a> *</td><td>aLineInfo = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<p>Finds the document position nearest to aXyPos. If aXyPos is in the formatted text returns ETrue, otherwise returns EFalse. If ETrue is returned, places information about the document position in aPosInfo and information about the line containing the document position in aLineInfo if it is non-NULL.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aXyPos</td><td>Contains coordinates to convert to a document position.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-1BA3C7D7-CEB0-3605-8BCB-71FBCB007C27.html">TTmPosInfo2</a> &amp; aPosInfo</td><td>Buffer to store information about the document position if the specified coordinates are located in the formatted text.  </td></tr><tr><td class="parameter"><a href="GUID-CAE563D8-8D92-3C26-9B5C-0D6B625A1EBE.html">TTmLineInfo</a> * aLineInfo = NULL</td><td>Buffer to store information about the line if the specified coordinates are located in the formatted text.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3A5BEA0A-18CD-33FA-8224-C70F37CB6E19"><a name="GUID-3A5BEA0A-18CD-33FA-8224-C70F37CB6E19"><!-- --></a>
+		<h2 class="topictitle2">FormatCharRangeL(TInt, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>FormatCharRangeL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aStartDocPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aEndDocPos</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Sets the formatted text to begin at the start of the paragraph including aStartPos and end at aEndPos. Moves the line containing aStartDocPos to the top of the visible area.</p>
+
+				<p>Notes:</p>
+
+				<p>This function is not generally useful; it exists for the convenience of the printing system.</p>
+
+				<p>Do not use if a <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> object owns this <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aStartDocPos</td><td>A document position within the paragraph from which to begin formatting.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aEndDocPos</td><td>Document position at which to end formatting.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C59D75F8-AD08-373C-9E1D-B51F287D92C9"><a name="GUID-C59D75F8-AD08-373C-9E1D-B51F287D92C9"><!-- --></a>
+		<h2 class="topictitle2">FormatNextLineL(TInt &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>FormatNextLineL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aBotPixel</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>A special function to support background formatting by the higher level <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> class. It formats the next pending line. The return value is ETrue if there is more formatting to do. On entry, aBotPixel contains the y coordinate of the bottom of the formatted text; this is updated by the function.</p>
+
+				<p>Notes:</p>
+
+				<p>Not generally useful.</p>
+
+				<p>Do not use if a <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> object owns this <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aBotPixel</td><td>On entry, contains the y coordinate of the bottom of the formatted text; this is updated by the function.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E783D5AD-2D58-3B81-B732-F4FD8D3415FC"><a name="GUID-E783D5AD-2D58-3B81-B732-F4FD8D3415FC"><!-- --></a>
+		<h2 class="topictitle2">FormattedLength()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>FormattedLength</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the number of formatted characters. This will be one more than expected if the formatted text runs to the end of the document, because it will include the end-of-text character.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-57DC1B26-8C3E-3F49-AEA3-BF6AA5CD4B7D"><a name="GUID-57DC1B26-8C3E-3F49-AEA3-BF6AA5CD4B7D"><!-- --></a>
+		<h2 class="topictitle2">GetCharacterHeightAndAscentL(TInt, TInt &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetCharacterHeightAndAscentL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aDocPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aHeight,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aAscent</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<p>Gets the height (ascent + descent) and ascent of the font of the character at aDocPos, as created using the graphics device map used for drawing (the "image device") and returns them in aHeight and aAscent, after increasing aHeight by the font height increase factor (see <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-E03EAAE1-9F23-3C54-B6F0-F4F5D57C77D0">SetFontHeightIncreaseFactor()</a>).</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aDocPos</td><td>A document position.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aHeight</td><td>On return contains the height in pixels of the character at aDocPos.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aAscent</td><td>On return, contains the ascent in pixels of the character at aDocPos.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EEA08CB5-6AD2-305F-A7AC-9AFCED964E68"><a name="GUID-EEA08CB5-6AD2-305F-A7AC-9AFCED964E68"><!-- --></a>
+		<h2 class="topictitle2">GetCursor(const TTmDocPos &amp;, TTmCursorPlacement, TRect &amp;, TPoint &amp;, TInt &amp;, TInt &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>GetCursor</td><td>(</td><td>const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp;</td><td>aDocPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E7DBAB32-C4BD-37A9-A028-EBD83FFD59BC.html">TTmCursorPlacement</a></td><td>aPlacement,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aLineRect,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aOrigin,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aWidth,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aAscent,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aDescent</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp; aDocPos</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E7DBAB32-C4BD-37A9-A028-EBD83FFD59BC.html">TTmCursorPlacement</a> aPlacement</td><td> </td></tr><tr><td class="parameter"><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aLineRect</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aOrigin</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aWidth</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aAscent</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aDescent</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-FC183CF4-B4D2-3D0B-91B0-D288F353E8D6"><a name="GUID-FC183CF4-B4D2-3D0B-91B0-D288F353E8D6"><!-- --></a>
+		<h2 class="topictitle2">GetFontHeightAndAscentL(const TFontSpec &amp;, TInt &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetFontHeightAndAscentL</td><td>(</td><td>const <a href="GUID-052E4F6B-71C5-304C-B387-07A2F6F9900B.html">TFontSpec</a> &amp;</td><td>aFontSpec,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aHeight,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aAscent</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<p>Gets the height (ascent + descent) and ascent of the font specified by aFontSpec, as created using the graphics device map used for drawing (the "image device") and puts them into aHeight and aAscent, after increasing aHeight by the font height increase factor (see <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-E03EAAE1-9F23-3C54-B6F0-F4F5D57C77D0">SetFontHeightIncreaseFactor()</a>).</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-052E4F6B-71C5-304C-B387-07A2F6F9900B.html">TFontSpec</a> &amp; aFontSpec</td><td>Font specification.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aHeight</td><td>On return, contains the height in pixels of the font.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aAscent</td><td>On return, contains the ascent in pixels of the font.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-690CD52D-C032-3400-9082-E76A8793B437"><a name="GUID-690CD52D-C032-3400-9082-E76A8793B437"><!-- --></a>
+		<h2 class="topictitle2">GetLineNumber(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>GetLineNumber</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aDocPos</td><td>)</td><td/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aDocPos</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F7396E87-EFA0-3AC4-B676-C9642A627453"><a name="GUID-F7396E87-EFA0-3AC4-B676-C9642A627453"><!-- --></a>
+		<h2 class="topictitle2">GetLineRect(TInt, TRect &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>GetLineRect</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aYPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aLine</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<p>Gets the rectangle enclosing the formatted line that contains or is closest to y coordinate aYPos. If aYPos is above the first formatted line, the rectangle returned is that of the first formatted line. If aYPos is below the last formatted line the rectangle returned is that of the last formatted line. If there is no formatted text, returns <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FC420E7A-42E1-31C8-96E4-9F220AE42641">CTextLayout::EFNoCurrentFormat</a>.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aYPos</td><td>The y coordinate of the line of interest.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aLine</td><td>On return, contains the rectangle which encloses the line at aYPos. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6BA681AF-A09D-3542-9D3A-1E06EEC6FC2D"><a name="GUID-6BA681AF-A09D-3542-9D3A-1E06EEC6FC2D"><!-- --></a>
+		<h2 class="topictitle2">GetLineRectL(TInt, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a></td><td>GetLineRectL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aDocPos1,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aDocPos2</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<p>Gets a rectangle enclosing two formatted document positions on the same line. If the second position is less than the first, or on a different line, it is taken to indicate the end of the line. This function panics if either position is unformatted.</p>
+
+				<p>Note:</p>
+
+				<p>
+					<a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> must have been set with a valid wrap width and band height before calling this function, otherwise no formatting will take place and the function will panic. Wrap width and band height values must be &gt; 0 to be valid.</p>
+
+				<p>
+					<a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-6DF160EC-FB60-3A96-91AA-55B33BB4A1FA">SetBandHeight</a> <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-A5C8021D-E9B4-314A-A8DE-368975C585BB">SetWrapWidth</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aDocPos1</td><td>The first document position on the line.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aDocPos2</td><td>The second document position on the line.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-85A823EB-B401-328B-9CD7-A32B4FFA7D51"><a name="GUID-85A823EB-B401-328B-9CD7-A32B4FFA7D51"><!-- --></a>
+		<h2 class="topictitle2">GetMinimumSizeL(TInt, TSize &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetMinimumSizeL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aWrapWidth,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a> &amp;</td><td>aSize</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Gets the width and height of the bounding box of the text, including indents and margins, when formatted to the specified wrap width.</p>
+
+				<div class="p">This is useful for applications like a web browser that need to determine the minimum width for a piece of text: if you specify zero as the wrap width, the returned aSize.iWidth contains the minimum width that could be used for the text without illegal line breaks, and if you specify KMaxTInt for aWrapWidth, the returned aSize.iHeight contains the minimum height: the height when each paragraph is a single line of unlimited length. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>6.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aWrapWidth</td><td>The wrap width for the bounding box.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a> &amp; aSize</td><td>On return, contains the width and height of the bounding box.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4CBDD498-514D-3BA1-B57F-76B1F4DBFF2F"><a name="GUID-4CBDD498-514D-3BA1-B57F-76B1F4DBFF2F"><!-- --></a>
+		<h2 class="topictitle2">GetNextVisualCursorPos(const TTmDocPosSpec &amp;, TTmPosInfo2 &amp;, TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>GetNextVisualCursorPos</td><td>(</td><td>const <a href="GUID-90BADC65-874E-3C0F-9C1D-B0C40991A39F.html">TTmDocPosSpec</a> &amp;</td><td>aDocPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-1BA3C7D7-CEB0-3605-8BCB-71FBCB007C27.html">TTmPosInfo2</a> &amp;</td><td>aPosInfo,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aToLeft</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<p>Finds the next cursor position to aDocPos in the visually ordered line.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-90BADC65-874E-3C0F-9C1D-B0C40991A39F.html">TTmDocPosSpec</a> &amp; aDocPos</td><td>Contains the document position to check.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-1BA3C7D7-CEB0-3605-8BCB-71FBCB007C27.html">TTmPosInfo2</a> &amp; aPosInfo</td><td>On return, stores information about the document position of the next cursor position, if ETrue is returned.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aToLeft</td><td>ETrue if the position to the left is to be found, or EFalse if the position to the right is to be found.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-ED3F4715-6D2F-32F0-A246-9D36A35D15D6"><a name="GUID-ED3F4715-6D2F-32F0-A246-9D36A35D15D6"><!-- --></a>
+		<h2 class="topictitle2">GetOrigin(TPoint &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetOrigin</td><td>(</td><td><a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aPoint</td><td>)</td><td>const [inline]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aPoint</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1EAA02D4-A38A-3025-B9B6-CB878DAC8F8C"><a name="GUID-1EAA02D4-A38A-3025-B9B6-CB878DAC8F8C"><!-- --></a>
+		<h2 class="topictitle2">GetParagraphRect(const TTmDocPos &amp;, TRect &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetParagraphRect</td><td>(</td><td>const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp;</td><td>aDocPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aRect</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp; aDocPos</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aRect</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-51FC88FD-DB2B-3942-A60F-14DA487A1F85"><a name="GUID-51FC88FD-DB2B-3942-A60F-14DA487A1F85"><!-- --></a>
+		<h2 class="topictitle2">HandleAdditionalCharactersAtEndL(TInt &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>HandleAdditionalCharactersAtEndL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aFirstPixel,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aLastPixel</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aFirstPixel</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aLastPixel</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1431C3C9-EE3F-3D85-9529-E15D5E0425B8"><a name="GUID-1431C3C9-EE3F-3D85-9529-E15D5E0425B8"><!-- --></a>
+		<h2 class="topictitle2">HandleBlockChangeL(TCursorSelection, TInt, TViewRectChanges &amp;, TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>HandleBlockChangeL</td><td>(</td><td><a href="GUID-E2ED2E4B-C428-355D-84CC-A4FA0ED50B74.html">TCursorSelection</a></td><td>aSelection,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aOldCharsChanged,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-B12169A7-6472-33A1-A49A-3D70E65E65EA.html">TViewRectChanges</a> &amp;</td><td>aViewChanges,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aFormatChanged</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Reformats to reflect changes to a block of text.</p>
+
+				<p>Do not use if a <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> object owns this <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-E2ED2E4B-C428-355D-84CC-A4FA0ED50B74.html">TCursorSelection</a> aSelection</td><td>The start and new length of the changed block. When inserting, specify the insertion position. When deleting, specify the position of the start of the deletion. When reformatting, specify the start and length of the reformatted block.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aOldCharsChanged</td><td>The old length of the changed block. When inserting, specify zero. When deleting, specify the number of deleted characters. When reformatting, specify the number of reformatted characters.  </td></tr><tr><td class="parameter"><a href="GUID-B12169A7-6472-33A1-A49A-3D70E65E65EA.html">TViewRectChanges</a> &amp; aViewChanges</td><td>On return, contains the top of the reformatted text (iFormattedFrom), the bottom of the reformatted text (iFormattedTo), the amount by which the text above the reformatted text has scrolled (iScrollAtTop) and the amount by which the text below the reformatted text has scrolled (iScrollAtBottom) (positive values mean the text moves down).  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aFormatChanged</td><td>Indicates whether the paragraph format for the first or last affected paragraph has changed, meaning that the text to be reformatted must extend out to paragraph boundaries and cannot be restricted to only some lines.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BF378F1B-D6C0-394E-848C-69785BFB63D1"><a name="GUID-BF378F1B-D6C0-394E-848C-69785BFB63D1"><!-- --></a>
+		<h2 class="topictitle2">HandleCharEditL(TUint, TInt &amp;, TInt &amp;, TInt &amp;, TInt &amp;, TInt &amp;, TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>HandleCharEditL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aCursorPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aGood,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aFormattedUpTo,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aFormattedFrom,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aScroll,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aFormatChanged</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Reformats to reflect a single character edit.</p>
+
+				<p>Do not use if a <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> object owns this <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aType</td><td>Indicates the type of edit which has taken place. CTextLayout::EFCharacterInsert (the default) for a character insertion, CTextLayout::EFParagraphDelimiter for a paragraph delimiter insertion, CTextLayout::EFLeftDelete or CTextLayout::EFRightDelete for a character or paragraph delimiter deletion to the left or right of the document position.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aCursorPos</td><td>The document position at which the edit took place, before the edit. If this position is not formatted, a panic occurs; it is modified in accordance with the edit.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aGood</td><td>On return, the y coordinate of the top of the paragraph following the paragraph which has been edited, before the edit.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aFormattedUpTo</td><td>On return, the y coordinate of the bottom of the reformatted line or lines, after the edit.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aFormattedFrom</td><td>On return, the vertical layout coordinate of the top of the reformatted line or lines, after the edit.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aScroll</td><td>The number of pixels by which the text had to be scrolled (positive means text moved down).  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aFormatChanged</td><td>ETrue if text is to be reformatted from the start of the paragraph the cursor was on before the edit, EFalse if from the start of the line the cursor was on before the edit.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4F559059-A1EE-341D-A57C-C1026A0000A7"><a name="GUID-4F559059-A1EE-341D-A57C-C1026A0000A7"><!-- --></a>
+		<h2 class="topictitle2">Highlight(const TRangeChange &amp;, const TRect &amp;, const TDrawTextLayoutContext *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Highlight</td><td>(</td><td>const <a href="GUID-17F53C30-C5F5-351D-8ED8-A227D59DDCC4.html">TRangeChange</a> &amp;</td><td>aHighlight,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aDrawRect,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-3D722378-7912-33EA-B97B-211F4ABE4AE0.html">TDrawTextLayoutContext</a> *</td><td>aDrawTextLayoutContext</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Sets or clears a highlight.</p>
+
+				<p>If the range of characters to highlight is of zero length, the function has no effect.</p>
+
+				<p>The function affects only those lines that intersect aDrawRect, which is specified in window coordinates. The drawing parameters, including the graphics context, are given in aDrawTextLayoutContext.</p>
+
+				<p>From v7.0, this function replaces <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-7FD79643-AB72-3069-A954-647285B55CC7">InvertRangeL()</a>.</p>
+
+				<p>This function is not intended to be used to set any part of a highlight already set, nor to clear any piece of text not highlighted. It is intended to do either or both of: clear an existing selection, set a new selection. See the class description for <a href="GUID-17F53C30-C5F5-351D-8ED8-A227D59DDCC4.html#GUID-17F53C30-C5F5-351D-8ED8-A227D59DDCC4">TRangeChange</a> for a code fragment showing how this function should be used.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-17F53C30-C5F5-351D-8ED8-A227D59DDCC4.html">TRangeChange</a> &amp; aHighlight</td><td>Specifies the range of characters to highlight or from which to remove the highlight.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aDrawRect</td><td>Only lines which intersect this rectangle are affected (specified in window coordinates).  </td></tr><tr><td class="parameter">const <a href="GUID-3D722378-7912-33EA-B97B-211F4ABE4AE0.html">TDrawTextLayoutContext</a> * aDrawTextLayoutContext</td><td>Provides a graphics context and other drawing parameters, e.g. the text and background colours for the highlighted region.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-201463B4-94FA-3F2C-8CA0-0970D45FE1E2"><a name="GUID-201463B4-94FA-3F2C-8CA0-0970D45FE1E2"><!-- --></a>
+		<h2 class="topictitle2">HighlightExtensions()</h2>
+		<table class="signature"><tr><td>const <a href="GUID-56EC79BB-B2E4-3116-82E5-8F4F41BF083B.html">TTmHighlightExtensions</a> &amp;</td><td>HighlightExtensions</td><td>(</td><td>)</td><td>const [inline]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-517B3A90-2ED7-30E5-A635-23976D232A6B"><a name="GUID-517B3A90-2ED7-30E5-A635-23976D232A6B"><!-- --></a>
+		<h2 class="topictitle2">HighlightUsingExtensions(const CTextLayout::TRangeChange &amp;, const TRangeChange &amp;, const TRect &amp;, const TDrawTextLayoutContext *)</h2>
+		<table class="signature"><tr><td>void</td><td>HighlightUsingExtensions</td><td>(</td><td>const <a href="GUID-17F53C30-C5F5-351D-8ED8-A227D59DDCC4.html">CTextLayout::TRangeChange</a> &amp;</td><td>aChangeHighlight,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-17F53C30-C5F5-351D-8ED8-A227D59DDCC4.html">TRangeChange</a> &amp;</td><td>aFullHighlight,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aDrawRect,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-3D722378-7912-33EA-B97B-211F4ABE4AE0.html">TDrawTextLayoutContext</a> *</td><td>aDrawTextLayoutContext</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-17F53C30-C5F5-351D-8ED8-A227D59DDCC4.html">CTextLayout::TRangeChange</a> &amp; aChangeHighlight</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-17F53C30-C5F5-351D-8ED8-A227D59DDCC4.html">TRangeChange</a> &amp; aFullHighlight</td><td> </td></tr><tr><td class="parameter">const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aDrawRect</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-3D722378-7912-33EA-B97B-211F4ABE4AE0.html">TDrawTextLayoutContext</a> * aDrawTextLayoutContext</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-815DF7C8-A651-3865-A3FC-AEFD46A0B8BB"><a name="GUID-815DF7C8-A651-3865-A3FC-AEFD46A0B8BB"><!-- --></a>
+		<h2 class="topictitle2">InitFormatParam(TTmFormatParamBase &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>InitFormatParam</td><td>(</td><td><a href="GUID-227E292A-BF51-3733-A336-285E05D3E01B.html">TTmFormatParamBase</a> &amp;</td><td>aParam</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-227E292A-BF51-3733-A336-285E05D3E01B.html">TTmFormatParamBase</a> &amp; aParam</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7FD79643-AB72-3069-A954-647285B55CC7"><a name="GUID-7FD79643-AB72-3069-A954-647285B55CC7"><!-- --></a>
+		<h2 class="topictitle2">InvertRangeL(const TCursorSelection &amp;, const TRect &amp;, const TDrawTextLayoutContext *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>InvertRangeL</td><td>(</td><td>const <a href="GUID-E2ED2E4B-C428-355D-84CC-A4FA0ED50B74.html">TCursorSelection</a> &amp;</td><td>aHighlight,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aDrawRect,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-3D722378-7912-33EA-B97B-211F4ABE4AE0.html">TDrawTextLayoutContext</a> *</td><td>aDrawTextLayoutContext</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Toggles the selection highlight for the range of text in aHighlight.</p>
+
+				<p>Highlights only those lines that intersect aDrawRect, which is specified in window coordinates. The drawing parameters, including the graphics context, are given in aDrawTextLayoutContext.</p>
+
+				<p>In v7.0 and onwards, this function is deprecated -Highlight() should be used instead. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-E2ED2E4B-C428-355D-84CC-A4FA0ED50B74.html">TCursorSelection</a> &amp; aHighlight</td><td>The range of characters for which to invert the highlighting.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aDrawRect</td><td>Only lines which intersect this rectangle are affected; specified in window coordinates.  </td></tr><tr><td class="parameter">const <a href="GUID-3D722378-7912-33EA-B97B-211F4ABE4AE0.html">TDrawTextLayoutContext</a> * aDrawTextLayoutContext</td><td>Provides a graphics context and other drawing parameters.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7ACD168E-06F9-36C2-8389-EC40710EBFC2"><a name="GUID-7ACD168E-06F9-36C2-8389-EC40710EBFC2"><!-- --></a>
+		<h2 class="topictitle2">IsWrapping()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>IsWrapping</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Tests whether wrapping is on or off. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-7C56B30E-4055-3626-BC7B-35C3CF9B77A8"><a name="GUID-7C56B30E-4055-3626-BC7B-35C3CF9B77A8"><!-- --></a>
+		<h2 class="topictitle2">MajorVersion()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>MajorVersion</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Return the FORM major version number. This function is not generally useful. It is used in test code and was used while making a transition between this and the former version of FORM. The return value is always 2. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-6C5579B6-2BC0-3616-924E-D0A1602C0204"><a name="GUID-6C5579B6-2BC0-3616-924E-D0A1602C0204"><!-- --></a>
+		<h2 class="topictitle2">MakeVisible(TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>MakeVisible</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aVisible</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Stops or allows text to be drawn. Included to allow users to control visibility if text is part of an invisible control.</p>
+
+				<p>CCoeControl::MakeVisible() </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aVisible</td><td>ETrue to make the text visible, EFalse to make it invisible.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BF0C33C7-26C3-3421-AF47-13E049F5CE58"><a name="GUID-BF0C33C7-26C3-3421-AF47-13E049F5CE58"><!-- --></a>
+		<h2 class="topictitle2">MinimumLineDescent()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>MinimumLineDescent</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-D3636093-A0E8-3A97-9516-94A61266F289"><a name="GUID-D3636093-A0E8-3A97-9516-94A61266F289"><!-- --></a>
+		<h2 class="topictitle2">NewL(MLayDoc *, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">CTextLayout</a> *</td><td>NewL</td><td>(</td><td><a href="GUID-51B3C34F-2F8E-3181-93C4-00F073B1207C.html">MLayDoc</a> *</td><td>aDoc,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aWrapWidth</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Allocates and constructs a <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object. By default, the formatting is set to the entire document (EFFormatAllText).</p>
+
+				<p>The text needs to be reformatted after a call to this function.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-51B3C34F-2F8E-3181-93C4-00F073B1207C.html">MLayDoc</a> * aDoc</td><td>Pointer to the MLayDoc implementation that is the source of the text and formatting information. Must not be NULL or a panic occurs.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aWrapWidth</td><td>The wrapping width in pixels.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-37AD6FAB-A269-3C64-8B34-C457C13E7B52"><a name="GUID-37AD6FAB-A269-3C64-8B34-C457C13E7B52"><!-- --></a>
+		<h2 class="topictitle2">NonPrintingCharsVisibility()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-C2E48D9A-4BA8-3860-9F47-F465A6B087B3.html">TNonPrintingCharVisibility</a></td><td>NonPrintingCharsVisibility</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-6ED56179-6717-3A35-B657-AFF3E921A67F"><a name="GUID-6ED56179-6717-3A35-B657-AFF3E921A67F"><!-- --></a>
+		<h2 class="topictitle2">NotifyTerminateBackgroundFormatting()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>NotifyTerminateBackgroundFormatting</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>
+					<a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> calls this function when background formatting has ended. It allows the <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object to discard information used only during background formatting.</p>
+
+				<p>Not generally useful. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-9BCFD05C-FCA7-33C9-9BF7-17836CBC2956"><a name="GUID-9BCFD05C-FCA7-33C9-9BF7-17836CBC2956"><!-- --></a>
+		<h2 class="topictitle2">NumFormattedLines()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>NumFormattedLines</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Gets the number of formatted lines.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-55E9C648-2270-37F3-9052-EE6116CD637E"><a name="GUID-55E9C648-2270-37F3-9052-EE6116CD637E"><!-- --></a>
+		<h2 class="topictitle2">PageDownL(TInt &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>PageDownL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aYCursorPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aPixelsScrolled</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aYCursorPos</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aPixelsScrolled</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-52D32DE7-E058-3BC6-8FF0-B4BE3C433823"><a name="GUID-52D32DE7-E058-3BC6-8FF0-B4BE3C433823"><!-- --></a>
+		<h2 class="topictitle2">PageUpL(TInt &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>PageUpL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aYCursorPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aPixelsScrolled</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Scrolls up by a page (that is the band height as set by <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-6DF160EC-FB60-3A96-91AA-55B33BB4A1FA">SetBandHeight()</a>, or half that amount if scrolling over lines taller than this), moving the text downwards. The current desired vertical cursor position is passed in aYCursorPos and updated to a new suggested position as near as possible to it, but within the visible text and on a baseline.</p>
+
+				<p>Do not use if a <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> object owns this <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aYCursorPos</td><td>The current desired vertical cursor position. On return, updated to a new suggested position as near as possible to it.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aPixelsScrolled</td><td>On return, contains the number of pixels scrolled.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9BDAD542-0350-320A-9DD5-F13694A11466"><a name="GUID-9BDAD542-0350-320A-9DD5-F13694A11466"><!-- --></a>
+		<h2 class="topictitle2">Panic(TPanicNumber)</h2>
+		<table class="signature"><tr><td>void</td><td>Panic</td><td>(</td><td><a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TPanicNumber</a></td><td>aNumber</td><td>)</td><td>[static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TPanicNumber</a> aNumber</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DD4BEDBD-CABB-396D-A865-1DA596AF0237"><a name="GUID-DD4BEDBD-CABB-396D-A865-1DA596AF0237"><!-- --></a>
+		<h2 class="topictitle2">ParagraphHeight(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ParagraphHeight</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aDocPos</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the height of the paragraph containing aDocPos. If the paragraph is not formatted, returns zero. If the paragraph is partially formatted, returns the height of the formatted part.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aDocPos</td><td>A document position within the paragraph of interest.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-105167D9-BD54-39F2-A6E6-3524F0713D4B"><a name="GUID-105167D9-BD54-39F2-A6E6-3524F0713D4B"><!-- --></a>
+		<h2 class="topictitle2">ParagraphRectL(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a></td><td>ParagraphRectL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aDocPos</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the rectangle enclosing the paragraph containing aDocPos. If the paragraph is not formatted, returns an empty rectangle. If the paragraph is partially formatted, returns the rectangle enclosing the formatted part.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aDocPos</td><td>A document position within the paragraph.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-59AB2F4A-3C17-3613-ACB8-8057000C8BCC"><a name="GUID-59AB2F4A-3C17-3613-ACB8-8057000C8BCC"><!-- --></a>
+		<h2 class="topictitle2">PictureRectangleAndPosL(const TPoint &amp;, TRect &amp;, TBool *)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>PictureRectangleAndPosL</td><td>(</td><td>const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aXyPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aPictureRect,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> *</td><td>aCanScaleOrCrop = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<p>Finds if there is a picture at the position under the point aXyPos. If there is, returns the document position of it, sets the rectangle occupied in aPictureRect, and whether the picture allows scaling in aCanScaleOrCrop, if non-null. Note that aXyPos may be outside the picture found. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aXyPos</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aPictureRect</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> * aCanScaleOrCrop = 0</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-25864338-F030-3876-809B-84CDC16F2168"><a name="GUID-25864338-F030-3876-809B-84CDC16F2168"><!-- --></a>
+		<h2 class="topictitle2">PictureRectangleL(TInt, TRect &amp;, TBool *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>PictureRectangleL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aDocPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aPictureRect,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> *</td><td>aCanScaleOrCrop = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<p>Gets the bounding rectangle of the picture, if any, located at the document position or coordinates specified, and returns it in aPictureRect.</p>
+
+				<p>If aCanScaleOrCrop is non-null, sets aCanScaleOrCrop to indicate whether the picture can be scaled or cropped. Returns ETrue if the operation was successful. Returns EFalse otherwise; that is, if there is no picture at the position, or if the position is unformatted.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aDocPos</td><td>The document position of interest.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aPictureRect</td><td>On return, contains the rectangle which encloses the picture located at the position specified.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> * aCanScaleOrCrop = NULL</td><td>If non-NULL and the function returns ETrue, on return, indicates whether the picture can be scaled or cropped. By default, NULL.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D0777BBA-3C72-3AD6-A102-E6FADD4E9928"><a name="GUID-D0777BBA-3C72-3AD6-A102-E6FADD4E9928"><!-- --></a>
+		<h2 class="topictitle2">PictureRectangleL(const TPoint &amp;, TRect &amp;, TBool *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>PictureRectangleL</td><td>(</td><td>const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aXyPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aPictureRect,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> *</td><td>aCanScaleOrCrop = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aXyPos</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aPictureRect</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> * aCanScaleOrCrop = NULL</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3779C4CF-AB8D-397F-BC16-EDC3C49B9219"><a name="GUID-3779C4CF-AB8D-397F-BC16-EDC3C49B9219"><!-- --></a>
+		<h2 class="topictitle2">PosInBand(const TTmDocPos &amp;, TTmLineInfo *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>PosInBand</td><td>(</td><td>const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp;</td><td>aDocPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-CAE563D8-8D92-3C26-9B5C-0D6B625A1EBE.html">TTmLineInfo</a> *</td><td>aLineInfo = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp; aDocPos</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-CAE563D8-8D92-3C26-9B5C-0D6B625A1EBE.html">TTmLineInfo</a> * aLineInfo = NULL</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B46B3076-3866-3E01-9765-CE25AD36D1E6"><a name="GUID-B46B3076-3866-3E01-9765-CE25AD36D1E6"><!-- --></a>
+		<h2 class="topictitle2">PosInBand(TTmDocPos, TPoint &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>PosInBand</td><td>(</td><td><a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a></td><td>aDocPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aXyPos</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> aDocPos</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aXyPos</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-10490F50-A199-39B2-B9E6-1F56BAAB3EAF"><a name="GUID-10490F50-A199-39B2-B9E6-1F56BAAB3EAF"><!-- --></a>
+		<h2 class="topictitle2">PosIsFormatted(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>PosIsFormatted</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aDocPos</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Tests whether the character aDocPos is formatted.</p>
+
+				<p>Note:</p>
+
+				<p>If a section of text contains characters p to q, it contains document positions p to q + 1; but this function returns ETrue for positions p to q only, so it refers to characters, not positions. However, it will return ETrue for q if q is the end of the document.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aDocPos</td><td>The document position of interest.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0A83C61D-388C-30F0-8C2A-7895AD7B80E2"><a name="GUID-0A83C61D-388C-30F0-8C2A-7895AD7B80E2"><!-- --></a>
+		<h2 class="topictitle2">PosRangeInBand(TInt &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>PosRangeInBand</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aDocPos</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the number of fully or partially visible characters in the visible band.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aDocPos</td><td>On return, contains the document position of the first fully or partially visible character in the band.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2A0D971E-6018-3711-A388-5045C3CD5595"><a name="GUID-2A0D971E-6018-3711-A388-5045C3CD5595"><!-- --></a>
+		<h2 class="topictitle2">PruneFormatL(TBool)</h2>
+		<table class="signature"><tr><td>void</td><td>PruneFormatL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aFromStart</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aFromStart</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-64E38C3C-0886-3BC8-8B70-9CDFDB7AF316"><a name="GUID-64E38C3C-0886-3BC8-8B70-9CDFDB7AF316"><!-- --></a>
+		<h2 class="topictitle2">ReformatVerticalSpaceL()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ReformatVerticalSpaceL</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Reformats to reflect changes to the space above and below paragraphs (<a href="GUID-2F795E02-0704-39AE-8EC6-06CB5D5D670F.html#GUID-0BDA99FB-0441-3617-9147-4940B4167B81">CParaFormat::iSpaceBeforeInTwips</a> and iSpaceAfterInTwips).</p>
+
+				<p>Do not use if a <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> object owns this <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object. 6.1 Use <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-7FE7E10A-59AB-386D-9009-C431C17EB785">FormatBandL()</a> </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-AF01DAAF-854D-32AF-9B47-022331226DEF"><a name="GUID-AF01DAAF-854D-32AF-9B47-022331226DEF"><!-- --></a>
+		<h2 class="topictitle2">ResetExternalDraw()</h2>
+		<table class="signature"><tr><td>void</td><td>ResetExternalDraw</td><td>(</td><td>)</td><td/></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-D686E125-E658-394C-9F2E-D0800431C21E"><a name="GUID-D686E125-E658-394C-9F2E-D0800431C21E"><!-- --></a>
+		<h2 class="topictitle2">ResetOpaque(void *)</h2>
+		<table class="signature"><tr><td>void</td><td>ResetOpaque</td><td>(</td><td>void *</td><td>aThis</td><td>)</td><td>[private, static]</td></tr></table><div class="section"><div>
+				<p>Cleanup method for the opaque flag. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">void * aThis</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-51191C72-4B7F-327F-842B-41FCE6E624AC"><a name="GUID-51191C72-4B7F-327F-842B-41FCE6E624AC"><!-- --></a>
+		<h2 class="topictitle2">RestrictScrollToTopsOfLines(TBool)</h2>
+		<table class="signature"><tr><td>void</td><td>RestrictScrollToTopsOfLines</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aRestrict</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Dangerous function. Makes scroll operations set the top of the screen flush to the top of a line. In general this might scroll the cursor off the screen. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aRestrict</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DE5DB775-069B-3CB2-BDF3-50BC23748138"><a name="GUID-DE5DB775-069B-3CB2-BDF3-50BC23748138"><!-- --></a>
+		<h2 class="topictitle2">ScrollDocPosIntoViewL(const TTmDocPos &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>ScrollDocPosIntoViewL</td><td>(</td><td>const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp;</td><td>aDocPos</td><td>)</td><td/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp; aDocPos</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-665A2202-0E2F-377D-8E2C-0CC3BA34D1BB"><a name="GUID-665A2202-0E2F-377D-8E2C-0CC3BA34D1BB"><!-- --></a>
+		<h2 class="topictitle2">ScrollL(TInt, TAllowDisallow, TBool, TBool)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>ScrollL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aDy,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TAllowDisallow</a></td><td>aScrollBlankSpace,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aTopNoLimitBorder = EFalse,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aBottomNoLimitBorder = EFalse</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<p>Scroll aDy pixels (positive = text moves down); return number of pixels actually scrolled. Create a new formatted band if necessary. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aDy</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TAllowDisallow</a> aScrollBlankSpace</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aTopNoLimitBorder = EFalse</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aBottomNoLimitBorder = EFalse</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EE5FD3F8-15D8-30D5-840A-E51B4EAED463"><a name="GUID-EE5FD3F8-15D8-30D5-840A-E51B4EAED463"><!-- --></a>
+		<h2 class="topictitle2">ScrollLinesL(TInt &amp;, TAllowDisallow)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ScrollLinesL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aNumLines,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TAllowDisallow</a></td><td>aScrollBlankSpace = EFDisallowScrollingBlankSpace</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aNumLines</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TAllowDisallow</a> aScrollBlankSpace = EFDisallowScrollingBlankSpace</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E029E4E3-521F-30C2-9433-5DE2D0897727"><a name="GUID-E029E4E3-521F-30C2-9433-5DE2D0897727"><!-- --></a>
+		<h2 class="topictitle2">ScrollParagraphsL(TInt &amp;, TAllowDisallow)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ScrollParagraphsL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aNumParas,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TAllowDisallow</a></td><td>aScrollBlankSpace</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Scrolls the text up or down by aNumParas paragraphs, disallowing blank space at the bottom of the visible area if aScrollBlankSpace is <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-566E1730-5BCD-333B-97A8-19326E21747D">CTextLayout::EFDisallowScrollingBlankSpace</a>.</p>
+
+				<p>Do not use if a <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> object owns this <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object.</p>
+
+				<div class="p">
+					<dl class="precondition">
+						
+							<dt class="dlterm">Pre-condition</dt>
+
+							<dd>aPars must not scroll the display beyond the formatted range. If aPars scrolls beyond the formatted range, this method will leave with the error code <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-ED8F5B1E-FD46-3DA4-8C33-A79AF77FD5D3">CTextLayout::EPosNotFormatted</a> </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aNumParas</td><td>The number of paragraphs to scroll; may be a positive or negative value. On return, contains the number of paragraphs not scrolled; that is the difference between the requested number and the number of paragraphs actually scrolled.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TAllowDisallow</a> aScrollBlankSpace</td><td>Only relevant when scrolling downwards. CTextLayout::EFAllowScrollingBlankSpace allows blank space to scroll into the visible area. CTextLayout::EFDisallowScrollingBlankSpace prevents blank space from scrolling into the visible area.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F65E488E-8562-3D0B-A249-7CC3FA7E3A9D"><a name="GUID-F65E488E-8562-3D0B-A249-7CC3FA7E3A9D"><!-- --></a>
+		<h2 class="topictitle2">SetAmountToFormat(TAmountFormatted)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetAmountToFormat</td><td>(</td><td><a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TAmountFormatted</a></td><td>aAmountOfFormat = EFFormatBand</td><td>)</td><td/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TAmountFormatted</a> aAmountOfFormat = EFFormatBand</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-478553B3-06F0-3EFC-96A3-BC6B6AB50290"><a name="GUID-478553B3-06F0-3EFC-96A3-BC6B6AB50290"><!-- --></a>
+		<h2 class="topictitle2">SetBandHeight(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetBandHeight</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aHeight</td><td>)</td><td/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aHeight</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CEC0A588-033F-3290-B6C5-9CB69FD30F9E"><a name="GUID-CEC0A588-033F-3290-B6C5-9CB69FD30F9E"><!-- --></a>
+		<h2 class="topictitle2">SetBandTop()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SetBandTop</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-B8E1A94F-C773-3CD7-BD43-EB5B2A0303AA"><a name="GUID-B8E1A94F-C773-3CD7-BD43-EB5B2A0303AA"><!-- --></a>
+		<h2 class="topictitle2">SetCustomDraw(const MFormCustomDraw *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetCustomDraw</td><td>(</td><td>const <a href="GUID-AF2B465F-EFC3-3205-A6D8-2EE19E738385.html">MFormCustomDraw</a> *</td><td>aCustomDraw</td><td>)</td><td/></tr></table><div class="section"><div>
+				<div class="p">Sets the custom drawing object, for customising the way text and its background are drawn. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>6.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-AF2B465F-EFC3-3205-A6D8-2EE19E738385.html">MFormCustomDraw</a> * aCustomDraw</td><td>Pointer to a custom drawing object.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8B6B831E-1722-3678-8CA2-380DAB4E6353"><a name="GUID-8B6B831E-1722-3678-8CA2-380DAB4E6353"><!-- --></a>
+		<h2 class="topictitle2">SetCustomInvisibleCharacterRemapper(MFormCustomInvisibleCharacterRemapper *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetCustomInvisibleCharacterRemapper</td><td>(</td><td><a href="GUID-BF88B3D0-5D45-3FDC-A373-4BFF4F49EE6D.html">MFormCustomInvisibleCharacterRemapper</a> *</td><td>aInvisibleCharacterRemapper</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Allows Form clients to register an invisible character remapper object to customize the visible display of invisible characters such as paragraph marks. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-BF88B3D0-5D45-3FDC-A373-4BFF4F49EE6D.html">MFormCustomInvisibleCharacterRemapper</a> * aInvisibleCharacterRemapper</td><td>Pointer to custom invisible character remapper to use  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E8921F50-1875-33E5-AC0D-B35EEC7D8957"><a name="GUID-E8921F50-1875-33E5-AC0D-B35EEC7D8957"><!-- --></a>
+		<h2 class="topictitle2">SetCustomWrap(const MFormCustomWrap *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetCustomWrap</td><td>(</td><td>const <a href="GUID-324383D3-E56D-3575-9A80-62863267BEA3.html">MFormCustomWrap</a> *</td><td>aCustomWrap</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets custom line breaking.</p>
+
+				<p>If this function is not called, default line breaking behaviour is used.</p>
+
+				<p>Ownership of the custom line breaking object is not transferred to this object.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-324383D3-E56D-3575-9A80-62863267BEA3.html">MFormCustomWrap</a> * aCustomWrap</td><td>A pointer to an object that implements the custom line breaking interface. Specify NULL to disable custom line breaking.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E127AB1A-1C05-3C04-A556-F48EA3A44384"><a name="GUID-E127AB1A-1C05-3C04-A556-F48EA3A44384"><!-- --></a>
+		<h2 class="topictitle2">SetExcludePartialLines(TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetExcludePartialLines</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aExcludePartialLines = TRUE</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Specifies whether partially displayed lines (at the top and bottom of the view) are to be prevented from being drawn, and whether the top of the display is to be aligned to the nearest line.</p>
+
+				<p>This function takes effect only when the text is next formatted or scrolled.Note:This function was designed for non-editable text in the Agenda application, and there is an important restriction: <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> functions that reformat the text after editing must not be used while partial lines are excluded; these functions are <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-2B2F7FF8-57A9-3515-AED6-5FC7C2D072E7">CTextView::HandleCharEditL()</a>, <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-346412B0-33D6-349C-9A9D-49074C40FE66">CTextView::HandleInsertDeleteL()</a> and <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-94805D65-B15E-3B84-99B1-6C8BE3B39CED">CTextView::HandleRangeFormatChangeL()</a>.</p>
+
+				<p>7.0 </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aExcludePartialLines = TRUE</td><td>ETrue (the default) to exclude partially displayed lines from the view. EFalse to include them.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-13CCAEA6-7121-36F9-8A92-276ED1E1BBD4"><a name="GUID-13CCAEA6-7121-36F9-8A92-276ED1E1BBD4"><!-- --></a>
+		<h2 class="topictitle2">SetExternalDraw(const TRect &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>SetExternalDraw</td><td>(</td><td>const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aRect</td><td>)</td><td/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aRect</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E03EAAE1-9F23-3C54-B6F0-F4F5D57C77D0"><a name="GUID-E03EAAE1-9F23-3C54-B6F0-F4F5D57C77D0"><!-- --></a>
+		<h2 class="topictitle2">SetFontHeightIncreaseFactor(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetFontHeightIncreaseFactor</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPercentage</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the percentage by which font heights are increased in order to provide automatic extra spacing (leading) between lines. This amount is set to <a href="GUID-F42796E8-C11B-35C0-BF24-0C12C1E82C16.html#GUID-CDC0277F-C013-38D6-A24A-E80CB7A28BD6">CLayoutData::EFFontHeightIncreaseFactor</a>, which is 7, when a <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object is created.</p>
+
+				<p>The text needs to be reformatted after a call to this function.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPercentage</td><td>Factor by which to increase font heights.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-13031F0E-8F39-37E9-9203-E0D0E6FAD52C"><a name="GUID-13031F0E-8F39-37E9-9203-E0D0E6FAD52C"><!-- --></a>
+		<h2 class="topictitle2">SetFormatMode(CLayoutData::TFormatMode, TInt, MGraphicsDeviceMap *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetFormatMode</td><td>(</td><td><a href="GUID-F42796E8-C11B-35C0-BF24-0C12C1E82C16.html">CLayoutData::TFormatMode</a></td><td>aFormatMode,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aWrapWidth,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-4791F2C1-C351-3824-8784-3161F5B65DCA.html">MGraphicsDeviceMap</a> *</td><td>aFormatDevice</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Sets the format mode and wrap width and (for certain format modes only) sets the formatting device.</p>
+
+				<p>The text needs to be reformatted after a call to this function.</p>
+
+				<p>Notes:</p>
+
+				<p>If aFormatMode is <a href="GUID-F42796E8-C11B-35C0-BF24-0C12C1E82C16.html#GUID-74C74929-76B6-3175-8BDF-FFE8B8F48589">CLayoutData::EFWysiwygMode</a> or <a href="GUID-F42796E8-C11B-35C0-BF24-0C12C1E82C16.html#GUID-BE0F42C6-DCE8-3DCC-8411-07DA0A553718">CLayoutData::EFPrintPreviewMode</a>, the format device is set to aFormatDevice, which must not be NULL.</p>
+
+				<p>If aFormatMode is <a href="GUID-F42796E8-C11B-35C0-BF24-0C12C1E82C16.html#GUID-F913C8BB-CE59-31B2-BDA6-A9D72D6426D6">CLayoutData::EFScreenMode</a> or <a href="GUID-F42796E8-C11B-35C0-BF24-0C12C1E82C16.html#GUID-8711CBD5-63F7-35D8-99E9-36C946E98B03">CLayoutData::EFPrintMode</a>, aFormatDevice is ignored and should be NULL; the format device is set to the image device.</p>
+
+				<p>The wrap width is set in either twips or pixels using the same rule as for <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-A5C8021D-E9B4-314A-A8DE-368975C585BB">SetWrapWidth()</a>.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F42796E8-C11B-35C0-BF24-0C12C1E82C16.html">CLayoutData::TFormatMode</a> aFormatMode</td><td>The format mode.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aWrapWidth</td><td>The wrap width in pixels or twips.  </td></tr><tr><td class="parameter"><a href="GUID-4791F2C1-C351-3824-8784-3161F5B65DCA.html">MGraphicsDeviceMap</a> * aFormatDevice</td><td>The formatting device or NULL, depending on the format mode.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C7D3BCB4-6C39-3A7F-A81A-27075B89AD49"><a name="GUID-C7D3BCB4-6C39-3A7F-A81A-27075B89AD49"><!-- --></a>
+		<h2 class="topictitle2">SetHighlightExtensions(TInt, TInt, TInt, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetHighlightExtensions</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLeftExtension,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aRightExtension,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aTopExtension,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aBottomExtension</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Sets offsets for the edges of the selection highlight. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLeftExtension</td><td>Number of pixels to move the left edge of the highlight to the left.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aRightExtension</td><td>Number of pixels to move the right edge of the highlight to the right.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aTopExtension</td><td>Number of pixels to move the top edge of the highlight to up.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aBottomExtension</td><td>Number of pixels to move the bottom edge of the highlight down.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-283C51C0-6E99-3F34-94BA-65D8B01F4C21"><a name="GUID-283C51C0-6E99-3F34-94BA-65D8B01F4C21"><!-- --></a>
+		<h2 class="topictitle2">SetImageDeviceMap(MGraphicsDeviceMap *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetImageDeviceMap</td><td>(</td><td><a href="GUID-4791F2C1-C351-3824-8784-3161F5B65DCA.html">MGraphicsDeviceMap</a> *</td><td>aGd</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the device map used for drawing and formatting. This device map is also used for formatting and drawing paragraph labels unless a separate label device map has been set (see <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-5FEF06F3-134D-37AA-A9F9-C4E015CE8C97">SetLabelsDeviceMap()</a>).</p>
+
+				<p>The text needs to be reformatted after a call to this function.</p>
+
+				<p>Note:</p>
+
+				<p>Although the name of the function suggests that only the image device is set, the formatting device is also set.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-4791F2C1-C351-3824-8784-3161F5B65DCA.html">MGraphicsDeviceMap</a> * aGd</td><td>The device map used for drawing and formatting.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F2F92C9E-2690-3BB6-AF9B-386AF773E1ED"><a name="GUID-F2F92C9E-2690-3BB6-AF9B-386AF773E1ED"><!-- --></a>
+		<h2 class="topictitle2">SetInterfaceProvider(MFormCustomInterfaceProvider *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetInterfaceProvider</td><td>(</td><td><a href="GUID-49AE91C2-4B33-31D0-A6CE-8E4DEF252E76.html">MFormCustomInterfaceProvider</a> *</td><td>aProvider</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This method allows Form clients to register an object able to create or return references to customisation objects used within Form for various tasks e.g. inline text. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-49AE91C2-4B33-31D0-A6CE-8E4DEF252E76.html">MFormCustomInterfaceProvider</a> * aProvider</td><td>Reference to interface provider object to register with Formm.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5FEF06F3-134D-37AA-A9F9-C4E015CE8C97"><a name="GUID-5FEF06F3-134D-37AA-A9F9-C4E015CE8C97"><!-- --></a>
+		<h2 class="topictitle2">SetLabelsDeviceMap(MGraphicsDeviceMap *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetLabelsDeviceMap</td><td>(</td><td><a href="GUID-4791F2C1-C351-3824-8784-3161F5B65DCA.html">MGraphicsDeviceMap</a> *</td><td>aDeviceMap</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the device map used for formatting and drawing paragraph labels. If not set, the device map used for labels will be the same as that used for the text.</p>
+
+				<p>The text needs to be reformatted after a call to this function.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-4791F2C1-C351-3824-8784-3161F5B65DCA.html">MGraphicsDeviceMap</a> * aDeviceMap</td><td>The device map used for formatting and drawing paragraph labels.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-56613E1C-3BD3-350A-9D38-678ACA6B427F"><a name="GUID-56613E1C-3BD3-350A-9D38-678ACA6B427F"><!-- --></a>
+		<h2 class="topictitle2">SetLayDoc(MLayDoc *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetLayDoc</td><td>(</td><td><a href="GUID-51B3C34F-2F8E-3181-93C4-00F073B1207C.html">MLayDoc</a> *</td><td>aDoc</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the layout object's source text to aDoc.</p>
+
+				<p>The text needs to be reformatted after a call to this function.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-51B3C34F-2F8E-3181-93C4-00F073B1207C.html">MLayDoc</a> * aDoc</td><td>Pointer to the MLayDoc implementation that is the source of the text and formatting information. Must not be NULL or a panic occurs.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EFC499AA-2FD2-32C3-9DC3-3BB346DCF549"><a name="GUID-EFC499AA-2FD2-32C3-9DC3-3BB346DCF549"><!-- --></a>
+		<h2 class="topictitle2">SetMinimumLineDescent(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetMinimumLineDescent</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPixels</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the minimum line descent in pixels. This amount is set to <a href="GUID-F42796E8-C11B-35C0-BF24-0C12C1E82C16.html#GUID-BAD8EA9E-6BD3-3D21-A9D0-891E9DC2E815">CLayoutData::EFMinimumLineDescent</a>, which is 3, when a <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object is created.</p>
+
+				<p>The text needs to be reformatted after a call to this function.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPixels</td><td>The minimum line descent in pixels.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CE444335-50E5-3355-AF15-80BD5284B220"><a name="GUID-CE444335-50E5-3355-AF15-80BD5284B220"><!-- --></a>
+		<h2 class="topictitle2">SetNonPrintingCharsVisibility(TNonPrintingCharVisibility)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetNonPrintingCharsVisibility</td><td>(</td><td><a href="GUID-C2E48D9A-4BA8-3860-9F47-F465A6B087B3.html">TNonPrintingCharVisibility</a></td><td>aVisibility</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Specifies which non-printing characters (e.g. space, paragraph break, etc.) are to be drawn using symbols.</p>
+
+				<p>The text needs to be reformatted after a call to this function.(because non-printing characters may differ in width from their visible representations).</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C2E48D9A-4BA8-3860-9F47-F465A6B087B3.html">TNonPrintingCharVisibility</a> aVisibility</td><td>Indicates which non-printing characters are drawn using symbols.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-98C1A732-8304-3A6D-AD69-F98EB0961A68"><a name="GUID-98C1A732-8304-3A6D-AD69-F98EB0961A68"><!-- --></a>
+		<h2 class="topictitle2">SetOpaqueLC()</h2>
+		<table class="signature"><tr><td>void</td><td>SetOpaqueLC</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets opaque drawing flag for <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object. It will used later when the content/background has to be drawn. Until the flag is not reseted, the opaque drawing will be used for all the content except the background - the flag has an useful meaning only for transparent editors. A <a href="GUID-CD0A798E-7E42-3689-8E86-F5FD43C758FC.html#GUID-CD0A798E-7E42-3689-8E86-F5FD43C758FC">TCleanupItem</a> object will be pushed into the Cleanup Stack, which will reset the opaque flag durring its destruction. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-47F0F463-E32D-3720-9243-2C898AEFEED0"><a name="GUID-47F0F463-E32D-3720-9243-2C898AEFEED0"><!-- --></a>
+		<h2 class="topictitle2">SetReadyToRedraw()</h2>
+		<table class="signature"><tr><td>void</td><td>SetReadyToRedraw</td><td>(</td><td>)</td><td/></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-2530AB03-4D14-3411-8760-3B14344FDDD3"><a name="GUID-2530AB03-4D14-3411-8760-3B14344FDDD3"><!-- --></a>
+		<h2 class="topictitle2">SetTextViewCursorPos(TCursorPosition *)</h2>
+		<table class="signature"><tr><td>void</td><td>SetTextViewCursorPos</td><td>(</td><td><a href="GUID-DD726512-BCE4-3C4F-88AF-9947FC1CE07B.html">TCursorPosition</a> *</td><td>aPos</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>INC092568: <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-F3725917-532B-3139-A241-494C2736ED31">CTextView::SetPendingSelection</a> is not honoured Sets the cursor position member added for this fix that allows the text layout object to access any pending selection made by the owning text view object </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-DD726512-BCE4-3C4F-88AF-9947FC1CE07B.html">TCursorPosition</a> * aPos</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EC66E4BE-BA4D-32CB-9A02-12A5ADAD6E11"><a name="GUID-EC66E4BE-BA4D-32CB-9A02-12A5ADAD6E11"><!-- --></a>
+		<h2 class="topictitle2">SetTruncating(TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetTruncating</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aOn</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the truncation mode. If truncation is on, lines that exceed the wrap width, either because they have no legal line break, or because wrapping is off, are truncated, and an ellipsis is inserted.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aOn</td><td>If ETrue, lines which extend beyond the wrap width are truncated with an ellipsis character. If EFalse, no ellipsis is used.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B606889C-E982-320A-A8C4-063144961930"><a name="GUID-B606889C-E982-320A-A8C4-063144961930"><!-- --></a>
+		<h2 class="topictitle2">SetViewL(const TTmDocPos &amp;, TInt &amp;, TViewYPosQualifier, TDiscard)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SetViewL</td><td>(</td><td>const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp;</td><td>aDocPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aYPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-F1C52CB4-116D-3915-8F9B-9AF27E31600E.html">TViewYPosQualifier</a></td><td>aYPosQualifier,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TDiscard</a></td><td>aDiscardFormat = EFViewDontDiscardFormat</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Changes the top of the visible area so that the line containing aDocPos is vertically positioned at aYPos. Which part of the line is set to appear at aYPos (top, baseline, or bottom) is controlled by the <a href="GUID-F1C52CB4-116D-3915-8F9B-9AF27E31600E.html#GUID-F1C52CB4-116D-3915-8F9B-9AF27E31600E">TViewYPosQualifier</a> argument, which also specifies whether the visible area is to be filled and whether the line should be made fully visible if possible.</p>
+
+				<p>Do not use if a <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> object owns this <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-98C4F815-B04A-3603-9B5B-71DB1E71E862.html">TTmDocPos</a> &amp; aDocPos</td><td>A valid document position.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aYPos</td><td>The y coordinate at which to display the character at aDocPos. On return, contains the actual vertical position of the specified part of the line.  </td></tr><tr><td class="parameter"><a href="GUID-F1C52CB4-116D-3915-8F9B-9AF27E31600E.html">TViewYPosQualifier</a> aYPosQualifier</td><td>Controls which part of the line is set to appear at aYPos.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TDiscard</a> aDiscardFormat = EFViewDontDiscardFormat</td><td>If ETrue (EFViewDiscardAllFormat), the text is reformatted to include aDocPos, otherwise text is formatted only as necessary when bringing new lines into the visible area.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C2CE8940-4496-3A22-A986-39FE0D13909F"><a name="GUID-C2CE8940-4496-3A22-A986-39FE0D13909F"><!-- --></a>
+		<h2 class="topictitle2">SetViewL(TInt, TInt &amp;, TViewYPosQualifier, TDiscard)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SetViewL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aDocPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aYPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-F1C52CB4-116D-3915-8F9B-9AF27E31600E.html">TViewYPosQualifier</a></td><td>aYPosQualifier,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TDiscard</a></td><td>aDiscardFormat = EFViewDontDiscardFormat</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>This interface is deprecated, and is made available in version 7.0s solely to provide binary compatibility with Symbian OS v6.1. Developers are strongly advised not to make use of this API in new applications. In particular, use the other overload of this function if you need to distinguish between leading and trailing edge positions.</p>
+
+				<p>Do not use if a <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> object owns this <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> object.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aDocPos</td><td>A valid document position.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aYPos</td><td>The y coordinate at which to display the character at aDocPos. On return, contains the actual vertical position of the specified part of the line.  </td></tr><tr><td class="parameter"><a href="GUID-F1C52CB4-116D-3915-8F9B-9AF27E31600E.html">TViewYPosQualifier</a> aYPosQualifier</td><td>Controls which part of the line is set to appear at aYPos.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html">TDiscard</a> aDiscardFormat = EFViewDontDiscardFormat</td><td>If ETrue (EFViewDiscardAllFormat), the text is reformatted to include aDocPos, otherwise text is formatted only as necessary when bringing new lines into the visible area.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D4E661D0-4E0D-39DC-8DD2-BFDCDD22B9C8"><a name="GUID-D4E661D0-4E0D-39DC-8DD2-BFDCDD22B9C8"><!-- --></a>
+		<h2 class="topictitle2">SetWindow(RWindow *)</h2>
+		<table class="signature"><tr><td>void</td><td>SetWindow</td><td>(</td><td><a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html">RWindow</a> *</td><td>aWnd</td><td>)</td><td/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html">RWindow</a> * aWnd</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A5C8021D-E9B4-314A-A8DE-368975C585BB"><a name="GUID-A5C8021D-E9B4-314A-A8DE-368975C585BB"><!-- --></a>
+		<h2 class="topictitle2">SetWrapWidth(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetWrapWidth</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aWrapWidth</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the wrap width. If the current format mode is screen mode (<a href="GUID-F42796E8-C11B-35C0-BF24-0C12C1E82C16.html#GUID-F913C8BB-CE59-31B2-BDA6-A9D72D6426D6">CLayoutData::EFScreenMode</a>) aWrapWidth is in pixels, otherwise it is in twips.</p>
+
+				<p>The text needs to be reformatted after a call to this function.</p>
+
+				<p>Note:</p>
+
+				<p>A valid wrap width (&gt;0) must be supplied or the expected amount of formatting will not take place. This could lead to panics when trying to retrieve formatting information that does not exist.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aWrapWidth</td><td>The wrap width in pixels or twips.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-09BF0256-E6E0-3B7E-940D-235FE74BE599"><a name="GUID-09BF0256-E6E0-3B7E-940D-235FE74BE599"><!-- --></a>
+		<h2 class="topictitle2">SuggestCursorPos(TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SuggestCursorPos</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aCurrentCursorPos</td><td>)</td><td>const [private]</td></tr></table><div class="section"><div>
+				<p>Finds a position (in pixels, from the top of the window) where the cursor can be such that its line will be fully visible. If this is not possible, then return one with its baseline visible. If this is not possible, we don't care what the answer is. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aCurrentCursorPos</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D0C70E64-2434-3670-AE1A-C08FFD7C90AC"><a name="GUID-D0C70E64-2434-3670-AE1A-C08FFD7C90AC"><!-- --></a>
+		<h2 class="topictitle2">TagmaTextLayout()</h2>
+		<table class="signature"><tr><td>const <a href="GUID-0B7F472C-BE91-3D6D-94B8-7924E10559CF.html">CTmTextLayout</a> &amp;</td><td>TagmaTextLayout</td><td>(</td><td>)</td><td>const [inline]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-F1C6C6AE-569C-36FD-AD54-5B5AB546449A"><a name="GUID-F1C6C6AE-569C-36FD-AD54-5B5AB546449A"><!-- --></a>
+		<h2 class="topictitle2">ToParagraphStart(TInt &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ToParagraphStart</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aDocPos</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Sets aDocPos to the paragraph start and returns the amount by which aDocPos has changed, as a non-negative number.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aDocPos</td><td>A document position. On return, contains the document position of the first character in the paragraph.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EE978A2F-9739-38D2-A531-445145D6CBC6"><a name="GUID-EE978A2F-9739-38D2-A531-445145D6CBC6"><!-- --></a>
+		<h2 class="topictitle2">Truncating()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>Truncating</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Tests whether truncation is on (as set by <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-EC66E4BE-BA4D-32CB-9A02-12A5ADAD6E11">SetTruncating()</a>). </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-4ADD1132-85BC-3DEF-B08E-33E62CD8BF56"><a name="GUID-4ADD1132-85BC-3DEF-B08E-33E62CD8BF56"><!-- --></a>
+		<h2 class="topictitle2">TruncatingEllipsis()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-CDCFA2A5-EA8A-3B39-B90F-77AC41571E2D.html">TChar</a></td><td>TruncatingEllipsis</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the ellipsis character used when truncation is on. The value 0xFFFF (the illegal Unicode character) means that no ellipsis character is appended to truncated text.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-86DF134C-2F06-3DF4-85D6-A660B6AB72AD"><a name="GUID-86DF134C-2F06-3DF4-85D6-A660B6AB72AD"><!-- --></a>
+		<h2 class="topictitle2">VisibleHeightInPixels()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>VisibleHeightInPixels</td><td>(</td><td>)</td><td>const [private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-B1DC7647-15FC-37EC-8B21-F3DC2CD8DA04"><a name="GUID-B1DC7647-15FC-37EC-8B21-F3DC2CD8DA04"><!-- --></a>
+		<h2 class="topictitle2">WrapWidth()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>WrapWidth</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-DD22C2DC-9583-3CC3-BA85-9842E2B47C88"><a name="GUID-DD22C2DC-9583-3CC3-BA85-9842E2B47C88"><!-- --></a>
+		<h2 class="topictitle2">XyPosToDocPosL(TPoint &amp;, TUint)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>XyPosToDocPosL</td><td>(</td><td><a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aFlags = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<p>Returns the index of the nearest character in the document to the window coordinates specified. Sets aPos to the actual position of the intersection of the line's baseline with the character's edge. If aPos is before the start of the formatted area, returns the first formatted character; if it is after the end of the formatted area, returns the position after the last formatted character, or the end of the document, whichever is less.</p>
+
+				<p>This function is deprecated in v7.0s. Use the more powerful FindXYPos() instead.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aPos</td><td>Contains coordinates to convert to a document position. On return, contains the exact coordinates of the intersection of the line's baseline with the character edge at the document position.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aFlags = 0</td><td>Three possible values: 0 is the default, and performs the task at full accuracy (the function returns the document position of the character edge nearest to the coordinates). CLayoutData::EFWholeLinesOnly examines lines only and returns the position at the right end of the line if aPos.iX &gt; 0, otherwise the position at the left end.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B8627C05-3659-34B0-82CD-27AFB3AC3BF3"><a name="GUID-B8627C05-3659-34B0-82CD-27AFB3AC3BF3"><!-- --></a>
+		<h2 class="topictitle2">YBottomLastFormattedLine()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>YBottomLastFormattedLine</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the y coordinate of the bottom of the last formatted line, relative to the top of the visible region.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Enumerations Documentation</h1><div class="nested1" id="GUID-F0EF4902-58E8-3B17-BACC-6A3E123DEEC3"><a name="GUID-F0EF4902-58E8-3B17-BACC-6A3E123DEEC3"><!-- --></a>
+		<h2 class="topictitle2">Enum anonymous</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EFCharacterInsert</td><td>
+							<p>Insert a character, (not a paragraph delimiter). </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EFParagraphDelimiter</td><td>
+							<p>Insert a paragraph delimiter. </p>
+
+						 </td></tr><tr><td valign="top">EFLeftDelete</td><td>
+							<p>Delete single character to the left. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EFRightDelete</td><td>
+							<p>Delete single character to the right. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-33EF1A9D-273A-32FA-9B52-A0D07A98D7C3"><a name="GUID-33EF1A9D-273A-32FA-9B52-A0D07A98D7C3"><!-- --></a>
+		<h2 class="topictitle2">Enum anonymous</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EFScrollRedrawWholeScreen = CLayoutData::EFLargeNumber</td><td>
+							<p>A value greater than any possible display height indicates that the entire visible area, at least, was scrolled, and so there is no point in blitting text; a full redraw is needed. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EFMaximumLineWidth = CLayoutData::EFBodyWidthForNoWrapping</td><td>
+							<p>The maximum line width when wrapping is unset. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C1F5B652-0739-3A82-945B-F38B2CF361A8"><a name="GUID-C1F5B652-0739-3A82-945B-F38B2CF361A8"><!-- --></a>
+		<h2 class="topictitle2">Enum anonymous</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EFAllParagraphsNotWrapped = TRUE</td><td>
+							<p>Wrapping off; overrides the paragraph format. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EFParagraphsWrappedByDefault = FALSE</td><td>
+							<p>Wrapping on, unless <a href="GUID-2F795E02-0704-39AE-8EC6-06CB5D5D670F.html#GUID-6E58546A-8645-39F4-9D3E-1B331A6988E4">CParaFormat::iWrap</a> is false. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-44242243-4EDC-3C1C-8236-9C176332D12F"><a name="GUID-44242243-4EDC-3C1C-8236-9C176332D12F"><!-- --></a>
+		<h2 class="topictitle2">Enum anonymous</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3></div>
+
+	</div>
+<div class="nested1" id="GUID-3F851EB8-6A67-31F4-9BB7-9D1189BA6D8F"><a name="GUID-3F851EB8-6A67-31F4-9BB7-9D1189BA6D8F"><!-- --></a>
+		<h2 class="topictitle2">Enum anonymous</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3></div>
+
+	</div>
+<div class="nested1" id="GUID-88CDE0DF-52D7-3BB1-B67F-7FB2076E7B76"><a name="GUID-88CDE0DF-52D7-3BB1-B67F-7FB2076E7B76"><!-- --></a>
+		<h2 class="topictitle2">Enum anonymous</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3></div>
+
+	</div>
+<div class="nested1" id="GUID-1FE26FF7-0805-351B-A334-C99E8F5BADBD"><a name="GUID-1FE26FF7-0805-351B-A334-C99E8F5BADBD"><!-- --></a>
+		<h2 class="topictitle2">Enum TAllowDisallow</h2>
+		<div class="section"><div>
+				<p>Indicates whether blank space should scroll. Used by several <a href="GUID-CF377A98-F11F-380F-AD10-7F3E261D4421.html#GUID-CF377A98-F11F-380F-AD10-7F3E261D4421">CTextView</a> and <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> scrolling functions. </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EFAllowScrollingBlankSpace = TRUE</td><td>
+							<p>Allow blank space to scroll. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EFDisallowScrollingBlankSpace = FALSE</td><td>
+							<p>Disallow blank space from scrolling. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E67797B8-0D37-34E3-A4BC-AEF42F7D1713"><a name="GUID-E67797B8-0D37-34E3-A4BC-AEF42F7D1713"><!-- --></a>
+		<h2 class="topictitle2">Enum TAmountFormatted</h2>
+		<div class="section"><div>
+				<p>Amount to format. Used by <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-A25FB12C-C345-30C4-B619-1E7685640896">CTextLayout::SetAmountToFormat()</a>. </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EFFormatAllText = FALSE</td><td>
+							<p>Format the whole document. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EFFormatBand = TRUE</td><td>
+							<p>Format the visible band only. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-229E6565-8402-3D72-B8AD-E33407A2736D"><a name="GUID-229E6565-8402-3D72-B8AD-E33407A2736D"><!-- --></a>
+		<h2 class="topictitle2">Enum TCurrentFormat</h2>
+		<div class="section"><div>
+				<p>Formatting information. </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EFNoCurrentFormat = -1</td><td>
+							<p>Returned by some <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF">CTextLayout</a> enquiry functions to indicate that no formatting has taken place so that the requested value cannot be calculated. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EFNotInCurrentFormat = 0</td><td>
+							<p>Returned by <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-DD4BEDBD-CABB-396D-A865-1DA596AF0237">CTextLayout::ParagraphHeight()</a> when the paragraph is not formatted. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-FB0613B4-EF9D-32ED-BA81-99CF8F98111B"><a name="GUID-FB0613B4-EF9D-32ED-BA81-99CF8F98111B"><!-- --></a>
+		<h2 class="topictitle2">Enum TDiscard</h2>
+		<div class="section"><div>
+				<p>Flags used by <a href="GUID-FEE7C848-2E93-3848-A3DA-7EAA533615AF.html#GUID-B606889C-E982-320A-A8C4-063144961930">CTextLayout::SetViewL()</a>. Whether to reformat and redraw. </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EFViewDiscardAllFormat = TRUE</td><td>
+							<p>Discard all formatting; redraw. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EFViewDontDiscardFormat = FALSE</td><td>
+							<p>Do not discard all formatting; redraw. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-748FE9A9-60C1-3E50-9EC7-CE1C5DB1F9FB"><a name="GUID-748FE9A9-60C1-3E50-9EC7-CE1C5DB1F9FB"><!-- --></a>
+		<h2 class="topictitle2">Enum TPanicNumber</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EUnimplemented</td><td> </td></tr><tr class="bg"><td valign="top">ENoMemory</td><td> </td></tr><tr><td valign="top">EDrawingBorderError</td><td> </td></tr><tr class="bg"><td valign="top">EFormatDeviceNotSet</td><td> </td></tr><tr><td valign="top">EImageDeviceNotSet</td><td> </td></tr><tr class="bg"><td valign="top">EPixelNotInFormattedLine</td><td> </td></tr><tr><td valign="top">EInvalidDocPos</td><td> </td></tr><tr class="bg"><td valign="top">ENoCharRangeToFormat</td><td> </td></tr><tr><td valign="top">ECharacterNotFormatted</td><td> </td></tr><tr class="bg"><td valign="top">EPrintPreviewModeError</td><td> </td></tr><tr><td valign="top">EBadCharacterEditType</td><td> </td></tr><tr class="bg"><td valign="top">EInvalidLineNumber</td><td> </td></tr><tr><td valign="top">EPosNotFormatted</td><td> </td></tr><tr class="bg"><td valign="top">EMustFormatAllText</td><td> </td></tr><tr><td valign="top">EPageScrollError</td><td> </td></tr><tr class="bg"><td valign="top">EInvalidRedraw</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2FE46986-8236-3D23-BEDD-7BCD40ACA132"><a name="GUID-2FE46986-8236-3D23-BEDD-7BCD40ACA132"><!-- --></a>
+		<h2 class="topictitle2">Enum TScrollFlags</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EFScrollOnlyToTopsOfLines = 1</td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-3F09678B-5C4F-33A8-8EB1-0D11A8A19689"><a name="GUID-3F09678B-5C4F-33A8-8EB1-0D11A8A19689"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iBandHeight</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iBandHeight</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-2B531260-1BF9-3233-8A1E-2C1814218097"><a name="GUID-2B531260-1BF9-3233-8A1E-2C1814218097"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iBandTop</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iBandTop</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-169EC580-ABC0-39EE-B952-890A0E9FCC77"><a name="GUID-169EC580-ABC0-39EE-B952-890A0E9FCC77"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iBeginRedrawCount</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iBeginRedrawCount</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-42125979-74FB-3A82-B2D7-DF39F7940BF4"><a name="GUID-42125979-74FB-3A82-B2D7-DF39F7940BF4"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iDmmyForIHighlightExtensions</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iDmmyForIHighlightExtensions</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-1F8C9721-6E59-3883-8925-9437D11399AF"><a name="GUID-1F8C9721-6E59-3883-8925-9437D11399AF"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iDmmyForISource</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iDmmyForISource</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-FC38BA54-77C4-353A-8EAE-D66EA3AC112D"><a name="GUID-FC38BA54-77C4-353A-8EAE-D66EA3AC112D"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iDummy</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iDummy</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-AF58EB97-E292-3431-BD97-522DF3287CE8"><a name="GUID-AF58EB97-E292-3431-BD97-522DF3287CE8"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iDummyForIText</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iDummyForIText</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-BB72E82E-45BD-3C5C-8FB4-13BA47BC15DD"><a name="GUID-BB72E82E-45BD-3C5C-8FB4-13BA47BC15DD"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iExcessHeightRequired</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iExcessHeightRequired</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-E1F97289-4096-3978-8EEE-6EF8E017D07E"><a name="GUID-E1F97289-4096-3978-8EEE-6EF8E017D07E"><!-- --></a>
+		<h2 class="topictitle2">
+					TTmHighlightExtensions * iHighlightExtensions</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-56EC79BB-B2E4-3116-82E5-8F4F41BF083B.html">TTmHighlightExtensions</a> *</td><td>iHighlightExtensions</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-B469CC33-00DC-3476-86AD-1CA3A5B8F6A2"><a name="GUID-B469CC33-00DC-3476-86AD-1CA3A5B8F6A2"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iIsWndInExternalRedraw</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iIsWndInExternalRedraw</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-5BCC5B06-37F4-383B-AC32-93C81AA83A68"><a name="GUID-5BCC5B06-37F4-383B-AC32-93C81AA83A68"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iParInvalid</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iParInvalid</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-727A484A-6B92-3F64-9F0C-F02026D2049E"><a name="GUID-727A484A-6B92-3F64-9F0C-F02026D2049E"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iReadyToRedraw</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iReadyToRedraw</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-79FF947A-7B66-321E-A713-57F12EB42831"><a name="GUID-79FF947A-7B66-321E-A713-57F12EB42831"><!-- --></a>
+		<h2 class="topictitle2">
+					TRect
+				 iRedrawRect</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a>
+				</td><td>iRedrawRect</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-884B3C90-71C4-388C-ACC6-28D686C6142B"><a name="GUID-884B3C90-71C4-388C-ACC6-28D686C6142B"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iScrollFlags</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iScrollFlags</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-894AC402-DB64-3984-A5F9-94D7319CE2CC"><a name="GUID-894AC402-DB64-3984-A5F9-94D7319CE2CC"><!-- --></a>
+		<h2 class="topictitle2">
+					TLayDocTextSource * iSource</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-CA9A233E-A605-3C3B-B39B-C351B5664891.html">TLayDocTextSource</a> *</td><td>iSource</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-7DBEA19D-7D70-3E85-B9C7-C655CC391BC9"><a name="GUID-7DBEA19D-7D70-3E85-B9C7-C655CC391BC9"><!-- --></a>
+		<h2 class="topictitle2">
+					CTmTextLayout * iText</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-0B7F472C-BE91-3D6D-94B8-7924E10559CF.html">CTmTextLayout</a> *</td><td>iText</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-03C66843-4DE7-3789-8BF9-14E486020244"><a name="GUID-03C66843-4DE7-3789-8BF9-14E486020244"><!-- --></a>
+		<h2 class="topictitle2">
+					TCursorPosition * iTextViewCursorPos</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-DD726512-BCE4-3C4F-88AF-9947FC1CE07B.html">TCursorPosition</a> *</td><td>iTextViewCursorPos</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-6ABBA299-9B76-3BF8-9CFE-067803DF7B87"><a name="GUID-6ABBA299-9B76-3BF8-9CFE-067803DF7B87"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iUnformattedStart</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iUnformattedStart</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-2C80B1DE-512B-3A43-80DD-78FDCAE25BFF"><a name="GUID-2C80B1DE-512B-3A43-80DD-78FDCAE25BFF"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iVisibleHeight</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iVisibleHeight</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-67154AFE-DBD8-39C8-87FB-4219D32EC9EB"><a name="GUID-67154AFE-DBD8-39C8-87FB-4219D32EC9EB"><!-- --></a>
+		<h2 class="topictitle2">
+					RWindow * iWnd</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html">RWindow</a> *</td><td>iWnd</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

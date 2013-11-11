@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Interrupt Dispatcher"/>
+<meta name="abstract" content="The ASSP/Variant part of the base port must implement an interrupt dispatcher to manage interrupts."/>
+<meta name="description" content="The ASSP/Variant part of the base port must implement an interrupt dispatcher to manage interrupts."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Interrupt Dispatcher</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2399880 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html" title="Describes the architecture and technology features of the Kernel that are important for a base port.">Concepts</a> &gt; </div>
+<h1 class="topictitle1">Interrupt Dispatcher</h1>
+<div><p>The ASSP/Variant part of the base port must implement an
+interrupt dispatcher to manage interrupts. </p>
+
+<p>An interrupt source is a hardware device or software action that
+can force the CPU to suspend normal execution, enter interrupt handling
+state and jump to a section of code called an interrupt handler. </p>
+
+<p>Typically, a number of interrupt sources are monitored by an interrupt
+controller. This is hardware that generates a single interrupt notification
+to the CPU, and provides information about which interrupts are pending,
+i.e. which interrupts require action to be taken. </p>
+
+<div class="section" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-1FAA26F5-BFB2-55A0-977C-1538EBF3C82A"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-1FAA26F5-BFB2-55A0-977C-1538EBF3C82A"><!-- --></a><h2 class="sectiontitle">ISR</h2> <p>An interrupt service routine, or ISR, is code that deals with
+a pending interrupt. The Symbian platform kernel responds to an interrupt
+notification by calling an ISR for each pending interrupt. The process
+of calling ISRs is called interrupt dispatch. </p>
+ <p>The ISR is a
+single bare function. It is not a class member. </p>
+ <p>Each ISR takes
+a single 32-bit parameter that is, typically, a pointer to an owning
+class, although it can be any value that is appropriate. The parameter
+is defined as a <a href="GUID-6D079976-9119-31FA-8E21-C3B815F94648.html"><span class="apiname">TAny</span></a> * type, so a cast is almost
+always necessary. </p>
+ <p>ISRs are usually kept in an ISR table. </p>
+ </div>
+
+<div class="section" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-8E58F4C9-0290-55E0-A4FD-B6C2361BE205"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-8E58F4C9-0290-55E0-A4FD-B6C2361BE205"><!-- --></a><h2 class="sectiontitle">Interrupt
+ID</h2> <p>An interrupt source is identified by number, defined
+as a <a href="GUID-7A2A43EC-6125-3BFE-834B-23C37F7B40D5.html"><span class="apiname">TInt</span></a> type. Typically, the ASSP layer defines
+this number for each interrupt in a header file and exports it so
+that it can be included and used by device drivers. </p>
+ <p>Where
+the ASSP layer is split into a common layer and a variant (device
+specific) layer, then the variant layer may also define its own set
+of interrupt IDs. </p>
+ <p>This number is usually referred to as the
+interrupt ID. </p>
+ </div>
+
+<div class="section" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-A8C9C079-D043-5A5F-9F08-CD8656F6702A"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-A8C9C079-D043-5A5F-9F08-CD8656F6702A"><!-- --></a><h2 class="sectiontitle">Binding
+and unbinding</h2> <p>Only one ISR can be associated with each
+possible interrupt source. Making this association is known as binding.
+ISRs can be bound and unbound during normal operation, but only one
+ISR can be bound to an interrupt source at any one time. </p>
+ <p>A
+device driver binds an ISR by calling <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-4E3CB472-3525-32F8-9BC4-8ECFEE931E7B"><span class="apiname">Interrupt::Bind()</span></a>, passing the interrupt source ID; similarly, the device driver can
+unbind the ISR by calling <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-CCC9A397-608C-3EAF-830F-A59800C2E8E5"><span class="apiname">Interrupt::Unbind()</span></a>,
+also passing the <a href="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC.html#GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-8E58F4C9-0290-55E0-A4FD-B6C2361BE205">interrupt ID</a>. </p>
+ </div>
+
+<div class="section" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-DDA62ABB-9CC6-44DC-B08D-FEE5AC505858"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-DDA62ABB-9CC6-44DC-B08D-FEE5AC505858"><!-- --></a><h2 class="sectiontitle">Dispatching
+interrupts</h2> <p>At its simplest, this is the process of deciding
+which interrupts are pending and calling the ISR for each. </p>
+ <p>The following pseudo code shows the general principle: </p>
+ <pre class="codeblock" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-9C971C66-BB26-5A07-9373-3542B95A16FD"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-9C971C66-BB26-5A07-9373-3542B95A16FD"><!-- --></a>
+    {
+       FOREVER
+              {
+        Get next pending interrupt;
+        if None
+            {
+               return;
+            }
+        call ISR for the pending interrupt;
+        }
+    }
+</pre>
+ <p>In practice the dispatcher may have to do some more
+work to communicate with the interrupt controller hardware. </p>
+ </div>
+
+<div class="section" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-9026A4AC-57AF-545D-887C-AF43E0B37EDC"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-9026A4AC-57AF-545D-887C-AF43E0B37EDC"><!-- --></a><h2 class="sectiontitle">Chained
+interrupts</h2> <p>A system may have multiple interrupt controllers
+to handle a large number of interrupt sources. These are usually prioritised
+by connecting the interrupt output of a lower-priority controller
+to an interrupt input of a higher-priority controller. This is called
+chaining. </p>
+ <div class="fignone" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-49264B94-DF6D-5F11-8815-D42CDBF94E39"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-49264B94-DF6D-5F11-8815-D42CDBF94E39"><!-- --></a><span class="figcap">Figure 1. Chained interrupts</span>
+
+<img src="GUID-0DB79535-E4E6-50BD-852D-B2F177202C9C_d0e379292_href.png"/>
+</div>
+ <p>An interrupt from a lower priority controller will appear
+as an interrupt on the highest-priority controller. </p>
+ <p>When the
+interrupt dispatcher of the higher-priority controller detects that
+it is the chained interrupt that is pending, the usual way of dealing
+with this is to run a secondary dispatcher to determine which interrupt
+on the chained controller is pending. </p>
+ <p>There may be further
+levels of chaining before the true source of the interrupt has been
+identified. </p>
+ </div>
+
+<div class="section" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-ED6F2F47-7A16-5AE6-8E5B-B2475F6EDEAA"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-ED6F2F47-7A16-5AE6-8E5B-B2475F6EDEAA"><!-- --></a><h2 class="sectiontitle">Multiple
+interrupt sources and pseudo interrupt sources</h2> <p>It is possible
+that a single input to an interrupt controller is shared by several
+interrupt sources. </p>
+ <div class="fignone" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-DC96E3A8-9820-5CD4-8020-3B55398388D9"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-DC96E3A8-9820-5CD4-8020-3B55398388D9"><!-- --></a><span class="figcap">Figure 2. Multiple interrupt sources</span>
+
+<img src="GUID-DCBBDFA7-1E6C-5B00-A13E-A25794668E12_d0e379317_href.png"/>
+</div>
+ <p>It appears necessary to bind multiple ISRs to the same interrupt.
+However, this is not possible. There are two ways of dealing with
+this: </p>
+ <ul>
+<li id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-0D954444-C2C3-51CC-8E1D-7EB063CDACAA"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-0D954444-C2C3-51CC-8E1D-7EB063CDACAA"><!-- --></a><p>Maintain a list
+of all ISRs that are bound to this single interrupt source, and call
+all the ISRs in the list when the interrupt is dispatched. This is
+most conveniently implemented by binding a single ISR to the interrupt,
+which then calls all the real ISRs bound to this interrupt </p>
+ </li>
+
+<li id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-C5EFE907-26A5-568D-8CF0-DE5E89ED5CBB"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-C5EFE907-26A5-568D-8CF0-DE5E89ED5CBB"><!-- --></a><p>Create pseudo
+interrupts. These are extra interrupt IDs that do not exist in the
+interrupt controller, but represent each of the interrupt sources
+connected to the single shared interrupt source. An ISR can then be
+bound to each pseudo interrupt. The interrupt dispatcher can then
+determine which of the sources are actually signalling and call the
+appropriate ISR via that pseudo interrupt ID. This is effectively
+an implementation of a <a href="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC.html#GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-9026A4AC-57AF-545D-887C-AF43E0B37EDC">chained interrupt</a>, and assumes that the interrupt dispatcher
+can identify which of the sources is signalling. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-A87DE0F9-2095-5CA6-BE88-3A2EAABB0D33"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-A87DE0F9-2095-5CA6-BE88-3A2EAABB0D33"><!-- --></a><h2 class="sectiontitle">Interrupts
+in the split ASSP/Variant Configuration</h2> <p>When a common ASSP
+extension is used, a device may have additional peripherals external
+to the ASSP, and there needs to be a way of allowing extra interrupt
+binding and dispatch functions to be added later by the variant layer.
+This must be handled by the port as Symbian platform does not provide
+any additional API to support this. </p>
+ <p>Device drivers should
+be able to use the <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html"><span class="apiname">Interrupt</span></a> class functions without
+having to know where the interrupt is actually implemented. This implies
+that all requests should go to the core implementation of functions
+like <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-4E3CB472-3525-32F8-9BC4-8ECFEE931E7B"><span class="apiname">Interrupt::Bind()</span></a>, <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-BB169E6E-D8F9-3762-899D-6DBA4B29CF87"><span class="apiname">Interrupt::Enable()</span></a> etc. </p>
+ <p>To enable the core implementation of these functions
+to decide whether an interrupt ID refers to a core interrupt or device
+specific interrupt, a common technique is to "tag" the interrupt ID.
+A simple way is to use positive numbers to identify core interrupts
+and negative numbers to identify device specific interrupts. The ISRs
+for device specific interrupts are not stored in the core ISR table,
+instead the device specific layer provides its own ISR table. </p>
+ <p>The general pattern for creating the core-device specific split
+is that the core derives an implementation from class <a href="GUID-A83A7C3C-7DC0-3B9C-842F-70FCC751365D.html"><span class="apiname">Asic</span></a>, and the device specific part further derives from this core implementation.
+The usual technique is to add a set of virtual functions to the core
+class that can be derived by the device specific part. The core can
+provide default implementations for these functions that would just
+return <a href="GUID-0BEA3647-7888-3612-A2D3-7E27AC405E29.html"><span class="apiname">KErrArgument</span></a> to trap illegal ID numbers.
+This API would need functions equivalent to each of the functions
+defined by the <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html"><span class="apiname">Interrupt</span></a> class. </p>
+ <p>As an example,
+the core layer for the template reference board defines a class <samp class="codeph">TemplateAssp</samp> that is derived from <a href="GUID-A83A7C3C-7DC0-3B9C-842F-70FCC751365D.html"><span class="apiname">Asic</span></a>. <samp class="codeph">TemplateAssp</samp> defines the pure virtual functions: <samp class="codeph">InterruptBind()</samp>, <samp class="codeph">InterruptUnbind()</samp>, <samp class="codeph">InterruptEnable()</samp> etc, all with signatures that are the
+same for the comparable functions defined by <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html"><span class="apiname">Interrupt</span></a>, and which are implemented by the <samp class="codeph">Template</samp> class. </p>
+ <div class="fignone" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-458C7825-5B35-583C-BDF6-7DCD21DAE670"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-458C7825-5B35-583C-BDF6-7DCD21DAE670"><!-- --></a><span class="figcap">Figure 3. Interrupt binding</span>
+
+<img src="GUID-B7E7E6D6-7824-505C-BA0B-B7861897E78F_d0e379414_href.png"/>
+</div>
+ </div>
+
+<div class="section" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-9D98586F-AD1D-5C50-9AD8-F81D72135382"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-9D98586F-AD1D-5C50-9AD8-F81D72135382"><!-- --></a><h2 class="sectiontitle">Spurious
+interrupts</h2> <p>In the Kernel Architecture 2, it is a convention
+that unbound interrupts should be bound to a "spurious" interrupt
+handler, i.e. an interrupt handler that faults the system indicating
+the number of the interrupt. This aids debugging by identifying interrupts
+that are enabled without corresponding ISRs. </p>
+ </div>
+
+<div class="section" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-109C6250-DC5B-48EC-B1A0-24E2E9731B38"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-109C6250-DC5B-48EC-B1A0-24E2E9731B38"><!-- --></a><h2 class="sectiontitle">Interrupt
+priority</h2> <p>The interrupt architecture supports the concept
+of adjustable interrupt priorities. Symbian platform defines the <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-FA4CFED7-D694-399C-8F84-FA9FE3C3A171"><span class="apiname">Interrupt::SetPriority()</span></a> function that can implement this.
+The function is passed the ID of the interrupt source to be adjusted
+together with a priority value. The meaning of the priority value
+is hardware and implementation dependent, and is defined by the port. </p>
+ </div>
+
+<div class="section" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-77E83634-BBF6-5190-9434-9FB700547CD0"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-77E83634-BBF6-5190-9434-9FB700547CD0"><!-- --></a><h2 class="sectiontitle">The
+ISR table</h2> <p>The Variant must provide a table where each entry
+defines which <a href="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC.html#GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-1FAA26F5-BFB2-55A0-977C-1538EBF3C82A">ISR</a> is bound to which interrupt source. The table must have
+enough space for entries for each interrupt source that is known to
+the Variant. </p>
+ <p>When the Variant is split into an ASSP layer
+and a Variant layer, the ISR table is put in the ASSP layer and will
+not normally include ISRs for the Variant interrupt sources - these
+will be handled by separate chained dispatchers in the Variant layer. </p>
+ <p>Symbian platform provides the <a href="GUID-2C9B6510-D045-3FA1-AD65-B544E30D34C7.html"><span class="apiname">SInterruptHandler</span></a> structure, defined in the header file <span class="filepath">...\e32\include\kernel\arm\assp.h</span> to encapsulate the entry for an ISR. The ISR table is, therefore,
+just an array of <a href="GUID-2C9B6510-D045-3FA1-AD65-B544E30D34C7.html"><span class="apiname">SInterruptHandler</span></a> items. For example,
+if a system has 32 possible interrupt sources, then the ISR table
+would be defined as: </p>
+ <pre class="codeblock" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-6C95C2EF-A882-565A-8718-07BF7E4A7AC5"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-6C95C2EF-A882-565A-8718-07BF7E4A7AC5"><!-- --></a>...
+const TInt KInterruptSourceCount = 32;
+SInterruptHandler IsrHandlers[KInterruptSourceCount];
+...</pre>
+ <p>Interrupts are identified in the system by their
+interrupt ID number, which is used to index into the ISR table. You
+are free to allocate these numbers any way that is convenient for
+you. </p>
+ <p>On the template reference board, for example, the ISR
+table is defined as a static data member of the <samp class="codeph">VariantASSPInterrupt</samp> class, which is derived from <a href="GUID-5E593C59-BA22-3B70-AAFB-BFE19E22538A.html"><span class="apiname">TemplateInterrupt</span></a>. The class is defined in <span class="filepath">...\template_assp\template_assp_priv.h</span>. </p>
+ <pre class="codeblock" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-59D7A629-353C-5117-84B7-15CD425481C6"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-59D7A629-353C-5117-84B7-15CD425481C6"><!-- --></a>class TemplateInterrupt : public Interrupt
+    {
+    ... // functions
+public:
+    static SInterruptHandler Handlers[KNumTemplateInts];
+    ...
+    };</pre>
+ <p>where KNumTemplateInts is defined in the same
+header file. </p>
+ <p><strong>Factors that decide the size of the ISR table</strong> </p>
+ <p>The number of entries to be reserved in the ISR table depends
+on the following factors: </p>
+ <ul>
+<li id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-05AE4B19-AA29-56E4-842A-CC65546EFB54"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-05AE4B19-AA29-56E4-842A-CC65546EFB54"><!-- --></a><p>Where the ASSP
+is targeted at only a single device, the number of possible interrupts
+is usually known, and the table can include an entry for each one. </p>
+ </li>
+
+<li id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-C62B31BD-FAD7-5A76-9E43-2387FD8AFCC8"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-C62B31BD-FAD7-5A76-9E43-2387FD8AFCC8"><!-- --></a><p>If any <a href="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC.html#GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-ED6F2F47-7A16-5AE6-8E5B-B2475F6EDEAA">pseudo sources</a> exist, they should be included in the main
+table for efficiency, but note that this is not strictly necessary. </p>
+ </li>
+
+</ul>
+ <p><strong>Other factors affecting the ISR table</strong> </p>
+ <p>IRQs
+and FIQs may need to be distinguished, although the exact requirement
+is hardware dependent. Although the table has one entry for each possible
+interrupt source, a possible scheme may be to group IRQs at the start
+of the table, and FIQs at the end of the table. If the hardware has
+separate interrupt controller hardware for IRQs and FIQs (or at least,
+different registers) then you will need to arrange the table so that
+you can determine from the <a href="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC.html#GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-8E58F4C9-0290-55E0-A4FD-B6C2361BE205">interrupt ID</a> whether the interrupt is an IRQ or FIQ. </p>
+ <p>For example: </p>
+ <div class="fignone" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-9DD2CC92-A5DB-5C78-A9A6-64402FF04FE2"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-9DD2CC92-A5DB-5C78-A9A6-64402FF04FE2"><!-- --></a><span class="figcap">Figure 4. ISR table</span>
+
+<img src="GUID-60949ACD-AAA9-540E-85AE-BB173382D548_d0e379533_href.png"/>
+</div>
+ </div>
+
+<div class="section" id="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-EACCBDFD-46CD-4D67-B60C-D705867C9116"><a name="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-EACCBDFD-46CD-4D67-B60C-D705867C9116"><!-- --></a><h2 class="sectiontitle">Location
+of interrupt handling code</h2> <p>Most of the interrupt dispatching
+code is implemented in the ASSP layer. This includes a list of ISRs,
+code for adding and removing ISRs, enabling and disabling interrupt
+sources, and dispatching ISRs. The kernel only provides a pre-amble
+and post-amble. </p>
+ <p>The kernel defines, but does not implement,
+a class called <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html"><span class="apiname">Interrupt</span></a> that exports interrupt
+functionality to device drivers and other kernel code. The class provides
+the public API for using interrupts (but not for dispatching them).
+The port must provide an implementation for each function defined
+by the class. </p>
+ <p>The class is defined in the header files <span class="filepath">...\e32\include\kernel\arm\assp.h</span>, which is exported to <span class="filepath">...\epoc32\include\kernel\arm</span>. </p>
+<p>See <strong>Symbian OS
+Internals Book, Chapter 6  - Interrupts and Exceptions</strong></p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html" title="Describes the architecture and technology features of the Kernel that are important for a base port.">Concepts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

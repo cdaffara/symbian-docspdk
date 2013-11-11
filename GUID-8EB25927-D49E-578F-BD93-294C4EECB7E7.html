@@ -1,0 +1,1392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Basic APIs"/>
+<meta name="abstract" content="Accessing APIs and basic functions in kernel-side programs."/>
+<meta name="description" content="Accessing APIs and basic functions in kernel-side programs."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DC8D3736-EDCF-54CB-A614-2AAC4664F1CA.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DC8D3736-EDCF-54CB-A614-2AAC4664F1CA.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Basic APIs</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388473 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-DC8D3736-EDCF-54CB-A614-2AAC4664F1CA.html" title="This section describes how device drivers can use the services that the Kernel provides.">Kernel-Side Services</a> &gt; </div>
+<h1 class="topictitle1">Basic
+APIs</h1>
+<div><p>Accessing APIs and basic functions in kernel-side programs.</p>
+
+<p>Device drivers, like user-side programs, need to use APIs for basic tasks
+such as managing buffers and arrays. However, the EKA2 architecture does not
+allow kernel-side programs such as drivers to link and use the User Library
+(<span class="filepath">euser.dll</span>) that provides these APIs to user-side programs.
+This means kernel side code <em>cannot use the majority</em> of classes and
+functions that are available to user side code. </p>
+
+<p>However, some classes are available for use on both the user side and the
+kernel side. The first section of this document, <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-2CE47F55-D160-50A3-B05E-318569FDEF1F">Available EUSER functionality</a>, explains what these are. In other cases,
+there are alternative Kernel-specific APIs or techniques that you can use.
+The second section, <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-6AE21206-A29D-5CB6-83E9-69C2E7DA566A">Coding
+techniques to replace EUSER functionality</a>, describes these. </p>
+
+<p>The detailed contents are given below: </p>
+
+<p><strong>Contents </strong> </p>
+
+<ul>
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-F2669D60-00E3-520C-BACA-E363BFEDD487"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-F2669D60-00E3-520C-BACA-E363BFEDD487"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-2CE47F55-D160-50A3-B05E-318569FDEF1F">Available EUSER functionality</a>  </p>
+ <ul>
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-AB9D2617-556C-556B-81F2-A9E0E3CA2A60"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-AB9D2617-556C-556B-81F2-A9E0E3CA2A60"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-1A26C8D7-E915-5280-BA1E-0B837E296EE4">8-bit descriptors</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-2D0B05B0-BEBB-5A71-A6CA-1FFC5848D80B"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-2D0B05B0-BEBB-5A71-A6CA-1FFC5848D80B"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-F8164DF1-8875-5C83-9165-9902EB51A97C">Arrays</a> </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-962C0A1C-5A7B-5201-956D-F38BDF59C836"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-962C0A1C-5A7B-5201-956D-F38BDF59C836"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-0BC2B8B1-F797-5B65-9EE7-36A2EC5C9BC5">Character representation</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-36D2B096-181D-51E5-B502-E385565E7693"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-36D2B096-181D-51E5-B502-E385565E7693"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-682EF1C2-4756-5E5A-B4E9-00AABD5D4CE2">Basic utility functions and classes</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-F9264F5E-2D3D-551D-B9DD-DCECC027021D"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-F9264F5E-2D3D-551D-B9DD-DCECC027021D"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-331E0310-69A3-58A6-B932-F2B44201530D">The Package Buffers API</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-293A58CA-F57E-5323-9B1B-A8F51D351AA2"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-293A58CA-F57E-5323-9B1B-A8F51D351AA2"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-5707529F-6145-58C3-A0A9-8789FF8F1C93">The UID manipulation APIs</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-022766DC-6F40-55BE-B02A-6544A213141B"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-022766DC-6F40-55BE-B02A-6544A213141B"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-E9F32C01-5C4F-5706-B992-A4F8B01171FD">Version handling API</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-5CA1160C-8EEC-5795-853D-C568D519534F"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-5CA1160C-8EEC-5795-853D-C568D519534F"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-E67B4238-3CFF-5448-B711-FCD14D8D3C10">TRequestStatus</a> </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-AE09C566-0664-5341-9D8D-386D9CE3DFBA"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-AE09C566-0664-5341-9D8D-386D9CE3DFBA"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-0CA35DBF-C10D-5C35-90CD-24C53AEA41BF">TIpcArgs</a> </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-EE77EAFA-50E6-58E4-B64E-4E7AB5FCAEF2"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-EE77EAFA-50E6-58E4-B64E-4E7AB5FCAEF2"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-111081C5-5BDA-516B-9B3D-9D24FAD31E5D">Basic graphic classes</a>  </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-7772333C-EB62-58E1-B1FD-64B500567C9D"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-7772333C-EB62-58E1-B1FD-64B500567C9D"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-6AE21206-A29D-5CB6-83E9-69C2E7DA566A">Coding techniques to replace EUSER functionality</a> </p>
+ <ul>
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-EF0FA499-7F16-54D6-B1BA-A0AB3071CFB5"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-EF0FA499-7F16-54D6-B1BA-A0AB3071CFB5"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-CA520DD3-3601-5774-87F2-D5BA4DA2BF8E">Buffers: replacing HBufC8 with HBuf</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-6CAA6B7F-7F07-5047-82CE-CCAF960880AF"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-6CAA6B7F-7F07-5047-82CE-CCAF960880AF"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-310ADB7F-A03C-5994-A918-634B7BAB7DD8">Buffers: replacing HBufC8 with C style pointers</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-8858CFAA-EF27-54B0-8083-74A990C5E614"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-8858CFAA-EF27-54B0-8083-74A990C5E614"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-586DD3B4-69DB-564B-AB8D-B3A02607CE02">Handling 16-bit data items</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-AA63211F-E5AD-554A-AAFC-3FB1336553D5"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-AA63211F-E5AD-554A-AAFC-3FB1336553D5"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-77C88D19-50C3-5D69-8084-BE750F100BA0">Replacing CBase with DBase</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-E264271B-64F3-59A3-AD65-56C9ACEB5ABF"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-E264271B-64F3-59A3-AD65-56C9ACEB5ABF"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-585EE1D8-6080-5B37-A3BD-278B8731B7F9">Replacing User::QueryVersionSupported() with Kern::QueryVersionSupported()</a>  </p>
+ </li>
+
+</ul>
+ </li>
+
+</ul>
+
+<div class="section" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-2CE47F55-D160-50A3-B05E-318569FDEF1F"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-2CE47F55-D160-50A3-B05E-318569FDEF1F"><!-- --></a><h2 class="sectiontitle">Available EUSER
+functionality</h2> <p>This is a list of USER side classes, types and APIs
+that can still be used on the kernel side. However, a subset of the class
+member functions may not be available. </p>
+ <ul>
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-81D6F170-FAB0-5DE6-93BC-0027CF8E382F"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-81D6F170-FAB0-5DE6-93BC-0027CF8E382F"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-1A26C8D7-E915-5280-BA1E-0B837E296EE4">8-bit descriptors</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-BF477CD1-6079-5C60-A658-0DD64111081F"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-BF477CD1-6079-5C60-A658-0DD64111081F"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-F8164DF1-8875-5C83-9165-9902EB51A97C">Arrays</a> </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-63E56F9D-B261-58E7-B9F9-ED9726C7F16F"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-63E56F9D-B261-58E7-B9F9-ED9726C7F16F"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-0BC2B8B1-F797-5B65-9EE7-36A2EC5C9BC5">Character representation (TChar)</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-6F9BC926-0367-57DC-8356-29A2D29D60B8"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-6F9BC926-0367-57DC-8356-29A2D29D60B8"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-682EF1C2-4756-5E5A-B4E9-00AABD5D4CE2">Basic utility functions and classes</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-17051C1E-21DE-567C-ADB4-11D18314B0FC"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-17051C1E-21DE-567C-ADB4-11D18314B0FC"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-331E0310-69A3-58A6-B932-F2B44201530D">The Package Buffers API</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-3BCFE3A4-9B93-5D2D-BA1E-71F2544028AC"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-3BCFE3A4-9B93-5D2D-BA1E-71F2544028AC"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-5707529F-6145-58C3-A0A9-8789FF8F1C93">The UID manipulation APIs</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-4C2730C0-D22F-5855-9D11-8049B1BDEF5E"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-4C2730C0-D22F-5855-9D11-8049B1BDEF5E"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-E9F32C01-5C4F-5706-B992-A4F8B01171FD">Version handling API</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-44CEA8AD-36B9-59DF-9469-9A905A600ED4"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-44CEA8AD-36B9-59DF-9469-9A905A600ED4"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-E67B4238-3CFF-5448-B711-FCD14D8D3C10">TRequestStatus</a> </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-A867EDC0-DD2E-5E6D-ABC8-E57CECDA6158"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-A867EDC0-DD2E-5E6D-ABC8-E57CECDA6158"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-0CA35DBF-C10D-5C35-90CD-24C53AEA41BF">TIpcArgs</a> </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-D0E83441-2258-5660-99F1-5BCBB799DEA8"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-D0E83441-2258-5660-99F1-5BCBB799DEA8"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-111081C5-5BDA-516B-9B3D-9D24FAD31E5D">Basic graphic classes</a>  </p>
+ </li>
+
+</ul>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-1A26C8D7-E915-5280-BA1E-0B837E296EE4"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-1A26C8D7-E915-5280-BA1E-0B837E296EE4"><!-- --></a><strong>8-bit descriptors</strong> </p>
+ <p>The
+following classes, defined in <span class="filepath">e32des8.h</span>, <em>can</em> be
+used on the kernel side. </p>
+ <p>For some classes, the kernel side can use
+the same member functions that are available to the user side. However, for
+other classes, the kernel side is restricted to using a subset of functions;
+where this is the case, the functions are listed </p>
+ 
+<div class="tablenoborder"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-CCC5A82F-8A1B-52F2-8B0A-036801F68C68"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-CCC5A82F-8A1B-52F2-8B0A-036801F68C68" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <strong>Classes available </strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Public member functions that are available to kernel side code</strong>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html"><span class="apiname">TDesC8</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">TInt operator&lt;(const TDesC8 &amp;aDes) const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+operator&lt;=(const TDesC8 &amp;aDes) const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+operator&gt;(const TDesC8 &amp;aDes) const;</samp>  </p>
+ <p> <samp class="codeph">TInt operator&gt;=(const
+TDesC8 &amp;aDes) const;</samp>  </p>
+ <p> <samp class="codeph">TInt operator==(const
+TDesC8 &amp;aDes) const;</samp>  </p>
+ <p> <samp class="codeph">TInt operator!=(const
+TDesC8 &amp;aDes) const;</samp>  </p>
+ <p> <samp class="codeph"> const TUint8 &amp;operator[](TInt
+anIndex) const;</samp> </p>
+ <p> <samp class="codeph">TInt Length() const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+Size() const;</samp>  </p>
+ <p> <samp class="codeph">const TUint8 *Ptr() const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+Compare(const TDesC8 &amp;aDes) const;</samp>  </p>
+ <p> <samp class="codeph">TInt Match(const
+TDesC8 &amp;aDes) const;</samp>  </p>
+ <p> <samp class="codeph">TInt MatchF(const TDesC8
+&amp;aDes) const;</samp>  </p>
+ <p> <samp class="codeph">TInt MatchC(const TDesC8 &amp;aDes)
+const;</samp>  </p>
+ <p> <samp class="codeph">TInt Locate(TChar aChar) const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+LocateReverse(TChar aChar) const;</samp>  </p>
+ <p> <samp class="codeph">TInt Find(const
+TDesC8 &amp;aDes) const;</samp>  </p>
+ <p> <samp class="codeph">TInt Find(const TUint8
+*pS,TInt aLenS) const;</samp>  </p>
+ <p> <samp class="codeph">TPtrC8 Left(TInt aLength)
+const;</samp>  </p>
+ <p> <samp class="codeph">TPtrC8 Right(TInt aLength) const;</samp>  </p>
+ <p> <samp class="codeph">TPtrC8
+Mid(TInt aPos) const;</samp>  </p>
+ <p> <samp class="codeph">TPtrC8 Mid(TInt aPos,TInt
+aLength) const;</samp>  </p>
+ <p> <samp class="codeph">TInt CompareF(const TDesC8 &amp;aDes)
+const;</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html"><span class="apiname">TDes8</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">TDes8&amp; operator=(const TUint8 *aString);</samp>  </p>
+ <p> <samp class="codeph">TDes8&amp;
+operator=(const TDesC8 &amp;aDes);</samp>  </p>
+ <p> <samp class="codeph">TDes8&amp; operator=(const
+TDes8 &amp;aDes);</samp>  </p>
+ <p> <samp class="codeph">TInt MaxLength() const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+MaxSize() const;</samp>  </p>
+ <p> <samp class="codeph">const TUint8 &amp;operator[](TInt
+anIndex) const;</samp>  </p>
+ <p> <samp class="codeph">TUint8 &amp;operator[](TInt anIndex);</samp>  </p>
+ <p> <samp class="codeph">TDes8
+&amp;operator+=(const TDesC8 &amp;aDes);</samp>  </p>
+ <p> <samp class="codeph">void Zero();</samp>  </p>
+ <p> <samp class="codeph">void
+SetLength(TInt aLength);</samp>  </p>
+ <p> <samp class="codeph">void SetMax();</samp>  </p>
+ <p> <samp class="codeph">void
+Copy(const TDesC8 &amp;aDes);</samp>  </p>
+ <p> <samp class="codeph">void Copy(const TUint8
+*aBuf,TInt aLength);</samp>  </p>
+ <p> <samp class="codeph">void Copy(const TUint8 *aString);</samp>  </p>
+ <p> <samp class="codeph">void
+Copy(const TDesC16 &amp;aDes);</samp>  </p>
+ <p> <samp class="codeph">void Append(TChar
+aChar);</samp>  </p>
+ <p> <samp class="codeph">void Append(const TDesC8 &amp;aDes);</samp>  </p>
+ <p> <samp class="codeph">void
+Append(const TDesC16 &amp;aDes);</samp>  </p>
+ <p> <samp class="codeph">void Append(const
+TUint8 *aBuf,TInt aLength);</samp>  </p>
+ <p> <samp class="codeph">void Fill(TChar aChar);</samp>  </p>
+ <p> <samp class="codeph">void
+Fill(TChar aChar,TInt aLength);</samp>  </p>
+ <p> <samp class="codeph">void FillZ();</samp>  </p>
+ <p> <samp class="codeph">void
+FillZ(TInt aLength);</samp>  </p>
+ <p> <samp class="codeph">void Num(TInt64 aVal);</samp>  </p>
+ <p> <samp class="codeph"> void
+Num(TUint64 aVal, TRadix aRadix);</samp>  </p>
+ <p> <samp class="codeph">void NumFixedWidth(TUint
+aVal,TRadix aRadix,TInt                      aWidth);</samp>  </p>
+ <p> <samp class="codeph">void
+AppendNum(TInt64 aVal);</samp>  </p>
+ <p> <samp class="codeph">void AppendNum(TUint64
+aVal, TRadix aRadix);</samp>  </p>
+ <p> <samp class="codeph">void AppendNumFixedWidth(TUint
+aVal,TRadix aRadix,TInt                      aWidth);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html"><span class="apiname">TPtrC8</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Same as for user side code. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-C0D29B11-1535-3D11-B318-B18D30A6120B.html"><span class="apiname">TPtr8</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Same as for user side code. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-5B1CA2E7-E3A7-3AF8-9EB0-662E130C45DA.html"><span class="apiname">TBufC8</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Same as for user side code. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-78E993D5-A845-32B4-B41A-947ABEF16AA0.html"><span class="apiname">TBuf8</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Same as for user side code. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-6A13E649-D15A-3BD7-B5C2-4DC23211F276.html"><span class="apiname">TDes8Overflow</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Same as for user side code. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-A188447C-9DAA-3963-B6F2-893910450FC7.html"><span class="apiname">TLitC8</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Same as for user side code. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-F8164DF1-8875-5C83-9165-9902EB51A97C"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-F8164DF1-8875-5C83-9165-9902EB51A97C"><!-- --></a><strong>Arrays</strong> </p>
+ <p>The
+following classes, defined in <span class="filepath">e32cmn.h</span>, <em>can</em> be
+used on the kernel side. </p>
+ <p>For some classes, the kernel side can use
+the same member functions that are available to the user side. However, for
+other classes, the kernel side is restricted to using a subset of functions;
+where this is the case, the functions are listed </p>
+ 
+<div class="tablenoborder"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-858768C2-7159-5AF9-9704-C95F6FB14204"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-858768C2-7159-5AF9-9704-C95F6FB14204" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <strong>Classes available </strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Public member functions that are available to kernel side code</strong>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html"><span class="apiname"> RArray</span></a> &lt;class T&gt; </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">RArray();</samp>  </p>
+ <p> <samp class="codeph">RArray(TInt aGranularity);</samp>  </p>
+ <p> <samp class="codeph">RArray(TInt
+aGranularity, TInt aKeyOffset);</samp>  </p>
+ <p> <samp class="codeph">RArray(TInt aMinGrowBy,
+TInt aKeyOffset, TInt                      aFactor);</samp>  </p>
+ <p> <samp class="codeph">void
+Close(); inline TInt Count() const;</samp>  </p>
+ <p> <samp class="codeph">const T&amp;
+operator[](TInt anIndex) const;</samp>  </p>
+ <p> <samp class="codeph">T&amp; operator[](TInt
+anIndex);</samp>  </p>
+ <p> <samp class="codeph">TInt Append(const T&amp; anEntry);</samp>  </p>
+ <p> <samp class="codeph">TInt
+Insert(const T&amp; anEntry, TInt aPos);</samp>  </p>
+ <p> <samp class="codeph">void Remove(TInt
+anIndex);</samp>  </p>
+ <p> <samp class="codeph">void Compress();</samp>  </p>
+ <p> <samp class="codeph">void
+Reset();</samp>  </p>
+ <p> <samp class="codeph">TInt Find(const T&amp; anEntry) const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+Find(const T&amp; anEntry,                      TIdentityRelation&lt;T&gt; anIdentity)
+const;</samp>  </p>
+ <p> <samp class="codeph">TInt FindInSignedKeyOrder(const T&amp; anEntry)
+                     const;</samp>  </p>
+ <p> <samp class="codeph"> TInt FindInUnsignedKeyOrder(const
+T&amp; anEntry)                      const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+FindInOrder(const T&amp; anEntry,                      TLinearOrder&lt;T&gt;
+anOrder) const;</samp>  </p>
+ <p> <samp class="codeph">TInt FindInSignedKeyOrder(const
+T&amp; anEntry, TInt&amp;                      anIndex) const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+FindInUnsignedKeyOrder(const T&amp; anEntry,                      TInt&amp;
+anIndex) const;</samp>  </p>
+ <p> <samp class="codeph">TInt FindInOrder(const T&amp; anEntry,
+TInt&amp; anIndex,                      TLinearOrder&lt;T&gt; anOrder) const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+SpecificFindInSignedKeyOrder(const T&amp; anEntry,                      TInt
+aMode) const;</samp>  </p>
+ <p> <samp class="codeph">TInt SpecificFindInUnsignedKeyOrder(const
+T&amp; anEntry,                      TInt aMode) const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+SpecificFindInOrder(const T&amp; anEntry,                      TLinearOrder&lt;T&gt;
+anOrder, TInt aMode) const;</samp>  </p>
+ <p> <samp class="codeph">TInt SpecificFindInSignedKeyOrder(const
+T&amp; anEntry,                      TInt&amp; anIndex, TInt aMode) const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+SpecificFindInUnsignedKeyOrder(const T&amp; anEntry,                     
+TInt&amp; anIndex, TInt aMode) const;</samp>  </p>
+ <p> <samp class="codeph">TInt SpecificFindInOrder(const
+T&amp; anEntry, TInt&amp;                      anIndex, TLinearOrder&lt;T&gt;
+anOrder, TInt aMode) const;</samp>  </p>
+ <p> <samp class="codeph">TInt InsertInSignedKeyOrder(const
+T&amp; anEntry);</samp> </p>
+ <p> <samp class="codeph">TInt InsertInUnsignedKeyOrder(const
+T&amp;                      anEntry);</samp>  </p>
+ <p> <samp class="codeph">TInt InsertInOrder(const
+T&amp; anEntry,                      TLinearOrder&lt;T&gt; anOrder);</samp>  </p>
+ <p> <samp class="codeph">TInt
+InsertInSignedKeyOrderAllowRepeats(const T&amp;                      anEntry);</samp>  </p>
+ <p> <samp class="codeph">TInt
+InsertInUnsignedKeyOrderAllowRepeats(const T&amp;                      anEntry);</samp>  </p>
+ <p> <samp class="codeph">TInt
+InsertInOrderAllowRepeats(const T&amp; anEntry,                      TLinearOrder&lt;T&gt;
+anOrder);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html"><span class="apiname">RArray</span></a> &lt;TInt&gt; </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">RArray();</samp>  </p>
+ <p> <samp class="codeph">RArray(TInt aGranularity);</samp>  </p>
+ <p> <samp class="codeph">RArray(TInt
+aMinGrowBy, TInt aFactor);</samp>  </p>
+ <p> <samp class="codeph">void Close();</samp>  </p>
+ <p> <samp class="codeph">TInt
+Count() const;</samp>  </p>
+ <p> <samp class="codeph">const TInt&amp; operator[](TInt
+anIndex) const;</samp>  </p>
+ <p> <samp class="codeph">TInt&amp; operator[](TInt anIndex);</samp>  </p>
+ <p> <samp class="codeph">TInt
+Append(TInt anEntry);</samp>  </p>
+ <p> <samp class="codeph">TInt Insert(TInt anEntry,
+TInt aPos);</samp>  </p>
+ <p> <samp class="codeph">void Remove(TInt anIndex);</samp>  </p>
+ <p> <samp class="codeph">void
+Compress();</samp>  </p>
+ <p> <samp class="codeph">void Reset();</samp>  </p>
+ <p> <samp class="codeph">TInt
+Find(TInt anEntry) const;</samp>  </p>
+ <p> <samp class="codeph">TInt FindInOrder(TInt
+anEntry) const;</samp>  </p>
+ <p> <samp class="codeph">TInt FindInOrder(TInt anEntry,
+TInt&amp; anIndex) const;                      </samp>  </p>
+ <p> <samp class="codeph">TInt
+SpecificFindInOrder(TInt anEntry, TInt aMode)                      const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+SpecificFindInOrder(TInt anEntry, TInt&amp; anIndex,                     
+TInt aMode) const;</samp>  </p>
+ <p> <samp class="codeph">TInt InsertInOrder(TInt anEntry);</samp>  </p>
+ <p> <samp class="codeph">TInt
+InsertInOrderAllowRepeats(TInt anEntry);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html"><span class="apiname">RArray</span></a> &lt;TUint&gt; </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">RArray();</samp>  </p>
+ <p> <samp class="codeph">RArray(TInt aGranularity);</samp>  </p>
+ <p> <samp class="codeph">RArray(TInt
+aMinGrowBy, TInt aFactor);</samp>  </p>
+ <p> <samp class="codeph">void Close();</samp>  </p>
+ <p> <samp class="codeph">TInt
+Count() const;</samp>  </p>
+ <p> <samp class="codeph">const TUint&amp; operator[](TInt
+anIndex) const;</samp>  </p>
+ <p> <samp class="codeph">TUint&amp; operator[](TInt anIndex);</samp>  </p>
+ <p> <samp class="codeph">TInt
+Append(TUint anEntry);</samp>  </p>
+ <p> <samp class="codeph">TInt Insert(TUint anEntry,
+TInt aPos);</samp>  </p>
+ <p> <samp class="codeph">void Remove(TInt anIndex);</samp>  </p>
+ <p> <samp class="codeph">void
+Compress();</samp>  </p>
+ <p> <samp class="codeph">void Reset();</samp>  </p>
+ <p> <samp class="codeph">TInt
+Find(TUint anEntry) const;</samp>  </p>
+ <p> <samp class="codeph">TInt FindInOrder(TUint
+anEntry) const;</samp>  </p>
+ <p> <samp class="codeph">TInt FindInOrder(TUint anEntry,
+TInt&amp; anIndex) const;                      </samp>  </p>
+ <p> <samp class="codeph">TInt
+SpecificFindInOrder(TUint anEntry, TInt aMode)                      const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+SpecificFindInOrder(TUint anEntry, TInt&amp;                      anIndex,
+TInt aMode) const;</samp>  </p>
+ <p> <samp class="codeph">TInt InsertInOrder(TUint anEntry);</samp>  </p>
+ <p> <samp class="codeph">TInt
+InsertInOrderAllowRepeats(TUint anEntry);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html"><span class="apiname">RPointerArray</span></a> &lt;class T&gt; </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">RPointerArray();</samp>  </p>
+ <p> <samp class="codeph">RPointerArray(TInt
+aGranularity);</samp>  </p>
+ <p> <samp class="codeph">RPointerArray(TInt aMinGrowBy, TInt
+aFactor);</samp>  </p>
+ <p> <samp class="codeph">void Close();</samp>  </p>
+ <p> <samp class="codeph">TInt
+Count() const;</samp>  </p>
+ <p> <samp class="codeph">T* const&amp; operator[](TInt anIndex)
+const;</samp>  </p>
+ <p> <samp class="codeph">T*&amp; operator[](TInt anIndex);</samp>  </p>
+ <p> <samp class="codeph">TInt
+Append(const T* anEntry);</samp>  </p>
+ <p> <samp class="codeph">TInt Insert(const T*
+anEntry, TInt aPos);</samp>  </p>
+ <p> <samp class="codeph">void Remove(TInt anIndex);</samp>  </p>
+ <p> <samp class="codeph">void
+Compress();</samp>  </p>
+ <p> <samp class="codeph">void Reset();</samp>  </p>
+ <p> <samp class="codeph">void
+ResetAndDestroy();</samp>  </p>
+ <p> <samp class="codeph">TInt Find(const T* anEntry)
+const;</samp>  </p>
+ <p> <samp class="codeph">TInt Find(const T* anEntry, TIdentityRelation&lt;T&gt;
+                     anIdentity) const;</samp>  </p>
+ <p> <samp class="codeph">TInt FindInAddressOrder(const
+T* anEntry) const;</samp>  </p>
+ <p> <samp class="codeph">TInt FindInOrder(const T* anEntry,
+TLinearOrder&lt;T&gt;                      anOrder) const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+FindInAddressOrder(const T* anEntry, TInt&amp;                      anIndex)
+const;</samp>  </p>
+ <p> <samp class="codeph">TInt FindInOrder(const T* anEntry, TInt&amp;
+anIndex,                      TLinearOrder&lt;T&gt; anOrder) const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+SpecificFindInAddressOrder(const T* anEntry, TInt                      aMode)
+const;);</samp>  </p>
+ <p> <samp class="codeph">TInt SpecificFindInOrder(const T* anEntry,
+                     TLinearOrder&lt;T&gt; anOrder, TInt aMode) const;</samp>  </p>
+ <p> <samp class="codeph">TInt
+SpecificFindInAddressOrder(const T* anEntry,                      TInt&amp;
+anIndex, TInt aMode) const;</samp>  </p>
+ <p> <samp class="codeph">TInt SpecificFindInOrder(const
+T* anEntry, TInt&amp;                      anIndex, TLinearOrder&lt;T&gt; anOrder,
+TInt aMode) const;</samp>  </p>
+ <p> <samp class="codeph">TInt InsertInAddressOrder(const
+T* anEntry);</samp>  </p>
+ <p> <samp class="codeph">TInt InsertInOrder(const T* anEntry,
+                     TLinearOrder&lt;T&gt; anOrder);</samp>  </p>
+ <p> <samp class="codeph">TInt
+InsertInAddressOrderAllowRepeats(const T*                      anEntry);</samp>  </p>
+ <p> <samp class="codeph">TInt
+InsertInOrderAllowRepeats(const T* anEntry,                      TLinearOrder&lt;T&gt;
+anOrder);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-E75F040A-CEC6-3751-8F96-F16AEDC209A3.html"><span class="apiname">TIdentityRelation </span></a> &lt;class T&gt; </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Same as for user side code. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-C028C373-CE25-3832-855E-17FB738721CF.html"><span class="apiname">TLinearOrder</span></a> &lt;class T&gt; </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Same as for user side code. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-0BC2B8B1-F797-5B65-9EE7-36A2EC5C9BC5"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-0BC2B8B1-F797-5B65-9EE7-36A2EC5C9BC5"><!-- --></a><strong>Character representation</strong> </p>
+ <p>The
+following class, defined in <span class="filepath">e32cmn.h</span>, <em>can</em> be used
+on the kernel side. </p>
+ <p>For some classes, the kernel side can use the
+same member functions that are available to the user side. However, for other
+classes, the kernel side is restricted to using a subset of functions; where
+this is the case, the functions are listed </p>
+ 
+<div class="tablenoborder"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-F24ABED3-1122-5FE2-8E00-87B610F7E2A6"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-F24ABED3-1122-5FE2-8E00-87B610F7E2A6" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <strong>Classes available </strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Public member functions that are available to kernel side code</strong>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-CDCFA2A5-EA8A-3B39-B90F-77AC41571E2D.html"><span class="apiname">TChar</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">TChar();</samp>  </p>
+ <p> <samp class="codeph">TChar(TUint aChar);</samp>  </p>
+ <p> <samp class="codeph">TChar&amp;
+operator-=(TUint aChar);</samp>  </p>
+ <p> <samp class="codeph">TChar&amp; operator+=(TUint
+aChar);</samp>  </p>
+ <p> <samp class="codeph">TChar operator-(TUint aChar);</samp>  </p>
+ <p> <samp class="codeph">TChar
+operator+(TUint aChar);</samp>  </p>
+ <p> <samp class="codeph">operator TUint() const;</samp>  </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-682EF1C2-4756-5E5A-B4E9-00AABD5D4CE2"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-682EF1C2-4756-5E5A-B4E9-00AABD5D4CE2"><!-- --></a><strong>Basic utility
+functions and classes</strong> </p>
+ <p>The following global utility functions and
+classes, defined in <span class="filepath">e32cmn.h</span>, <em>can</em> be used on the
+kernel side. </p>
+ 
+<div class="tablenoborder"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-1754BDC5-BFB7-5E32-A956-2289FDB1C172"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-1754BDC5-BFB7-5E32-A956-2289FDB1C172" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-5391E485-A019-358F-85D2-3B55BA439BD1.html"><span class="apiname">TRefByValue</span></a>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">TInt Lim(TInt aVal,TUint aLimit);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">TInt LimX(TInt aVal,TUint aLimit);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>template &lt;class T&gt; <samp class="codeph">T Min(T aLeft,T aRight);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>template &lt;class T&gt; <samp class="codeph">T Min(T aLeft,TUint              
+       aRight);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>template &lt;class T&gt; <samp class="codeph">T Max(T aLeft,T aRight);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>template &lt;class T&gt; <samp class="codeph">T Max(T aLeft,TUint              
+       aRight);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>template &lt;class T&gt; <samp class="codeph">T Abs(T aVal);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>template &lt;class T&gt; <samp class="codeph">TBool Rng(T aMin,T aVal,T        
+             aMax);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>template &lt;class T,class S&gt; <samp class="codeph">T* PtrAdd(T* aPtr,S      
+               aVal);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>template &lt;class T,class S&gt; <samp class="codeph">T* PtrSub(T* aPtr,S      
+               aVal);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>template &lt;class T&gt; <samp class="codeph">T Align2(T aValue);</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>template &lt;class T&gt; <samp class="codeph">T Align4(T aValue);</samp>  </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-331E0310-69A3-58A6-B932-F2B44201530D"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-331E0310-69A3-58A6-B932-F2B44201530D"><!-- --></a><strong>The Package
+Buffers API</strong> </p>
+ <p>The package buffers API, represented by classes defined
+in <span class="filepath">e32cmn.h</span>, <em>can</em> be used on the kernel side. </p>
+ 
+<div class="tablenoborder"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-CE1782C9-E59A-567C-8F6F-DA5AE7C50476"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-CE1782C9-E59A-567C-8F6F-DA5AE7C50476" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-C7A094BD-846F-3ED2-8CCE-C0743DB3712A.html"><span class="apiname">TPckgBuf</span></a>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-36B29964-420D-38D0-AF08-4DA70BED8B6E.html"><span class="apiname">TPckgC</span></a>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-4DFB8E64-81FF-3D3B-9694-CE51B11DA69A.html"><span class="apiname">TPckg</span></a>  </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-5707529F-6145-58C3-A0A9-8789FF8F1C93"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-5707529F-6145-58C3-A0A9-8789FF8F1C93"><!-- --></a><strong>The UID manipulation
+APIs</strong> </p>
+ <p>The UID manipulation APIs, represented by classes defined
+in <span class="filepath">e32cmn.h</span> can be used on the kernel side. However,
+only a <em>subset</em> of functions are available. See the detailed notes in
+the following table. </p>
+ 
+<div class="tablenoborder"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-4E17CB02-80F9-5D3A-A3F0-0C6208D759F5"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-4E17CB02-80F9-5D3A-A3F0-0C6208D759F5" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html"><span class="apiname">TUid</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Only the two inline functions can be used: </p>
+ <ul>
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-1FA84853-4983-500F-B38E-AA82BB5456D6"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-1FA84853-4983-500F-B38E-AA82BB5456D6"><!-- --></a><p> <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html#GUID-530281E6-29FC-33F2-BC9B-610FBA389444__GUID-65B526E7-8629-3DEC-970B-1D48263D7AFD"><span class="apiname">TUid::Uid</span></a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-B588EEC3-4DB9-51D3-9DCA-DAF822006C4B"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-B588EEC3-4DB9-51D3-9DCA-DAF822006C4B"><!-- --></a><p> <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html#GUID-530281E6-29FC-33F2-BC9B-610FBA389444__GUID-B7F5CA42-157B-3D74-BA2E-00B290F71345"><span class="apiname">TUid::Null()</span></a>  </p>
+ </li>
+
+</ul>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-B6D6B0AD-B15C-339A-8540-40540885089A.html"><span class="apiname">TUidType</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>None of the member functions can be used; however, the <samp class="codeph">iUid</samp> data
+member is declared as public on the kernel side. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-1FB6F0D5-96F9-3D31-8508-9CE731A2E8E4.html"><span class="apiname">TUidName</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>This will only ever be an 8-bit type descriptor. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-E9F32C01-5C4F-5706-B992-A4F8B01171FD"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-E9F32C01-5C4F-5706-B992-A4F8B01171FD"><!-- --></a><strong>Version handling
+API</strong> </p>
+ <p>The version handling API, represented by the <a href="GUID-D82DEC7A-71C2-3004-BFC2-C82C009A2715.html"><span class="apiname">TVersion</span></a> class
+defined in <span class="filepath">e32cmn.h</span> can be used on the kernel side. </p>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-E67B4238-3CFF-5448-B711-FCD14D8D3C10"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-E67B4238-3CFF-5448-B711-FCD14D8D3C10"><!-- --></a><strong>TRequestStatus</strong> </p>
+ <p>The <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html"><span class="apiname">TRequestStatus</span></a> class
+representing the completion status of an asynchronous request, and defined
+in <span class="filepath">e32cmn.h</span> can be used on the kernel side. </p>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-0CA35DBF-C10D-5C35-90CD-24C53AEA41BF"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-0CA35DBF-C10D-5C35-90CD-24C53AEA41BF"><!-- --></a><strong>TIpcArgs</strong> </p>
+ <p>The <a href="GUID-4AD02F14-1142-372F-9D11-224595932034.html"><span class="apiname">TIpcArgs</span></a> class, which is part of the Version2 client/server APIs,
+and defined in <span class="filepath">e32cmn.h</span>, can be used on the kernel side.
+However, the <samp class="codeph">Set()</samp> and <samp class="codeph">Type()</samp> member functions
+that take 16-bit descriptors are not available. </p>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-111081C5-5BDA-516B-9B3D-9D24FAD31E5D"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-111081C5-5BDA-516B-9B3D-9D24FAD31E5D"><!-- --></a><strong>Basic
+graphic classes</strong> </p>
+ <p>The basic graphic classes <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html"><span class="apiname">TPoint</span></a> and <a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html"><span class="apiname">TSize</span></a> are
+defined on the kernel side. However, only the public data members are defined
+- the member functions are not defined, and are not available for use. </p>
+ </div>
+
+<div class="section" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-6AE21206-A29D-5CB6-83E9-69C2E7DA566A"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-6AE21206-A29D-5CB6-83E9-69C2E7DA566A"><!-- --></a><h2 class="sectiontitle">Coding techniques
+to replace EUSER functionality</h2> <ul>
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-19997154-7682-5FA8-85EA-2E24683398D5"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-19997154-7682-5FA8-85EA-2E24683398D5"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-CA520DD3-3601-5774-87F2-D5BA4DA2BF8E">Buffers: replacing HBufC8 with HBuf</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-DBAA1CE6-9A00-5A97-8954-C2B3E4DC8B3C"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-DBAA1CE6-9A00-5A97-8954-C2B3E4DC8B3C"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-310ADB7F-A03C-5994-A918-634B7BAB7DD8">Buffers: replacing HBufC8 with C style pointers</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-44A25AD2-1970-5D1E-8B51-B92232F14E6F"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-44A25AD2-1970-5D1E-8B51-B92232F14E6F"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-586DD3B4-69DB-564B-AB8D-B3A02607CE02">Handling 16-bit data items</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-E9549A58-6921-5521-ACCA-E74DD962FFBC"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-E9549A58-6921-5521-ACCA-E74DD962FFBC"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-77C88D19-50C3-5D69-8084-BE750F100BA0">Replacing CBase with DBase</a>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-BC1219A8-4F8F-5E91-ABE9-E8D89F904D58"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-BC1219A8-4F8F-5E91-ABE9-E8D89F904D58"><!-- --></a><p> <a href="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7.html#GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-585EE1D8-6080-5B37-A3BD-278B8731B7F9">Replacing User::QueryVersionSupported() with Kern::QueryVersionSupported()</a>  </p>
+ </li>
+
+</ul>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-CA520DD3-3601-5774-87F2-D5BA4DA2BF8E"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-CA520DD3-3601-5774-87F2-D5BA4DA2BF8E"><!-- --></a><strong>Buffers: replacing
+HBufC8 with HBuf</strong> </p>
+ <p>In EKA2, the heap descriptor buffer, <a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html"><span class="apiname">HBufC8</span></a> is
+not available. However, the kernel side defines and implements an equivalent
+(kernel) heap descriptor buffer: <a href="GUID-1E0F353F-2532-3FF2-9992-06EC687C3998.html"><span class="apiname">HBuf8</span></a>. <a href="GUID-1E0F353F-2532-3FF2-9992-06EC687C3998.html"><span class="apiname">HBuf8</span></a> is
+behaves in a similar way to <a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html"><span class="apiname">HBufC8</span></a>, so nearly all of your
+code can be reused, but note the following points: </p>
+ <ul>
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-409FC5CB-F502-54ED-972E-D00AF311180C"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-409FC5CB-F502-54ED-972E-D00AF311180C"><!-- --></a><p>If your code uses the
+typedef <a href="GUID-A103FB19-60B3-3E45-97A5-1F295934ACA1.html"><span class="apiname">HBufC</span></a>, then you need to change it to <a href="GUID-5BEA9976-B969-3949-B855-E657FFF38EE2.html"><span class="apiname">HBuf</span></a>. </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-889793AE-1F58-5FAE-9C58-04E3549526F9"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-889793AE-1F58-5FAE-9C58-04E3549526F9"><!-- --></a><p>On the kernel side,
+there is no explicit support for 16-bit buffers, which means that there is
+no class called HBuf16. In practice, this means that, <a href="GUID-5BEA9976-B969-3949-B855-E657FFF38EE2.html"><span class="apiname">HBuf</span></a> is
+always the same as <a href="GUID-1E0F353F-2532-3FF2-9992-06EC687C3998.html"><span class="apiname">HBuf8</span></a>. </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-58F6F261-69EA-5D2E-BAF1-9EF844F13B5A"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-58F6F261-69EA-5D2E-BAF1-9EF844F13B5A"><!-- --></a><p>Unlike <a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html"><span class="apiname">HBufC8</span></a>, <a href="GUID-1E0F353F-2532-3FF2-9992-06EC687C3998.html"><span class="apiname">HBuf8</span></a> is
+a modifiable type descriptor. It has <a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html"><span class="apiname">TDes8</span></a> in its derivation
+hierarchy, and this means that you can manipulate the descriptor's data (using
+the <a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html"><span class="apiname">TDes8</span></a> member functions). </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-3D649264-94C6-598A-9F90-5ED6988A3B66"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-3D649264-94C6-598A-9F90-5ED6988A3B66"><!-- --></a><p>The number of functions
+available to create an <a href="GUID-1E0F353F-2532-3FF2-9992-06EC687C3998.html"><span class="apiname">HBuf8</span></a> object is more limited than
+for <a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html"><span class="apiname">HBufC8</span></a> - there are only three variants - although in
+practice this is not a problem: </p>
+ <ul>
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-3B3B2A9D-13E0-57D4-A9F9-F308580B8F28"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-3B3B2A9D-13E0-57D4-A9F9-F308580B8F28"><!-- --></a><p> <samp class="codeph">HBuf8::New(TInt
+aMaxLength)</samp> to allocate a heap descriptor buffer (on the kernel heap)
+and set its length to zero; this behaves the same as the user side <samp class="codeph">HBufC8::New(TInt
+aMaxLength)</samp>  </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-213F8721-16E5-5E64-9D0A-E84E75831FB5"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-213F8721-16E5-5E64-9D0A-E84E75831FB5"><!-- --></a><p> <samp class="codeph">HBuf8::New(const
+TDesC8&amp; aDes)</samp> to allocate a heap descriptor buffer (on the kernel
+heap) and initialise it by copying an existing descriptor's data into it. </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-EBC5B863-9671-52C8-B22A-D303AA963697"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-EBC5B863-9671-52C8-B22A-D303AA963697"><!-- --></a><p> <samp class="codeph">HBuf8::ReAlloc(TInt
+aNewMax)</samp> to re-allocate (i.e. to resize) a heap descriptor buffer
+(on the kernel heap); this behaves the same as the user side <samp class="codeph">HBufC8::New(TInt
+aMaxLength)</samp>  </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-67068834-2B86-5901-9BB7-C8E0158BBDA5"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-67068834-2B86-5901-9BB7-C8E0158BBDA5"><!-- --></a><p>There are no "leaving"
+variants of these functions - if you have NewL(), NewLC(), and other "leaving"
+variants, then you will need to change your code to explicitly check the return
+code to make sure that the creation, or the reallocation of the heap descriptor
+buffer has worked. </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-D6FE65EF-A142-5B19-9F6E-718C9844B04B"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-D6FE65EF-A142-5B19-9F6E-718C9844B04B"><!-- --></a><p>As the descriptor is
+modifiable, there is no need for, and there is no equivalent of the function <a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html#GUID-2A528453-0279-3E47-838C-F8A8D29B88F1__GUID-155C7682-B1C4-38D0-9542-3829DF383050"><span class="apiname">HBufC8::Des()</span></a>;
+you just use the base class <a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html"><span class="apiname">TDes8</span></a> functions. </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-28F7E8E5-4E78-5175-93B2-CA8365978A10"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-28F7E8E5-4E78-5175-93B2-CA8365978A10"><!-- --></a><p>If your code uses the
+assignment operators (i.e. the <samp class="codeph">=</samp> operator), you don't need
+to change your code; the compiler will use the operators implemented in the <a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html"><span class="apiname">TDes8</span></a> base
+class, which will do the right thing. </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-2909D8CE-D267-5EB7-9870-5253438F7E98"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-2909D8CE-D267-5EB7-9870-5253438F7E98"><!-- --></a><p>The descriptor function <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html#GUID-FB97E0A3-352A-316F-97C6-69E4741A8120__GUID-FF9F5F8C-A240-354E-BBD3-44772AE5C4A4"><span class="apiname">TDesC8::Alloc()</span></a> is
+no longer available on the kernel side, so you cannot create a heap descriptor
+buffer from a general descriptor. </p>
+ </li>
+
+</ul>
+ <p>The following code fragments show code that is approximately equivalent
+between EKA1 and EKA2. The fragments are a little artificial, and make assumptions
+that would not necessarily be made in real code, but nevertheless still show
+the essential differences. </p>
+ 
+<div class="tablenoborder"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-C5338045-8A9C-5605-AB94-04D2770183E0"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-C5338045-8A9C-5605-AB94-04D2770183E0" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <strong>EKA1</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>EKA2</strong>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>This is a function that allocates a heap descriptor buffer (<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html"><span class="apiname">HBufC8</span></a>),
+puts data into it, changes its size, replaces the data, deletes a part of
+the data, and then deletes it. </p>
+ <pre class="codeblock" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-DEA8F91F-DE46-5DCF-BF06-9F4E89C5F366"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-DEA8F91F-DE46-5DCF-BF06-9F4E89C5F366"><!-- --></a>_LIT8(KTxSmall,"abcdef");
+_LIT8(KTxBig,"ghijklmnopqrstuvwxyz");
+
+void X::FunctionL()
+    {
+    // Create a buffer big enough to contain
+    // the text "abcdef".
+    // This uses the "leaving" variant, and leaves
+    // if there is insufficient memory.
+    HBufC8* pBuf = HBufC8::NewL(KTxSmall().Length());
+
+    // Copy the text "abcdedf" into it
+    *pBUf = KTxSmall;
+        
+    // Make the buffer bigger...
+    // ... and check that it worked OK
+    // Note that we are using the non-leaving version.
+    // We could use the leaving version, but we would
+    // need to handle the cleanup of pBuf 
+    HBuf8* pNewBuf = pBuf-&gt;ReAlloc(KTxBig().Length());;
+
+    if (pNewBuf)
+        {
+        pBuf = pNewBuf;
+        }
+     else
+        {
+        delete pBuf;
+        User::Leave(KErrNoMemory);
+        }
+
+    // Replace content of the descriptor with 
+    // the text "ghijkl......"
+    *pBuf = KTxBig;
+
+    // Need to use the Des() function to create 
+    // a modifiable descriptor before we can make
+    // changes to the text in the descriptor.
+    TPtr8 pDesPtr;
+    pDesPtr = pBuf-&gt;Des();
+
+    // Delete the 1st two characters.
+    PDesPtr.Delete(0,2)
+     
+    delete pBUf;
+
+    return;
+    }</pre>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>A similar function, but it uses <a href="GUID-1E0F353F-2532-3FF2-9992-06EC687C3998.html"><span class="apiname">HBuf8</span></a> instead. </p>
+ <pre class="codeblock" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-927B0A0C-D65B-5E5C-811D-285437C473BE"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-927B0A0C-D65B-5E5C-811D-285437C473BE"><!-- --></a>_LIT8(KTxSmall,"abcdef");
+_LIT8(KTxBig,"ghijklmnopqrstuvwxyz");
+
+TInt X::Function()
+    {
+    // Create a buffer big enough to contain
+    // the text "abcdef", and copy the text
+    // from its source into the buffer.
+    //
+    // You need to check explicitly that this
+    // has worked.
+    HBuf8* pBuf = HBuf8::New(KTxSmall);
+    if (!pBuf)
+        {
+        return KErrNoMemory;
+        }
+        
+    // Make the buffer bigger...
+    // .. and check that it worked OK
+    HBuf8* pNewBuf = pBuf-&gt;ReAlloc(KTxBig().Length());
+
+    if (pNewBuf)
+        {
+        pBuf = pNewBuf;
+        }
+     else
+        {
+        delete pBuf;
+        return KErrNoMemory;
+        }
+
+    // You can still use the =operator to replace 
+    // the content of the heap descriptor !
+    // Replace content with 
+    // the text "ghijkl......"
+    *pBuf = KTxBig;
+
+
+    // Can now use use the TDes8 functions
+    // directly.
+    // This deletes the 1st two characters.
+    pBuf-&gt;Delete(0,2);
+
+    // delete the heap descriptor
+    delete pBUf;
+
+    return KErrNone;
+    }</pre>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>A small code fragment that uses <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html#GUID-FB97E0A3-352A-316F-97C6-69E4741A8120__GUID-FF9F5F8C-A240-354E-BBD3-44772AE5C4A4"><span class="apiname">TDesC8::Alloc()</span></a> to
+create an <a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html"><span class="apiname">HBufC8</span></a> heap descriptor buffer from an existing
+descriptor. </p>
+ <pre class="codeblock" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-7545CD6E-8849-5CE0-88A8-975F141A7877"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-7545CD6E-8849-5CE0-88A8-975F141A7877"><!-- --></a>HBufC8* X::Function(const TDesC8&amp; aDes)
+    {
+    // Returns NULL if creation
+    // of the heap descriptor buffer fails.
+
+    return aDes.Alloc();
+    }</pre>
+ <p>or possibly: </p>
+ <pre class="codeblock" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-0E01D617-B83F-558A-8C6B-BF9BD8B2E449"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-0E01D617-B83F-558A-8C6B-BF9BD8B2E449"><!-- --></a>HBufC8* X::FunctionL(const TDesC8&amp; aDes)
+    {
+    // Leaves if creation of the heap
+    // descriptor buffer fails, otherwise it 
+    // returns a valid pointer.
+
+    return(aDes.AllocL());
+    }</pre>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>An equivalent code fragment that creates an <a href="GUID-1E0F353F-2532-3FF2-9992-06EC687C3998.html"><span class="apiname">HBuf8</span></a> heap
+descriptor buffer. </p>
+ <pre class="codeblock" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-EA7187B6-8365-5F77-941A-CCCC359BF5D0"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-EA7187B6-8365-5F77-941A-CCCC359BF5D0"><!-- --></a>HBuf8* X::Function(const TDesC8&amp; aDes)
+    {
+    // Returns NULL if creation
+    // of the heap descriptor buffer fails.
+   
+    return (HBuf8::New(aDes));
+    }</pre>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-310ADB7F-A03C-5994-A918-634B7BAB7DD8"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-310ADB7F-A03C-5994-A918-634B7BAB7DD8"><!-- --></a><strong>Buffers: replacing
+HBufC8 with C style pointers</strong> </p>
+ <p>Instead of replacing <a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html"><span class="apiname">HBufC8</span></a> with <a href="GUID-5BEA9976-B969-3949-B855-E657FFF38EE2.html"><span class="apiname">HBuf</span></a>,
+it may be more suitable to replace your heap descriptor buffers with C style
+pointers - effectively managing your buffers in open code or as part of the
+implementation of your own purpose written classes. </p>
+ <p>You allocate memory
+from the kernel heap using <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-DCB1C323-54D4-3C43-849A-503C19075C18"><span class="apiname">Kern::Alloc()</span></a> or <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-25A2BC43-08AB-34E8-93B4-AD4B82A98666"><span class="apiname">Kern::AllocZ()</span></a> and
+track the pointers to that memory. The following code fragments show how the
+use of HBufC8 translates to the direct use of these functions. </p>
+ <p>Although
+the EKA2 code here uses <a href="GUID-E2C25A1E-46B4-3697-A939-613CA366D87A.html"><span class="apiname">memcpy()</span></a>, and <a href="GUID-AC5005AE-EDC0-36EE-B877-2F91B09B0068.html"><span class="apiname">memmove()</span></a>,
+you will also find the functions <a href="GUID-5F6B1E3D-4F68-3870-96E2-8EA88D70C888.html"><span class="apiname">memclr()</span></a>, <a href="GUID-5A95E126-A82F-3F29-9810-FA1CD35E8B19.html"><span class="apiname">memset()</span></a>, <a href="GUID-9A49DF44-1742-32CF-8C13-AF732C3971A6.html"><span class="apiname">wordmove()</span></a> and <a href="GUID-57B71C3A-3F1E-3304-AA6C-EF53CD6682AD.html"><span class="apiname">memcompare()</span></a> useful in your code. </p>
+ 
+<div class="tablenoborder"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-A6F83848-EEE6-5656-BBD9-6CA8CC986AAD"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-A6F83848-EEE6-5656-BBD9-6CA8CC986AAD" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <strong>EKA1</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>EKA2</strong>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>This is a function that allocates a heap descriptor buffer (<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html"><span class="apiname">HBufC8</span></a>),
+puts data into it, changes its size, replaces the data, deletes a part of
+the data, and then deletes the whole buffer. </p>
+ <pre class="codeblock" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-7541F426-A84A-5496-A75D-A5235DD0B45E"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-7541F426-A84A-5496-A75D-A5235DD0B45E"><!-- --></a>_LIT8(KTxSmall,"abcdef");
+_LIT8(KTxBig,"ghijklmnopqrstuvwxyz");
+
+void X::FunctionL()
+    {
+    // Create a buffer big enough to contain
+    // the text "abcdef".
+    // This uses the "leaving" variant, and leaves
+    // if there is insufficient memory.
+    HBufC8* pBuf = HBufC8::NewL(KTxSmall().Length());
+
+    // Copy the text "abcdedf" into it
+    *pBUf = KTxSmall;
+        
+    // Make the buffer bigger...
+    // ... and check that it worked OK
+    // Note that we are using the non-leaving version.
+    // We could use the leaving version, but we would
+    // need to handle the cleanup of pBuf 
+    HBuf8* pNewBuf = pBuf-&gt;ReAlloc(KTxBig().Length());;
+
+    if (pNewBuf)
+        {
+        pBuf = pNewBuf;
+        }
+     else
+        {
+        delete pBuf;
+        User::Leave(KErrNoMemory);
+        }
+
+    // Replace content of the descriptor with 
+    // the text "ghijkl......"
+    *pBuf = KTxBig;
+
+    // Need to use the Des() function to create 
+    // a modifiable descriptor before we can make
+    // changes to the text in the descriptor.
+    TPtr8 pDesPtr;
+    pDesPtr = pBuf-&gt;Des();
+
+    // Delete the 1st two characters.
+    PDesPtr.Delete(0,2)
+     
+    delete pBUf;
+
+    return;
+    }</pre>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>A similar function, but allocates memory on the kernel heap explicitly,
+and manages its own pointers instead. Note the use of the nanokernel utility
+function: <a href="GUID-E2C25A1E-46B4-3697-A939-613CA366D87A.html"><span class="apiname">memcpy()</span></a>, and <a href="GUID-AC5005AE-EDC0-36EE-B877-2F91B09B0068.html"><span class="apiname">memmove()</span></a>  </p>
+ <pre class="codeblock" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-DB644074-0F80-58CE-9FE9-D5C5AF521849"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-DB644074-0F80-58CE-9FE9-D5C5AF521849"><!-- --></a>_LIT8(KTxSmall,"abcdef");
+_LIT8(KTxBig,"ghijklmnopqrstuvwxyz");
+
+TInt X::Function()
+    {
+    // Create a buffer big enough to contain
+    // the text "abcdef", and copy the text
+    // from its source into the buffer.
+    //
+    // Steps.
+    // 1. work out the size of buffer needed
+    // 2. Get the buffer.
+    // 3. Copy the source.
+
+    TInt lengthInBuffer = 0;
+     
+    // 1.
+    TInt Smallsize;
+    SmallSize = KTxSmall().Length();
+    lengthInBuffer = SmallSize;
+
+    // 2.
+    TUint8* pBuf;
+    pBuf = Kern::Alloc(SmallSize);
+    if (!pBuf)
+        {
+        return KErrNoMemory;
+        }
+
+    // 3.
+    memcpy(pBuf,KTxSmall().Ptr(),SmallSize));
+
+
+    // Make the buffer bigger.
+    // If it works ok, then copy the data
+    // to the new buffer, delete the old buffer
+    TInt BiggerSize;
+    TUint8* pNewBuf;
+
+    BiggerSize = KTxBig().Length();
+    pNewBuf = Kern::Alloc(BiggerSize);
+    if (pNewBuf)
+        {
+        memcpy(pNewBuf, pBuf, SmallSize);
+        Kern::Free(pBuf);
+        pBuf = pNewBuf;       
+        }
+     else
+        {
+        Kern::Free(pBuf);
+        return KErrNoMemory;
+        }
+     lengthInBuffer = BiggerSize;
+
+    // Replace content with 
+    // the text "ghijkl......"
+    memcpy(pNewBuf, KTxBig().Ptr(), BiggerSize);
+   
+
+    // Delete 1st two characters 
+    memmove(pNewBuf, pNewBuf+2, lengthInBuffer;
+    lengthInBuffer -= 2;
+   
+    Kern::Free(pBuf);
+
+    return KErrNone;
+    }</pre>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-586DD3B4-69DB-564B-AB8D-B3A02607CE02"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-586DD3B4-69DB-564B-AB8D-B3A02607CE02"><!-- --></a><strong>Handling 16-bit
+data items</strong> </p>
+ <p>If you need to handle 16-bit items on the kernel side,
+then you can still use 8-bit heap descriptor buffers. You just need to be
+aware that the data is 16 bit and cast accordingly. The following code fragments
+are simplistic, but show you the basic idea. </p>
+ 
+<div class="tablenoborder"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-65BA6847-9FC7-53B2-B9F6-2D649D4B75AE"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-65BA6847-9FC7-53B2-B9F6-2D649D4B75AE" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <strong>EKA1</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>EKA2</strong>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>This is a function which is passed a 16-bit descriptor containing
+16-bit wide characters. </p>
+ <pre class="codeblock" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-52B25979-B624-5D89-8D38-ADEDF3F27BED"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-52B25979-B624-5D89-8D38-ADEDF3F27BED"><!-- --></a>void X::FunctionL(const TDes16&amp; aDes)
+    {
+    HBuf16* pBuf = aDes.AllocL();
+
+    TInt     noOfCharacters;
+    TUint16* pointerToData;
+
+    noOfCharacters = pBuf-&gt;Length();
+    pointerToData  = pBuf-&gt;Ptr();
+
+    ...
+    }</pre>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>This is a similar function which is also passed 16-bit wide characters.
+The function needs slight changes as it can only receive data through an 8-bit
+descriptor. </p>
+ <pre class="codeblock" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-DD5720C2-1132-5991-B2E1-71B1BECAC15C"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-DD5720C2-1132-5991-B2E1-71B1BECAC15C"><!-- --></a>TInt X::Function(const TDes8&amp; aDes)
+    {
+    HBuf8* pBuf = HBuf8::New(aDes);
+    if (!pBuf)
+       {
+       return KErrNoMemory;
+       }
+
+    TInt     noOfCharacters;
+    TUint16* pointerToData;
+     
+    noOfCharacters = ((pBuf-&gt;Length()) &gt;&gt; 1);
+    pointerToData  = (TUint16*)(pBuf-&gt;Ptr());
+
+    ...
+
+    return KErrNone;
+    }</pre>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-77C88D19-50C3-5D69-8084-BE750F100BA0"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-77C88D19-50C3-5D69-8084-BE750F100BA0"><!-- --></a><strong>Replacing CBase
+with DBase</strong> </p>
+ <p>The <a href="GUID-4FCB6127-84F3-38F6-8AD2-FC3B94D67DA3.html"><span class="apiname">DBase</span></a> class is the kernel-side
+equivalent of the user-side <a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html"><span class="apiname">CBase</span></a> class. It provides zero-filling
+of memory prior to object construction and a virtual destructor in a similar
+way to <a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html"><span class="apiname">CBase</span></a>. </p>
+ <p>If you have a class derived from <a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html"><span class="apiname">CBase</span></a>,
+then all you need to do is: </p>
+ <ul>
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-B5ABF979-A6E0-5733-AFB2-DAC8FC132BA0"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-B5ABF979-A6E0-5733-AFB2-DAC8FC132BA0"><!-- --></a><p>change your class definition
+so that it is derived from <a href="GUID-4FCB6127-84F3-38F6-8AD2-FC3B94D67DA3.html"><span class="apiname">DBase</span></a>. </p>
+ </li>
+
+<li id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-03B04EF1-32FE-5B37-A67C-AE57F8902F8E"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-03B04EF1-32FE-5B37-A67C-AE57F8902F8E"><!-- --></a><p>Remember to include
+the <span class="filepath">klib.h</span> header file. </p>
+ </li>
+
+</ul>
+ <p>you should not need to do anything else. </p>
+ <p>One additional feature
+provided by <a href="GUID-4FCB6127-84F3-38F6-8AD2-FC3B94D67DA3.html"><span class="apiname">DBase</span></a> that is not available in <a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html"><span class="apiname">CBase</span></a> is
+the function <a href="GUID-4FCB6127-84F3-38F6-8AD2-FC3B94D67DA3.html#GUID-4FCB6127-84F3-38F6-8AD2-FC3B94D67DA3__GUID-40C0DEE0-7E6F-3D28-9B33-77A3CCC4E66E"><span class="apiname">DBase::AsyncDelete()</span></a>. This allows you to delete
+an instance of a <a href="GUID-4FCB6127-84F3-38F6-8AD2-FC3B94D67DA3.html"><span class="apiname">DBase</span></a> derived class asynchronously, and
+is useful if you need to delete a <a href="GUID-4FCB6127-84F3-38F6-8AD2-FC3B94D67DA3.html"><span class="apiname">DBase</span></a> derived object
+in time-critical code. </p>
+ <p>Internally, asynchronous deletion works by
+placing the object to be deleted onto a queue, and then triggering a DFC,
+which runs in the context of the supervisor thread. This means that only a
+small amount of code is executed by your (the calling) thread, and the actual
+deletion is done by the supervisor thread. </p>
+ <p>Its use is straightforward. </p>
+ <pre class="codeblock" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-1C283AE2-391A-5687-BA56-D8C1DD4E7745"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-1C283AE2-391A-5687-BA56-D8C1DD4E7745"><!-- --></a>class DMyObject : public DBase
+    {
+    ...
+    }</pre>
+ <pre class="codeblock" id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-20E2CA1A-06EE-5ADE-8B5B-14A3CE47ABDB"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-20E2CA1A-06EE-5ADE-8B5B-14A3CE47ABDB"><!-- --></a>DMyObject pPtr;
+    ...
+    pPtr = new DMyObject;
+    ...
+    pPtr-&gt;AsyncDelete();
+    ...</pre>
+ <p id="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-585EE1D8-6080-5B37-A3BD-278B8731B7F9"><a name="GUID-8EB25927-D49E-578F-BD93-294C4EECB7E7__GUID-585EE1D8-6080-5B37-A3BD-278B8731B7F9"><!-- --></a><strong>Replacing
+User::QueryVersionSupported() with Kern::QueryVersionSupported()</strong> </p>
+ <p> <a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-C197C9A7-EA05-3F24-9854-542E984C612D__GUID-B68B3E85-D58E-31FD-8BD2-A4F346BF416F"><span class="apiname">User::QueryVersionSupported()</span></a> is
+replaced by <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-A28757CC-B89B-3F63-AD39-9955FBE7533B"><span class="apiname">Kern::QueryVersionSupported()</span></a> on the kernel
+side. </p>
+ <p>The parameters passed to these functions are the same, both
+in type and meaning. The behaviour of both functions is also the same. This
+means that all you need to do is replace <samp class="codeph">User::</samp> with <samp class="codeph">Kern::</samp> in
+your code. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-DC8D3736-EDCF-54CB-A614-2AAC4664F1CA.html" title="This section describes how device drivers can use the services that the Kernel provides.">Kernel-Side Services</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

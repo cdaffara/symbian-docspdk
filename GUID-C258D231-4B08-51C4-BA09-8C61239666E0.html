@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="RS232 Control Lines"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6C7B7778-9B2E-5D8C-B2D8-74AC1DEEDF61.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9B83CDD4-FC94-51A0-AC67-CD04BCAFEF08.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6C7B7778-9B2E-5D8C-B2D8-74AC1DEEDF61.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-C258D231-4B08-51C4-BA09-8C61239666E0"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>RS232 Control Lines</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-C258D231-4B08-51C4-BA09-8C61239666E0"><a name="GUID-C258D231-4B08-51C4-BA09-8C61239666E0"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2682451 id2518666 id2518674 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html" title="The Communications Framework is the base for all communications, network and telephony services that Symbian platform provides. The Communications Framework manages the communications threads and the flow of information between those threads. The Framework also manages and stores the communications related settings.">Communications Framework Guide</a> &gt; <a href="GUID-9B83CDD4-FC94-51A0-AC67-CD04BCAFEF08.html">Serial Communications Server</a> &gt; <a href="GUID-6C7B7778-9B2E-5D8C-B2D8-74AC1DEEDF61.html">Concepts</a> &gt; </div>
+<h1 class="topictitle1">RS232 Control Lines</h1>
+<div><p>This section describes the <samp class="codeph">RComm::Signal</samp> and <samp class="codeph">RComm::SetSignal</samp> APIs. </p>
+ <p>While the handshaking facilities allow an application to ignore the status of the control lines, the levels of the control lines can be read at any time using the <a href="GUID-3B4E8ED5-72F7-3E51-B188-3C1045526DDF.html#GUID-3B4E8ED5-72F7-3E51-B188-3C1045526DDF__GUID-B2A751BB-6784-31B8-8808-F5BFC087427B"><span class="apiname">RComm::Signals()</span></a> member function. This is a bit field that needs to be masked with the <samp class="codeph">KCapsSignalXXX</samp> bitmasks. The status of the output lines as well as the input lines is returned. </p>
+ <p>However, when a value of 0 is returned for any bit, the meaning is ambiguous. The value could mean that a particular signal is low, or that reading its status is not supported. For example, if the <span class="keyword">RNG</span> Ring Indicator input is not supported, the value returned by <samp class="codeph">Signals(&amp;KSignalRNG)</samp> would always be 0 even if the serial port was attached to a ringing telephone. </p>
+ <p>This is something that can be checked using <samp class="codeph">Caps()</samp>. The <samp class="codeph">KCapsSignalXXX</samp> bitmasks can be used with the <samp class="codeph">TCommCaps</samp> version of <samp class="codeph">iSignals</samp> to find out what signals are supported. For example <a href="GUID-1143A8A7-829B-38EB-95C6-DB116801BB84.html"><span class="apiname">KCapsSignalCTSSupported</span></a>. </p>
+ <p>Only the voltage levels on the output lines can be set. This can be done at any time. The recommended method is using the inline function <a href="GUID-B6392845-B724-35FF-80A5-3911B64535B9.html"><span class="apiname">SetSignals()</span></a> which takes two integers as parameters. The first is a bitmask for the signals to be set and the second is a bitmask for the values to be read. These masks are the same signal line constants as those defined for getting signal levels, but only those relating to the RTS and DTR lines are valid. </p>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-6C7B7778-9B2E-5D8C-B2D8-74AC1DEEDF61.html">Concepts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

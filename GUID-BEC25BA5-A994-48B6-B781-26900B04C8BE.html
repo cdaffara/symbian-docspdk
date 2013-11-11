@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Introduction to GLib Low Memory Handler"/>
+<meta name="abstract" content="The default behavior of GLib in Linux is such that in case of a memory allocation failure, the GLib memory allocation API will call abort and hence terminate the application."/>
+<meta name="description" content="The default behavior of GLib in Linux is such that in case of a memory allocation failure, the GLib memory allocation API will call abort and hence terminate the application."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-94D67092-5EB3-4D83-A164-CA628F2E2DB0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-BEC25BA5-A994-48B6-B781-26900B04C8BE"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Introduction to GLib Low Memory Handler</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-BEC25BA5-A994-48B6-B781-26900B04C8BE"><a name="GUID-BEC25BA5-A994-48B6-B781-26900B04C8BE"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2383355 id2383375 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-94D67092-5EB3-4D83-A164-CA628F2E2DB0.html" title="GLib is a general-purpose utility library, which provides many useful data types, macros, type conversions, string utilities, file utilities, a main loop abstraction, and so on. It works on many UNIX-like platforms, Windows, OS/2, and BeOS.">GLib</a> &gt; <a href="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html">GLib Concepts</a> &gt; </div>
+<h1 class="topictitle1">Introduction
+to GLib Low Memory Handler</h1>
+<div><p>The default behavior of GLib in Linux is such that in case of a
+memory allocation failure, the GLib memory allocation API will call abort
+and hence terminate the application.  </p>
+
+<p>Memory allocation failures are more likely on a mobile device and aborting
+the application in such cases is undesirable. Therefore, the implementation
+of GLib for Symbian platform has been modified so that the GLib memory allocation
+APIs return NULL and do not call <samp class="codeph">abort()</samp>. This requires the
+application written using GLib to start handling memory allocation failures
+which they are currently not doing.</p>
+
+<p>If the user, for example, wants to change the first character of a string
+with z and return the string to the caller a GLib code for this can be written
+as follows:  </p>
+
+<pre class="codeblock">gchar * f1(gchar * x) 
+{ 
+ 	  gchar *temp; 
+    temp = g_strdup(x); 
+    temp[0] = ‘z’; 
+    return temp; 
+}</pre>
+
+<p>If there is a memory allocation failure in Linux, the call to <samp class="codeph">g_strdup</samp> which
+internally uses <samp class="codeph">g_malloc</samp> will cause the application to abort.
+However, in Symbian platform the <samp class="codeph">g_malloc()</samp> function will
+return NULL, but the implementation of <samp class="codeph">g_strdup()</samp> is such
+that the return value of <samp class="codeph">g_malloc()</samp> is not checked for NULL.
+This causes the<samp class="codeph"> g_strdup()</samp> API to panic or crash the application.
+Thus, a mechanism to deal with the failures, panics or crash resulting from
+low memory situations within Symbian platform is needed.</p>
+
+<div class="section" id="GUID-BEC25BA5-A994-48B6-B781-26900B04C8BE__GUID-003701F2-1AFE-4780-995F-A17FBA777A52"><a name="GUID-BEC25BA5-A994-48B6-B781-26900B04C8BE__GUID-003701F2-1AFE-4780-995F-A17FBA777A52"><!-- --></a><h2 class="sectiontitle">Illustration
+of the mechanism to handle a memory allocation failure scenario</h2>         
+    <p>The user needs to initialize the framework which handles the low memory
+scenarios using the below-mentioned macros:</p>
+<ol>
+<li id="GUID-BEC25BA5-A994-48B6-B781-26900B04C8BE__GUID-5093158D-046C-4964-B220-E03B8D8DCF9B"><a name="GUID-BEC25BA5-A994-48B6-B781-26900B04C8BE__GUID-5093158D-046C-4964-B220-E03B8D8DCF9B"><!-- --></a><p><strong><samp class="codeph">SET_LOW_MEMORY_TRAP(failure_value)</samp>:</strong> This
+macro will set a trap handler for low memory cases. In case there is an allocation
+failure, the failure value will be returned from the function where the trap
+handler is set.</p>
+</li>
+
+<li id="GUID-BEC25BA5-A994-48B6-B781-26900B04C8BE__GUID-E7809DD2-865E-48FE-99DE-863B7BF8C776"><a name="GUID-BEC25BA5-A994-48B6-B781-26900B04C8BE__GUID-E7809DD2-865E-48FE-99DE-863B7BF8C776"><!-- --></a><p><strong><samp class="codeph">SET_LOW_MEMORY_TRAP_VOID()</samp>:</strong> This
+will do the same as the above except that the function where this is set will
+just return. This will typically be used by functions which return void. In
+this case, however, the caller must check the <samp class="codeph">errno</samp> value.
+If it is <samp class="codeph">ENOMEM</samp>, then the user must handle things appropriately.</p>
+</li>
+
+<li id="GUID-BEC25BA5-A994-48B6-B781-26900B04C8BE__GUID-46A09236-E182-4780-B7C4-4FF31823CC37"><a name="GUID-BEC25BA5-A994-48B6-B781-26900B04C8BE__GUID-46A09236-E182-4780-B7C4-4FF31823CC37"><!-- --></a><p><strong><samp class="codeph">REMOVE_LOW_MEMORY_TRAP()</samp>:</strong> This
+will remove the trap handler which was set. </p>
+</li>
+
+</ol>
+<p>The function <samp class="codeph">f1()</samp> will now be rewritten as:</p>
+<pre class="codeblock">#include &lt;glowmem&gt;
+gchar * f1(gchar * x) 
+{ 
+	gchar *temp; 
+  SET_LOW_MEMORY_TRAP(NULL); 
+  temp = g_strdup(x); 
+	temp[0] = ‘z’; 
+	REMOVE_LOW_MEMORY_TRAP(): 
+	return temp; 
+} </pre>
+<p>If there is a memory allocation failure when the above function <samp class="codeph">f1()</samp> is
+called, then <samp class="codeph">f1()</samp> will return NULL to its caller. The caller
+of <samp class="codeph">f1()</samp> is expected to check the failure value of <samp class="codeph">f1()</samp> instead
+of ignoring the same. </p>
+<p><strong>Some words of caution</strong>: The
+macro <samp class="codeph">SET_LOW_MEMORY_TRAP()</samp> defines a variable so it is necessary
+to make the call after all the local variables declarations in C. <samp class="codeph">REMOVE_LOW_MEMORY_TRAP()</samp> must
+be called just before the return from the function, which means that if there
+are four return statements in the function then all of them must be preceded
+with a call to <samp class="codeph">REMOVE_LOW_MEMORY_TRAP()</samp>.</p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html">GLib Concepts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

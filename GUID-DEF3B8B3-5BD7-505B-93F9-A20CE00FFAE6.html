@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="File Server Plugin Concepts"/>
+<meta name="abstract" content="This topic describes the file server plug-in concepts."/>
+<meta name="description" content="This topic describes the file server plug-in concepts."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E23CC708-1DD1-5DFC-992A-997AA107A616.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BB9760B4-4F3F-5326-81FB-B644C82F0E65.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E23CC708-1DD1-5DFC-992A-997AA107A616.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>File Server Plugin Concepts</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2399034 id2399352 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-BB9760B4-4F3F-5326-81FB-B644C82F0E65.html" title="Symbian platform manages the basic permanent storage of data through file systems. Drives and file systems are common resources used by many programs, and access to them is managed by the File Server. The File Server is flexible, and can use many different file system formats and physical storage media. Applications and services access files, directories, and drives through the File Server client side API.">File Server</a> &gt; <a href="GUID-E23CC708-1DD1-5DFC-992A-997AA107A616.html" title="The File Server Plug-in Framework provides a way for developers to extend the functionality of the Symbian platform File Server. Developers can produce plug-ins that intercept file and directory IO. The interception and processing of requests by plug-ins is transparent to the application making the request.">File Server Plug-ins</a> &gt; </div>
+<h1 class="topictitle1">File Server
+Plugin Concepts</h1>
+<div><p>This topic describes the file server plug-in concepts.</p>
+
+<p>File server plugins can issue direct file server requests, interpret and
+modify inbound messages and change file and metadata. A compression plugin
+may need to intercept file read or file write requests which are sent from
+the client to provide a seamless user experience. This operation requires
+the modification of the data, position and length arguments that are sent
+from the client to the file server. </p>
+
+<p>There are some limitations to the file server plugin framework: </p>
+
+<ul>
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-1C02ECAE-A711-5E2A-8006-EC2D1BF5A859"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-1C02ECAE-A711-5E2A-8006-EC2D1BF5A859"><!-- --></a><p>The file server plugin
+framework only operates on one client file at any time. However, a plugin
+itself can operate on any number of files during a single request from the
+client. </p>
+ </li>
+
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-F82C8E71-479B-5482-8234-C5AD2AD05A91"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-F82C8E71-479B-5482-8234-C5AD2AD05A91"><!-- --></a><p>The file server plugin
+framework does not enable the compression or encryption of whole volumes.
+If access to the whole media volume is needed use a <a href="GUID-983F0ABD-470C-51C3-B6AE-1B1AA55AB4A2.html" title="This document provides an overview of the file server extension architecture, and of the APIs that allows file server extensions to be developed and used.">file
+server extension</a> rather than a plugin. </p>
+ </li>
+
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-386C0911-30EF-56B0-BD3B-4BC97A7CEFA3"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-386C0911-30EF-56B0-BD3B-4BC97A7CEFA3"><!-- --></a><p>File modification plugins
+cannot operate on demand paged executables. Demand paging does not use the
+file server, so the plugin framework cannot be used to encrypt/process the
+executable. </p>
+ </li>
+
+</ul>
+
+<div class="note"><span class="notetitle">Note:</span>  The improved framework will not prevent deadlock with existing plugins.
+Plugins that currently issue <a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html"><span class="apiname">RFs</span></a> requests must be migrated
+to the new APIs to prevent deadlock. Follow the guidelines within the <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html" title="This document contains guidelines for writing a file server plugin for Symbian platform.">plugin implementation tutorial</a></div>
+
+<ul>
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-0A5ECCEA-CD70-528D-8880-463CA77D797B"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-0A5ECCEA-CD70-528D-8880-463CA77D797B"><!-- --></a><p> <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-8B5B325D-D88C-55A7-9684-C2DCF81FCD79">Plugin type</a>, </p>
+ </li>
+
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-40202D9E-C136-55BB-A5A1-DF64971B99D1"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-40202D9E-C136-55BB-A5A1-DF64971B99D1"><!-- --></a><p> <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-C76B06C8-DEDC-57AC-A510-3DD1E232241A">Architecture</a>, </p>
+ </li>
+
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-60C8A1F1-6BE6-59A3-8F33-BD7FBFF9FB59"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-60C8A1F1-6BE6-59A3-8F33-BD7FBFF9FB59"><!-- --></a><p> <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-6234893D-A1C8-5870-9761-9EA2BD6909F0">Plugin order</a>, </p>
+ </li>
+
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-20D4D10F-5E92-5FE3-A89C-DAF45E52EB0B"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-20D4D10F-5E92-5FE3-A89C-DAF45E52EB0B"><!-- --></a><p> <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-DB21C0FD-46F8-5E4F-9288-69AE8609482B">Drive selection</a>, </p>
+ </li>
+
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-91E1927C-3AA6-5594-8238-EA7B590278B2"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-91E1927C-3AA6-5594-8238-EA7B590278B2"><!-- --></a><p> <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-50F7CD3A-A051-5498-8886-B4501523FD1D">Interception of file server requests</a>, </p>
+ </li>
+
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-59EB5503-3D02-5E2D-80A4-A20EA8364D81"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-59EB5503-3D02-5E2D-80A4-A20EA8364D81"><!-- --></a><p> <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-0B7B373D-41ED-5C91-ACC4-393A8669815A">Security</a>. </p>
+ </li>
+
+</ul>
+
+<div class="section" id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-8B5B325D-D88C-55A7-9684-C2DCF81FCD79"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-8B5B325D-D88C-55A7-9684-C2DCF81FCD79"><!-- --></a><h2 class="sectiontitle">Plugin type</h2> <p>There
+are two different types of file server plugins: </p>
+ <ul>
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-0FBE9E75-D164-5BCC-B00A-A5A76DBD200C"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-0FBE9E75-D164-5BCC-B00A-A5A76DBD200C"><!-- --></a><p>Observer plugins - intercept
+requests but do not modify file data or associated meta data. </p>
+ <p>Examples
+of observer plugins are those for virus scanning or logging. </p>
+ </li>
+
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-69708845-9C79-5C19-B758-AEF8F8A693E0"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-69708845-9C79-5C19-B758-AEF8F8A693E0"><!-- --></a><p>Modifier plugins - intercept
+requests and modify the data or associated meta data of the target files or
+directories.. </p>
+ <p>Examples of file modifier plugins are compression and
+encryption plugins. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-C76B06C8-DEDC-57AC-A510-3DD1E232241A"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-C76B06C8-DEDC-57AC-A510-3DD1E232241A"><!-- --></a><h2 class="sectiontitle">Architecture</h2> <p>This
+section describes the structure of the plugin framework and the changes that
+have been made to the framework in v9.5: </p>
+ <ul>
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-399FE2E3-6576-5F98-83A8-70B9F77C65B7"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-399FE2E3-6576-5F98-83A8-70B9F77C65B7"><!-- --></a><p> <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-3D91570E-8939-557B-8E1E-3A3C5BD27A26">Threads and execution context</a>, </p>
+ </li>
+
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-609612CB-E684-5BDA-88FC-16FFB71D70C2"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-609612CB-E684-5BDA-88FC-16FFB71D70C2"><!-- --></a><p> <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-71DC7464-0EF0-5F78-816E-24F73F5FCA12">Exclusive access</a>, </p>
+ </li>
+
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-665C36D1-DDD3-5DA4-86A3-574DFDC38AFF"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-665C36D1-DDD3-5DA4-86A3-574DFDC38AFF"><!-- --></a><p> <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-9C152BE3-9113-5A0C-8EE2-81ADD09BEAD2">Intercepting requests to the ROM drive</a>, </p>
+ </li>
+
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-F06D0F56-40AA-5631-9686-BA955E8E263B"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-F06D0F56-40AA-5631-9686-BA955E8E263B"><!-- --></a><p> <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-AA3990F3-52AB-5B14-8ED4-50CCA824AF84">Preventing deadlock</a>. </p>
+ </li>
+
+</ul>
+ <p>The diagram below shows how plugins fit into the File Server software
+stack. </p>
+ <div class="fignone" id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-EF5AECEC-9CB0-54B0-B6D2-46266B5FF49E"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-EF5AECEC-9CB0-54B0-B6D2-46266B5FF49E"><!-- --></a>
+<img src="GUID-9A4543B3-2A79-5604-AE11-5087507C6755_d0e367625_href.png"/>
+</div>
+ <p> <strong>Note</strong>: more than one plugin can be loaded into the file server
+at the same time. A plugin is not aware of other plugins. </p>
+ <p id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-3D91570E-8939-557B-8E1E-3A3C5BD27A26"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-3D91570E-8939-557B-8E1E-3A3C5BD27A26"><!-- --></a><strong> Threads and execution context</strong> </p>
+ <p>The
+Symbian platform File Server has multiple threads. There is a thread for each
+drive in use and a main thread that receives the requests from clients and
+sends them to the drive threads. Synchronous drives, however, do not have
+their own drive thread; requests for these are processed by the main thread.
+There is also a separate thread for processing session disconnect requests. </p>
+ <p>Each
+plugin also has its own thread for processing requests. Requests are dispatched
+to the plugin thread associated with the request's drive before they are dispatched
+to the drive thread. This is discussed in more detail in <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-50F7CD3A-A051-5498-8886-B4501523FD1D">interception of file server requests</a>. </p>
+ <p id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-71DC7464-0EF0-5F78-816E-24F73F5FCA12"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-71DC7464-0EF0-5F78-816E-24F73F5FCA12"><!-- --></a><strong>Exclusive access</strong> </p>
+ <p>Previously,
+when a client application opens a file for exclusive write access, no other
+clients could access the file until the client closed its associated subsession.
+This also applied to plugins that needed to modify file data (as they are
+also clients of the file server). </p>
+ <p>Symbian platform provides plugins
+that are able to perform operations on files and directories irrespective
+of the mode in which the file has been opened. </p>
+ <p>Operations are now
+able to use the same file handle as the originating request (run in the same
+context as the original request) so files opened for exclusive access can
+still be written to by a plugin wishing to modify the file. </p>
+ <p id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-9C152BE3-9113-5A0C-8EE2-81ADD09BEAD2"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-9C152BE3-9113-5A0C-8EE2-81ADD09BEAD2"><!-- --></a><strong>Intercepting ROM drive requests</strong> </p>
+ <p>Previously,
+plugins could not intercept any requests to the ROM drive (Z) however, there
+is a requirement to be able to intercept requests on this drive to enable
+secure-load and logging plugins. Requests to drive Z can now be intercepted
+by plugins. See the tutorial for <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-89CF85BE-784F-5237-9F78-69D603B650C4">CFsPluginFactory</a> for more details. </p>
+ <p id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-AA3990F3-52AB-5B14-8ED4-50CCA824AF84"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-AA3990F3-52AB-5B14-8ED4-50CCA824AF84"><!-- --></a><strong>Preventing deadlock</strong> </p>
+ <p>The
+new framework allows a plugin to have direct access to file data without the
+need to issue new file server requests through the <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html"><span class="apiname">RFile</span></a>, <a href="GUID-12AE154F-7741-38C0-ADFE-9784FCF5E516.html"><span class="apiname">RDir</span></a> and <a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html"><span class="apiname">RFs</span></a> client
+APIs. In the pre-9.5 approach it was possible to reach deadlock if more than
+one plugin was present. </p>
+ <p>The diagram below shows two plugins in the
+pre v9.5 framework. If both plugins issue new file server requests and if
+the plugins are not re-entrant safe this can lead to deadlock in the file
+server. </p>
+ <div class="fignone" id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-01A69E82-BF01-520A-A8C5-927F1ED85E04"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-01A69E82-BF01-520A-A8C5-927F1ED85E04"><!-- --></a><span class="figcap">Figure 1.                  File server deadlock               </span>
+
+<img src="GUID-9CC5E096-74FB-59AB-BAB9-A5486B961B7D_d0e367701_href.png"/>
+</div>
+ <p>The framework introduced in v9.5 prevents deadlock by allowing plugins
+to issue internal file server requests after intercepting a request by using
+the newly introduced <a href="GUID-3C50CF63-9AF4-3F36-8B8F-3FBB613E1CAC.html"><span class="apiname">RFilePlugin</span></a>, <a href="GUID-2E871434-D08F-3275-AC55-260A9A78661A.html"><span class="apiname">RDirPlugin</span></a> and <a href="GUID-DE8D8017-6E9C-38CE-A023-98A53CDF7152.html"><span class="apiname">RFsPlugin</span></a> APIs
+and not by using the <a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html"><span class="apiname">RFs</span></a>, <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html"><span class="apiname">RFile</span></a> and <a href="GUID-12AE154F-7741-38C0-ADFE-9784FCF5E516.html"><span class="apiname">RDir</span></a> APIs.
+Internally issued requests are only dispatched to plugins mounted below the
+issuing plugin and the appropriate drive thread. </p>
+ <p>The sequence of events
+for a typical plugin intercepting a file read request is illustrated below: </p>
+ <div class="fignone" id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-E366027F-3112-520F-A118-4C048102749E"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-E366027F-3112-520F-A118-4C048102749E"><!-- --></a><span class="figcap">Figure 2.                  Read request intercepted by a plugin             
+ </span>
+
+<img src="GUID-2ABCF233-7DCC-59E2-B075-81E148A1D2AB_d0e367739_href.png"/>
+</div>
+ <p>The classes <a href="GUID-3C50CF63-9AF4-3F36-8B8F-3FBB613E1CAC.html"><span class="apiname">RFilePlugin</span></a>, <a href="GUID-2E871434-D08F-3275-AC55-260A9A78661A.html"><span class="apiname">RDirPlugin</span></a> and <a href="GUID-DE8D8017-6E9C-38CE-A023-98A53CDF7152.html"><span class="apiname">RFsPlugin</span></a> have
+been introduced to facilitate plugins with direct access behaviour on file
+and directory requests. These classes are analogous to the client-side <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html"><span class="apiname">RFile</span></a>, <a href="GUID-12AE154F-7741-38C0-ADFE-9784FCF5E516.html"><span class="apiname">RDir</span></a> and <a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html"><span class="apiname">RFs</span></a> classes and have functions with similar or identical signitures. </p>
+ <p>In
+order to perform requests on a file it is necessary to open a sub-session
+by calling either <a href="GUID-EC8FDB25-3DD7-3F1C-9875-0FA9315AE9AC.html"><span class="apiname">AdoptFromClient()</span></a> or <a href="GUID-20D0D10F-3401-3F72-8AF6-DC35F6025DC2.html"><span class="apiname">Open()</span></a>. <samp class="codeph">AdoptFromClient()</samp> is
+used in order to open a sub-session with the file associated with the client’s
+request. Alternatively the <samp class="codeph">Open()</samp> method can be used to open
+either a different file, or the file associated with the client’s request
+possibly with a different access mode. </p>
+ <p>More than one file can be opened
+at any time by creating multiple instances of <a href="GUID-3C50CF63-9AF4-3F36-8B8F-3FBB613E1CAC.html"><span class="apiname">RFilePlugin</span></a>. </p>
+ <p>The
+following example shows how to open many files from a plugin during a single
+request: </p>
+ <pre class="codeblock" id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-AFCA6392-2414-591A-98C5-A9FC2C103755"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-AFCA6392-2414-591A-98C5-A9FC2C103755"><!-- --></a>// Define the object
+RFilePlugin clientsFile(aRequest); 
+
+// Opens the file associated with the intercepted request
+Tint r = clientsFile.AdoptFromClient();
+User::LeaveIfError(r);
+TBuf&lt;20&gt; data;
+TInt64 pos = (Tint64)0;
+Tint length = 0;
+
+// Read the file
+r = clientsFile.Read(pos, data, length);
+User::LeaveIfError(r);
+
+// Open a second file
+RFilePlugin secondFile(aRequest);
+_LIT(KSecondName, ”D:\\myfile.txt”);
+r = secondFile.Open(KSecondName(), EFileRead);
+User::LeaveIfError(r);
+
+// Read from second file
+TBuf&lt;20&gt; data2;
+TInt64 pos2 = (Tint64)0;
+Tint length2 = 0;
+
+// Read the file
+r = secondFile.Read(pos2, data2, length2);
+User::LeaveIfError(r);
+
+// Close the files
+clientsFile.Close();
+secondFile.Close();</pre>
+ <p><strong>Issuing
+an internal file system request</strong> </p>
+ <p>An internal request can be marked
+as ‘Direct to Drive’. This allows requests that are generated by a plugin
+to be dispatched straight to the drive thread bypassing all other plugins
+which may be mounted below the plugin that issued the request. After being
+processed by the drive thread the request also bypasses the plugins between
+the drive thread and the plugin that the Direct to Drive request originated
+from. Once returned to the plugin that generated the request, the Direct to
+Drive request is complete and any other requests issued from the plugin are
+processed by plugins further down the plugin-stack in the normal manner. </p>
+ <p>The
+last argument of the <a href="GUID-3C50CF63-9AF4-3F36-8B8F-3FBB613E1CAC.html"><span class="apiname">RFilePlugin</span></a> constructor of the classes <a href="GUID-3C50CF63-9AF4-3F36-8B8F-3FBB613E1CAC.html"><span class="apiname">RFilePlugin</span></a>, <a href="GUID-DE8D8017-6E9C-38CE-A023-98A53CDF7152.html"><span class="apiname">RFsPlugin</span></a> and <a href="GUID-2E871434-D08F-3275-AC55-260A9A78661A.html"><span class="apiname">RDirPlugin</span></a> is named <samp class="codeph">aDirectToDrive</samp>. <samp class="codeph">aDirectToDrive</samp> is
+a boolean value (<samp class="codeph">TBool</samp>) to indicate that the request is Direct
+to Drive. The default value is <samp class="codeph">EFalse</samp> indicating that the
+request is interceptable by plugins further down the plugin-stack. </p>
+ </div>
+
+<div class="section" id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-6234893D-A1C8-5870-9761-9EA2BD6909F0"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-6234893D-A1C8-5870-9761-9EA2BD6909F0"><!-- --></a><h2 class="sectiontitle">Plugin order</h2> <p>The
+Plugin framework provides support for multiple plugins to be present and active.
+Plugins are arranged in a stack. Plugins intercept requests in the order they
+are arranged in the stack with the plugin at the top of the stack (at the
+smallest numerical absolute position) getting the first intercept. The order
+of plugins in the stack is therefore crucial to the correct operation of the
+file server when more than one plugin is active, especially when the plugins
+are modifier plugins (i.e when both modify the data or parameters of the requests). </p>
+ <p>If
+two plugins are active and one of those is a virus scanner, for the virus
+scanner to operate correctly it must be the first plugin to intercept requests.
+This is so that the virus scanner can have first refusal to block any requests
+for files which it believes may not be safe for opening. If there is another
+plugin higher in the stack then this plugin could send Direct To Drive requests,
+for example, and would significantly reduce the virus scanning ability of
+the virus scanning plugin. </p>
+ <p>Two mechanisms are provided that allow
+plugin authors to control the position of their plugins in the plugin stack
+these are Absolute position and Unique position. </p>
+ <p id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-5C258D67-C324-5FA4-894A-88532F925EFF"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-5C258D67-C324-5FA4-894A-88532F925EFF"><!-- --></a><strong>Absolute position </strong> </p>
+ <p>Plugins
+can be inserted into the stack by specifying an absolute position at mount
+time. This absolute position is the index in the internal array of plugins
+in which the plugin should be mounted. The plugin at position 0 being the
+first plugin to be able to intercept requests. </p>
+ <div class="fignone" id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-41EB2F58-407F-52C7-A40C-0E3858CF718B"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-41EB2F58-407F-52C7-A40C-0E3858CF718B"><!-- --></a><span class="figcap">Figure 3.                  Plugin stack showing absolute positions          
+    </span>
+
+<img src="GUID-64BDD1DA-6B93-5F45-8CBD-7DBAF92CC4C7_d0e367865_href.png"/>
+</div>
+ <p>The absolute position method is more appropriate for mounting plugins
+that operate regardless of their position in the plugin stack or when all
+of the plugins for a device are known and installed when manufactured. This
+method does not suit plugins that are added after manufacture where the dependencies
+of other available plugins is not known. If this is the case use the unique
+position method described below. </p>
+ <p id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-90FC1AD9-D709-5105-A445-0AA3D7BA85B7"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-90FC1AD9-D709-5105-A445-0AA3D7BA85B7"><!-- --></a><strong>Unique position</strong> </p>
+ <p>Plugins
+can be ordered according to a unique position stored within the plugin. Unique
+position identifiers are defined by the manufacturer during the software validation/signing
+process. Unique positions are defined in the derived <a href="GUID-8A3B2A79-05A6-3BD7-AEA9-02435476F45E.html"><span class="apiname">CFsPluginFactory</span></a> class.
+See the description in <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-89CF85BE-784F-5237-9F78-69D603B650C4">CFsPluginFactory</a>. </p>
+ <p>The position value specifies the category and position of the plugin: </p>
+ 
+<div class="tablenoborder"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-22362455-13BE-5A26-8750-A94E79941EF3"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-22362455-13BE-5A26-8750-A94E79941EF3" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <strong>plugin Type</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Unique Position Range</strong>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>File Observers </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">0x20000000 - 0x2FFFFFFF</samp>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>File Modifiers </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">0x40000000 - 0x4FFFFFFF</samp>  </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p>File Observers do not modify data so they are allocated a lower
+range of numbers placing them at the top of the plugin stack. File Modifiers
+modify the data stream so they are allocated a higher range placing them lower
+down the plugin stack. </p>
+ <p> <strong>Note</strong>: a plugin has a unique position
+then do not specify an <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-5C258D67-C324-5FA4-894A-88532F925EFF">absolute
+position</a> when mounting it, otherwise the error <samp class="codeph">KErrNotSupported</samp> is
+returned. </p>
+ </div>
+
+<div class="section" id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-DB21C0FD-46F8-5E4F-9288-69AE8609482B"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-DB21C0FD-46F8-5E4F-9288-69AE8609482B"><!-- --></a><h2 class="sectiontitle">Drive selection</h2> <p>A
+File Server Plugin can intercept requests for a specific drive or for all
+drives. A plugin that intercepts requests for all drives must filter requests
+that are not appropriate for some drives. Requests can be filtered within
+an overridden <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-97427151-C6E4-5FE4-8197-0D7C58EDB29F">CFsPlugin::Deliver()</a> function. </p>
+ <p>There are two ways to specify a drive: </p>
+ <ul>
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-296E3A2E-5985-5E4B-96A2-D247D1FAA07C"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-296E3A2E-5985-5E4B-96A2-D247D1FAA07C"><!-- --></a><p>When the plugin is mounted.
+See <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-BED54BD9-2F3F-588E-854B-C28745C8F30A">mounting
+a plugin</a>. </p>
+ </li>
+
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-080CD9C3-2BEA-5209-974A-910606EBF22A"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-080CD9C3-2BEA-5209-974A-910606EBF22A"><!-- --></a><p>At run-time through
+the use of <a href="GUID-8A3B2A79-05A6-3BD7-AEA9-02435476F45E.html#GUID-8A3B2A79-05A6-3BD7-AEA9-02435476F45E__GUID-45A67073-5EF4-3966-A2FD-555B56C89284"><span class="apiname">CFsPluginFactory::iSupportedDrives</span></a>. See the
+tutorial for <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-89CF85BE-784F-5237-9F78-69D603B650C4">CFsPluginFactory</a>. </p>
+ </li>
+
+</ul>
+ <p>If the drive is not specified then <a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html#GUID-E263C747-946F-35AA-9F1D-41833BD350FC__GUID-61640192-646E-33DA-B186-5EE63B07A998"><span class="apiname">RFs::MountPlugin()</span></a> attempts
+to mount the plugin for all drives. If this behaviour is not supported by
+the plugin <a href="GUID-F89DA3F0-2A48-3F9B-8F08-29350E92D0E4.html"><span class="apiname">KErrNotSupported</span></a> is returned. </p>
+ </div>
+
+<div class="section" id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-50F7CD3A-A051-5498-8886-B4501523FD1D"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-50F7CD3A-A051-5498-8886-B4501523FD1D"><!-- --></a><h2 class="sectiontitle"> Interception
+of file server requests</h2> <p>After a file server request has been initialised
+by the main file server thread it can be intercepted by a plugin. There are
+two types of intercept: </p>
+ <ul>
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-288866F8-ABE5-5569-A70C-2C86B4F073B9"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-288866F8-ABE5-5569-A70C-2C86B4F073B9"><!-- --></a><p> <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-05F613B8-FF66-54B6-8D49-2BF92914E54E">pre-operation intercepts</a>, </p>
+ </li>
+
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-E876E576-1E94-5F06-8305-22D620A82B6F"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-E876E576-1E94-5F06-8305-22D620A82B6F"><!-- --></a><p> <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-59FD1CED-5A32-5F6E-A256-821A2783D065">post-operation intercepts</a>. </p>
+ </li>
+
+</ul>
+ <p>Plugins can register for pre-intercepts, for post-intercepts or for
+both pre and post-intercepts. </p>
+ <p id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-05F613B8-FF66-54B6-8D49-2BF92914E54E"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-05F613B8-FF66-54B6-8D49-2BF92914E54E"><!-- --></a><strong>Pre-operation</strong> </p>
+ <p>Pre-operation
+intercepts occur before the drive associated with a request processes it.
+In a file write request for example, the pre-intercept operations occur before
+data has been written to the file. Requests are passed down the plugin-stack
+from the file server towards the drive thread. </p>
+ <p>When the main file
+server thread has initialised a request, the request is dispatched to the
+highest plugin in the stack. This plugin must have been mounted on the requested
+drive and registered to pre-intercept this type of request. See <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-BED54BD9-2F3F-588E-854B-C28745C8F30A">mounting a plugin</a>. The request is dispatched by calling the plugin's <a href="GUID-BC0DB991-EF52-3344-8E6A-F8060B75A189.html#GUID-BC0DB991-EF52-3344-8E6A-F8060B75A189__GUID-2EACA8A8-D569-3D6A-9383-451587A65839"><span class="apiname">CFsPlugin::Deliver()</span></a> function. </p>
+ <p>The <samp class="codeph">Deliver()</samp> function runs in the context of the previous calling thread,
+this can be the main file server thread or a plugin thread. Override <samp class="codeph">CFsPlugin::Deliver()</samp> to
+filter the request. If the <samp class="codeph">Deliver()</samp> function has not been
+overridden then the request is dispatched for asynchronous processing by calling
+the base class <samp class="codeph">Deliver()</samp>. See the <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-97427151-C6E4-5FE4-8197-0D7C58EDB29F">CFsPlugin::Deliver()</a> tutorial section. </p>
+ <p id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-59FD1CED-5A32-5F6E-A256-821A2783D065"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-59FD1CED-5A32-5F6E-A256-821A2783D065"><!-- --></a><strong>Post operation</strong> </p>
+ <p>Post-operation
+intercepts occur after the drive associated with a request has processed it.
+In a file write request for example, the post-intercept occurs after data
+has been written to the file. Requests are passed from the drive thread back
+up the stack towards the client. </p>
+ <p>When the drive thread has finished
+processing a request it dispatches it to the plugin lowest in the stack by
+calling the plugin's <a href="GUID-C6F20230-3D6C-3392-B040-CF627534B930.html"><span class="apiname">Deliver()</span></a> function. </p>
+ <p><strong> Filtering requests internally</strong> </p>
+ <p>The <a href="GUID-F1B37142-1EEF-3777-82B1-303982B888EC.html#GUID-F1B37142-1EEF-3777-82B1-303982B888EC__GUID-8EBEAD17-B03C-3DBA-9A47-0F7DB07785F9"><span class="apiname">CFSPlugin::Deliver()</span></a> function
+filters the request and decides what kind of action is neccessary in terms
+of the flow of the request through the plugin stack: </p>
+ <ul>
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-3E8CAD7B-BE13-531E-A387-432F4CD463C9"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-3E8CAD7B-BE13-531E-A387-432F4CD463C9"><!-- --></a><p> <a href="GUID-1E025D93-3D66-3E88-830D-CBB3A471A777.html"><span class="apiname">KPluginMessageForward</span></a> is
+returned if the intercept is pre-operation. The request is passed to the next
+plugin down the stack or to the drive thread if there are no more plugins. </p>
+ </li>
+
+<li id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-1FFEFFF4-3D5F-590F-8884-CA27B2B5B916"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-1FFEFFF4-3D5F-590F-8884-CA27B2B5B916"><!-- --></a><p> <a href="GUID-81C5F6A1-3FCA-33E5-99C6-7901D41BCBDE.html"><span class="apiname">KPluginMessageComplete</span></a> is
+returned if the intercept is post-operation. The request is passed to the
+next plugin up the stack or if there are no more plugins to process the request
+it is passed to the main file server thread. </p>
+ </li>
+
+</ul>
+ <p>If the request requires processing by the plugin then the plugin's <samp class="codeph">Deliver()</samp> function
+calls the base class <samp class="codeph">Deliver()</samp> function and the request is
+dispatched to the plugin's thread for asynchronous processing. </p>
+ <p>Asynchronous
+processing is carried out in the plugin's <a href="GUID-8EF10689-68B7-391B-AD5C-4F51780165FF.html"><span class="apiname">DoRequestL()</span></a> function.
+A plugin can only have a single <samp class="codeph">DoRequestL()</samp> function which
+must handle both pre and post-intercepts. Plugin authors can use the <a href="GUID-06E787C2-FAC1-36D2-9C64-11BDA1B656F1.html"><span class="apiname">IsPostOperation()</span></a> function
+of the utility class, <a href="GUID-A814151C-8AEC-3E16-8691-33174B64E36F.html"><span class="apiname">TFsPluginRequest</span></a> to indicate whether
+the <samp class="codeph">DoRequestL()</samp> is processing a request as a pre-intercept
+or post-intercept. See the description of <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-14773530-7C15-52E2-A542-72A0B2163461">TFsPluginRequest</a>. </p>
+ <p>Once the asynchronous processing is complete the <samp class="codeph">DoRequestL()</samp> function
+returns <samp class="codeph">KErrNone</samp> and the request is passed to the next plugin
+down the stack by calling its <a href="GUID-C6F20230-3D6C-3392-B040-CF627534B930.html"><span class="apiname">Deliver()</span></a> function. If there
+are no lower plugins then the request is passed to the appropriate drive thread
+for processing. </p>
+ <p>If the plugin intercepts a request in pre-operation
+and wants to complete the request on behalf of the client then the plugin
+can return <a href="GUID-DCECEF73-9C33-3C14-951D-E75D89B21FBA.html"><span class="apiname">KErrCompletion</span></a> to indicate that the request
+has been completed and that the request is now in post operation mode. The
+flow will then proceed to any previous plugins if mounted or directly back
+to the client otherwise. <a href="GUID-DCECEF73-9C33-3C14-951D-E75D89B21FBA.html"><span class="apiname">KErrCompletion</span></a> prevents any further
+plugins further down the stack from intercepting the request. </p>
+ <p>When
+a plugin intercepts file read or file write and does an early completion (i.e.
+returns <a href="GUID-DCECEF73-9C33-3C14-951D-E75D89B21FBA.html"><span class="apiname">KErrCompletion</span></a> in pre-intercept) then the plugin
+author should call <a href="GUID-A814151C-8AEC-3E16-8691-33174B64E36F.html#GUID-A814151C-8AEC-3E16-8691-33174B64E36F__GUID-149E1448-63AA-3F08-A3A2-606D240A8927"><span class="apiname">TFsPluginRequest::SetSharePos()</span></a> to allow
+share position to be updated after early read/write completion. </p>
+ </div>
+
+<div class="section" id="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-0B7B373D-41ED-5C91-ACC4-393A8669815A"><a name="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-0B7B373D-41ED-5C91-ACC4-393A8669815A"><!-- --></a><h2 class="sectiontitle">Security</h2> <p>File
+server plugins are implemented as libraries that are loaded into the file
+server process at runtime. Therefore, plugins must have the same <a href="GUID-4BFEDD79-9502-526A-BA7B-97550A6F0601.html">platform
+security</a> capabilities as the file server process, these are <a href="GUID-2A022229-C333-3B0A-99A5-13CA0710025D.html"><span class="apiname">TCB</span></a>, <a href="GUID-E5C21B79-529B-397E-8A22-63612CA52869.html"><span class="apiname">ProtServ</span></a>, <a href="GUID-8DC76E7B-9EB3-3848-AD8D-3D519388A504.html"><span class="apiname">DiskAdmin</span></a>, <a href="GUID-ECCA7246-B2BA-3261-95C9-9E72C6EC51D4.html"><span class="apiname">AllFiles</span></a>, <a href="GUID-93881606-AA56-385F-A958-3957142BEFE3.html"><span class="apiname">PowerMgmt</span></a> and <a href="GUID-616F0C5B-D2C1-39D8-9BFC-53A2AEC7C850.html"><span class="apiname">CommDD</span></a>. </p>
+ <p>Any
+user side process that wishes to load and mount plugins must have the <samp class="codeph">DiskAdmin</samp> capability. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E23CC708-1DD1-5DFC-992A-997AA107A616.html" title="The File Server Plug-in Framework provides a way for developers to extend the functionality of the Symbian platform File Server. Developers can produce plug-ins that intercept file and directory IO. The interception and processing of requests by plug-ins is transparent to the application making the request.">File Server Plug-ins</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

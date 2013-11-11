@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="RSharedDataClient"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4"/>
+
+<title>RSharedDataClient</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4"><a name="GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2438551 id2438965 id2440121 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">RSharedDataClient Class Reference</h1>
+	<table class="signature"><tr><td>class RSharedDataClient : public RSessionBase</td></tr></table><div class="section"><div>
+			<p>
+				<a href="GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4.html#GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4">RSharedDataClient</a> API ----------------------------------------------------------------------------- Applications use the subsystem via <a href="GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4.html#GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4">RSharedDataClient</a> class. First, they need to connect to the server by calling <a href="GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4.html#GUID-8218687A-232F-3811-99DC-D7746E8B67C8">Connect()</a> member function.</p>
+
+			<p>------------------------------------------------------------------------------ RESERVE FILE SUPPORT ------------------------------------------------------------------------------</p>
+
+			<p>This functionality has nothing to do with the rest of SharedData, but is implemented in SharedData server because it is one of the most commonly used servers. The idea is to support transaction-based delete operations to succeed in a full disk situation. SharedData server checks if the free disk space is below the given minimum treshold and if so, reduces the size of a reserve file to free up some disk space. No overhead is caused if there is enough free disk space already. Thus, unless the reserve file is somehow exhausted, the free disk space is guaranteed to be above the given parameter after this call. Of course, the parameter is limited to the maximum size of the reserve file that will be about 140kB.</p>
+
+			<p>There are two correct usage patterns represented below, other for synchronous delete operations and other for asynchronous ones.</p>
+
+			<p>Note! When the SharedData connection is closed, the server will always assume that the reserve space is no longer required by the corresponding client.</p>
+
+			<p>Usage pattern (synchronous delete operation): ------------------------------------------------------------------------------ // iSharedDataClient is connected to the server here.</p>
+
+			<p>iSharedDataClient.RequestFreeDiskSpaceLC( KDiskSpaceNeededForDelete );</p>
+
+			<p>// Do the delete operation here, the code may leave.</p>
+
+			<p>// Do NOT close the SharedData connection here nor delete the // <a href="GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4.html#GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4">RSharedDataClient</a> object.</p>
+
+			<p>
+				<a href="GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA.html#GUID-A3B62AAC-7E17-31F3-97DF-D7C6F4FB66F2">CleanupStack::PopAndDestroy()</a>; // cancels free disk space request ------------------------------------------------------------------------------</p>
+
+			<p>Usage pattern (asynchronous delete operation): ------------------------------------------------------------------------------ // iSharedDataClient is connected to the server here.</p>
+
+			<p>iSharedDataClient.RequestFreeDiskSpace( KDiskSpaceNeededForDelete );</p>
+
+			<p>// Start the asynchronous delete operation here</p>
+
+			<p>// Do NOT close the SharedData connection here nor delete the // <a href="GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4.html#GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4">RSharedDataClient</a> object.</p>
+
+			<p>// When the asynchronous request has completed:</p>
+
+			<p>iSharedDataClient.CancelFreeDiskSpaceRequest(); ------------------------------------------------------------------------------ </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">RSharedDataClient<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase</a><ul class="derivation"><li class="derivation-depth-2 "><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase</a></li></ul></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-E4CD20AB-510C-3B1B-8D24-6980E5C2AF6E">RSharedDataClient</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-8E6AD15A-57D0-3742-B71A-83DBC56E1FFA">CancelFreeDiskSpaceRequest</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-203143E0-9AF1-3BCA-910C-3D04AEF86A39">Close</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-8218687A-232F-3811-99DC-D7746E8B67C8">Connect</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-3E87AFA3-A919-3E29-9186-6BF9BFA32281">RequestFreeDiskSpace</a>(const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-524CD1D0-54A8-3478-BB82-CB7D6954415B">RequestFreeDiskSpaceLC</a>(const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">void</td><td><a href="#GUID-C573DD15-D006-3816-96C6-35966509A779">CleanupFreeDiskSpaceRequest</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::Attributes()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::BTraceId()const</a></td></tr><tr><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::DoExtendedClose()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::Duplicate(const RThread &amp;,TOwnerType)</a></td></tr><tr><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::FullName()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::FullName(TDes &amp;)const</a></td></tr><tr><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::Handle()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::HandleInfo(THandleInfo *)</a></td></tr><tr><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::Name()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::NotifyDestruction(TRequestStatus &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::Open(const TFindHandleBase &amp;,TOwnerType)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::OpenByName(const TDesC &amp;,TOwnerType,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::RHandleBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::RHandleBase(TInt)</a></td></tr><tr><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::SetHandle(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::SetHandleNC(TInt)</a></td></tr><tr><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::CreateSession(RServer2,const TVersion &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::CreateSession(RServer2,const TVersion &amp;,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::CreateSession(RServer2,const TVersion &amp;,TInt,TIpcSessionType,const TSecurityPolicy *,TRequestStatus *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::CreateSession(const TDesC &amp;,const TVersion &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::CreateSession(const TDesC &amp;,const TVersion &amp;,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::CreateSession(const TDesC &amp;,const TVersion &amp;,TInt,TIpcSessionType,const TSecurityPolicy *,TRequestStatus *)</a></td></tr><tr><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::CreateSession(const TDesC &amp;,const TVersion &amp;,TInt,TRequestStatus *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::Open(RMessagePtr2,TInt,TOwnerType)</a></td></tr><tr><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::Open(RMessagePtr2,TInt,const TSecurityPolicy &amp;,TOwnerType)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::Open(TInt,TOwnerType)</a></td></tr><tr><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::Open(TInt,const TSecurityPolicy &amp;,TOwnerType)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::Send(TInt)const</a></td></tr><tr><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::Send(TInt,const TIpcArgs &amp;)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::SendReceive(TInt)const</a></td></tr><tr><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::SendReceive(TInt,TRequestStatus &amp;)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::SendReceive(TInt,const TIpcArgs &amp;)const</a></td></tr><tr><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::SendReceive(TInt,const TIpcArgs &amp;,TRequestStatus &amp;)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::SetReturnedHandle(TInt)</a></td></tr><tr><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::SetReturnedHandle(TInt,RHandleBase &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::SetReturnedHandle(TInt,const TSecurityPolicy &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::ShareAuto()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase::ShareProtected()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Enumerations</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase:TAttributes</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6D8A458C-9A39-3000-A3BC-060A2A3663E6.html">RSessionBase:TAttachMode</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">CDosWrapper *</td><td><a href="#GUID-CBA47418-810D-30D7-9D6C-198109604FDE">iDosWrapper</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Attributes</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase::iHandle</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-E4CD20AB-510C-3B1B-8D24-6980E5C2AF6E"><a name="GUID-E4CD20AB-510C-3B1B-8D24-6980E5C2AF6E"><!-- --></a>
+		<h2 class="topictitle2">RSharedDataClient()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>RSharedDataClient</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Constructor.</p>
+
+				<p>Use this constructor if you don't use notify methods. <a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-C197C9A7-EA05-3F24-9854-542E984C612D">User</a> implemented notify handler is set to NULL. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-8E6AD15A-57D0-3742-B71A-83DBC56E1FFA"><a name="GUID-8E6AD15A-57D0-3742-B71A-83DBC56E1FFA"><!-- --></a>
+		<h2 class="topictitle2">CancelFreeDiskSpaceRequest()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>CancelFreeDiskSpaceRequest</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Cancels the request made by calling <a href="GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4.html#GUID-3E87AFA3-A919-3E29-9186-6BF9BFA32281">RequestFreeDiskSpace()</a>. In case of <a href="GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4.html#GUID-524CD1D0-54A8-3478-BB82-CB7D6954415B">RequestFreeDiskSpaceLC()</a>, <a href="GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA.html#GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA">CleanupStack</a> will handle calling this function. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C573DD15-D006-3816-96C6-35966509A779"><a name="GUID-C573DD15-D006-3816-96C6-35966509A779"><!-- --></a>
+		<h2 class="topictitle2">CleanupFreeDiskSpaceRequest(TAny *)</h2>
+		<table class="signature"><tr><td>void</td><td>CleanupFreeDiskSpaceRequest</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aAny</td><td>)</td><td>[private, static]</td></tr></table><div class="section"><div>
+				<p>Cleanup function </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aAny</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-203143E0-9AF1-3BCA-910C-3D04AEF86A39"><a name="GUID-203143E0-9AF1-3BCA-910C-3D04AEF86A39"><!-- --></a>
+		<h2 class="topictitle2">Close()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Close</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Closes the session. Cancels all notify requests, signals and incoming notifications. Saves the changes if the shared data file was modified. Remember to call this to a connected session in some point.</p>
+
+				<p>If the UID is handled by a plugin instead of file, client might need to call Flush() explicitly before Close. Check plugin documentation. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-8218687A-232F-3811-99DC-D7746E8B67C8"><a name="GUID-8218687A-232F-3811-99DC-D7746E8B67C8"><!-- --></a>
+		<h2 class="topictitle2">Connect()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Connect</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Starts the server if it's not already running. Creates a new session. If a session is already established by the client, does nothing.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-3E87AFA3-A919-3E29-9186-6BF9BFA32281"><a name="GUID-3E87AFA3-A919-3E29-9186-6BF9BFA32281"><!-- --></a>
+		<h2 class="topictitle2">RequestFreeDiskSpace(const TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RequestFreeDiskSpace</td><td>(</td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aAmount</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Full disk support for asynchronous transactional delete operations. If needed, frees up disk space so that it'll be above the given minimum treshold.</p>
+
+				<p>The user is responsible for calling <a href="GUID-B4EA05A8-D0CF-34B9-83CC-59326F3F5DF4.html#GUID-8E6AD15A-57D0-3742-B71A-83DBC56E1FFA">CancelFreeDiskSpaceRequest()</a> after the asynchronous delete operation has been finished.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aAmount</td><td>Requested minimum amount of free disk space in bytes. The max size of the reserve file will be around 64k so there is no use to request higher amounts than that.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-524CD1D0-54A8-3478-BB82-CB7D6954415B"><a name="GUID-524CD1D0-54A8-3478-BB82-CB7D6954415B"><!-- --></a>
+		<h2 class="topictitle2">RequestFreeDiskSpaceLC(const TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RequestFreeDiskSpaceLC</td><td>(</td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aAmount</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Full disk support for synchronous transactional delete operations. If needed, frees up disk space so that it'll be above the given minimum treshold.</p>
+
+				<p>Use <a href="GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA.html#GUID-A3B62AAC-7E17-31F3-97DF-D7C6F4FB66F2">CleanupStack::PopAndDestroy()</a> to cancel the request after the delete operation.</p>
+
+				<p>This method can leave only if <a href="GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA.html#GUID-549819F1-53C8-3A3D-A89E-3D0169E7B56A">CleanupStack::PushL()</a> leaves.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aAmount</td><td>Requested minimum amount of free disk space in bytes. The max size of the reserve file will be around 64k so there is no use to request higher amounts than that.  </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-CBA47418-810D-30D7-9D6C-198109604FDE"><a name="GUID-CBA47418-810D-30D7-9D6C-198109604FDE"><!-- --></a>
+		<h2 class="topictitle2">CDosWrapper * iDosWrapper</h2>
+		<table class="signature"><tr><td>CDosWrapper *</td><td>iDosWrapper</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

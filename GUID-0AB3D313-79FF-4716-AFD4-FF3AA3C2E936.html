@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Trace-Based Debugging"/>
+<meta name="abstract" content="This document describes how to generate traces with the Kernel Trace and BTrace APIs."/>
+<meta name="description" content="This document describes how to generate traces with the Kernel Trace and BTrace APIs."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0F17BCDF-CF50-40D1-9048-793DC4442B50.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0F17BCDF-CF50-40D1-9048-793DC4442B50.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Trace-Based Debugging</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 id2388046 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; <a href="GUID-0F17BCDF-CF50-40D1-9048-793DC4442B50.html" title="This set of documents describes the device driver development process and provides links to example material.">Introduction</a> &gt; </div>
+<h1 class="topictitle1">Trace-Based
+Debugging</h1>
+<div><p>This document describes how to generate traces with the Kernel
+Trace and BTrace APIs.</p>
+
+<div class="section" id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-58E18DB3-8E47-4625-9F66-FEAEA3315587"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-58E18DB3-8E47-4625-9F66-FEAEA3315587"><!-- --></a><h2 class="sectiontitle">Kernel
+debug messages</h2>       <p><strong>KTRACE</strong> </p>
+ <p>During development,
+drivers can display information for debugging purposes. The basic API to use
+for this is <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-CAAD1252-CBEF-318B-B61D-D12D4E80C5CF"><span class="apiname">Kern::Printf()</span></a>. </p>
+ <p>You can make the display
+of debugging messages conditional on whether certain flags have been set in
+the ROM. To do this, use the print command with the <a href="GUID-9C275309-15B4-34D0-AD05-44C6C501FC08.html"><span class="apiname">__KTRACE_OPT()</span></a> macro.
+For example: </p>
+ <pre class="codeblock" id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-BB56427E-762B-5B77-B3DA-369751A262D8"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-BB56427E-762B-5B77-B3DA-369751A262D8"><!-- --></a>_KTRACE_OPT(KDEVICE,Kern::Printf("++DExDriverLogicalChannel::DoCreate"));</pre>
+ <p>This macro's first argument is a mask that must be enabled for the message
+to be displayed. The <samp class="codeph">kerneltrace</samp> keyword, defined in <span class="filepath">header.iby</span>,
+sets which masks are enabled for a debug ROM image. </p>
+ <p>The following
+are some of the mask definitions that can be found in <span class="filepath">nk_trace.h</span>: </p>
+ <ul>
+<li id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-3F091877-D335-5F73-A752-6D80E272D6E7"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-3F091877-D335-5F73-A752-6D80E272D6E7"><!-- --></a><p> <samp class="codeph">KHARDWARE</samp>  </p>
+ </li>
+
+<li id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-CF060894-A381-5253-BA21-344DD6334E16"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-CF060894-A381-5253-BA21-344DD6334E16"><!-- --></a><p> <samp class="codeph">KEXTENSION</samp>  </p>
+ </li>
+
+<li id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-BD44067A-0FCA-5C40-9F96-2996FAE96B4D"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-BD44067A-0FCA-5C40-9F96-2996FAE96B4D"><!-- --></a><p> <samp class="codeph">KDMA</samp>  </p>
+ </li>
+
+<li id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-20E085C0-ECD6-5119-AC33-449D6F2EDA6C"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-20E085C0-ECD6-5119-AC33-449D6F2EDA6C"><!-- --></a><p> <samp class="codeph">KBOOT</samp>  </p>
+ </li>
+
+<li id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-8221B2F2-6773-53DE-9784-EA609BA57900"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-8221B2F2-6773-53DE-9784-EA609BA57900"><!-- --></a><p> <samp class="codeph">KSCRATCH</samp>  </p>
+ </li>
+
+<li id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-E395983C-A76B-5EC3-AA07-258074A0AE71"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-E395983C-A76B-5EC3-AA07-258074A0AE71"><!-- --></a><p> <samp class="codeph">KPANIC</samp>  </p>
+ </li>
+
+<li id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-AFCF4A79-C5E0-531C-97CE-A55F9BCE4E8C"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-AFCF4A79-C5E0-531C-97CE-A55F9BCE4E8C"><!-- --></a><p> <samp class="codeph">KPBUS1</samp>  </p>
+ </li>
+
+<li id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-A908027F-B8BC-54CC-B784-5FE45BA20E4F"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-A908027F-B8BC-54CC-B784-5FE45BA20E4F"><!-- --></a><p> <samp class="codeph">KPBUS2</samp>  </p>
+ </li>
+
+</ul>
+     </div>
+
+<div class="section" id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-B404E745-2D37-4D63-88D9-1ABAA474B58A"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-B404E745-2D37-4D63-88D9-1ABAA474B58A"><!-- --></a><h2 class="sectiontitle">BTrace service</h2> <p>BTrace
+is a Kernel service that is designed to generate and capture trace information
+with minimal impact on a running system. It is useful for generating trace
+information in the Kernel and in drivers, for which fast tracing is required
+and general serial debug is not possible. </p>
+ <p>BTrace defines API and macros
+to use in programs to create trace information in <span class="filepath">e32btrace.h</span>.
+The generated trace messages can be retrieved from the driver or Kernel during
+execution. To do this, BTrace must be built into the ROM image; it is included
+by default in a text shell ROM. The <samp class="codeph">BTrace</samp> command should
+then be executed from the text shell with the appropriate options. For example,
+the following commands sets various filter and buffer size options, runs a
+program called <span class="filepath">t_expio</span> that generates some trace data,
+and finally writes the trace data into a file <span class="filepath">d:\expiolog.txt</span>. </p>
+ <pre class="codeblock" id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-F631555E-2736-5D57-9543-8566A22590B8"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-F631555E-2736-5D57-9543-8566A22590B8"><!-- --></a>BTRACE -f1,2,3 -m3 -b1024
+t_expio.exe
+BTRACE d:\expiolog.txt</pre>
+ <p>The basic macros used for generating
+traces are: </p>
+ <ul>
+<li id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-C4CED603-6EAB-5CC3-8C8F-F72962F14F6D"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-C4CED603-6EAB-5CC3-8C8F-F72962F14F6D"><!-- --></a><p> <samp class="codeph"> BTrace0 (aCategory,aSubCategory)</samp>  </p>
+ </li>
+
+<li id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-099F0EA6-60A2-50F7-B855-CC0DE97B70C2"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-099F0EA6-60A2-50F7-B855-CC0DE97B70C2"><!-- --></a><p> <samp class="codeph"> BTrace4 (aCategory,aSubCategory,a1)</samp>  </p>
+ </li>
+
+<li id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-1D643E7D-2C8B-51A1-B702-CA6BB644F61B"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-1D643E7D-2C8B-51A1-B702-CA6BB644F61B"><!-- --></a><p> <samp class="codeph"> BTrace8 (aCategory,aSubCategory,a1,a2)</samp>  </p>
+ </li>
+
+<li id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-B895DBA3-D4A2-59F7-952B-7E6E1856E1A4"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-B895DBA3-D4A2-59F7-952B-7E6E1856E1A4"><!-- --></a><p> <samp class="codeph"> BTrace12(aCategory,aSubCategory,a1,a2,a3)</samp>  </p>
+ </li>
+
+</ul>
+ <p>The macros set category and sub-category values with their first
+two arguments. The category indicates the type of information being recorded,
+which is specified using a value from the enumeration <a href="GUID-5BF17780-AD31-30CF-AFD9-915CBDA74441.html#GUID-5BF17780-AD31-30CF-AFD9-915CBDA74441__GUID-E26B390F-390C-372B-B60F-9F788119A98B"><span class="apiname">BTrace::TCategory</span></a>.
+The sub-category is an enumeration specific to each category. The other arguments, <samp class="codeph">a1</samp> -<samp class="codeph">a3</samp>,
+set the trace data, of lengths 0, 4, 8 or 12 bytes, to record. </p>
+ <p>For
+longer traces that include a context ID, program counter values, and different
+filters, more macros are provided. Performance logging macros are also available
+which in turn use BTrace to <a href="GUID-9D26E38F-5C7B-5330-A54B-8F97D0F204D0.html" title="Symbian platform provides macros that you can use in device driver and kernel extension programs to write a trace log.">log
+performance</a> related data. For example: </p>
+ <pre class="codeblock" id="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-20F3E42A-B6F6-55B6-B0B5-D466518AC6DC"><a name="GUID-0AB3D313-79FF-4716-AFD4-FF3AA3C2E936__GUID-20F3E42A-B6F6-55B6-B0B5-D466518AC6DC"><!-- --></a>TKName nameBuf;
+Name(nameBuf);
+
+// Output a fast-trace record of the specified category which also 
+// includes a Context ID 
+BTraceContextN(BTrace::EChunks,BTrace::EChunkCreated,this,iMaxSize,
+    nameBuf.Ptr(),nameBuf.Size());</pre>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-0F17BCDF-CF50-40D1-9048-793DC4442B50.html" title="This set of documents describes the device driver development process and provides links to example material.">Introduction</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

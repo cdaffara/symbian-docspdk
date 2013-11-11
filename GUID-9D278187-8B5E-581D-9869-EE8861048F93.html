@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Dynamic Link Libraries"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6590B534-D976-5305-BE95-48DD05120DFB.html#GUID-6590B534-D976-5305-BE95-48DD05120DFB/GUID-3CA8FF29-79B4-5D43-8A23-EDB136BF7A8F"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-9D278187-8B5E-581D-9869-EE8861048F93"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Dynamic Link Libraries</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-9D278187-8B5E-581D-9869-EE8861048F93"><a name="GUID-9D278187-8B5E-581D-9869-EE8861048F93"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381193 id2381201 id2381344 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html">Generic Open Libraries</a> &gt; <a href="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html">Open Environment Core (P.I.P.S.)</a> &gt; <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Dynamic
+Link Libraries</h1>
+<div>
+<div class="section" id="GUID-9D278187-8B5E-581D-9869-EE8861048F93__GUID-5B4A95B4-FE2E-4541-B185-1B4590DE5974"><a name="GUID-9D278187-8B5E-581D-9869-EE8861048F93__GUID-5B4A95B4-FE2E-4541-B185-1B4590DE5974"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p>A
+Dynamic Link Library (DLL) contains an executable code that can be shared
+by many processes in a system at any one time. A program can link against
+a DLL at compile time, meaning that the linker will match the DLL's symbols
+(such as function names and variables) with references from the program and
+ascertain the address within the DLL of the functions or variables. </p>
+ <p>Alternatively
+a program can dynamically load a DLL into memory during execution, locate
+the address of a symbol, use it and then unload the DLL. Traditionally and
+for greater memory efficiency, the Symbian platform links by
+ordinal, whereas Unix-like operating systems link by name. The following sections
+provide example code to illustrate how the DLL loader works with each operating
+system. </p>
+<p>The Symbian platform v9.3 kernel supports all functionalities
+of P.I.P.S. libraries - referred to as "P.I.P.S.- ready". Pre v9.3 the kernel
+only supports the Symbian platform- standard ordinal lookup in DLLs; it does
+not support symbolic lookup. Thus the function <samp class="codeph">dlsym()</samp> cannot
+be used with a symbolic name. To overcome this restriction, pass the function's
+ordinal number as symbol parameter refer the library's list of exports (the
+DEF file) for the function's ordinal number. For example, instead of: <samp class="codeph">dlsym(&amp;handle,
+"foo")</samp> use <samp class="codeph">dlsym (&amp;handle, "3")</samp> where the function <samp class="codeph">foo()</samp> has
+ordinal 3.</p>
+ </div>
+
+<div class="section" id="GUID-9D278187-8B5E-581D-9869-EE8861048F93__GUID-CCE3F3DC-307A-41F2-BAB4-523834C12E93"><a name="GUID-9D278187-8B5E-581D-9869-EE8861048F93__GUID-CCE3F3DC-307A-41F2-BAB4-523834C12E93"><!-- --></a><h2 class="sectiontitle">Using shared
+libraries in a Unix-like environment</h2><p>The following code shows how
+a shared library is dynamically loaded and used in a Unix-like environment
+using the <samp class="codeph">dl</samp> interface.</p>
+<pre class="codeblock">int main(int argc, char *argv[])
+{
+  //Handle
+  void* dll_handle;
+
+  //Function prototype
+  void (*printSum)(int a, int b);
+
+  //Error message
+  const char* errorMsg;
+ 
+  //Filename of dll to load 
+  char dllFileName[] = "/root/PortDoc/Example6/dll/shareddll";
+
+  //Load the dll
+  dll_handle = dlopen(dllFileName, RTLD_LAZY);
+  if (!dll_handle)
+  {
+     fprintf(stderr, "Error during load of library: %s\n", dlerror()); 
+     return EXIT_FAILURE;
+  }
+
+  //Find the symbol
+  printSum = dlsym(dll_handle, "printSum");   
+
+  //Get the error message 
+  errorMsg = dlerror();
+  if (errorMsg)
+  {
+     fprintf(stderr, "Error during symbol lookup: %s\n", errorMsg);
+     return EXIT_FAILURE;
+  } 
+
+  //Now call the function
+  printSum(4, 6);
+
+  //Dispose of the DLL
+  dlclose(dll_handle);
+
+  return EXIT_SUCCESS;
+}
+</pre>
+<p>As an example, the <samp class="codeph">shareddll</samp> might have a
+function such as:</p>
+<pre class="codeblock">void printSum(int a, int b)
+    {
+    printf("Result is : %d\n", a + b);
+    }</pre>
+</div>
+
+<div class="section" id="GUID-9D278187-8B5E-581D-9869-EE8861048F93__GUID-7C649A95-3F73-454B-AAD4-80889D6B34E3"><a name="GUID-9D278187-8B5E-581D-9869-EE8861048F93__GUID-7C649A95-3F73-454B-AAD4-80889D6B34E3"><!-- --></a><h2 class="sectiontitle">DLLs on the
+Symbian platform(prior to v9.3)</h2><p>Symbian platform programs uses the
+function or variable's ordinal position within a DLL to link with DLLs. For
+example, implementing a shared DLL on the Symbian platform could look like
+this:</p>
+<pre class="codeblock">EXPORT_C void printSum(int a, int b)
+    {
+    printf("Result is : %d\n", a + b);
+    }</pre>
+<p>Compiling this will generate a <span class="filepath">.def</span> file,
+which contains the ordinals of each symbol in the DLL. For instance:</p>
+<pre class="codeblock">EXPORTS
+    printSum @ 1 NONAME</pre>
+<p>Here, the <span class="filepath">.def</span> shows
+that the ordinal for the <samp class="codeph">printSum()</samp> function is 1. </p>
+<p>The
+following code shows how the <samp class="codeph">main()</samp> function is changed in
+P.I.P.S.. </p>
+<pre class="codeblock">int main(int argc, char *argv[])
+{
+  //Handle
+  void* dll_handle;
+
+  //Function prototype
+  void (*printSum)(int a, int b);
+
+  //Error message
+  const char* errorMsg;
+ 
+  //Filename of dll to load 
+  char dllFileName[] = "/root/PortDoc/Example6/dll/shareddll";
+
+  //Load the dll
+  dll_handle = dlopen(dllFileName, RTLD_LAZY);
+  if (!dll_handle)
+  {
+     fprintf(stderr, "Error during load of library: %s\n", dlerror()); 
+     return EXIT_FAILURE;
+  }
+
+  //Find the symbol, using the ordinal
+  printSum = dlsym(dll_handle, "1");   
+
+  //Get the error message 
+  errorMsg = dlerror();
+  if (errorMsg)
+  {
+     fprintf(stderr, "Error during symbol lookup: %s\n", errorMsg);
+     return EXIT_FAILURE;
+  } 
+
+  //Now call the function
+  printSum(4, 6);
+
+  //Dispose of the DLL
+  dlclose(dll_handle);
+
+  return EXIT_SUCCESS;
+}
+</pre>
+<p>Note that for the Symbian library loader, the mode parameter
+for the <a href="GUID-51FB35C0-CFC2-357A-8ACA-FE7480C53AD3.html"><span class="apiname">dlopen()</span></a> function is irrelevant and the library
+will be loaded immediately. So although <samp class="codeph">RTLD_LAZY</samp> is the
+mode parameter in the example, it will behave just as <samp class="codeph">RTLD_NOW</samp>.
+Also note that there is no facility to call any library constructor and destructor
+functions using <samp class="codeph">__attribute((constructor))</samp> or <samp class="codeph">__attribute((destructor))</samp>. </p>
+</div>
+
+<div class="section" id="GUID-9D278187-8B5E-581D-9869-EE8861048F93__GUID-DEF804DF-CECC-4739-9ACD-24F46A945F6E"><a name="GUID-9D278187-8B5E-581D-9869-EE8861048F93__GUID-DEF804DF-CECC-4739-9ACD-24F46A945F6E"><!-- --></a><h2 class="sectiontitle">DLLs on the
+Symbian platform (v9.3 onwards)</h2><p>P.I.P.S. provides APIs from libdl
+to support dynamic lookup by name, which is used in Unix-like platforms, instead
+of the native Symbian platform lookup by ordinal mechanism. Lookup by name
+is possible thanks to the new libdl, which in turn uses the existing <span>RLibrary</span> functions
+to load and unload DLLs. </p>
+<p>A symbol name lookup version of the dlsym()
+function is provided, similar to UNIX®, which does not need any special treatment
+(the example shown in the <strong>Using Shared libraries in a Unix-like environment</strong> section
+will suffice). However, it is still necessary to generate the <span class="filepath">.def</span> file
+for the DLL. The following sections provides a brief summary of the functionality
+provided by <samp class="codeph">libdl</samp>. </p>
+<p>The <samp class="codeph">libdl</samp> APIs,
+which support dynamic lookup by name, are described in the following table:</p>
+
+<div class="tablenoborder"><a name="GUID-9D278187-8B5E-581D-9869-EE8861048F93__GUID-71331BB8-6E91-4239-9183-F4B51A383F06"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-9D278187-8B5E-581D-9869-EE8861048F93__GUID-71331BB8-6E91-4239-9183-F4B51A383F06" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p><strong>libdl API</strong></p>
+</td>
+
+<td class="cellrowborder" valign="top"><p><strong>Description</strong></p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">void *dlopen (const char *path, int mode) </samp></td>
+
+<td class="cellrowborder" valign="top"><p>Call <a href="GUID-51FB35C0-CFC2-357A-8ACA-FE7480C53AD3.html"><span class="apiname">dlopen()</span></a> to gain access to symbols of any
+shared library or DLL. If <a href="GUID-51FB35C0-CFC2-357A-8ACA-FE7480C53AD3.html"><span class="apiname">dlopen()</span></a> fails for any reason,
+it will return a NULL. The default search path for the library can be provided
+in the environment variable <samp class="codeph">LD_LIBRARY_PATH</samp>. </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">void *dlsym(void *handle, const char *symbol)</samp></td>
+
+<td class="cellrowborder" valign="top"><p>The <a href="GUID-6B94A42A-888B-3761-84DA-4FADC6D3B126.html"><span class="apiname">dlsym()</span></a> function returns the address binding
+of the symbol described in the null-terminated character string 'symbol',
+as it occurs in the shared object identified by 'handle'. </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">int dlclose(void *handle)</samp></td>
+
+<td class="cellrowborder" valign="top"><p>Call <a href="GUID-F74DC7CB-1E3F-368E-99A7-DD4B38FF7EF0.html"><span class="apiname">dlclose()</span></a> with a valid dlopen-ed handle
+to remove it from the cache list maintained by <a href="GUID-51FB35C0-CFC2-357A-8ACA-FE7480C53AD3.html"><span class="apiname">dlopen()</span></a>.
+If it fails, dlclose() will return -1; otherwise, it will return 0. </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">char *dlerror(void)</samp></td>
+
+<td class="cellrowborder" valign="top"><p>Call <a href="GUID-F5B2CFAB-99F5-3A24-8F6C-ECAA61922FB0.html"><span class="apiname">dlerror()</span></a> to obtain the most recent error
+that occurred due to any of the dl routines, that is, <a href="GUID-51FB35C0-CFC2-357A-8ACA-FE7480C53AD3.html"><span class="apiname">dlopen()</span></a>, <a href="GUID-6B94A42A-888B-3761-84DA-4FADC6D3B126.html"><span class="apiname">dlsym()</span></a>,
+or <a href="GUID-F74DC7CB-1E3F-368E-99A7-DD4B38FF7EF0.html"><span class="apiname">dlclose()</span></a>. </p>
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+<p/>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a></div>
+</div>
+<div class="relinfo"><strong>Related information</strong><br/>
+<div><a href="GUID-6590B534-D976-5305-BE95-48DD05120DFB.html#GUID-6590B534-D976-5305-BE95-48DD05120DFB__GUID-3CA8FF29-79B4-5D43-8A23-EDB136BF7A8F">One Definition Rule - warning</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

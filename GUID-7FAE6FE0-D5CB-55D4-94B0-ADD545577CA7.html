@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Creating and setting properties for a Sub-Connection: Tutorial"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2139B04C-6ED6-599B-A018-D92451B8353E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-61E0CD76-A2E3-5066-84A8-146EECA8ADCD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-7FAE6FE0-D5CB-55D4-94B0-ADD545577CA7"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Creating and setting properties for a Sub-Connection: Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-7FAE6FE0-D5CB-55D4-94B0-ADD545577CA7"><a name="GUID-7FAE6FE0-D5CB-55D4-94B0-ADD545577CA7"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2682451 id2518388 id2518454 id2518515 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html" title="The Communications Framework is the base for all communications, network and telephony services that Symbian platform provides. The Communications Framework manages the communications threads and the flow of information between those threads. The Framework also manages and stores the communications related settings.">Communications Framework Guide</a> &gt; <a href="GUID-2139B04C-6ED6-599B-A018-D92451B8353E.html">Data Communications Server</a> &gt; <a href="GUID-61E0CD76-A2E3-5066-84A8-146EECA8ADCD.html">Socket Server</a> &gt; <a href="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html">Socket Server Tutorials</a> &gt; </div>
+<h1 class="topictitle1"> Creating and setting properties for a Sub-Connection: Tutorial</h1>
+<div><p>This tutorial shows how an application can create Quality of Service properties and assign them to a sub-connection. </p>
+ <p>Error handling is not included to aid clarity. </p>
+ <pre class="codeblock" id="GUID-7FAE6FE0-D5CB-55D4-94B0-ADD545577CA7__GUID-F9A41E8A-D15B-5028-ABC4-DB400EF0DB19"><a name="GUID-7FAE6FE0-D5CB-55D4-94B0-ADD545577CA7__GUID-F9A41E8A-D15B-5028-ABC4-DB400EF0DB19"><!-- --></a>// Create the container for all sub connection parameters
+RSubConParameterBundle subconParams;
+CleanupClosePushL(subconParams);
+
+// Create a container for QoS sub connection parameters (Param bundle takes ownership)
+CSubConParameterFamily* qosFamily = CSubConParameterFamily::NewL(subconParams,
+    KSubConQoSFamily);
+
+// Create the requested generic parameter set for QoS (Qos family takes ownership)
+CSubConQosGenericParamSet* reqGenericParams = CSubConQosGenericParamSet::NewL(*qosFamily,                               
+    CSubConParameterFamily::ERequested);
+
+// Set the requested Generic Parameters
+reqGenericParams-&gt;SetDownlinkBandwidth(128);
+reqGenericParams-&gt;SetUplinkBandwidth(64);
+
+// Create the acceptable generic parameter set for QoS (Qos family takes ownership)
+CSubConQosGenericParamSet* accGenericParams = CSubConQosGenericParamSet::NewL(*qosFamily,                               
+    CSubConParameterFamily::EAcceptable);
+
+// Set the acceptable Generic Parameters
+accGenericParams-&gt;SetDownlinkBandwidth(48);
+accGenericParams-&gt;SetUplinkBandwidth(32);
+
+// Create a requested technology specific parameter set for QoS (Qos family takes ownership)
+CSubConQosR99ParamSet* reqRel99Params = CSubConQosR99ParamSet::NewL(*qosFamily,
+    CSubConParameterFamily::ERequested);
+
+// Set the requested Technology Specific Params
+reqRel99Params-&gt;SetMaxSDUSize(1024);
+
+// Create a acceptable technology specific parameter set for QoS (Qos family takes ownership)
+CSubConQosR99ParamSet* accRel99Params = CSubConQosR99ParamSet::NewL(*qosFamily,
+    CSubConParameterFamily::EAcceptable);
+
+// Set the acceptable Technology Specific Params
+accRel99Params-&gt;SetMaxSDUSize(512);
+
+// Now open the sub-connection as normal…
+………
+………
+// Create a new sub-connection
+subconn.Open(ss, RSubConnection::ECreateNew, conn);
+
+// Set Properties of the sub-connection
+subconn.SetParameters(subconParams);
+
+// Destroy parameters
+CleanupStack::PopAndDestroy();         // subconParams
+
+// Open a TCP socket on the sub-connection
+sock.Open(ss, KAfInet, KSockStream, KProtocolInetTcp, subconn);
+
+_LIT(KRasAddr,"10.159.24.13");
+const TInt KEchoPort = 7;
+
+TInetAddr destAddr;
+destAddr.Input(KRasAddr);
+destAddr.SetPort(KEchoPort);
+
+// Connect the Socket to the destination over the sub-connection
+sock.Connect(destAddr, status);
+User::WaitForRequest(status);
+
+// Fetch the granted qos
+RSubConParameterBundle grantedParams;
+subconn.GetParameters(grantedParams);
+</pre>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html">Socket Server Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

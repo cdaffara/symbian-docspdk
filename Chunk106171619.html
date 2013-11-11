@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Constructing views in the view architecture"/>
+<meta name="DC.Relation" scheme="URI" content="Chunk1666472307.html#GUID-95C188D0-EDB2-46D0-ACDE-19AAD524C9F4"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-29486886-CB54-4A83-AD6D-70F971A86DFC.html"/>
+<meta name="DC.Relation" scheme="URI" content="Chunk906401428.html#GUID-E50EC0B4-A434-4C30-A1A9-1A976185FF28"/>
+<meta name="DC.Relation" scheme="URI" content="Chunk2074082206.html#GUID-68B999C2-0993-4804-9624-42C3D88BE5C7"/>
+<meta name="DC.Relation" scheme="URI" content="Chunk1666472307.html#GUID-95C188D0-EDB2-46D0-ACDE-19AAD524C9F4"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-1A26BD9E-5B8E-4E6D-904E-B8354B14E111"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Constructing views in the view architecture</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-1A26BD9E-5B8E-4E6D-904E-B8354B14E111"><a name="GUID-1A26BD9E-5B8E-4E6D-904E-B8354B14E111"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2561792 id2561806 id2839888 id2839821 id2839806 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html">Classic UI Guide</a> &gt; <a href="GUID-29486886-CB54-4A83-AD6D-70F971A86DFC.html">Application and UI frameworks</a> &gt; <a href="Chunk906401428.html#GUID-E50EC0B4-A434-4C30-A1A9-1A976185FF28">UI architectures</a> &gt; <a href="Chunk2074082206.html#GUID-68B999C2-0993-4804-9624-42C3D88BE5C7">View architecture</a> &gt; <a href="Chunk1666472307.html#GUID-95C188D0-EDB2-46D0-ACDE-19AAD524C9F4">Views in the view architecture</a> &gt; </div>
+<h1 class="topictitle1">Constructing
+views in the view architecture</h1>
+<div>
+<p>The call on the first phase constructor method of the view occurs in <a href="Chunk400370443.html">UI controller</a>. The
+view serves as the top-level window under the UI controller.</p>
+
+<p>The following are the methods that you need to derive for the view derived
+from <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html"><span class="apiname">CCoeControl</span></a> :</p>
+
+<ul>
+<li><p>Default constructor, which cannot contain code that leaves.
+A common implementation is:</p>
+
+
+<pre class="codeblock" id="GUID-1A26BD9E-5B8E-4E6D-904E-B8354B14E111__GUID-7A108F7C-AD2E-4CDA-9758-5FD6ED477917"><a name="GUID-1A26BD9E-5B8E-4E6D-904E-B8354B14E111__GUID-7A108F7C-AD2E-4CDA-9758-5FD6ED477917"><!-- --></a>
+CMyAppView* CMyAppView::NewL( const TRect&amp; aRect )
+    {
+    CMyAppView* self = CMyAppView::NewLC( aRect );
+    CleanupStack::Pop( self );
+    return self;
+    }
+
+CMyAppView* CMyAppView::NewLC( const TRect&amp; aRect )
+    {
+    CMyAppView* self = new ( ELeave ) CMyAppView;
+    CleanupStack::PushL( self );
+    self-&gt;ConstructL( aRect );
+    return self;
+    }
+
+CMyAppView::CMyAppView()
+    {
+    // No implementation required
+    }</pre>
+
+<p>The declarations for <span class="parmname">CMyAppView::NewL()</span> and <span class="parmname">CMyAppView::NewLC()</span> in
+the class header file needs to be public to support the construction method
+required.</p>
+
+<p>In this approach, <span class="parmname">CMyAppView::NewL()</span> is called
+from the UI controller. It creates a view object by calling <span class="parmname">CMyAppView::NewLC()</span> to
+create the object (and leave if it cannot), <a href="jar:GUID-35228542-8C95-4849-A73F-2B4F082F0C44.jar!/sdk/doc_source/reference/reference-cpp/Kernel_Architecture_2/CCleanupClass.html#%3a%3aCCleanup%3a%3aPushL%28CBase%20%2a%29">pushes</a> a pointer to the clean-up stack in case the second phase construction method
+leaves, and then calls the second phase construction method of the object.
+When it returns to <span class="parmname">CMyAppView::NewL()</span>, the pointer pushed
+to the cleanup stack is <a href="jar:GUID-35228542-8C95-4849-A73F-2B4F082F0C44.jar!/sdk/doc_source/reference/reference-cpp/Kernel_Architecture_2/CCleanupClass.html#%3a%3aCCleanup%3a%3aPop%28%29">removed</a>.</p>
+
+
+</li>
+
+<li><p>Symbian second phase constructor with code that might leave.
+A common implementation is:</p>
+
+
+<pre class="codeblock" id="GUID-1A26BD9E-5B8E-4E6D-904E-B8354B14E111__GUID-32125111-6ACB-4539-8CD0-39ED5629789F"><a name="GUID-1A26BD9E-5B8E-4E6D-904E-B8354B14E111__GUID-32125111-6ACB-4539-8CD0-39ED5629789F"><!-- --></a>
+void CMyAppView::ConstructL( const TRect&amp; aRect )
+    {
+    // Create a window for this application view
+    CreateWindowL();
+
+     //add construction for other controls if required
+
+	   // Set the windows size
+    SetRect( aRect );
+
+    // Activate the window, which makes it ready to be drawn
+    ActivateL();
+    }</pre>
+
+<p><span class="parmname">CMyAppView</span> is a private class providing the second
+phase construction that accepts the rectangle the view is drawn to.</p>
+
+<p><a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-03CC715F-11D8-39B1-875D-F4589BC9681E"><span class="apiname">CCoeControl::CreateWindowL()</span></a> creates a window for
+the control. Note that this window is a child of the UI controller. This method
+makes the control a <a href="Chunk355813341.html">window-owning
+control</a>. While, the use of window-owning controls is discouraged to
+prevent the taxing of run-time resources, this is the top-level window for
+the UI controller.</p>
+
+<p>While this is a simple control that does not contain other controls,
+other controls could be added to the control between <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-03CC715F-11D8-39B1-875D-F4589BC9681E"><span class="apiname">CCoeControl::CreateWindowL()</span></a> and <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-AC806401-86C7-308A-9D18-39085CB8D877"><span class="apiname">CCoeControl::SetRect(aRect)</span></a>. For more information, see <a href="Chunk1246297284.html">Compound
+controls in the view architecture</a>.</p>
+
+<p><a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-AC806401-86C7-308A-9D18-39085CB8D877"><span class="apiname">CCoeControl::SetRect(aRect)</span></a> sets the window size
+according to the requirements of the mobile device. The top-level control
+rectangle is set to the area that the framework provides for the application.
+Calling <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-AC806401-86C7-308A-9D18-39085CB8D877"><span class="apiname">CCoeControl::SetRect(aRect)</span></a> calls the <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-9D6A2C52-DCE0-3490-BDA1-323406B7FBCF"><span class="apiname">CCoeControl::SizeChanged()</span></a> method,
+where the control should set the position and size for any child controls
+and thus adjust the control layout to the UI.</p>
+
+<p><a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-C79D0B6F-C2D7-3F22-A62B-88762092E869"><span class="apiname">CCoeControl::ActivateL()</span></a> sets the control as ready
+to be drawn.</p>
+
+
+</li>
+
+</ul>
+
+<p>If required for your application, you may need to implement other methods
+for your control. For top-level windows, you would need to implement <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-9D6A2C52-DCE0-3490-BDA1-323406B7FBCF"><span class="apiname">CCoeControl::SizeChanged()</span></a> to
+respond to changes to the size and position of the contents of this control.
+This is called by the Symbian platform when a change occurs. A typical implementation
+for a compound control is:</p>
+
+<pre class="codeblock" id="GUID-1A26BD9E-5B8E-4E6D-904E-B8354B14E111__GUID-6F100E69-F0BB-4637-A1AA-57024AF20CF4"><a name="GUID-1A26BD9E-5B8E-4E6D-904E-B8354B14E111__GUID-6F100E69-F0BB-4637-A1AA-57024AF20CF4"><!-- --></a>void CMyAppView::SizeChanged()
+    {
+    // Control resize code
+    iControl-&gt;SetExtent( const TPoint &amp;aPosition, const TSize &amp;aSize);
+    }</pre>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="Chunk1666472307.html#GUID-95C188D0-EDB2-46D0-ACDE-19AAD524C9F4">Views in the view architecture</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

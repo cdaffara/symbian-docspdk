@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to implement a server interface with subsessions"/>
+<meta name="abstract" content="Provides code snippets to help you to implement a server interface with subsessions."/>
+<meta name="description" content="Provides code snippets to help you to implement a server interface with subsessions."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6047DB3F-DC92-51DF-9EEB-00E79E890B54.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3786D8E6-17A9-52E4-A8DF-CFCDC3039854.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6047DB3F-DC92-51DF-9EEB-00E79E890B54.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to implement a server interface with subsessions</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2393224 id2393504 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-3786D8E6-17A9-52E4-A8DF-CFCDC3039854.html">Inter Process Communication</a> &gt; <a href="GUID-6047DB3F-DC92-51DF-9EEB-00E79E890B54.html">Using Client-Server</a> &gt; </div>
+<h1 class="topictitle1">How
+to implement a server interface with subsessions</h1>
+<div><p>Provides code snippets to help you to implement a server interface
+with subsessions.</p>
+
+<p>A server side subsession is represented by an instance of a class derived
+from <samp class="codeph">CObject</samp>. </p>
+
+<p>The following sections refer to an example server, known as the count server.
+The code fragments are taken from the example that can be found at <span class="filepath">...\examples\Base\IPC\ClientServer\complex</span>. </p>
+
+<p>In the example, a server side session is represented by the <samp class="codeph">CSession2</samp> derived
+class <samp class="codeph">CCountSession</samp>. The server session can have any number
+of subsessions, referred to as counters in the example. The subsessions are
+instances of the <samp class="codeph">CCountSubSession</samp> class and these are derived
+from <samp class="codeph">CObject</samp>. </p>
+
+<p>Unlike the implementation for a simple server interface, as shown in the
+example that can be found at <span class="filepath">...\examples\Base\IPC\ClientServer\simple</span>,
+the functions to service client requests, e.g. <samp class="codeph">Increase()</samp>,
+are in class <samp class="codeph">CCountSubSession</samp> rather than <samp class="codeph">CCountSession</samp>. </p>
+
+<p>The important points to note are: </p>
+
+<ul>
+<li id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-98D487B0-ECFF-5A83-BEF0-C66475836888"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-98D487B0-ECFF-5A83-BEF0-C66475836888"><!-- --></a><p>the <samp class="codeph">CCountSession</samp> class
+contains the object container for all the subsession objects which belong
+to this session. </p>
+ </li>
+
+<li id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-BCE1BF57-FC9E-58CF-9E77-1AD48632DFC0"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-BCE1BF57-FC9E-58CF-9E77-1AD48632DFC0"><!-- --></a><p>the <samp class="codeph">CCountServer</samp> class
+contains the <em>one and only</em> object container index through which all
+object containers within the server are produced. </p>
+ </li>
+
+<li id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-78880ABD-904A-5D3C-988A-646CE2998050"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-78880ABD-904A-5D3C-988A-646CE2998050"><!-- --></a><p>the <samp class="codeph">CCountSession</samp> class
+contains an object index through which a handle number can be generated for
+the subsession. </p>
+ </li>
+
+</ul>
+
+<div class="section" id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-D49A6975-81B7-4BEE-8F46-C0F850CB4974"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-D49A6975-81B7-4BEE-8F46-C0F850CB4974"><!-- --></a><h2 class="sectiontitle">Server session representation</h2> <p>The <samp class="codeph">CCountSession</samp> class
+is defined as: </p>
+ <pre class="codeblock" id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-F8FED60B-823A-5965-97F2-0BF6EC24620D"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-F8FED60B-823A-5965-97F2-0BF6EC24620D"><!-- --></a>class CCountSession : public CSession2
+    {
+public:
+      // Create the session
+    static CCountSession* NewL();
+    
+public:
+      // Constructor
+    CCountSession();
+    
+      // Called by client/server framework after 
+      // session has been successfully created
+    void CreateL(); 
+        
+      // Service request
+    void ServiceL(const RMessage2&amp; aMessage);
+    void DispatchMessageL(const RMessage2&amp; aMessage);
+
+      // Creates new subsession
+    void NewCounterL(const RMessage2&amp; aMessage);  
+      
+      // Closes the session
+    void CloseSession();
+    
+      // Gets the number of resources (i.e. CCountSubSession objects)
+    void NumResources(const RMessage2&amp; aMessage);
+    
+      // Utility to return the CCountSubSession (subsession) object
+    CCountSubSession* CounterFromHandle(const RMessage2&amp; aMessage,TInt aHandle);    
+
+      // Delete the subsession object through its handle.
+    void DeleteCounter(TInt aHandle);
+      
+      // Gets the number of server-side subsession objects.
+    TInt CountResources();
+      
+      // Panics client
+    void PanicClient(const RMessage2&amp; aMessage,TInt aPanic) const;
+
+private:
+      // Object container for this session.
+    CObjectCon *iContainer;
+
+      // Object index which stores objects
+      // (CCountSubSession instances) for this session.
+    CObjectIx* iCountersObjectIndex;
+
+      // Total number of resources. In this example
+      // a resource is just the number of CCountSubSession objects.
+    TInt iResourceCount;
+    };
+</pre>
+ <p><strong>Notes</strong> </p>
+ <ul>
+<li id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-DD9D1AE3-315E-5ADF-A251-5F9BAAF24EED"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-DD9D1AE3-315E-5ADF-A251-5F9BAAF24EED"><!-- --></a><p>The data member <samp class="codeph">iCountersObjectIndex</samp> is
+a pointer to an <em>object index</em>. Once a subsession object has been created
+and stored in its <em>object container</em>, it is then added to the <em>object
+index</em> to generate a unique handle number for the counter (<span class="keyword">subsession
+object</span>). </p>
+ </li>
+
+<li id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-0AE88EE6-1E87-5699-92FF-F55225320DF8"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-0AE88EE6-1E87-5699-92FF-F55225320DF8"><!-- --></a><p>The <samp class="codeph">CCounterFromHandle()</samp> function
+returns the subsession object corresponding to a specified handle number. </p>
+ </li>
+
+<li id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-64A79B53-B798-50DA-B4F5-0DA5881F964E"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-64A79B53-B798-50DA-B4F5-0DA5881F964E"><!-- --></a><p>The <samp class="codeph">NewCounterL()</samp> function
+creates a new subsession object. </p>
+ </li>
+
+<li id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-C9C9619D-EE0D-5B3F-B51C-354C9D7066D1"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-C9C9619D-EE0D-5B3F-B51C-354C9D7066D1"><!-- --></a><p>The <samp class="codeph">DeleteCounter()</samp> function
+deletes a subsession object. This is called when the client program requests
+to close a subsession. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-CB7E6555-DE45-426A-B816-3736E72904FE"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-CB7E6555-DE45-426A-B816-3736E72904FE"><!-- --></a><h2 class="sectiontitle">Subsession object representation</h2> <p>The <samp class="codeph">CCountSubSession</samp> class
+which represents the subsession is defined as: </p>
+ <pre class="codeblock" id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-A91DD957-4A51-58E1-B0A0-843DAF9FF483"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-A91DD957-4A51-58E1-B0A0-843DAF9FF483"><!-- --></a>class CCountSubSession : public CObject
+    {
+public:
+      // creates a new CCountSubSession object.
+    static CCountSubSession* NewL(CCountSession* aSession);
+    
+public: 
+    CCountSubSession(CCountSession* aSession);    
+    void ConstructL(CCountSession* aSession);
+    void SetFromStringL(const RMessage2&amp; aMessage);
+    void Increase();
+    void IncreaseBy(const RMessage2&amp; aMessage);
+    void Decrease();
+    void DecreaseBy(const RMessage2&amp; aMessage);
+    void Reset();
+    void CounterValue(const RMessage2&amp; aMessage);
+   
+protected:
+      // The session that owns this CCountSubSession object.
+    CCountSession* iSession;
+    
+private:
+      // The counter value
+    TInt iCount;
+    };</pre>
+ <p><strong>Notes</strong> </p>
+ <ul>
+<li id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-04B1ACC9-AA68-56C7-B42A-DC7DAA0749B0"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-04B1ACC9-AA68-56C7-B42A-DC7DAA0749B0"><!-- --></a><p>The <samp class="codeph">NewL()</samp> function
+creates and returns a new instance of the subsession object. This is called
+when the client requests the creation of a new subsession. </p>
+ </li>
+
+<li id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-8BF98800-E081-5120-914F-60AE09C1A70A"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-8BF98800-E081-5120-914F-60AE09C1A70A"><!-- --></a><p>The <em>message service
+functions</em> <samp class="codeph">Increase()</samp>, <samp class="codeph">IncreaseBy()</samp> etc.
+respond appropriately to client requests. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-1031D378-90C7-42A4-B1E5-C8BA10145B86"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-1031D378-90C7-42A4-B1E5-C8BA10145B86"><!-- --></a><h2 class="sectiontitle">Implementing a subsession request</h2> <p>Subsession requests
+are handled in a similar way to session requests. </p>
+ <p>A subsession request
+is initially handled by the associated session, i.e. it is passed to the appropriate <samp class="codeph">CSession2::ServiceL()</samp>. </p>
+ <pre class="codeblock" id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-AE6EDE6F-54B2-56DC-A793-A6AE630A223A"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-AE6EDE6F-54B2-56DC-A793-A6AE630A223A"><!-- --></a>void CCountSession::ServiceL(const RMessage2&amp; aMessage)
+    {
+    TRAPD(err,DispatchMessageL(aMessage));
+    aMessage.Complete(err);
+    }
+</pre>
+ <p>The appropriate service function is called via <samp class="codeph">DispatchMessageL()</samp> and
+the asynchronous request is completed with <samp class="codeph">aMessage.Complete()</samp>.
+This applies to messages targeted at sessions and subsessions. </p>
+ <p><strong>DispatchMessageL()</strong> </p>
+ <p>The following code fragment shows important parts of this function: </p>
+ <pre class="codeblock" id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-EB719B38-AA2C-5C19-B7BE-2332BD853057"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-EB719B38-AA2C-5C19-B7BE-2332BD853057"><!-- --></a>void CCountSession::DispatchMessageL(const RMessage2&amp; aMessage)
+    {
+        // First check for session-relative requests
+    switch (aMessage.Function())
+        {
+    case ECountServCreateSubSession:// Request to create a subsession
+        NewCounterL(aMessage);
+        return;
+    case ECountServCloseSession:    // Request to delete a subsession
+        CloseSession();
+        return;
+        ...
+        }
+    ...
+ 
+                             // Must be a subsession request
+                             // Find out Which subsession and
+                             // forward the request to it.
+    CCountSubSession* counter=CounterFromHandle(aMessage,aMessage.Int3())
+    switch (aMessage.Function())
+        {
+        ...
+    case ECountServValue:
+        counter-&gt;CounterValue(aMessage);
+        return;
+    default:
+        PanicClient(EBadRequest);
+        return;
+        }
+    }</pre>
+ <pre class="codeblock" id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-F0C7D2A2-FC3E-5CC0-A776-7D7B7047D758"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-F0C7D2A2-FC3E-5CC0-A776-7D7B7047D758"><!-- --></a>CCountSubSession* CCountSession::CounterFromHandle(const RMessage2&amp; aMessage,TInt aHandle)
+    {
+    CCountSubSession* counter = (CCountSubSession*)iCountersObjectIndex-&gt;At(aHandle);
+    if (counter == NULL)
+        {
+        PanicClient(aMessage, EBadSubsessionHandle); 
+        }
+    return counter;
+    }
+</pre>
+ <p><strong>Notes</strong> </p>
+ <ul>
+<li id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-55B94E1E-C761-5D39-9EBF-9A2E600E26A3"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-55B94E1E-C761-5D39-9EBF-9A2E600E26A3"><!-- --></a><p>The function first checks
+for messages which are specific to a session and this includes those requests
+to create and delete a subsession. </p>
+ </li>
+
+<li id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-D65039AA-E45E-5CA6-8A25-E8F3680CDA72"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-D65039AA-E45E-5CA6-8A25-E8F3680CDA72"><!-- --></a><p>After deciding that
+messages must be forwarded to a subsession, the function uses the handle number
+supplied through the fourth parameter in the message argument array and the <samp class="codeph">CounterFromHandle()</samp> function
+to retrieve the appropriate subsession object. </p>
+ </li>
+
+<li id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-54BC7669-BBA9-5134-857A-8F4060059EB7"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-54BC7669-BBA9-5134-857A-8F4060059EB7"><!-- --></a><p>It then invokes the
+appropriate message service function on that subsession to deal with the client
+request. </p>
+ </li>
+
+<li id="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-7CA3D0C0-E7DB-58FC-A89D-2584C25A7685"><a name="GUID-FAE3F35C-04C1-5CF4-8090-9DF58AD1C02A__GUID-7CA3D0C0-E7DB-58FC-A89D-2584C25A7685"><!-- --></a><p>The <samp class="codeph">At()</samp> function
+is provided by the <samp class="codeph">CObject</samp> base class. </p>
+ </li>
+
+</ul>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-6047DB3F-DC92-51DF-9EEB-00E79E890B54.html">Using Client-Server</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

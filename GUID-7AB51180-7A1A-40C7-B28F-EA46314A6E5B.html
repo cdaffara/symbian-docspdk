@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Synchronous Requests"/>
+<meta name="abstract" content="This document describes the use of synchronous requests by device drivers."/>
+<meta name="description" content="This document describes the use of synchronous requests by device drivers."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CFE0A4EB-845C-43B6-A732-AA155AFD99D6.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CFE0A4EB-845C-43B6-A732-AA155AFD99D6.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-7AB51180-7A1A-40C7-B28F-EA46314A6E5B"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Synchronous Requests</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-7AB51180-7A1A-40C7-B28F-EA46314A6E5B"><a name="GUID-7AB51180-7A1A-40C7-B28F-EA46314A6E5B"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 id2388267 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; <a href="GUID-CFE0A4EB-845C-43B6-A732-AA155AFD99D6.html" title="This document introduces user requests and synchronisation methods used by device drivers.">User Requests and Synchronisation</a> &gt; </div>
+<h1 class="topictitle1">Synchronous
+Requests</h1>
+<div><p>This document describes the use of synchronous requests by device
+drivers.</p>
+
+<div class="section" id="GUID-7AB51180-7A1A-40C7-B28F-EA46314A6E5B__GUID-6C508A3B-B2E6-4D16-9421-03EE1A0B595F"><a name="GUID-7AB51180-7A1A-40C7-B28F-EA46314A6E5B__GUID-6C508A3B-B2E6-4D16-9421-03EE1A0B595F"><!-- --></a><h2 class="sectiontitle"><strong>Synchronous
+requests</strong></h2>              <p>Synchronous requests are typically used to set
+or retrieve some information for the device driver. These requests almost
+never need to access the hardware itself, and usually complete relatively
+quickly. They return only after the completion of the request and the user
+side thread is blocked till completion. Synchronous requests are usuallly
+initiated by a call to <a href="GUID-6FBFA078-8253-3E24-B1F8-5F75E86C3066.html#GUID-6FBFA078-8253-3E24-B1F8-5F75E86C3066__GUID-D774DE92-6431-374A-A1F6-1C7045BD4FE5"><span class="apiname">RBusLogicalChannel::DoControl()</span></a>.
+The request is most likely to be executed in the context of the client user-side
+thread.</p>
+ <p>A driver lists its available synchronous requests
+in an enumeration, for example: </p>
+ <pre class="codeblock" id="GUID-7AB51180-7A1A-40C7-B28F-EA46314A6E5B__GUID-09E42EC9-CF71-59C0-876E-0651F27E591F"><a name="GUID-7AB51180-7A1A-40C7-B28F-EA46314A6E5B__GUID-09E42EC9-CF71-59C0-876E-0651F27E591F"><!-- --></a>// Synchronous control messages used with DoControl()
+enum TControl 
+    {
+    EControlConfigure, // Configure the device (UART)
+    EControlTransmitData, // Transmit data over the device (UART)    
+    EControlReceiveData,    // Receive the data from the device 
+    ENumRequests, // Number of synchronous control requests
+    AllRequests = (1&lt;&lt;ENumRequests)-1
+    };</pre>
+     </div>
+
+<div class="section" id="GUID-7AB51180-7A1A-40C7-B28F-EA46314A6E5B__GUID-EC33A9C8-CE41-4937-8008-35502C290581"><a name="GUID-7AB51180-7A1A-40C7-B28F-EA46314A6E5B__GUID-EC33A9C8-CE41-4937-8008-35502C290581"><!-- --></a><h2 class="sectiontitle">Implementation</h2><p>Drivers
+generally implement the <a href="GUID-06C73075-6095-3D8F-AFC9-FD832958A49C.html"><span class="apiname">DoControl()</span></a> function in the LDD
+to handle the received synchronous messages. The implementation reads the
+request type and other passed arguments, and handles the request appropriately.
+For example, the following handles <samp class="codeph">RExDriver::EControlConfigure</samp> requests: </p>
+ <pre class="codeblock" id="GUID-7AB51180-7A1A-40C7-B28F-EA46314A6E5B__GUID-1996BA3A-A895-58C8-B394-4219510DF6D3"><a name="GUID-7AB51180-7A1A-40C7-B28F-EA46314A6E5B__GUID-1996BA3A-A895-58C8-B394-4219510DF6D3"><!-- --></a>TInt DExDriverLogicalChannel::DoControl(TInt aFunction, TAny* a1, TAny* /*a2*/)
+    {
+    switch (aFunction)
+        {
+        case RExDriver::EControlConfigure:
+            memclr(&amp;c, sizeof(c)));
+            TPtr8 cfg((TUint8*)&amp;c, 0, sizeof(c)));
+            r = Kern::ThreadDesRead(iClient,a1,cfg,0,0);
+            if (r==KErrNone)
+                Pdd()-&gt;Configure(&amp;c);
+            break;
+            ...
+        default:
+                r = KErrNotSupported;
+        }
+    return r;
+    }</pre>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-CFE0A4EB-845C-43B6-A732-AA155AFD99D6.html" title="This document introduces user requests and synchronisation methods used by device drivers.">User Requests and Synchronisation</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="The Window Server Rendering Loop"/>
+<meta name="abstract" content="This topic provides a brief introduction to the Window Server's rendering loop, which takes place in two stages, known as the upper loop and the lower loop."/>
+<meta name="description" content="This topic provides a brief introduction to the Window Server's rendering loop, which takes place in two stages, known as the upper loop and the lower loop."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E29CAFA8-523D-57D2-AC1B-D6D01741550B.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-57A777A3-5D67-5CBB-B224-B7AD422A451B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0C4B86B5-530A-5839-86C1-46E7ABE281E0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-862D3B3B-3369-5FF4-B81A-ED5BE415B035.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E29CAFA8-523D-57D2-AC1B-D6D01741550B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0AD34BA6-D0C5-5AD7-B8E1-F737BB5FC0AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E29CAFA8-523D-57D2-AC1B-D6D01741550B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2E8929E6-9555-51D2-B41D-6F1D05A4DB87.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>The Window Server Rendering Loop</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08"><a name="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2384330 id2384499 id2384574 id2385090 id2385098 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html">Graphics Guide</a> &gt; <a href="GUID-57A777A3-5D67-5CBB-B224-B7AD422A451B.html" title="The Windowing collection contains two components—the Window Server, which manages the use of the screen by applications, and the Window Server Plugins component.">Windowing Collection</a> &gt; <a href="GUID-0C4B86B5-530A-5839-86C1-46E7ABE281E0.html" title="The Window Server component manages the use of the screen by applications and handles key and pointer events.">Window Server Component</a> &gt; <a href="GUID-862D3B3B-3369-5FF4-B81A-ED5BE415B035.html" title="This section provides information about the internals of the Window Server. It is mainly aimed at system integrators, UI platform providers and device and hardware manufacturers. However, it also contains information about configuring the Window Server for testing and debugging, which may be of interest to application developers.">Window Server Internals</a> &gt; <a href="GUID-E29CAFA8-523D-57D2-AC1B-D6D01741550B.html" title="This section provides introductory and overview material about the internal workings of the Window Server.">Window Server Internals: Concepts</a> &gt; </div>
+<h1 class="topictitle1">The
+Window Server Rendering Loop</h1>
+<div><p>This topic provides a brief introduction to the Window Server's
+rendering loop, which takes place in two stages, known as the upper loop and
+the lower loop. </p>
+
+<p> <strong>Variant</strong>: <a href="GUID-D93978BE-11A3-5CE3-B110-1DEAA5AD566C.html" title="This topic provides an introduction to ScreenPlay and its architecture. ScreenPlay is a new graphics architecture, introduced in Symbian^3 (S^3). ScreenPlay enables device creators to take advantage of improved software performance, hardware acceleration and third party graphics engines. ScreenPlay is sometimes known as the New Graphics Architecture (NGA).">ScreenPlay</a> and <a href="GUID-F64E6551-670E-5E12-8103-DE504D3EC94F.html" title="ScreenPlay provides improved support for graphics hardware acceleration and some other new features. However, it is possible to use the Symbian platform without enabling ScreenPlay. This is called the non-ScreenPlay variant (sometimes referred to as the non-NGA variant). This topic provides an introduction to the graphics architecture when ScreenPlay is not enabled.">non-ScreenPlay</a>. <strong>Target
+audience</strong>: Device creators. </p>
+
+<p>The following diagram provides a simplified representation of the upper
+and lower loops. </p>
+
+<div class="fignone" id="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08__GUID-9CC782B3-568B-56A4-9AF7-0E2D4EABD7A7"><a name="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08__GUID-9CC782B3-568B-56A4-9AF7-0E2D4EABD7A7"><!-- --></a><span class="figcap">Figure 1. The Window Server's upper and lower rendering loops</span>
+
+<img src="GUID-9045FC43-162E-52B8-ABE2-5EC1EC88BD99_d0e251696_href.png"/>
+</div>
+
+<p> </p>
+
+<p>The <strong>upper loop</strong> is the process by which the Window Server’s scene
+state information is updated based on commands from the client. There are
+two types of scene state updates: window tree updates (such as when a window
+is moved) and redraw store updates (such as when new drawing operations are
+sent for a particular window). </p>
+
+<p>The <strong>lower loop</strong> is the process by which updates are made to what
+the user sees on the screen. The lower loop runs after the upper loop. </p>
+
+<p>The two most important APIs on the client side are: </p>
+
+<ul>
+<li id="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08__GUID-441D76AB-340A-52E4-ABDE-8093C511694D"><a name="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08__GUID-441D76AB-340A-52E4-ABDE-8093C511694D"><!-- --></a><p> <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a>,
+which is the class through which a client controls a window. Its main functions
+enable a client to create and destroy windows, move and resize them, make
+them visible or invisible, and send them to the foreground or background. </p>
+ </li>
+
+<li id="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08__GUID-F0F159ED-73A2-57A3-9077-8B56E756A53B"><a name="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08__GUID-F0F159ED-73A2-57A3-9077-8B56E756A53B"><!-- --></a><p> <a href="GUID-0AEE5955-C530-35F1-A904-69183331B294.html"><span class="apiname">CWindowGc</span></a>,
+which is the class through which a client issues draw operations. At any given
+time, a <samp class="codeph">CWindowGc</samp> is activated on a particular window. The <samp class="codeph">CWindowGc</samp> functions
+that are used most frequently are <samp class="codeph">DrawBitmap()</samp> and <samp class="codeph">BitBlt()</samp>,
+for drawing a skin bitmap as a background, and <samp class="codeph">DrawText()</samp>. </p>
+ </li>
+
+</ul>
+
+<div class="fignone" id="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08__GUID-7103B894-51DE-5051-899F-F1FF2BD0749E"><a name="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08__GUID-7103B894-51DE-5051-899F-F1FF2BD0749E"><!-- --></a><span class="figcap">Figure 2. The main participants in the ScreenPlay Window Server rendering loop</span>
+
+<img src="GUID-3D110AD3-C5C7-533C-8E57-C4E3D032A229_d0e251758_href.png"/>
+</div>
+
+<p>On the client side, <samp class="codeph">RWindow</samp> and <samp class="codeph">CWindowGc</samp> commands
+are converted to opcodes that are stored in a command buffer. When the command
+buffer is full, it is automatically <strong>flushed</strong>, which means that it is
+transferred across to a corresponding server-side command buffer. The client
+can also explicitly request a flush using <a href="GUID-643DDA78-C7A7-386D-AB3F-8710141DDDA9.html#GUID-643DDA78-C7A7-386D-AB3F-8710141DDDA9__GUID-B83C6F44-1A3E-3959-910C-CBBF66C4A3D4"><span class="apiname">RWsSession::Flush()</span></a>. </p>
+
+<p>On the server side: </p>
+
+<ul>
+<li id="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08__GUID-8553F184-A167-5285-91F5-203A8B0D707A"><a name="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08__GUID-8553F184-A167-5285-91F5-203A8B0D707A"><!-- --></a><p>The upper loop processes
+the server-side command buffers. <samp class="codeph">RWindow</samp> commands are processed
+as updates to the <strong>window tree</strong>. <samp class="codeph">CWindowGc</samp> commands
+are processed as updates to the <strong>redraw stores</strong>. </p>
+ </li>
+
+<li id="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08__GUID-894B970D-E8F4-52D4-996C-D72378C48EEF"><a name="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08__GUID-894B970D-E8F4-52D4-996C-D72378C48EEF"><!-- --></a><p>The lower loop ultimately
+causes the updates to be drawn to the UI surface. However, the updates do
+not go straight to the UI surface. Instead they go through an additional level
+of indirection called <strong>render stages</strong>. These are replaceable plug-ins
+to the Window Server, which enable the customization of the final stages of
+the rendering pipeline. </p>
+ </li>
+
+</ul>
+
+<p>The details of the upper and lower loops vary depending on whether dirty-rectangle
+tracking or change tracking is in use. </p>
+
+<p><strong>Dirty-rectangle tracking mode </strong> </p>
+
+<p>Dirty-rectangle tracking mode is always used in the non-ScreenPlay variant
+and is the default mode in ScreenPlay. </p>
+
+<p>Updates to both the window tree and the redraw stores typically mean that
+the current contents of the screen become invalid. Therefore, when processing <samp class="codeph">RWindow</samp> or <samp class="codeph">CWindowGc</samp> commands,
+the upper loop adds the affected regions to a list of dirty rectangles that
+need to be redrawn. The list includes transparent windows that are on top
+of other windows and excludes windows that are obscured. The upper loop then
+starts a scheduler, which eventually causes the dirty rectangles to be redrawn. </p>
+
+<p>Some time later the scheduler runs the lower loop. The task of the lower
+loop is to clean any dirty rectangles by playing (or replaying) the drawing
+operations from the redraw stores into the first render stage. This is done
+for all of the visible windows, starting at the back and working forwards. </p>
+
+<p><strong>Change tracking mode </strong> </p>
+
+<p>Change tracking mode is only available in ScreenPlay. To enable change
+tracking mode, add the <samp class="codeph">CHANGETRACKING</samp> parameter to the <a href="GUID-1D529BDC-6665-58E2-AB3F-7023D8A84F69.html" title="This topic provides a reference to the wsini.ini file parameters. Some of the parameters are general, some are screen-specific and some are specific to individual plug-ins.">wsini.ini file</a>. This
+parameter is set on a per-screen basis. </p>
+
+<p>In change tracking mode, the upper loop keeps a list of all of the windows
+for which there are new or changed drawing operations, regardless whether
+the window is obscured or not. The list does not include transparent windows
+that have not changed and which are on top of other windows. As in dirty-rectangle
+tracking mode, changes cause the upper loop to start the scheduler which eventually
+causes the lower loop to run. This plays the drawing operations for all of
+the windows in the list of changed windows into the first render stage. </p>
+
+<p>Typically you enable change tracking mode only if you are creating a transition
+effects (TFX) render stage that is building up its own visuals stores. Visual
+stores are replicas of the redraw stores and are often used with a visuals
+tree. A visuals tree is a replica of the Window Server's window tree, into
+which the render stage may add nodes that the Window Server does not "know"
+about. In addition, these render stages typically introduce transition effects
+which may change the visibility of windows that the Window Server does know
+about. For example, the following diagram shows a transition effect in which
+a window slides onto the screen from the top and temporarily obscures an existing
+window on the screen. </p>
+
+<div class="fignone" id="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08__GUID-761A5E99-D289-5F58-9747-BBECF0BFB2F2"><a name="GUID-22093E74-EFE7-5642-93DE-1573E18F7C08__GUID-761A5E99-D289-5F58-9747-BBECF0BFB2F2"><!-- --></a><span class="figcap">Figure 3.  A transition effect temporarily obscures a window on the screen</span>
+
+<img src="GUID-40BE9805-6CEC-557F-BAAC-4D328E181AC3_d0e251856_href.png"/>
+</div>
+
+<p>In this and similar scenarios, the Window Server does not know whether
+a window is obscured or visible. Therefore dirty-rectangle tracking is not
+effective. </p>
+
+<p>Each screen on the device has a separate render stage chain.
+Because you set the <samp class="codeph">CHANGETRACKING</samp> parameter on a per-screen
+basis, it is possible to have a sophisticated TFX on one screen and a simple
+display render stage on another screen. </p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E29CAFA8-523D-57D2-AC1B-D6D01741550B.html" title="This section provides introductory and overview material about the internal workings of the Window Server.">Window Server Internals: Concepts</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-0AD34BA6-D0C5-5AD7-B8E1-F737BB5FC0AC.html" title="Redraw stores store the sequence of drawing commands representing window contents. Whenever possible, the Window Server performs server-initiated redraws by repeating the sequence of stored commands, rather than by sending redraw requests to the client. This minimises the number of client-server transactions and means that redraws are done as soon as the server detects that they are needed. This topic explains some of the background to redraw stores.">Redraw Stores</a></div>
+<div><a href="GUID-E29CAFA8-523D-57D2-AC1B-D6D01741550B.html" title="This section provides introductory and overview material about the internal workings of the Window Server.">Window Server
+Internals: Concepts</a></div>
+<div><a href="GUID-2E8929E6-9555-51D2-B41D-6F1D05A4DB87.html" title="Render stages are ROM-based plug-ins to the Window Server render stage framework. They can be chained to form a rendering pipeline, which takes the draw operations that are produced by the Window Server and ultimately passes them to the UI surface. Render stages can selectively filter, modify, or redirect the draw operation stream, as required—for example, to perform transition effects (TFX).">Render Stages Overview </a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

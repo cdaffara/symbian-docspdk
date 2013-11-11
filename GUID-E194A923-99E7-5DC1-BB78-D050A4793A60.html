@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="SD Controller PSL Implementation"/>
+<meta name="abstract" content="Describes how to implement the Platform-Specific Layer (PSL) of the SD controller."/>
+<meta name="description" content="Describes how to implement the Platform-Specific Layer (PSL) of the SD controller."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F15DBB8B-A79D-5C3B-BE07-F0356936A2DC.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CFD2236E-7775-5532-89CD-7D0E1E219FD8.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2F114BC9-9B5D-5989-9CF3-37A43377DC58.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F15DBB8B-A79D-5C3B-BE07-F0356936A2DC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0E5A241A-19F5-5754-B454-45747A8D80E1.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-114A23CF-BF8B-54F5-8AF6-FEF007891884.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>SD Controller PSL Implementation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2400576 id2400607 id2400744 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-CFD2236E-7775-5532-89CD-7D0E1E219FD8.html" title="Provides an overview of generic driver support.">Generic Driver Support</a> &gt; <a href="GUID-2F114BC9-9B5D-5989-9CF3-37A43377DC58.html" title="Provides the physical device drivers, called media drivers, and associated libraries that manage storage media hardware.">Media Drivers</a> &gt; <a href="GUID-F15DBB8B-A79D-5C3B-BE07-F0356936A2DC.html" title="Describes the Secure Digital (SD) Controller to support SD cards on the Symbian platform.">SD Controller</a> &gt; </div>
+<h1 class="topictitle1">SD Controller
+PSL Implementation</h1>
+<div><p>Describes how to implement the Platform-Specific Layer (PSL) of
+the SD controller. </p>
+
+<p>The SD controller derives from the MMC controller. Most of the porting
+procedure is similar between the two controllers, with the addition of SD-specific
+functions and behaviours. </p>
+
+<div class="section" id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-47C53B53-D9F8-5C73-8822-C685E4617CEB"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-47C53B53-D9F8-5C73-8822-C685E4617CEB"><!-- --></a><h2 class="sectiontitle">Prerequisites</h2> <p>Porting
+the SD controller for your platform requires to be familiar with the following
+material: </p>
+ <ul>
+<li id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-C55300E3-EE06-5B9D-BBEB-733EBF93D6C1"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-C55300E3-EE06-5B9D-BBEB-733EBF93D6C1"><!-- --></a><p>the <a href="http://www.sdcard.org/developers/tech/sdcard/pls/Simplified_Physical_Layer_Spec.pdf" target="_blank">Physical Layer Simplified Specification Version 2.00</a> from
+the SD card association </p>
+ </li>
+
+<li id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-F5CFD029-D90A-5769-84FD-7D142A859EA5"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-F5CFD029-D90A-5769-84FD-7D142A859EA5"><!-- --></a><p>the architecture of
+the <a href="GUID-BE6AFD38-5952-537F-848C-C76C8F5FA9BF.html" title="Describes the class architecture of the MMC Controller.">MMC controller</a> and
+of the <a href="GUID-114A23CF-BF8B-54F5-8AF6-FEF007891884.html" title="Describes the Secure Digital (SD) controller supported on the Symbian platform.">SD controller</a>  </p>
+ </li>
+
+<li id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-020FEA4D-AB2B-54BA-8E07-44827657BDCF"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-020FEA4D-AB2B-54BA-8E07-44827657BDCF"><!-- --></a><p>the <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html" title="Describes how to implement the Platform Specific Layer of the MMC Controller.">MMC
+Porting Implementation Tutorial</a>. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-59DA32AA-97F3-4001-9B6F-887E986C633D"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-59DA32AA-97F3-4001-9B6F-887E986C633D"><!-- --></a><h2 class="sectiontitle">Source code</h2> <p>The source code organization for the
+MMC controller is described <a href="GUID-40F2BC43-5022-5F4E-B445-56FEF43FEB8B.html" title="Describes the MultiMediaCard Controller source code provided by Symbian platform">here</a>. </p>
+ <p>The
+Platform-Independent Layer (PIL) of the SD controller can be found here: <span class="filepath">..\eka\drivers\pbus\sdcard\sdcard3c\</span>  </p>
+ <p>The
+suggested location for the main source file of the PSL is <span class="filepath">..\&lt;VARIANT&gt;\specific\sdcard3c\sdstack.cpp</span>  </p>
+ </div>
+
+<div class="section" id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-65BC9BCC-2C64-4E19-9AD3-D5CE8EFA0B0C"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-65BC9BCC-2C64-4E19-9AD3-D5CE8EFA0B0C"><!-- --></a><h2 class="sectiontitle">Implementations</h2> <p>The core class of the PSL must
+derive from <a href="GUID-3DC34D4F-E693-3BF0-B5D6-DF22FCE37340.html"><span class="apiname">DSDStack</span></a> instead of <samp class="codeph">DMMCStack</samp> (see
+the <a href="GUID-114A23CF-BF8B-54F5-8AF6-FEF007891884.html#GUID-114A23CF-BF8B-54F5-8AF6-FEF007891884__GUID-0EA05AC0-557D-573F-B907-41752445DC60">SD
+class diagram</a>). In addition to the <samp class="codeph">DMMCStack</samp> methods
+described in the MMC's <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html" title="Describes how to implement the Platform Specific Layer of the MMC Controller.">Platform
+Specific Layer Implementation</a>, there is an additional SD-specific abstract
+virtual method to implement, and several other features to support. </p>
+ <p>The
+following functions require SD-specific porting effort: </p>
+ <ul>
+<li id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-7191102F-3DA5-50F7-8996-DF1C0B98C0F7"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-7191102F-3DA5-50F7-8996-DF1C0B98C0F7"><!-- --></a><p><a href="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60.html#GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-32F6A273-5FEA-5495-A1FB-D2746E05052F">AddressCard()</a> (new function) </p>
+ </li>
+
+<li id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-F1A52C3D-47D3-5E98-B6DB-F2AF141E2847"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-F1A52C3D-47D3-5E98-B6DB-F2AF141E2847"><!-- --></a><p><a href="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60.html#GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-A144FC39-8F93-5D47-98CF-780400AF81C1">MachineInfo()</a> </p>
+ </li>
+
+<li id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-7173FE72-7B23-5875-9002-9F0888A74EE8"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-7173FE72-7B23-5875-9002-9F0888A74EE8"><!-- --></a><p><a href="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60.html#GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-87CA7CA1-C442-5B21-8CB0-FD3315D13B29">AdjustPartialRead()</a> </p>
+ </li>
+
+<li id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-A6CB1D2D-54AC-5A0D-A13B-01A59C2B02F4"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-A6CB1D2D-54AC-5A0D-A13B-01A59C2B02F4"><!-- --></a><p><a href="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60.html#GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-C244E98F-88EB-586D-B795-1B11CAA02500">InitClockOnSM()</a> </p>
+ </li>
+
+<li id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-E7147D7E-39BF-5EEB-B548-9C2D0B1686BA"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-E7147D7E-39BF-5EEB-B548-9C2D0B1686BA"><!-- --></a><p><a href="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60.html#GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-FD94E39A-EF6C-557A-A854-2A4828923307">InitClockOff()</a> </p>
+ </li>
+
+<li id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-E97BB330-0CB8-5761-94FD-17F070308A14"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-E97BB330-0CB8-5761-94FD-17F070308A14"><!-- --></a><p><a href="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60.html#GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-834CF73D-E5A3-5C11-9E1C-8CE150CBE1E0">IssueMMCCommandSM()</a> </p>
+ </li>
+
+<li id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-6AB865E7-AE57-58FE-B44F-EEA8B7A1384A"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-6AB865E7-AE57-58FE-B44F-EEA8B7A1384A"><!-- --></a><p>For all the other functions,
+see the MMC porting guide section describing <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-4C6CA873-A798-5C79-8838-0CC3C9E914FB">how
+to derive the DMMCStack class</a>. </p>
+ </li>
+
+</ul>
+ <p>For all the other classes (<a href="GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B.html"><span class="apiname">DMMCPsu</span></a>, <a href="GUID-2F974AD8-551B-35F0-B72C-99122913714D.html"><span class="apiname">DMMCMediaChange</span></a>, <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html"><span class="apiname">TMMCardControllerInterface</span></a>),
+see the corresponding sections of the MMC's <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html" title="Describes how to implement the Platform Specific Layer of the MMC Controller.">Platform
+Specific Layer Implementation</a>: <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3A1E907E-A74D-59CB-A1D6-FEF4849EF2D5">DMMCPsu</a>, <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C80E57B1-933B-55D7-949B-E68DB9B96B94">DMMCMediaChange</a>, <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-7E709B21-8D38-5041-846F-CB7983B66834">TMMCardControllerInterface</a>. </p>
+ </div>
+
+<div class="section" id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-A8CC1E62-469C-432E-A401-AE528F6ACA63"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-A8CC1E62-469C-432E-A401-AE528F6ACA63"><!-- --></a><h2 class="sectiontitle">AddressCard()</h2><p>The SD card protocol uses a star topology.
+In a multi-card stack, it is possible to select each card socket independently
+via the hardware interface, or to broadcast to all the SD cards. The MultiMediaCard
+protocol relies on a bus topology, which corresponds to the broadcast mode. </p>
+ <p>The <a href="GUID-3DC34D4F-E693-3BF0-B5D6-DF22FCE37340.html#GUID-3DC34D4F-E693-3BF0-B5D6-DF22FCE37340__GUID-ADD8E672-9FA6-3D12-BBB9-7D548F9C1FA9"><span class="apiname">DSDStack::AddressCard()</span></a> function
+configures the hardware to select the specified card socket for future commands.
+Alternatively, the <samp class="codeph">KBroadcastToAllCards</samp> value selects the
+broadcast mode. </p>
+ <p>This function takes a <samp class="codeph">TInt</samp> parameter
+containing the number of the specified card socket. This parameter must be
+between 0 and one less than the maximum number of card sockets supported,
+or <samp class="codeph">KBroadcastToAllCards</samp>. </p>
+</div>
+
+<div class="section" id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-EF78C596-8B8A-47CB-9205-0B5373BB9A2E"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-EF78C596-8B8A-47CB-9205-0B5373BB9A2E"><!-- --></a><h2 class="sectiontitle">MachineInfo()</h2><p>See <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-CEF0EDF7-4B33-5452-8635-51C5319F78AE">DMMCStack::MachineInfo()</a>. This function returns configuration information for the SD stack. </p>
+ <p>By
+default, the platform-independent layer configures the response type for CMD8
+as R1. However, if you implement a controller for SD 2.00 cards, you should
+set the <samp class="codeph">ESupportsR7</samp> flag in the <samp class="codeph">iFlags</samp> variable
+so the stack sets the CMD8 response type as R7. </p>
+</div>
+
+<div class="section" id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-17586EF3-F2EA-4F53-8FA6-DC81A2B2BFB4"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-17586EF3-F2EA-4F53-8FA6-DC81A2B2BFB4"><!-- --></a><h2 class="sectiontitle">InitClockOnSM()</h2><p>See <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C976320E-80FF-50F8-A882-F89C74F76ED3">DMMCStack::InitClockOnSM()</a>. The function turns on the clock to the hardware interface. This clock is
+always turned on at the Card Identification Mode frequency, and switched to
+the Data Transfer Mode later by the <a href="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60.html#GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-FD94E39A-EF6C-557A-A854-2A4828923307">InitClockOff()</a> function. </p>
+ <p>The SD 2.0 Specification states that when in Card Identification
+Mode, the bus clock frequency must be between 100KHz and 400KHz. This function
+should enforce this frequency range. </p>
+ <p>This function also sets the Data
+Read Timeout value. The SD 2.00 Specification states this value as 100ms. </p>
+ </div>
+
+<div class="section" id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-725B13D2-A4AF-42B1-AA3C-014206255F8B"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-725B13D2-A4AF-42B1-AA3C-014206255F8B"><!-- --></a><h2 class="sectiontitle">InitClockOff()</h2><p>See <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-49DF2E60-AE31-502E-B7CB-694AFAF69F1B">DMMCStack::InitClockOff()</a>. The function switches from Card Identification Mode to Data Transfer Mode. </p>
+ <p>Note
+that for SD cards supporting it, this function should also switch to high-speed
+mode with the CMD6 command. </p>
+ <p>This function should check that the clock
+rate for data transfer is below the maximum value. The SD Specifications define
+this maximum as 25MHz in revision 1.01 and 50MHz in revision 1.10. The maximum
+bus clock value for MultiMediaCards version 4.0+ is 52MHz. </p>
+</div>
+
+<div class="section" id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-272B02F6-1114-4BD1-B24C-F7E78807247A"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-272B02F6-1114-4BD1-B24C-F7E78807247A"><!-- --></a><h2 class="sectiontitle">AdjustPartialRead()</h2><p>See <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-A7EC6536-3822-58C8-9A65-B71FDDBA10F3">DMMCStack::AdjustPartialRead()</a>. </p>
+ <p>If you want your PSL to support
+2GB SD cards (compliant with the Specification v1.10), you should be aware
+that these cards' CSD register define the maximum block length(<samp class="codeph">READ_BL_LEN</samp>)
+as 1024 bytes, but the block length set by the CMD16 command must be 512 bytes. </p>
+ <p>The <a href="GUID-913FA896-4237-3E47-996F-547E325550AD.html#GUID-913FA896-4237-3E47-996F-547E325550AD__GUID-DEFCBFC6-C69A-3339-BE6F-249E24FCB8C6"><span class="apiname">TMMCCard::MaxReadBlLen()</span></a> function
+returns the maximum block length as a logarithm: for example, it returns 9
+for 2GB cards, as 2^9 = 512. You should use the <samp class="codeph">MaxRedBlLen()</samp> function
+whenever the block length is needed. It is usually only appropriate in the <samp class="codeph">AdjustPartialRead()</samp> function,
+but depending on your implementation you may want to check the rest of the
+platform-specific layer. </p>
+ <p>For SD cards complying with the SD Specification
+2.00 (with a capacity of 4GB and more), the <samp class="codeph">READ_BL_LEN</samp> field
+is always 512 bytes. </p>
+</div>
+
+<div class="section" id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-30BE4D29-40FE-48EE-BCCA-3002CCFDB83D"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-30BE4D29-40FE-48EE-BCCA-3002CCFDB83D"><!-- --></a><h2 class="sectiontitle">IssueMMCCommandSM()</h2><p>See <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-FABAED76-FC63-577B-9436-DC7C8978E2AE">DMMCStack::IssueMMCCommandSM()</a> and the <a href="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60.html#GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-E9AD9B13-4691-55F0-856C-8B069A25B605">Note
+on SD commands</a> section. </p>
+ <p>The card type is identified by the
+response to the CMD55 command. If this command generates a timeout, then the
+card is a MultiMediaCard; otherwise, it is an SD card. </p>
+ <p>When receiving
+the response to a <samp class="codeph">SET_BUS_WIDTH</samp> command (ACMD6), this function
+must update the configuration register by calling the <a href="GUID-3DC34D4F-E693-3BF0-B5D6-DF22FCE37340.html#GUID-3DC34D4F-E693-3BF0-B5D6-DF22FCE37340__GUID-2D21D20F-6275-34F1-90FD-695AF9C592B0"><span class="apiname">DSDStack::SetBusWidth()</span></a> function. </p>
+ <p>To
+comply with the SD 2.0 Specification, the <samp class="codeph">IssueMMCCommandSM()</samp> function
+must not perform the following operations: </p>
+ <ul>
+<li id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-388F8C27-F7D2-5ADE-96C8-458DF0DE244C"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-388F8C27-F7D2-5ADE-96C8-458DF0DE244C"><!-- --></a><p>Modify the CMD55 command
+and its arguments </p>
+ </li>
+
+<li id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-45525868-632A-5E4D-8690-0F16865A559B"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-45525868-632A-5E4D-8690-0F16865A559B"><!-- --></a><p>Modify the ACMD41 command
+and its arguments </p>
+ </li>
+
+<li id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-F20C54CB-9FFE-5B6C-8E32-5CD9D69398EF"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-F20C54CB-9FFE-5B6C-8E32-5CD9D69398EF"><!-- --></a><p>Modify reserved bits
+of any command argument </p>
+ </li>
+
+</ul>
+</div>
+
+<div class="section" id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-E9AD9B13-4691-55F0-856C-8B069A25B605"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-E9AD9B13-4691-55F0-856C-8B069A25B605"><!-- --></a><h2 class="sectiontitle">Note on SD
+commands</h2> <p>Most SD commands and MMC commands are compatible. However,
+there are some significant differences: the table below lists some of the
+additional commands supported by SD cards, and one behaviour change. </p>
+ 
+<div class="tablenoborder"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-BA6429A3-C4D8-5CAC-889F-A9AD1ED03E37"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-BA6429A3-C4D8-5CAC-889F-A9AD1ED03E37" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p>Command </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Abbreviation </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Description </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">CMD3</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">SET_BUS_WIDTH</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Requests a relative address from the SD card, instead of assigning
+the address to the card with this command (in the MMC case). </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">ACMD6</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">SET_BUS_WIDTH</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Defines the width of the data transfer bus. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">ACMD13</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">SD_STATUS</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Requests the status of the addressed SD card. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">ACMD22</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">SEND_NUM_WR_BLOCKS</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Sends/Requests the number of blocks written without error. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">ACMD41</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">SD_APP_OP_COND</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Requests the operating conditions of the addressed SD card (equivalent
+to CMD1 in the MMC case). </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">ACMD51</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">SEND_SCR</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Reads the SD configuration register (SCR). </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p>The following example illustrates how to detect an ACMD6 command: </p>
+ <pre class="codeblock" id="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-CAA2B541-AD7D-58BF-BECB-BA5F25A00272"><a name="GUID-E194A923-99E7-5DC1-BB78-D050A4793A60__GUID-CAA2B541-AD7D-58BF-BECB-BA5F25A00272"><!-- --></a>if ((cmd.iSpec.iCommandClass == KMMCCmdClassApplication) &amp;&amp; (cmd.iCommand == ECmd6))
+     {
+         /* [...] */ 
+     }
+</pre>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-F15DBB8B-A79D-5C3B-BE07-F0356936A2DC.html" title="Describes the Secure Digital (SD) Controller to support SD cards on the Symbian platform.">SD Controller</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-0E5A241A-19F5-5754-B454-45747A8D80E1.html" title="Description of SD card features available to application developers and what a device creator must write to provide SD card support.">SD Card Overview</a></div>
+<div><a href="GUID-114A23CF-BF8B-54F5-8AF6-FEF007891884.html" title="Describes the Secure Digital (SD) controller supported on the Symbian platform.">SD Card Controller</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

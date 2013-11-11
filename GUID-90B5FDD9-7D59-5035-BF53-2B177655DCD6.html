@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Migration Tutorial: Demand Paging and Internal MMC Cards"/>
+<meta name="abstract" content="Explains how to change the MMC media driver for when demand paging is used."/>
+<meta name="description" content="Explains how to change the MMC media driver for when demand paging is used."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-79B2CF91-FB95-5E7C-81CC-235A6A660D88.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CFD2236E-7775-5532-89CD-7D0E1E219FD8.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2F114BC9-9B5D-5989-9CF3-37A43377DC58.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-79B2CF91-FB95-5E7C-81CC-235A6A660D88.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Migration Tutorial: Demand Paging and Internal MMC Cards</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6"><a name="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2400576 id2400607 id2400622 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-CFD2236E-7775-5532-89CD-7D0E1E219FD8.html" title="Provides an overview of generic driver support.">Generic Driver Support</a> &gt; <a href="GUID-2F114BC9-9B5D-5989-9CF3-37A43377DC58.html" title="Provides the physical device drivers, called media drivers, and associated libraries that manage storage media hardware.">Media Drivers</a> &gt; <a href="GUID-79B2CF91-FB95-5E7C-81CC-235A6A660D88.html" title="The MMC Controller provides kernel extensions that manages access to the MultiMediaCard hardware on behalf of media drivers or any other device driver.">MMC Controller</a> &gt; </div>
+<h1 class="topictitle1">Migration
+Tutorial: Demand Paging and Internal MMC Cards</h1>
+<div><p>Explains how to change the MMC media driver for when demand paging
+is used.</p>
+
+<p>Demand paging is a change made from Symbian platform v9.3 to how the Kernel
+uses RAM and storage media. This topic </p>
+
+<p>For general information on migrating media drivers, see <a href="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3.html" title="Describes how to change media drivers when demand paging is used.">Migration
+Tutorial: Demand Paging and Media Drivers</a>. </p>
+
+<div class="section" id="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6__GUID-D99E59FE-2515-49F5-9C55-580D1F2AD6A8"><a name="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6__GUID-D99E59FE-2515-49F5-9C55-580D1F2AD6A8"><!-- --></a><h2 class="sectiontitle">PSL changes</h2> <p>ROM and code paging can be enabled
+for a Multi Media Card (MMC) provided the card is non-removable. Removing
+a card would result in a kernel fault whenever the next page-in request is
+issued. </p>
+ <p>As the MMC media driver is entirely generic, a way of returning
+the paging related information contained in <em>variantmedia.def</em> to the
+generic part of the MMC stack is required. This is achieved by modifying the
+Platform Specific Layer (PSL) of the MMC stack to implement the <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-7DAC0CF1-4AFE-3F68-8488-632535783A80"><span class="apiname">DMMCStack::MDemandPagingInfo</span></a> interface
+method: </p>
+ <pre class="codeblock" id="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6__GUID-7B1FA673-641B-54C7-BC6B-DCDBE25297B8"><a name="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6__GUID-7B1FA673-641B-54C7-BC6B-DCDBE25297B8"><!-- --></a>class DMMCStack : public Dbase
+    {
+public:
+    // etc…
+    };
+
+/** 
+Demand paging support 
+@see KInterfaceDemandPagingInfo
+*/
+
+class TDemandPagingInfo
+    {
+public:
+    const TInt* iPagingDriveList;
+    TInt  iDriveCount;
+    TUint iPagingType;
+    TInt  iReadShift;
+    TUint iNumPages;
+    TBool iWriteProtected;
+    TUint iSpare[3];
+    };
+
+class MDemandPagingInfo
+    {
+public:
+    virtual TInt DemandPagingInfo(TDemandPagingInfo&amp; aInfo) = 0;
+    // etc…
+    };</pre>
+ <p>This example is taken from the H4 HRP <em>VariantMedia.def</em> changes: </p>
+ <pre class="codeblock" id="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6__GUID-DD8297C4-6033-5AB1-838C-F0DFE1C7C749"><a name="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6__GUID-DD8297C4-6033-5AB1-838C-F0DFE1C7C749"><!-- --></a>// Variant parameters for the MMC Controller (EPBUSMMC.DLL)
+#define MMC_DRIVECOUNT 1
+#define MMC_DRIVELIST 1
+#define MMC_NUMMEDIA 1
+#define MMC_DRIVENAME "MultiMediaCard0" 
+
+#define MMC_PAGING_TYPE    DPagingDevice::ERom | DPagingDevice::ECode
+#define MMC_PAGEDRIVELIST    1            // code paging from User Data
+#define    MMC_PAGEDRIVECOUNT     1
+#define MMC_NUM_PAGES        8</pre>
+ <p>This example is from H4 MMC
+stack class definition: </p>
+ <pre class="codeblock" id="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6__GUID-FC2E902E-E98C-5E0E-9337-D3D5BB14FBB6"><a name="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6__GUID-FC2E902E-E98C-5E0E-9337-D3D5BB14FBB6"><!-- --></a>class DDemandPagingInfo : public DMMCStack::MDemandPagingInfo
+    {
+public:
+    virtual TInt DemandPagingInfo(DMMCStack::TDemandPagingInfo&amp; aInfo);
+    };
+
+
+class DOmapMMCStack : public DCardStack
+    {
+public:
+    virtual void GetInterface(TInterfaceId aInterfaceId, MInterface*&amp; aInterfacePtr);
+    // etc…
+private:
+    DDemandPagingInfo* iDemandPagingInfo;
+    // etc…
+    };</pre>
+ <p>This example is from H4 MMC stack class implementation: </p>
+ <pre class="codeblock" id="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6__GUID-824160DE-295D-5BA2-B2BE-A5590301B9EA"><a name="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6__GUID-824160DE-295D-5BA2-B2BE-A5590301B9EA"><!-- --></a>TInt DOmapMMCStack::Init()
+    {
+    if((iDemandPagingInfo = new DDemandPagingInfo()) == NULL)
+        return KErrNoMemory;
+    // etc…
+    }
+
+void DOmapMMCStack::GetInterface(TInterfaceId aInterfaceId, MInterface*&amp; aInterfacePtr)
+    {
+    if (aInterfaceId == KInterfaceDemandPagingInfo)
+        aInterfacePtr = (DMMCStack::MInterface*) iDemandPagingInfo;    
+    // etc…
+    }
+
+TInt DDemandPagingInfo::DemandPagingInfo(DMMCStack::TDemandPagingInfo&amp; aDemandPagingInfo)    
+    {
+    static const TInt pagingDriveNumbers[MMC_PAGEDRIVECOUNT] = {MMC_PAGEDRIVELIST};
+
+    aDemandPagingInfo.iPagingDriveList = pagingDriveNumbers;
+    aDemandPagingInfo.iDriveCount = MMC_PAGEDRIVECOUNT;
+    aDemandPagingInfo.iPagingType = MMC_PAGING_TYPE;
+    aDemandPagingInfo.iReadShift = 9;
+    aDemandPagingInfo.iNumPages = MMC_NUM_PAGES;
+    return KErrNone;
+    }</pre>
+ </div>
+
+<div class="section" id="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6__GUID-6389CCE7-339D-4F41-B875-4636C5993C6C"><a name="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6__GUID-6389CCE7-339D-4F41-B875-4636C5993C6C"><!-- --></a><h2 class="sectiontitle">Preparing an internal MMC card for ROM paging - MMCLoader</h2> <p>To
+support ROM paging from an internal card, the MMCLoader utility is used to
+write the ROM image to the card. MMCLoader can be found in <span class="filepath">e32utils/mmcloader</span>. </p>
+ <p>The
+paged image is written as a normal file under the FAT file system. For paging
+to work however, the images file’s clusters must all be contiguous so, before
+doing anything else, MMCLoader formats the card. It then writes the paged
+part of the ROM to a file and checks that the file’s clusters are contiguous,
+which is normally the case as the card has just been formatted. A pointer
+to the image file is stored in the boot sector. When the board is rebooted
+the MMC/SD media driver reads the boot sector and uses this pointer to determine
+where the image file starts so that it can begin to satisfy paging requests. </p>
+ <p>MMCLoader
+takes the filename of the original ROM image file as an input. It then splits
+the given file into unpaged and paged files. The following code fragment shows
+the syntax: </p>
+ <pre class="codeblock" id="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6__GUID-0CFE9814-4FEA-5FF1-9027-82E207596C68"><a name="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6__GUID-0CFE9814-4FEA-5FF1-9027-82E207596C68"><!-- --></a>Syntax: mmcloader &lt;RomSrcFileName&gt; &lt;UnPagedRomDstFileName&gt; &lt;PagedRomDstFileName&gt;
+Eg:     mmcloader z:\\core.img d:\\sys$rom.bin d:\\sys$rom.pag</pre>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-79B2CF91-FB95-5E7C-81CC-235A6A660D88.html" title="The MMC Controller provides kernel extensions that manages access to the MultiMediaCard hardware on behalf of media drivers or any other device driver.">MMC Controller</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

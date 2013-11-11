@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Peripheral Driver Power Implementation Tutorial"/>
+<meta name="abstract" content="Describes an implementation of the DPowerHandler class."/>
+<meta name="description" content="Describes an implementation of the DPowerHandler class."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Peripheral Driver Power Implementation Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2400380 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html" title="This topic describes how to implement a power controller in a base port.">Power Management Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Peripheral Driver Power Implementation Tutorial</h1>
+<div><p>Describes an implementation of the <samp class="codeph">DPowerHandler</samp> class.</p>
+
+<p>Peripheral driver power management is based on the <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html"><span class="apiname">DPowerHandler</span></a> class. This is a class that defines the interface that the driver
+must provide to the generic kernel side power manager. </p>
+
+<p>The class also provides the necessary support functions. The class
+is defined as: </p>
+
+<pre class="codeblock" id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-C34B90B1-5AB2-51E4-A7C9-01601B8698F6"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-C34B90B1-5AB2-51E4-A7C9-01601B8698F6"><!-- --></a>class DPowerHandler : public DBase
+    {
+public:
+    IMPORT_C ~DPowerHandler();
+public:
+    IMPORT_C DPowerHandler(const TDesC&amp; aName);
+    IMPORT_C void Add();
+    IMPORT_C void Remove();
+    IMPORT_C void PowerUpDone();
+    IMPORT_C void PowerDownDone();
+    IMPORT_C void SetCurrentConsumption(TInt aCurrent);
+    IMPORT_C void DeltaCurrentConsumption(TInt aCurrent);
+public: 
+    virtual void PowerDown(TPowerState aTargetState) = 0;
+    virtual void PowerUp() = 0;
+private:
+    ...
+    };
+      </pre>
+
+<p>Typically, at least one power handler object is implemented by
+the peripheral driver. In some cases the peripheral driver interface
+class may derive from <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html"><span class="apiname">DPowerHandler</span></a>, in others
+it creates and owns an instance of a <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html"><span class="apiname">DPowerHandler</span></a> derived class. </p>
+
+<p>The first eight functions are exported from the kernel, <span class="filepath">EKERN.EXE</span>, while the remaining two pure virtual functions
+are implemented by the peripheral driver. </p>
+
+<ul>
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-C5E97751-13E6-5439-AA62-2323D4DA7A37"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-C5E97751-13E6-5439-AA62-2323D4DA7A37"><!-- --></a><p> <a href="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175.html#GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-6A4484AA-B10E-54D8-B32B-05583EB66841">PowerDown()</a>  </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-44F74198-A6DA-56FA-AE39-AADBC3DFB79F"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-44F74198-A6DA-56FA-AE39-AADBC3DFB79F"><!-- --></a><p> <a href="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175.html#GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-389D4920-2956-5CBE-979E-30C23A0C3E49">PowerUp()</a>  </p>
+ </li>
+
+</ul>
+
+<p>Notes: </p>
+
+<a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-C1640CE7-AF3E-5EF4-9D4C-B44F19B83AB3"><!-- --></a><ol id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-C1640CE7-AF3E-5EF4-9D4C-B44F19B83AB3">
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-757692DC-EE42-577F-8D92-AC1C61A7C381"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-757692DC-EE42-577F-8D92-AC1C61A7C381"><!-- --></a><p>Current consumption
+monitoring does not have a full implementation in the power manager
+at present. It is unclear whether this will be ever required. However, <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html"><span class="apiname">DPowerHandler</span></a> does provide two functions: <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-01C1C7F2-CC98-303F-B044-90C1B96304B6"><span class="apiname">DPowerHandler::SetCurrentConsumption()</span></a> and <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-96524179-926E-371A-9694-235C4D3B6163"><span class="apiname">DPowerHandler::DeltaCurrentConsumption()</span></a> that
+a power handler can use to track the peripheral's power consumption.
+Note that this is not based on actual measurements. </p>
+ <p> <samp class="codeph">SetCurrentConsumption()</samp> sets a target current consumption,
+usually at driver creation time. </p>
+ <p> <samp class="codeph">DeltaCurrentConsumption()</samp> changes this target current consumption value, specifying a positive
+or a negative value as appropriate; this might be called in response
+to an operation that is about to start. </p>
+ <p>Although we have described
+the context in which these functions would be used, we recommend that
+you do not use them. </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-54F4071B-E8E3-5EC3-A7F3-26F74451C707"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-54F4071B-E8E3-5EC3-A7F3-26F74451C707"><!-- --></a><p>Fixed media
+drivers do not have a power handler. This means there is currently
+no mechanism to power down media drivers and the associated fixed
+media when the system transitions to a low power state. </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-AF58E9DB-F1E9-5802-A9E8-8744CBA6C461"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-AF58E9DB-F1E9-5802-A9E8-8744CBA6C461"><!-- --></a><p>The <samp class="codeph">__NEW_POWER_HANDLERS</samp> macro is used to maintain backwards
+compatibility with the power model used in previous versions of Symbian
+platform. If this macro is <em>not</em> defined, it is possible for
+power handlers to revert back to the behavior they present in Kernel
+Architecture 1 (EKA1). </p>
+ <p>If implementing an old style power
+handler, the following functions will have to have an implementation
+provided by the peripheral driver: </p>
+ <pre class="codeblock" id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-8D7F6D5A-01C7-5F7B-BE25-11D4D3110A26"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-8D7F6D5A-01C7-5F7B-BE25-11D4D3110A26"><!-- --></a>virtual TInt DoPowerUp()
+virtual void DoPowerDown(TUint32 /* aPowerDownMask */)
+virtual void DoEmergencyPowerDown()
+          </pre>
+ <p>If using at least an old style power handler
+the power manager will not complete any powering down (transition
+to <em>Off</em> or <em>Standby</em>). Thus it is recommended that they
+not be used. </p>
+ </li>
+
+</ol>
+
+<div class="section" id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-6A4484AA-B10E-54D8-B32B-05583EB66841"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-6A4484AA-B10E-54D8-B32B-05583EB66841"><!-- --></a><h2 class="sectiontitle">DPowerHandler::PowerDown()</h2> <pre class="codeblock" id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-61142DAF-895E-5432-B9DB-01CF88C24F26"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-61142DAF-895E-5432-B9DB-01CF88C24F26"><!-- --></a>virtual void PowerDown(TPowerState) = 0;</pre>
+ <p><strong>When is it called?</strong> </p>
+ <p> <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-578DB5FB-731D-36B2-A459-AAC7F250D726"><span class="apiname">DPowerHandler::PowerDown()</span></a> is called by the <a href="GUID-0C435514-EEC6-5660-BB5F-535790349632.html#GUID-0C435514-EEC6-5660-BB5F-535790349632__GUID-330F07B2-BBDF-5675-B7D5-FF6B25DD03F4">Power manager</a> during a transition to the <em>Standby</em> or
+the <em>Off</em> state. The <a href="GUID-87AB8B20-04EE-31D2-8F3D-EA904D05B8D0.html"><span class="apiname">TPowerState</span></a> argument
+specifies which of the two power states is the target. </p>
+ <p><strong>Implementation issues</strong> </p>
+ <a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-60A913E7-16A2-5350-ACC0-448B980C045E"><!-- --></a><ol id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-60A913E7-16A2-5350-ACC0-448B980C045E">
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-98DC816F-B1DE-5524-BCD6-A1AA9DADC05F"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-98DC816F-B1DE-5524-BCD6-A1AA9DADC05F"><!-- --></a><p>After receiving
+a request to power down, as a result of a system transition to the <em>Standby</em> or <em>Off</em> states, a peripheral driver should perform
+the necessary activity to power down the peripheral and ancillary
+hardware, unless it is required for the detection of wake-up events.
+This activity might include requesting the removal of the power supply
+and any other power resources. </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-3EA32F60-D2B5-522D-901F-91B9D802B67F"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-3EA32F60-D2B5-522D-901F-91B9D802B67F"><!-- --></a><p>The power down
+operation can be done in the same thread in which <samp class="codeph">PowerDown()</samp> runs, i.e. synchronously, or it can run in another thread, i.e.
+asynchronously. You would probably implement power down in another
+thread if the operation were potentially slow. Once the peripheral
+has powered down, it must inform the power manager by calling <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-EBE8CFF8-50BD-3AC3-A4C8-47094DA5674D"><span class="apiname">DPowerHandler::PowerDownDone()</span></a>, and this function can be
+called from the same thread in which <samp class="codeph">PowerDown()</samp> runs,
+or it can be called from another thread. Two points to note: </p>
+ <ul>
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-E108AAD0-6E84-5BF5-91DA-0EBACD909DA5"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-E108AAD0-6E84-5BF5-91DA-0EBACD909DA5"><!-- --></a><p> <samp class="codeph">PowerDownDone()</samp> can be called before or after <samp class="codeph">PowerDown()</samp> returns </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-0341DC51-FAFA-5CA0-8F11-E1BD7765DCD5"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-0341DC51-FAFA-5CA0-8F11-E1BD7765DCD5"><!-- --></a><p> <samp class="codeph">PowerDownDone()</samp> cannot be called before <samp class="codeph">PowerDown()</samp> has been entered. </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-0DF3E109-1EE8-5760-BE17-0998CF32EC97"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-0DF3E109-1EE8-5760-BE17-0998CF32EC97"><!-- --></a><p> <samp class="codeph">PowerDown()</samp> is only called on a transition to the <em>Standby</em> or the <em>Off</em> state. If the peripheral hardware is powered down when the peripheral
+driver is closed, or when the hardware resources are relinquished
+by the driver, then this is managed by the driver alone. </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-C3E38B61-7417-5C1A-AB24-355738BCD3EF"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-C3E38B61-7417-5C1A-AB24-355738BCD3EF"><!-- --></a><p>There are synchronisation
+issues related to calls to the <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-E8353DF6-B21B-383F-99AB-94B6B5139E47"><span class="apiname">DPowerHandler::Add()</span></a> and <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-FD0BA400-FDCD-3E8C-9130-992A95A3FF84"><span class="apiname">DPowerHandler::Remove()</span></a> functions. <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-E8353DF6-B21B-383F-99AB-94B6B5139E47"><span class="apiname">DPowerHandler::Add()</span></a> is called by the peripheral driver
+when the driver object is created. This registers the power handler
+with the power manager so that so that the driver can receive notification
+of power state transitions. Conversely, <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-FD0BA400-FDCD-3E8C-9130-992A95A3FF84"><span class="apiname">DPowerHandler::Remove()</span></a> is called when the peripheral driver is in the process of being
+destroyed. This de-registers the power handler so that the driver
+is no longer notified of power state transitions. Calls to <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-E8353DF6-B21B-383F-99AB-94B6B5139E47"><span class="apiname">DPowerHandler::Add()</span></a>, <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-FD0BA400-FDCD-3E8C-9130-992A95A3FF84"><span class="apiname">DPowerHandler::Remove()</span></a>, <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-578DB5FB-731D-36B2-A459-AAC7F250D726"><span class="apiname">DPowerHandler::PowerDown()</span></a> and <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-DDC564B4-BD12-30E9-B04A-DBA6CFAF8743"><span class="apiname">DPowerHandler::PowerUp()</span></a> can run asynchronously in relation to one another. For example,
+it is entirely possible that the kernel may be asking the driver to
+power down while it is being created, or indeed while it is being
+destroyed. </p>
+ <p>To avoid deadlock, <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-E8353DF6-B21B-383F-99AB-94B6B5139E47"><span class="apiname">DPowerHandler::Add()</span></a>, <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-FD0BA400-FDCD-3E8C-9130-992A95A3FF84"><span class="apiname">DPowerHandler::Remove()</span></a>, and the <a href="GUID-0C435514-EEC6-5660-BB5F-535790349632.html#GUID-0C435514-EEC6-5660-BB5F-535790349632__GUID-330F07B2-BBDF-5675-B7D5-FF6B25DD03F4">Power manager</a> functions that call your <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-578DB5FB-731D-36B2-A459-AAC7F250D726"><span class="apiname">DPowerHandler::PowerDown()</span></a> and your <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-DDC564B4-BD12-30E9-B04A-DBA6CFAF8743"><span class="apiname">DPowerHandler::PowerUp()</span></a> functions,
+all acquire a lock, a <samp class="codeph">DMutex</samp>. While the lock itself
+is internal to Symbian platform, it does impose a requirement that: </p>
+ <ul>
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-9C3D1630-F6BE-5B8F-8528-E6BF769BECAB"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-9C3D1630-F6BE-5B8F-8528-E6BF769BECAB"><!-- --></a><p> <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-E8353DF6-B21B-383F-99AB-94B6B5139E47"><span class="apiname">DPowerHandler::Add()</span></a>  </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-104276CB-95F7-57BD-9988-BEEF1CE3255F"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-104276CB-95F7-57BD-9988-BEEF1CE3255F"><!-- --></a><p> <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-FD0BA400-FDCD-3E8C-9130-992A95A3FF84"><span class="apiname">DPowerHandler::Remove()</span></a>  </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-1B260C33-7697-5574-A623-15D9693DE21F"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-1B260C33-7697-5574-A623-15D9693DE21F"><!-- --></a><p> <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-578DB5FB-731D-36B2-A459-AAC7F250D726"><span class="apiname">DPowerHandler::PowerDown()</span></a>  </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-0EBC4021-B090-5799-B0F6-3B2808FBBAB1"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-0EBC4021-B090-5799-B0F6-3B2808FBBAB1"><!-- --></a><p> <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-DDC564B4-BD12-30E9-B04A-DBA6CFAF8743"><span class="apiname">DPowerHandler::PowerUp()</span></a>  </p>
+ </li>
+
+</ul>
+ <p>all run in the same thread. A common implementation of <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-578DB5FB-731D-36B2-A459-AAC7F250D726"><span class="apiname">DPowerHandler::PowerDown()</span></a>, therefore, schedules a DFC
+to run on the same thread (a DFC queue) as the one that calls <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-E8353DF6-B21B-383F-99AB-94B6B5139E47"><span class="apiname">DPowerHandler::Add()</span></a> and <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-FD0BA400-FDCD-3E8C-9130-992A95A3FF84"><span class="apiname">DPowerHandler::Remove()</span></a>. </p>
+ </li>
+
+</ol>
+ </div>
+
+<div class="section" id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-389D4920-2956-5CBE-979E-30C23A0C3E49"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-389D4920-2956-5CBE-979E-30C23A0C3E49"><!-- --></a><h2 class="sectiontitle">DPowerHandler::PowerUp()</h2> <pre class="codeblock" id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-F66A2F92-7C60-5D61-BEAD-392FA5F36830"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-F66A2F92-7C60-5D61-BEAD-392FA5F36830"><!-- --></a>virtual void PowerUp() = 0;</pre>
+ <p><strong>When is it called?</strong> </p>
+ <p> <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-DDC564B4-BD12-30E9-B04A-DBA6CFAF8743"><span class="apiname">DPowerHandler::PowerUp()</span></a> is called by the <a href="GUID-0C435514-EEC6-5660-BB5F-535790349632.html#GUID-0C435514-EEC6-5660-BB5F-535790349632__GUID-330F07B2-BBDF-5675-B7D5-FF6B25DD03F4">Power manager</a> during a transition from the <em>Standby</em> state
+back to the <em>Active</em> state. It is up to the peripheral driver
+to decide whether or not to power up the peripheral. </p>
+ <p><strong>Implementation
+issues</strong> </p>
+ <a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-A0A555C9-516B-5408-AC8D-86F7F37501CA"><!-- --></a><ol id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-A0A555C9-516B-5408-AC8D-86F7F37501CA">
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-FF569561-DFB4-59F0-9665-34567D9E159A"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-FF569561-DFB4-59F0-9665-34567D9E159A"><!-- --></a><p>After receiving
+a notification to power up, as a result of a system transition from
+the <em>Standby</em> to the <em>Active</em> state, it is up to the peripheral
+driver to decide whether or not to power up the peripheral and ancillary
+hardware. The decision usually depends on whether or not the peripheral
+driver is currently in use. </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-C2317AFC-9615-56B3-83CC-B2A8F515FF01"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-C2317AFC-9615-56B3-83CC-B2A8F515FF01"><!-- --></a><p>The power up
+operation can be done in the same thread in which <samp class="codeph">PowerUp()</samp> runs, i.e. synchronously, or it can run in another thread, i.e.
+asynchronously. You would probably implement power up in another thread
+if the operation were potentially slow. Whether or not the peripheral
+driver intends to power up immediately, it must acknowledge the power
+up request by calling <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-BF62042B-FB7B-3D5B-8379-490FBA284A7A"><span class="apiname">DPowerHandler::PowerUpDone()</span></a>, and this function can be called from the same thread in which <samp class="codeph">PowerUp()</samp> runs, or it can be called from another thread.
+Two points to note: </p>
+ <ul>
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-C8BA1C99-2731-56A0-96B1-99BF61DF7A46"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-C8BA1C99-2731-56A0-96B1-99BF61DF7A46"><!-- --></a><p> <samp class="codeph">PowerUpDone()</samp> can be called before or after <samp class="codeph">PowerUp()</samp> returns </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-0CBF462D-12B9-5598-B968-00F69099E409"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-0CBF462D-12B9-5598-B968-00F69099E409"><!-- --></a><p> <samp class="codeph">PowerUpDone()</samp> cannot be called before <samp class="codeph">PowerUp()</samp> has been entered. </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-C64797E0-F77B-55D8-8BBC-C0335174B0DF"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-C64797E0-F77B-55D8-8BBC-C0335174B0DF"><!-- --></a><p> <samp class="codeph">PowerUp()</samp> is only called on a transition to the <em>Active</em> state. If the
+peripheral hardware is powered up when the peripheral driver is opened,
+or when the hardware resources are first used by the driver, then
+this is managed by the driver alone. </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-534A5CAA-4FF8-596A-AC79-DBFB31ACF1B9"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-534A5CAA-4FF8-596A-AC79-DBFB31ACF1B9"><!-- --></a><p>There are synchronisation
+issues related to calls to the <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-E8353DF6-B21B-383F-99AB-94B6B5139E47"><span class="apiname">DPowerHandler::Add()</span></a> and <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-FD0BA400-FDCD-3E8C-9130-992A95A3FF84"><span class="apiname">DPowerHandler::Remove()</span></a> functions. <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-E8353DF6-B21B-383F-99AB-94B6B5139E47"><span class="apiname">DPowerHandler::Add()</span></a> is called by the peripheral driver
+when the driver object is created. This registers the power handler
+with the power manager so that so that the driver can receive notification
+of power state transitions. Conversely, <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-FD0BA400-FDCD-3E8C-9130-992A95A3FF84"><span class="apiname">DPowerHandler::Remove()</span></a> is called when the peripheral driver is in the process of being
+destroyed. This de-registers the power handler so that the driver
+is no longer notified of power state transitions. Calls to <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-E8353DF6-B21B-383F-99AB-94B6B5139E47"><span class="apiname">DPowerHandler::Add()</span></a>, <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-FD0BA400-FDCD-3E8C-9130-992A95A3FF84"><span class="apiname">DPowerHandler::Remove()</span></a>, <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-578DB5FB-731D-36B2-A459-AAC7F250D726"><span class="apiname">DPowerHandler::PowerDown()</span></a> and <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-DDC564B4-BD12-30E9-B04A-DBA6CFAF8743"><span class="apiname">DPowerHandler::PowerUp()</span></a> can run asynchronoulsy in relation to one another. For example,
+it is entirely possible that the kernel may be asking the driver to
+power down while it is being created, or indeed while it is being
+destroyed. </p>
+ <p>To avoid deadlock, <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-E8353DF6-B21B-383F-99AB-94B6B5139E47"><span class="apiname">DPowerHandler::Add()</span></a>, <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-FD0BA400-FDCD-3E8C-9130-992A95A3FF84"><span class="apiname">DPowerHandler::Remove()</span></a>, and the <a href="GUID-0C435514-EEC6-5660-BB5F-535790349632.html#GUID-0C435514-EEC6-5660-BB5F-535790349632__GUID-330F07B2-BBDF-5675-B7D5-FF6B25DD03F4">power manager</a> functions that call your <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-578DB5FB-731D-36B2-A459-AAC7F250D726"><span class="apiname">DPowerHandler::PowerDown()</span></a> and your <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-DDC564B4-BD12-30E9-B04A-DBA6CFAF8743"><span class="apiname">DPowerHandler::PowerUp()</span></a> functions,
+all acquire a lock, a <samp class="codeph">DMutex</samp>. While the lock itself
+is internal to Symbian platform, it does impose a requirement that: </p>
+ <ul>
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-6A297274-057E-5549-A2D6-6E4FE0D1FDD0"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-6A297274-057E-5549-A2D6-6E4FE0D1FDD0"><!-- --></a><p> <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-E8353DF6-B21B-383F-99AB-94B6B5139E47"><span class="apiname">DPowerHandler::Add()</span></a>  </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-8C902FBC-D818-5A56-ADBB-5B7E0C01C192"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-8C902FBC-D818-5A56-ADBB-5B7E0C01C192"><!-- --></a><p> <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-FD0BA400-FDCD-3E8C-9130-992A95A3FF84"><span class="apiname">DPowerHandler::Remove()</span></a>  </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-352D5DD5-FE31-5FF9-A988-E0E4D31BD687"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-352D5DD5-FE31-5FF9-A988-E0E4D31BD687"><!-- --></a><p> <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-578DB5FB-731D-36B2-A459-AAC7F250D726"><span class="apiname">DPowerHandler::PowerDown()</span></a>  </p>
+ </li>
+
+<li id="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-BB116FED-0F67-57B1-98DA-1F5A3BF2E61D"><a name="GUID-A789E0D6-74B2-517D-B73A-F9B11794F175__GUID-BB116FED-0F67-57B1-98DA-1F5A3BF2E61D"><!-- --></a><p> <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-DDC564B4-BD12-30E9-B04A-DBA6CFAF8743"><span class="apiname">DPowerHandler::PowerUp()</span></a>  </p>
+ </li>
+
+</ul>
+ <p>all run in the same thread. A common implementation of <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-DDC564B4-BD12-30E9-B04A-DBA6CFAF8743"><span class="apiname">DPowerHandler::PowerUp()</span></a>, therefore, schedules a DFC to
+run on the same thread (a DFC queue) as the one that calls <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-E8353DF6-B21B-383F-99AB-94B6B5139E47"><span class="apiname">DPowerHandler::Add()</span></a> and <a href="GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7.html#GUID-761AE02B-41A6-35EA-AA9F-0AEEFF67A6F7__GUID-FD0BA400-FDCD-3E8C-9130-992A95A3FF84"><span class="apiname">DPowerHandler::Remove()</span></a>. </p>
+ </li>
+
+</ol>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html" title="This topic describes how to implement a power controller in a base port.">Power Management Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

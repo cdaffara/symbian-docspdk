@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Implementing eglCreateWindowSurface"/>
+<meta name="abstract" content="This topic explains how to implement eglCreateWindowSurface() on the Symbian platform."/>
+<meta name="description" content="This topic explains how to implement eglCreateWindowSurface() on the Symbian platform."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8C6D4350-A38D-57A1-8C8D-C777EA7E8A3E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D252E75C-C8CA-5C51-8DA3-95B937A1295C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F094A9FA-D253-5D33-B625-A2AA0B1CE447.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Implementing eglCreateWindowSurface</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF"><a name="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2384330 id2386999 id2387013 id2387068 id2387089 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html">Graphics Guide</a> &gt; <a href="GUID-8C6D4350-A38D-57A1-8C8D-C777EA7E8A3E.html" title="The components within the EGL collection provide access to EGL on the Symbian platform. EGL, an open standard developed by the Khronos Group, provides an interface between rendering APIs such as OpenGL ES or OpenVG and an underlying native platform window system.">EGL Collection</a> &gt; <a href="GUID-D252E75C-C8CA-5C51-8DA3-95B937A1295C.html" title="The EGL Interface component provides a consistent interface to EGL on the Symbian platform, enabling cross-device compatibility. The component includes the Khronos-released header files (which incorporate some minor changes, such as to the in-source comments). It also provides some Symbian-specific header files and some other files (such as LIB, DEF and MMP files) and UIDs. It does not provide any implementations of the APIs.">EGL Interface Component</a> &gt; <a href="GUID-F094A9FA-D253-5D33-B625-A2AA0B1CE447.html" title="This section provides information for EGL implementers working with the Symbian platform.">EGL Implementer's Guide</a> &gt; <a href="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E.html" title="This topic provides an introduction to implementing EGL window surfaces on the Symbian platform. These are used for onscreen rendering into windows that are provided by the Symbian platform (rather than EGL). The details of how to implement window surfaces depend on whether the ScreenPlay variant is in use.">Window Surface Implementation</a> &gt; </div>
+<h1 class="topictitle1">Implementing
+eglCreateWindowSurface</h1>
+<div><p>This topic explains how to implement <samp class="codeph">eglCreateWindowSurface()</samp> on
+the Symbian platform.</p>
+
+<p>The steps are as follows: </p>
+
+<a name="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-1D81FCB9-DE07-56FD-84A1-CAC09B3C753C"><!-- --></a><ol id="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-1D81FCB9-DE07-56FD-84A1-CAC09B3C753C">
+<li id="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-3A8FC68D-BD07-5DEF-AD4D-9C2D0D0844C5"><a name="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-3A8FC68D-BD07-5DEF-AD4D-9C2D0D0844C5"><!-- --></a><p>Use <a href="GUID-733B8BFA-7BC2-3A6D-A66F-F788413D25A9.html"><span class="apiname">RSurfaceManager</span></a> and
+typically <a href="GUID-326A2F4D-0E99-31C0-A35D-E8BF45913F07.html"><span class="apiname">RChunk</span></a> to create a composition surface. The details
+vary depending on the type of memory that is to be used for the composition
+surface's buffers. For example, the details are different when specialized
+graphics memory is used rather than standard CPU memory. </p>
+ </li>
+
+<li id="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-628EE035-0045-51D6-8C1D-AE867CA37FA3"><a name="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-628EE035-0045-51D6-8C1D-AE867CA37FA3"><!-- --></a><p>Assign the composition
+surface to an <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a> by calling: </p>
+ <p> <a href="GUID-57C48AD3-2EC4-3812-BA97-CB6597937615.html"><span class="apiname">TInt
+SetBackgroundSurface(const TSurfaceConfiguration&amp; aConfiguration, TBool
+aTriggerRedraw); </span></a>  </p>
+ <p>Ensure that both the extent
+and viewport of the <a href="GUID-59A10068-E37A-37CF-85C9-36D8DA6619FA.html"><span class="apiname">TSurfaceConfiguration</span></a> are set to the
+full extent of the surface. </p>
+ </li>
+
+</ol>
+
+<p>The following table provides a summary of the key APIs. </p>
+
+
+<div class="tablenoborder"><a name="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-52137B22-D71F-51DC-BEF4-B5476E8ECC0E"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-52137B22-D71F-51DC-BEF4-B5476E8ECC0E" frame="border" border="1" rules="all">
+<thead align="left">
+<tr>
+
+<th class="cellrowborder" valign="top" id="d891207e76">API</th>
+
+<th class="cellrowborder" valign="top" id="d891207e79">Description</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top" headers="d891207e76 "><p> <a href="GUID-733B8BFA-7BC2-3A6D-A66F-F788413D25A9.html"><span class="apiname">RSurfaceManager</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d891207e79 "><p>The client-side API of the <a href="GUID-55EF3CEB-AF3E-5A32-96F3-F146D1A06C8F.html" title="The Surface Manager is responsible for creating graphics composition surfaces (called surfaces) in system memory and controlling access to them.">Surface
+Manager</a>. This provides methods to create, open and close composition
+surfaces and to map a composition surface to an actual memory address. </p>
+ <p>Use
+this API to create the composition surface. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d891207e76 "><p> <a href="GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06.html"><span class="apiname">RSurfaceUpdateSession</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d891207e79 "><p>The client-side API of the <a href="GUID-8E8FE99A-5F4D-5B0F-87AB-A58EB4BEB6E9.html" title="Each graphics composition surface has at least two interested stakeholders: the process responsible for drawing and maintaining the content and the composition engine, which uses the surface for creating the display. When one of the stakeholders does something to the surface, it usually means that another stakeholder needs to do something too. The Surface Update component provides a channel for the stakeholders to inform each other of changes.">Surface
+Update Server</a>. This provides a channel for a surface's stakeholders
+to inform each other of changes. </p>
+ <p>Use this as follows: </p>
+ <ul>
+<li id="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-64DC6FF3-B48B-5079-A8EE-ED69BD92E813"><a name="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-64DC6FF3-B48B-5079-A8EE-ED69BD92E813"><!-- --></a><p>To post a buffer for
+composition. </p>
+ </li>
+
+<li id="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-59AFDD28-64E4-58CF-8F65-5FDB459A12B9"><a name="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-59AFDD28-64E4-58CF-8F65-5FDB459A12B9"><!-- --></a><p>To wait for the composition
+of a buffer to complete. </p>
+ </li>
+
+</ul>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d891207e76 "><p> <a href="GUID-1460DD8F-9AA1-3B99-8FFD-F309959CCA34.html#GUID-1460DD8F-9AA1-3B99-8FFD-F309959CCA34__GUID-4EBFFA14-418A-3A2A-B147-39BFC96CE45F"><span class="apiname">RWindowBase::SetBackgroundSurface()</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d891207e79 "><p>Part of the Window Server client-side API, this function sets the
+background of a window to be a given composition surface (called an <strong>external
+surface</strong> in the <a href="GUID-495EA1C8-E95F-54AE-B4D1-0F463003C2D7.html" title="This topic provides an introduction to displaying an external surface on a window. The surface is then known as a background surface. This feature is available in ScreenPlay only.">Window
+Server documentation</a>). This means that when an <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a> is
+moved, Window Server automatically moves its associated background surface. </p>
+ <p>This
+function does the following: </p>
+ <ul>
+<li id="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-203657E0-994E-52B9-A5D7-F1112897B5C5"><a name="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-203657E0-994E-52B9-A5D7-F1112897B5C5"><!-- --></a><p>Positions the composition
+surface in a layer below the UI layer, positioned directly below the <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a>. </p>
+ </li>
+
+<li id="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-E3711F2C-9159-54FE-B4FC-840584172FA0"><a name="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-E3711F2C-9159-54FE-B4FC-840584172FA0"><!-- --></a><p>Sets the background
+color of the <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a> to transparent. This allows the composition
+surface to show through. Any existing <a href="GUID-0AEE5955-C530-35F1-A904-69183331B294.html"><span class="apiname">CWindowGc</span></a> drawing
+to the <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a> is retained in the foreground. </p>
+ </li>
+
+</ul>
+ <p>There are two forms of this function: </p>
+ <ul>
+<li id="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-08D9FB05-D43D-5E1B-B95E-C8E5945EE851"><a name="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-08D9FB05-D43D-5E1B-B95E-C8E5945EE851"><!-- --></a><p>One simply takes the
+surface ID as an argument. This auto-stretches the background surface to fit
+the window and causes temporary distortion of the EGL window surface between
+a resize occurring and the next call to <samp class="codeph">eglSwapBuffers()</samp>. </p>
+ </li>
+
+<li id="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-FB1AFE20-42F1-5229-A4AA-9AD551ABA264"><a name="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF__GUID-FB1AFE20-42F1-5229-A4AA-9AD551ABA264"><!-- --></a><p>The other has two arguments—a <a href="GUID-59A10068-E37A-37CF-85C9-36D8DA6619FA.html"><span class="apiname">TSurfaceConfiguration</span></a> and
+a <samp class="codeph">TBool</samp>. You can set the extent and viewport in the <samp class="codeph">TSurfaceConfiguration</samp> to
+match the full extent of the surface. This avoids the auto-stretching of the
+surface. </p>
+ </li>
+
+</ul>
+ <p>See <a href="GUID-495EA1C8-E95F-54AE-B4D1-0F463003C2D7.html" title="This topic provides an introduction to displaying an external surface on a window. The surface is then known as a background surface. This feature is available in ScreenPlay only.">External
+Surfaces Overview</a> for an introduction to some of the key concepts. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E.html" title="This topic provides an introduction to implementing EGL window surfaces on the Symbian platform. These are used for onscreen rendering into windows that are provided by the Symbian platform (rather than EGL). The details of how to implement window surfaces depend on whether the ScreenPlay variant is in use.">Window Surface Implementation</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E.html" title="This topic provides an introduction to implementing EGL window surfaces on the Symbian platform. These are used for onscreen rendering into windows that are provided by the Symbian platform (rather than EGL). The details of how to implement window surfaces depend on whether the ScreenPlay variant is in use.">Window Surface
+Implementation Overview</a></div>
+<div><a href="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0.html" title="This topic explains how to implement eglSwapBuffers() on the Symbian platform. It provides information about how to handle a window resize and the preserve buffer option.">Implementing
+eglSwapBuffers</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

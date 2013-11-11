@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CGSPluginAndViewIdCache"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-59C5C779-72A8-39E3-BDDB-C1FA0683832D"/>
+
+<title>CGSPluginAndViewIdCache</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-59C5C779-72A8-39E3-BDDB-C1FA0683832D"><a name="GUID-59C5C779-72A8-39E3-BDDB-C1FA0683832D"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CGSPluginAndViewIdCache Class Reference</h1>
+	<table class="signature"><tr><td>class CGSPluginAndViewIdCache : public CBase</td></tr></table><div class="section"><div>
+			<div class="p">
+				<a href="GUID-59C5C779-72A8-39E3-BDDB-C1FA0683832D.html#GUID-59C5C779-72A8-39E3-BDDB-C1FA0683832D">CGSPluginAndViewIdCache</a> application class.<ul><li><p>Creates/Loads a list of CGSShimmedViews from a cache file on GS start-up.</p>
+</li>
+<li><p>Inserts CGSShimmedViews into view-framework view list.</p>
+</li>
+</ul>
+</div>
+
+			<p>Problem/rationale: Launching GS plugin view outside GS application when GS application is not already running may fail. This was caused by application inter working combined with GS application's asynchronized plugin loading. High level functionality for external view launching goes: 1. Application framework starts desired application 2. Application framework calls view-activation on the desired application view. 3. Desired view handles the activation call-back by drawing itself on screen or whatever required.</p>
+
+			<p>Starting from phase 2, things can go wrong: when GS start-up call returns, GS has not yet loaded all the plugins and the views owned by plugins are not added yet to the view-framework view list. Calling non-existing view will naturally fail.</p>
+
+			<p>Solution: When GS start-up is called, populate view-frameworks view list with all the views provided by GS application before function return. Kind of: This would ruin GS's asynchronous plugin loading and would cause devastating freeze-up times on GS start-up. Hence, on GS start-up we're not actually loading the plugins nor the real views. We use light-weight dummy views (aka <a href="GUID-9DDAAED4-00EA-360E-87AE-F86559B11C3D.html#GUID-9DDAAED4-00EA-360E-87AE-F86559B11C3D">CGSShimmedView</a>) wich we add into view-framework view list immedieately on start-up. If it happens so, that the view framework-decides to call view activation on one of these dummy views, dummy view will load manually the real plugin view and switch it with the dummy view. Dummy views are created by <a href="GUID-59C5C779-72A8-39E3-BDDB-C1FA0683832D.html#GUID-59C5C779-72A8-39E3-BDDB-C1FA0683832D">CGSPluginAndViewIdCache</a> on GS-application start-up.</p>
+
+			<p>Different use scenarios:</p>
+
+			<p>1. First GS-application start on a new device, create cache &amp; save as file.</p>
+
+			<div class="p">2. Launch GS-application second time. Always populate <a href="GUID-3AC2CDAC-0291-309F-A020-049BC9F2CF90.html#GUID-3AC2CDAC-0291-309F-A020-049BC9F2CF90">CCoeAppUi</a> with <a href="GUID-9DDAAED4-00EA-360E-87AE-F86559B11C3D.html#GUID-9DDAAED4-00EA-360E-87AE-F86559B11C3D">CGSShimmedView</a> instances created from cache file (cache maps view uid to ecom plugin implementation uid).<ul><li><p>When pluginloader loads plugin, it replaces dummy view (shim) with the real view from the plugin. The shim is then destroyed.</p>
+</li>
+</ul>
+</div>
+
+			<div class="p">3. GS plugin view is activated externally when GS is not running:<ul><li><p>Uses normal application framework to launch GS application.</p>
+</li>
+<li><p>Same functionality as in scenario 2 but if shimmed view is requested before actual view is created, load actual plugin manually and synchronously.</p>
+</li>
+<li><p><a href="GUID-BD628806-3C72-3366-B1D3-29ECA8FB6A42.html#GUID-BD628806-3C72-3366-B1D3-29ECA8FB6A42">CGSPlaceholderView</a>: View-FW will only switch between two different view uids. This is why we need to switch between 3 different views. -&gt; Will result in 3x fold different view activation.</p>
+</li>
+<li><p>Used view activations are: 1. Shimmed view DoActivate for view uid &lt;view_uid&gt;. 2. Shimmed view calls Placeholder::DoActivate with a dummy "uid DEADBED". 3. Placeholder view calls actual plugin::DoActivate with actual view uid &lt;view_uid&gt;.</p>
+</li>
+</ul>
+</div>
+
+			<div class="p">NOTE: Requirements:<ul><li><p>Cache: GS has to be launched once successfully for the cache to work. -&gt; otherwise error if launching from external application.</p>
+</li>
+<li><p>Views which need to be used externally (external view launch) must be implemented as a GS-plugin. Those cannot be implemented as a local view.</p>
+</li>
+</ul>
+</div>
+
+			<div class="p">
+				<dl class="since">
+					
+						<dt class="dlterm">Since</dt>
+
+						<dd>Series60_3.1 </dd>
+
+					
+				</dl>
+
+			</div>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CGSPluginAndViewIdCache<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section nested"><h2 class="sectiontitle">Nested Classes and Structures</h2><ul><li><a href="GUID-A418A2F7-7C8F-3AA6-BD9E-1E55925DDC44.html">CGSPluginAndViewIdCache::TCacheEntry</a></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-420CF6E7-1685-30DC-A699-05D39EA60D6C">~CGSPluginAndViewIdCache</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-68012273-A6B6-34D5-84DD-4D94220AFB1E">ActivatePlaceholderViewL</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-4DF43BD1-50A9-3E5D-B4E9-40D60F1807F3">HandleShimDestruction</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-D4B665C9-2B42-3071-9091-6EAAFE4A5630">IsPluginLoaded</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-59C5C779-72A8-39E3-BDDB-C1FA0683832D.html">CGSPluginAndViewIdCache</a> *</td><td><a href="#GUID-BAD7BA51-FD41-33E8-83CF-3B25D0B35514">NewL</a>(<a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html">CEikAppUi</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>
+				</td><td><a href="#GUID-5EC008A2-9A52-30ED-9EEA-51B7F6D3E8E9">PluginImplementationUidForView</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-4A43D4AA-E67B-3C2F-82C7-62F82D32830C.html">CGSPluginInterface</a> *</td><td><a href="#GUID-EC29B420-AB07-322C-BEDD-5AF19ACA4AA7">PluginInstance</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-47DCFBEA-B7D5-374D-9EBB-99A0F513B4F9">PrepareForUIDestruction</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-F915CA5B-A39C-34CC-AD47-2C5B5A4F47F7">PrepareToRegisterPluginInstanceLC</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>)</td></tr><tr class="bg"><td align="right" class="code">const <a href="GUID-3DEA9A17-CB50-3DCD-87AC-0E91B377FB0E.html">TVwsViewId</a> &amp;</td><td><a href="#GUID-55C858D7-A3BC-3B44-ADCB-6F456144CB1E">PriorToPlaceholderActiveViewId</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-69A1E131-EF66-3096-AC74-BDDF613B8A12">RegisterPluginInstanceL</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-4A43D4AA-E67B-3C2F-82C7-62F82D32830C.html">CGSPluginInterface</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-1644327C-6B9F-3CC4-A448-47257D91D0FF">RegisterViewAndImplementationAssociationL</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-C1C29BD4-DE6A-310D-8FAC-838DAE59AB45">RegisterViewAndImplementationAssociationL</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-E8D3C2A4-4022-32DF-BC86-FEA4C1F91B9A">SetPriorToPlaceholderActiveViewId</a>(const <a href="GUID-3DEA9A17-CB50-3DCD-87AC-0E91B377FB0E.html">TVwsViewId</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-50074342-06E8-3424-8092-F21375606C67">CGSPluginAndViewIdCache</a>(<a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html">CEikAppUi</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-AB885F70-02E7-3997-A756-51DF60AB6601">ConstructL</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-FA6057D1-91C7-3D3F-B8B4-13112B3D7579">DestroyShims</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-9B8DAC99-79BC-38F4-A231-BC41EC69A10A">GetCacheFileNameL</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-B5BD8E1C-5D39-3F1D-A4E5-8435D36A5583">GetCachePathL</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>
+				</td><td><a href="#GUID-BFA56564-71F1-36EA-A5FF-3AF0D1EF6D9F">HashFunction</a>(const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-2D542618-2E04-3F7F-9058-52212B26921A">HashIdentityRelation</a>(const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;, const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-40C2A443-41D5-3198-9EFC-226EC42F73BC">ReRegisterShimWithUi</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-CAE96DA7-E136-3D89-9B65-85E3D761C787">RestoreL</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-10D3FE2B-9810-3E27-A945-C24A116EC411">StoreL</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html">CEikAppUi</a> &amp;</td><td><a href="#GUID-6C3868E2-E6AF-3642-A870-838E549C770C">iAppUi</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html">RFs</a> &amp;</td><td><a href="#GUID-1850963C-E870-3AD8-AA12-1F2F2E403616">iFsSession</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-66EC84D0-531B-37DF-B3F4-41574CF941A6.html">RHashMap</a>&lt; <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-A418A2F7-7C8F-3AA6-BD9E-1E55925DDC44.html">TCacheEntry</a> &gt;</td><td><a href="#GUID-FFB5483D-788B-36DE-BC41-96BF2FC25481">iLookupTable</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-BD628806-3C72-3366-B1D3-29ECA8FB6A42.html">CGSPlaceholderView</a> *</td><td><a href="#GUID-ECB9CA86-24EE-3484-BA54-67BB69225805">iPlaceholderView</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>
+				</td><td><a href="#GUID-FC099DC4-18A5-3277-A237-E931EF2CC6B3">iTransientCleanupViewUid</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-50074342-06E8-3424-8092-F21375606C67"><a name="GUID-50074342-06E8-3424-8092-F21375606C67"><!-- --></a>
+		<h2 class="topictitle2">CGSPluginAndViewIdCache(CEikAppUi &amp;)</h2>
+		<table class="signature"><tr><td>CGSPluginAndViewIdCache</td><td>(</td><td><a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html">CEikAppUi</a> &amp;</td><td>aAppUi</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>C++ constructor </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html">CEikAppUi</a> &amp; aAppUi</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-420CF6E7-1685-30DC-A699-05D39EA60D6C"><a name="GUID-420CF6E7-1685-30DC-A699-05D39EA60D6C"><!-- --></a>
+		<h2 class="topictitle2">~CGSPluginAndViewIdCache()</h2>
+		<table class="signature"><tr><td>~CGSPluginAndViewIdCache</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Destructor. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-68012273-A6B6-34D5-84DD-4D94220AFB1E"><a name="GUID-68012273-A6B6-34D5-84DD-4D94220AFB1E"><!-- --></a>
+		<h2 class="topictitle2">ActivatePlaceholderViewL()</h2>
+		<table class="signature"><tr><td>void</td><td>ActivatePlaceholderViewL</td><td>(</td><td>)</td><td/></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-AB885F70-02E7-3997-A756-51DF60AB6601"><a name="GUID-AB885F70-02E7-3997-A756-51DF60AB6601"><!-- --></a>
+		<h2 class="topictitle2">ConstructL()</h2>
+		<table class="signature"><tr><td>void</td><td>ConstructL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Second phase constructor </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-FA6057D1-91C7-3D3F-B8B4-13112B3D7579"><a name="GUID-FA6057D1-91C7-3D3F-B8B4-13112B3D7579"><!-- --></a>
+		<h2 class="topictitle2">DestroyShims()</h2>
+		<table class="signature"><tr><td>void</td><td>DestroyShims</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-9B8DAC99-79BC-38F4-A231-BC41EC69A10A"><a name="GUID-9B8DAC99-79BC-38F4-A231-BC41EC69A10A"><!-- --></a>
+		<h2 class="topictitle2">GetCacheFileNameL(TDes &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetCacheFileNameL</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aFileName</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aFileName</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B5BD8E1C-5D39-3F1D-A4E5-8435D36A5583"><a name="GUID-B5BD8E1C-5D39-3F1D-A4E5-8435D36A5583"><!-- --></a>
+		<h2 class="topictitle2">GetCachePathL(TDes &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetCachePathL</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aPath</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aPath</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4DF43BD1-50A9-3E5D-B4E9-40D60F1807F3"><a name="GUID-4DF43BD1-50A9-3E5D-B4E9-40D60F1807F3"><!-- --></a>
+		<h2 class="topictitle2">HandleShimDestruction(TUid)</h2>
+		<table class="signature"><tr><td>void</td><td>HandleShimDestruction</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aViewId</td><td>)</td><td/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aViewId</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BFA56564-71F1-36EA-A5FF-3AF0D1EF6D9F"><a name="GUID-BFA56564-71F1-36EA-A5FF-3AF0D1EF6D9F"><!-- --></a>
+		<h2 class="topictitle2">HashFunction(const TUid &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>
+				</td><td>HashFunction</td><td>(</td><td>const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;</td><td>aViewId</td><td>)</td><td>[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp; aViewId</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2D542618-2E04-3F7F-9058-52212B26921A"><a name="GUID-2D542618-2E04-3F7F-9058-52212B26921A"><!-- --></a>
+		<h2 class="topictitle2">HashIdentityRelation(const TUid &amp;, const TUid &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>HashIdentityRelation</td><td>(</td><td>const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;</td><td>aLeft,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;</td><td>aRight</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp; aLeft</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp; aRight</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D4B665C9-2B42-3071-9091-6EAAFE4A5630"><a name="GUID-D4B665C9-2B42-3071-9091-6EAAFE4A5630"><!-- --></a>
+		<h2 class="topictitle2">IsPluginLoaded(TUid)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>IsPluginLoaded</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aViewId</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aViewId</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BAD7BA51-FD41-33E8-83CF-3B25D0B35514"><a name="GUID-BAD7BA51-FD41-33E8-83CF-3B25D0B35514"><!-- --></a>
+		<h2 class="topictitle2">NewL(CEikAppUi &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-59C5C779-72A8-39E3-BDDB-C1FA0683832D.html">CGSPluginAndViewIdCache</a> *</td><td>NewL</td><td>(</td><td><a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html">CEikAppUi</a> &amp;</td><td>aAppUi</td><td>)</td><td>[static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html">CEikAppUi</a> &amp; aAppUi</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5EC008A2-9A52-30ED-9EEA-51B7F6D3E8E9"><a name="GUID-5EC008A2-9A52-30ED-9EEA-51B7F6D3E8E9"><!-- --></a>
+		<h2 class="topictitle2">PluginImplementationUidForView(TUid)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>
+				</td><td>PluginImplementationUidForView</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aViewId</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aViewId</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EC29B420-AB07-322C-BEDD-5AF19ACA4AA7"><a name="GUID-EC29B420-AB07-322C-BEDD-5AF19ACA4AA7"><!-- --></a>
+		<h2 class="topictitle2">PluginInstance(TUid)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-4A43D4AA-E67B-3C2F-82C7-62F82D32830C.html">CGSPluginInterface</a> *</td><td>PluginInstance</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aViewId</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aViewId</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-47DCFBEA-B7D5-374D-9EBB-99A0F513B4F9"><a name="GUID-47DCFBEA-B7D5-374D-9EBB-99A0F513B4F9"><!-- --></a>
+		<h2 class="topictitle2">PrepareForUIDestruction()</h2>
+		<table class="signature"><tr><td>void</td><td>PrepareForUIDestruction</td><td>(</td><td>)</td><td/></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-F915CA5B-A39C-34CC-AD47-2C5B5A4F47F7"><a name="GUID-F915CA5B-A39C-34CC-AD47-2C5B5A4F47F7"><!-- --></a>
+		<h2 class="topictitle2">PrepareToRegisterPluginInstanceLC(TUid)</h2>
+		<table class="signature"><tr><td>void</td><td>PrepareToRegisterPluginInstanceLC</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aViewId</td><td>)</td><td/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aViewId</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-55C858D7-A3BC-3B44-ADCB-6F456144CB1E"><a name="GUID-55C858D7-A3BC-3B44-ADCB-6F456144CB1E"><!-- --></a>
+		<h2 class="topictitle2">PriorToPlaceholderActiveViewId()</h2>
+		<table class="signature"><tr><td>const <a href="GUID-3DEA9A17-CB50-3DCD-87AC-0E91B377FB0E.html">TVwsViewId</a> &amp;</td><td>PriorToPlaceholderActiveViewId</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-40C2A443-41D5-3198-9EFC-226EC42F73BC"><a name="GUID-40C2A443-41D5-3198-9EFC-226EC42F73BC"><!-- --></a>
+		<h2 class="topictitle2">ReRegisterShimWithUi(TAny *)</h2>
+		<table class="signature"><tr><td>void</td><td>ReRegisterShimWithUi</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aSelf</td><td>)</td><td>[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aSelf</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-69A1E131-EF66-3096-AC74-BDDF613B8A12"><a name="GUID-69A1E131-EF66-3096-AC74-BDDF613B8A12"><!-- --></a>
+		<h2 class="topictitle2">RegisterPluginInstanceL(TUid, CGSPluginInterface &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>RegisterPluginInstanceL</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aViewId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-4A43D4AA-E67B-3C2F-82C7-62F82D32830C.html">CGSPluginInterface</a> &amp;</td><td>aPluginInstance</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aViewId</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-4A43D4AA-E67B-3C2F-82C7-62F82D32830C.html">CGSPluginInterface</a> &amp; aPluginInstance</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1644327C-6B9F-3CC4-A448-47257D91D0FF"><a name="GUID-1644327C-6B9F-3CC4-A448-47257D91D0FF"><!-- --></a>
+		<h2 class="topictitle2">RegisterViewAndImplementationAssociationL(TUid, TUid)</h2>
+		<table class="signature"><tr><td>void</td><td>RegisterViewAndImplementationAssociationL</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aViewId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aImplementationUid</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aViewId</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aImplementationUid</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C1C29BD4-DE6A-310D-8FAC-838DAE59AB45"><a name="GUID-C1C29BD4-DE6A-310D-8FAC-838DAE59AB45"><!-- --></a>
+		<h2 class="topictitle2">RegisterViewAndImplementationAssociationL(TUid, TUid, TBool)</h2>
+		<table class="signature"><tr><td>void</td><td>RegisterViewAndImplementationAssociationL</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aViewId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aImplementationUid,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aCreateShim</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aViewId</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aImplementationUid</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aCreateShim</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CAE96DA7-E136-3D89-9B65-85E3D761C787"><a name="GUID-CAE96DA7-E136-3D89-9B65-85E3D761C787"><!-- --></a>
+		<h2 class="topictitle2">RestoreL()</h2>
+		<table class="signature"><tr><td>void</td><td>RestoreL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-E8D3C2A4-4022-32DF-BC86-FEA4C1F91B9A"><a name="GUID-E8D3C2A4-4022-32DF-BC86-FEA4C1F91B9A"><!-- --></a>
+		<h2 class="topictitle2">SetPriorToPlaceholderActiveViewId(const TVwsViewId &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>SetPriorToPlaceholderActiveViewId</td><td>(</td><td>const <a href="GUID-3DEA9A17-CB50-3DCD-87AC-0E91B377FB0E.html">TVwsViewId</a> &amp;</td><td>aViewId</td><td>)</td><td/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-3DEA9A17-CB50-3DCD-87AC-0E91B377FB0E.html">TVwsViewId</a> &amp; aViewId</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-10D3FE2B-9810-3E27-A945-C24A116EC411"><a name="GUID-10D3FE2B-9810-3E27-A945-C24A116EC411"><!-- --></a>
+		<h2 class="topictitle2">StoreL()</h2>
+		<table class="signature"><tr><td>void</td><td>StoreL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-6C3868E2-E6AF-3642-A870-838E549C770C"><a name="GUID-6C3868E2-E6AF-3642-A870-838E549C770C"><!-- --></a>
+		<h2 class="topictitle2">
+					CEikAppUi &amp; iAppUi</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html">CEikAppUi</a> &amp;</td><td>iAppUi</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-1850963C-E870-3AD8-AA12-1F2F2E403616"><a name="GUID-1850963C-E870-3AD8-AA12-1F2F2E403616"><!-- --></a>
+		<h2 class="topictitle2">
+					RFs &amp; iFsSession</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html">RFs</a> &amp;</td><td>iFsSession</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-FFB5483D-788B-36DE-BC41-96BF2FC25481"><a name="GUID-FFB5483D-788B-36DE-BC41-96BF2FC25481"><!-- --></a>
+		<h2 class="topictitle2">
+					RHashMap&lt; TUid, TCacheEntry &gt; iLookupTable</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-66EC84D0-531B-37DF-B3F4-41574CF941A6.html">RHashMap</a>&lt; <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-A418A2F7-7C8F-3AA6-BD9E-1E55925DDC44.html">TCacheEntry</a> &gt;</td><td>iLookupTable</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-ECB9CA86-24EE-3484-BA54-67BB69225805"><a name="GUID-ECB9CA86-24EE-3484-BA54-67BB69225805"><!-- --></a>
+		<h2 class="topictitle2">
+					CGSPlaceholderView * iPlaceholderView</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-BD628806-3C72-3366-B1D3-29ECA8FB6A42.html">CGSPlaceholderView</a> *</td><td>iPlaceholderView</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-FC099DC4-18A5-3277-A237-E931EF2CC6B3"><a name="GUID-FC099DC4-18A5-3277-A237-E931EF2CC6B3"><!-- --></a>
+		<h2 class="topictitle2">
+					TUid
+				 iTransientCleanupViewUid</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>
+				</td><td>iTransientCleanupViewUid</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

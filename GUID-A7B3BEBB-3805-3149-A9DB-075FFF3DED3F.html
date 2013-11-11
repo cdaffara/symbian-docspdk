@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="LCleanedupArray"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F"/>
+
+<title>LCleanedupArray</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F"><a name="GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2653464 id2544523 id2545139 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">LCleanedupArray Class Reference</h1>
+	<table class="signature"><tr><td>class LCleanedupArray : protected LAutoPtrBase</td></tr></table><div class="section"><div>
+			<p>A class template that provides CleanupStack-based local-scope automatic management of arrays.</p>
+
+			<div class="p">
+				<div class="note"><span class="notetitle">Note:</span> 
+					<p>This class can only be used to define locals, never data members. See below for an explanation and links to management classes suitable for use in different contexts. It should never be used in the same function as code that uses the <a href="GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA.html#GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA">CleanupStack</a> API directly</p>
+
+				</div>
+
+				<dl class="user">
+					
+						<dt class="dlterm">
+							<strong/>
+						</dt>
+
+						<dd/>
+
+					
+				</dl>
+
+				<div class="note"><span class="notetitle">Note:</span> 
+					<p>This class can only be used with raw arrays, which are used only rarely on Symbian OS. Instances of Symbian array container classes (e.g. <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html#GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707">RArray</a>, <a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html#GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F">RPointerArray</a>) should be managed using the automatic management template classes appropriate for the array's type (<a href="GUID-9ECEAE0C-3D5A-3B1F-88DD-28B37CE9950D.html#GUID-9ECEAE0C-3D5A-3B1F-88DD-28B37CE9950D">LCleanedupHandle</a> template classes for Symbian R arrays or <a href="GUID-BD4E0CC4-75A2-306D-A860-06B4138F86EB.html#GUID-BD4E0CC4-75A2-306D-A860-06B4138F86EB">LCleanedupPtr</a> template classes for Symbian C arrays).</p>
+
+				</div>
+This class template can be used to protect a heap-allocated array of objects of type T such that the array of T referred to is automatically cleaned up when either of the following occur:</div>
+
+			<div class="p">
+				<ul>
+					<li>
+						<p>The referring local variable goes out of scope normally</p>
+
+					</li>
+
+					<li>
+						<p>The referring local variable goes out of scope due to an untrapped leave causing the scope to be exited non-locally</p>
+
+					</li>
+
+				</ul>
+
+			</div>
+
+			<p>The default cleanup strategy is to deallocate the managed array using arrray delete (delete[]), assuming that the array is heap-allocated. An alternative cleanup strategy can be selected by specifying a cleanup strategy template class as the optional second template argument (corresponding to the CleanupStrategy template parameter).</p>
+
+			<p>The constructors of this class may leave.</p>
+
+			<p>As a convenience, the elements of the managed array may be accessed via "[]" notation directly on the management object.</p>
+
+			<p>Automatic cleanup may be disabled at any time by calling <a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html#GUID-A6AB8A1E-2C57-39C4-8B5A-1268D6E6DF11">Unmanage()</a>, while cleanup may be forced at any time by calling <a href="GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F.html#GUID-9F43CBAD-D935-3BFD-926F-8C951822BB18">ReleaseResource()</a>.</p>
+
+			<div class="p">
+				<pre class="codeblock">	// block scope example
+	{
+	LCleanedupArray&lt;TValue&gt; arrayp(new(ELeave) TValue[KArraySize]);
+	arrayp[0].DoSomethingL(); // leave-safe
+	if (arrayp[0].Finished())
+		return; //	the array is deleted automatically when exiting from scope
+	arrayp[1].DoSomethingElseL(); // leave-safe
+	//	the array is deleted automatically when exiting from scope
+	}</pre>
+
+			</div>
+
+			<p>Behind the scenes, this class template is implemented in terms of the thread-local <a href="GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA.html#GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA">CleanupStack</a>, restricting its use to locals on the stack. This use of the <a href="GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA.html#GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA">CleanupStack</a> ensures a consistent cleanup order between functions that call one another, even if they use different cleanup idioms.</p>
+
+			<p>This class template together with the cleanup strategy class templates provide a template-based implementation of the Strategy design pattern (See also: Policy-based design).</p>
+
+			<p>
+				<a href="GUID-B0B92876-6BE7-3B34-B19D-4B5E318F7BED.html#GUID-B0B92876-6BE7-3B34-B19D-4B5E318F7BED">LManagedArray</a> which has the same interface, but does not use the cleanup stack and is suitable for protecting the data members of classes </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">LCleanedupArray<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-47624732-96FB-3371-BB6C-F1B7F200A993">LCleanedupArray</a>()</td></tr><tr class="bg"><td align="right" class="code"/><td><a href="#GUID-C389D887-EF96-3705-A4A9-44567E3D233B">LCleanedupArray</a>(T *)</td></tr><tr><td align="right" class="code"/><td><a href="#GUID-46E6830D-991D-33BE-8C29-9A3C144572C9">~LCleanedupArray</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-3A0C6321-8496-3CE5-8737-BC93707D30A7">Cleanup</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-9F43CBAD-D935-3BFD-926F-8C951822BB18">ReleaseResource</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-903DC247-E3A5-3D8D-B4CA-6C388100DCED">Swap</a>(<a href="GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F.html">LCleanedupArray</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F.html">LCleanedupArray</a> &amp;</td><td><a href="#GUID-D47D0585-A149-30B8-A996-53D8EAF9AA94">operator=</a>(T *)</td></tr><tr class="bg"><td align="right" class="code">T &amp;</td><td><a href="#GUID-090ACB6D-07A7-3448-A498-501CE07F06DC">operator[]</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase::Disable()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase::Get()const</a></td></tr><tr><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase::IsEnabled()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase::LAutoPtrBase()</a></td></tr><tr><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase::LAutoPtrBase(T *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase::Swap(LAutoPtrBase &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase::Unmanage()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase::operator-&gt;()const</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Type Definitions</th></tr></thead><tbody><tr><td align="right" valign="top">typedef</td><td>CleanupStrategyType <a href="#GUID-36D7E7C1-10BF-3979-A360-C23AD32E6F37">CleanupStrategy</a></td></tr><tr class="bg"><td align="right" valign="top">typedef</td><td>T <a href="#GUID-1C97B7C3-C536-3002-8328-BD82BEAE6F86">ManagedType</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Type Definitions</th></tr></thead><tbody><tr><td align="right" valign="top">typedef</td><td>
+					<a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase</a>&lt; T &gt; <a href="#GUID-77C80F69-EABE-31FD-8D05-242EDA545D6E">LAutoPtrBase</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Attributes</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase::iPtr</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-47624732-96FB-3371-BB6C-F1B7F200A993"><a name="GUID-47624732-96FB-3371-BB6C-F1B7F200A993"><!-- --></a>
+		<h2 class="topictitle2">LCleanedupArray()</h2>
+		<table class="signature"><tr><td>LCleanedupArray</td><td>(</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Default constructor. Constructs an empty <a href="GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F.html#GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F">LCleanedupArray</a> object.</p>
+
+				<div class="p">
+					<dl class="postcondition">
+						
+							<dt class="dlterm">Post-condition</dt>
+
+							<dd>
+								<a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html#GUID-0B1B4EDB-6C00-3B32-9E91-C3FE8897E277">Get()</a> == NULL </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C389D887-EF96-3705-A4A9-44567E3D233B"><a name="GUID-C389D887-EF96-3705-A4A9-44567E3D233B"><!-- --></a>
+		<h2 class="topictitle2">LCleanedupArray(T *)</h2>
+		<table class="signature"><tr><td>LCleanedupArray</td><td>(</td><td>T *</td><td>aPtr</td><td>)</td><td>[inline, explicit]</td></tr></table><div class="section"><div>
+				<p>Explicit constructor. Constructs a <a href="GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F.html#GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F">LCleanedupArray</a> object that manages an array of objects of type T that can be cleaned up using the cleanup strategy of the <a href="GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F.html#GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F">LCleanedupArray</a> class. The default cleanup strategy is to deallocate the heap-allocated array by using array delete. An alternative cleanup strategy can be selected by specifying a cleanup strategy template class as the optional second template argument (corresponding to the CleanupStrategy template parameter).</p>
+
+				<div class="p">
+					<dl class="precondition">
+						
+							<dt class="dlterm">Pre-condition</dt>
+
+							<dd>The array can be cleaned up using the cleanup strategy.</dd>
+
+						
+					</dl>
+
+					<dl class="postcondition">
+						
+							<dt class="dlterm">Post-condition</dt>
+
+							<dd>
+								<a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html#GUID-0B1B4EDB-6C00-3B32-9E91-C3FE8897E277">Get()</a> == aPtr </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">T * aPtr</td><td>A pointer to the first element of an array of objects of type T, array that can be cleaned up using the cleanup strategy of the the LCleanedupArray class. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-46E6830D-991D-33BE-8C29-9A3C144572C9"><a name="GUID-46E6830D-991D-33BE-8C29-9A3C144572C9"><!-- --></a>
+		<h2 class="topictitle2">~LCleanedupArray()</h2>
+		<table class="signature"><tr><td>~LCleanedupArray</td><td>(</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Destructor. When automatic resource management is enabled, the destructor invokes the specified cleanup strategy for the managed pointer. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-3A0C6321-8496-3CE5-8737-BC93707D30A7"><a name="GUID-3A0C6321-8496-3CE5-8737-BC93707D30A7"><!-- --></a>
+		<h2 class="topictitle2">Cleanup(TAny *)</h2>
+		<table class="signature"><tr><td>void</td><td>Cleanup</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aPtr</td><td>)</td><td>[static, inline]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aPtr</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9F43CBAD-D935-3BFD-926F-8C951822BB18"><a name="GUID-9F43CBAD-D935-3BFD-926F-8C951822BB18"><!-- --></a>
+		<h2 class="topictitle2">ReleaseResource()</h2>
+		<table class="signature"><tr><td>void</td><td>ReleaseResource</td><td>(</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>If automatic resource management is enabled, the specified cleanup strategy is invoked for the managed pointer and the automatic resource management is then disabled. The underlying pointer is reset to NULL.</p>
+
+				<div class="p">
+					<dl class="postcondition">
+						
+							<dt class="dlterm">Post-condition</dt>
+
+							<dd>
+								<a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html#GUID-0B1B4EDB-6C00-3B32-9E91-C3FE8897E277">Get()</a> == NULL </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-903DC247-E3A5-3D8D-B4CA-6C388100DCED"><a name="GUID-903DC247-E3A5-3D8D-B4CA-6C388100DCED"><!-- --></a>
+		<h2 class="topictitle2">Swap(LCleanedupArray &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>Swap</td><td>(</td><td><a href="GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F.html">LCleanedupArray</a> &amp;</td><td>aArray</td><td>)</td><td>[inline]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F.html">LCleanedupArray</a> &amp; aArray</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D47D0585-A149-30B8-A996-53D8EAF9AA94"><a name="GUID-D47D0585-A149-30B8-A996-53D8EAF9AA94"><!-- --></a>
+		<h2 class="topictitle2">operator=(T *)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F.html">LCleanedupArray</a> &amp;</td><td>operator=</td><td>(</td><td>T *</td><td>aPtr</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Assigns a new array of objects of type T to be managed. It needs to be be possible to use the cleanup strategy of the <a href="GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F.html#GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F">LCleanedupArray</a> object for the cleanup of the new managed array. The default cleanup strategy is to delete the heap-allocated array by using array delete (delete[]). If the <a href="GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F.html#GUID-A7B3BEBB-3805-3149-A9DB-075FFF3DED3F">LCleanedupArray</a> object already manages an array, then the cleanup strategy is invoked with the managed array before assigning the new managed array.</p>
+
+				<div class="p">
+					<dl class="precondition">
+						
+							<dt class="dlterm">Pre-condition</dt>
+
+							<dd>The new array to be managed can be cleaned up using the cleanup strategy.</dd>
+
+						
+					</dl>
+
+					<dl class="postcondition">
+						
+							<dt class="dlterm">Post-condition</dt>
+
+							<dd>
+								<a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html#GUID-0B1B4EDB-6C00-3B32-9E91-C3FE8897E277">Get()</a> == aPtr </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">T * aPtr</td><td>A pointer to the first element of the array of objects of type T - array that can be cleaned up using the cleanup strategy. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-090ACB6D-07A7-3448-A498-501CE07F06DC"><a name="GUID-090ACB6D-07A7-3448-A498-501CE07F06DC"><!-- --></a>
+		<h2 class="topictitle2">operator[](TInt)</h2>
+		<table class="signature"><tr><td>T &amp;</td><td>operator[]</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex</td><td>)</td><td>const [inline]</td></tr></table><div class="section"><div>
+				<p>Overloaded subscript operator.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Type Definitions Documentation</h1><div class="nested1" id="GUID-36D7E7C1-10BF-3979-A360-C23AD32E6F37"><a name="GUID-36D7E7C1-10BF-3979-A360-C23AD32E6F37"><!-- --></a>
+		<h2 class="topictitle2">Typedef CleanupStrategy</h2>
+		<table class="signature"><tr><td>typedef CleanupStrategyType</td><td>CleanupStrategy</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-77C80F69-EABE-31FD-8D05-242EDA545D6E"><a name="GUID-77C80F69-EABE-31FD-8D05-242EDA545D6E"><!-- --></a>
+		<h2 class="topictitle2">Typedef LAutoPtrBase</h2>
+		<table class="signature"><tr><td>typedef 
+					<a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase</a>&lt; T &gt;</td><td>LAutoPtrBase</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-1C97B7C3-C536-3002-8328-BD82BEAE6F86"><a name="GUID-1C97B7C3-C536-3002-8328-BD82BEAE6F86"><!-- --></a>
+		<h2 class="topictitle2">Typedef ManagedType</h2>
+		<table class="signature"><tr><td>typedef T</td><td>ManagedType</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

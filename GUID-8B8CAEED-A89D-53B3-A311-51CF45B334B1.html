@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="IRQ and FIQ Dispatchers"/>
+<meta name="abstract" content="The ASSP must supply two dispatcher functions, one for IRQ interrupts, and one for FIQ interrupts."/>
+<meta name="description" content="The ASSP must supply two dispatcher functions, one for IRQ interrupts, and one for FIQ interrupts."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3C34724F-B476-5329-B0B1-6D5A34294979.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ECAC3FF3-CDB2-5153-AD76-90732BA83726.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3C34724F-B476-5329-B0B1-6D5A34294979.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>IRQ and FIQ Dispatchers</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2400305 id2400319 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-ECAC3FF3-CDB2-5153-AD76-90732BA83726.html" title="Describes how to implement the ASSP/Variant layers for a port.">ASSP/Variant Tutorials</a> &gt; <a href="GUID-3C34724F-B476-5329-B0B1-6D5A34294979.html" title="Describes how to implement the Interrupt Dispatcher part of the ASSP/Variant.">Interrupt Dispatcher Tutorial</a> &gt; </div>
+<h1 class="topictitle1">IRQ
+and FIQ Dispatchers</h1>
+<div><p>The ASSP must supply two dispatcher functions, one for IRQ interrupts,
+and one for FIQ interrupts.</p>
+
+<p> The following example code is a simple dispatcher for IRQ interrupts.
+It assumes a simplistic interrupt controller that provides 32 interrupt sources,
+and has a 32-bit pending-interrupt register where a 'one' bit indicates a
+pending interrupt and all ones are cleared when the register is read. </p>
+
+<pre class="codeblock" id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-1603305D-1509-5E80-89C1-B3998B557216"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-1603305D-1509-5E80-89C1-B3998B557216"><!-- --></a>void IrqDispatch()
+    {
+    TUint32 pendingIrqs = TheAssp::IrqPendingRegister();
+    // for the purposes of this example we assume that reading
+    // this register also clears the pending flags
+
+    TInt index = 0;
+    while( pendingIrqs )
+        {
+        // while there is at least one pending IRQ
+        if( pendingIrqs &amp; 1 )
+            {
+            // the next interrupt is pending - dispatch it
+            (IsrHandlers[index].iIsr)(IsrHandlers[index].iPtr);
+            }
+        ++index;
+        pendingIrqs &gt;&gt;= 1;
+        }
+    }
+</pre>
+
+<p>The code assumes that the interrupt source represented by the low order
+bit in the pending-interrupt register is represented by interrupt ID number
+0 etc. </p>
+
+<p>When implementing the dispatcher it is usual to write it in C++ initially,
+but once you have it working you would probably want to rewrite it in assembler
+to gain maximum efficiency for what is a time-critical section of code. </p>
+
+<div class="section" id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-3F0D4E4E-8D9C-51FD-A701-65C29D54AB94"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-3F0D4E4E-8D9C-51FD-A701-65C29D54AB94"><!-- --></a><h2 class="sectiontitle">Dealing with
+chained interrupts</h2> <p>There are two considerations when dealing with <a href="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC.html#GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-9026A4AC-57AF-545D-887C-AF43E0B37EDC">chained
+interrupts</a>: </p>
+ <a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-DB84BE88-14E8-5124-9D43-4FC523311B65"><!-- --></a><ol id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-DB84BE88-14E8-5124-9D43-4FC523311B65">
+<li id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-DA20FB18-6949-5CDC-B44B-65A43283558A"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-DA20FB18-6949-5CDC-B44B-65A43283558A"><!-- --></a><p>how to identify interrupts
+on the lower priority chained controllers </p>
+ </li>
+
+<li id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-17C8A3C8-CCC5-574F-B7E2-C72CC2685569"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-17C8A3C8-CCC5-574F-B7E2-C72CC2685569"><!-- --></a><p>how to handle the dispatch
+of a chained interrupt. </p>
+ </li>
+
+</ol>
+ <p>The first point is a question of allocating locations in your <a href="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC.html#GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-77E83634-BBF6-5190-9434-9FB700547CD0">ISR
+table</a> for the secondary controllers so that the <a href="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC.html#GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-8E58F4C9-0290-55E0-A4FD-B6C2361BE205">interrupt ID</a> identifies which hardware controller the interrupt is
+on. For example, if each interrupt controller handles 32 interrupt sources,
+you could make the first 32 IDs refer to the highest-level controller, the
+next 32 refer to one of the second-level controllers etc. </p>
+ <p>There is
+no need to change the <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-4E3CB472-3525-32F8-9BC4-8ECFEE931E7B"><span class="apiname">Interrupt::Bind()</span></a> and <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-CCC9A397-608C-3EAF-830F-A59800C2E8E5"><span class="apiname">Interrupt::Unbind()</span></a> functions,
+although you may need to consider extending the <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-BB169E6E-D8F9-3762-899D-6DBA4B29CF87"><span class="apiname">Interrupt::Enable()</span></a> and <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-2D14E023-E6ED-39BF-8B31-6FA510957A8A"><span class="apiname">Interrupt::Disable()</span></a> functions
+to enable and disable the chain interrupt in a higher-level interrupt controller,
+if necessary. </p>
+ <p>There are at least two ways of dispatching a chained
+interrupt: </p>
+ <p><strong>Dispatching a chained interrupt (1)</strong> </p>
+ <p>One
+way of dispatching a chained interrupt is simply to make it a special case
+in the main interrupt dispatcher. For example: </p>
+ <pre class="codeblock" id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-189585CD-03BF-5E1F-ACD0-4AE2578D061B"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-189585CD-03BF-5E1F-ACD0-4AE2578D061B"><!-- --></a>void IrqDispatch()
+    {
+    TUint32 pendingIrqs = TheAssp::IrqPendingRegister();
+
+    TInt index = 0;
+    while( pendingIrqs )
+        {
+        if( pendingIrqs &amp; 1 )
+            {
+            if( index == EMainIntChainIrq )
+                {
+                // second-level controller is signalling
+                SecondLevelIrqDispatch();
+                }
+            else
+                {
+                // call ISR
+                (IsrHandlers[index].iIsr)(IsrHandlers[index].iPtr);
+                }
+            }
+        ++index;
+        pendingIrqs &gt;&gt;= 1;
+        }
+    }
+</pre>
+ <p>This approach works for a simple case, for example, where
+there is only a main and secondary interrupt controller. It is does not scale
+well because the special cases in the dispatcher become an overhead on the
+dispatch of normal, unchained interrupts as the number and depth of the chaining
+increases. </p>
+ <p><strong>Dispatching a chained interrupt (2)</strong> </p>
+ <p>A better
+way of handling chained interrupts is to bind an ISR to the interrupt source
+in the main interrupt controller and use it to dispatch the chained interrupt.
+This is far more scalable because you can bind any number of ISRs without
+having to add special cases to any of the interrupt dispatchers. </p>
+ <p>The
+dispatcher code could then be re-implemented as: </p>
+ <pre class="codeblock" id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-3B8BE593-C391-5D1F-BE94-5386306F773B"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-3B8BE593-C391-5D1F-BE94-5386306F773B"><!-- --></a>void IrqDispatch()
+    // MAIN IRQ DISPATCHER, FIRST-LEVEL INTERRUPT
+    {
+    TUint32 pendingIrqs = TheAssp::IrqPendingRegister();
+
+    TInt index = 0;
+    while( pendingIrqs )
+        {
+        if( pendingIrqs &amp; 1 )
+            {
+            (IsrHandlers[index].iIsr)(IsrHandlers[index].iPtr);
+            }
+        ++index;
+        pendingIrqs &gt;&gt;= 1;
+        }
+    }
+</pre>
+ <pre class="codeblock" id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-D38C0DE2-3171-59AB-AEE2-7CC5E26C4E17"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-D38C0DE2-3171-59AB-AEE2-7CC5E26C4E17"><!-- --></a>void SecondLevelIrqDispatch( TAny* /* aParam */ )
+    {
+    TUint32 pendingIrqs = TheAssp::SecondLevelIrqPendingRegister();
+ 
+    TInt index = EStartOfSecondLevelIntId;
+    while( pendingIrqs )
+        {
+        if( pendingIrqs &amp; 1 )
+            {
+            (IsrHandlers[index].iIsr)(IsrHandlers[index].iPtr);
+            }
+        ++index;
+        pendingIrqs &gt;&gt;= 1;
+        }
+    }
+</pre>
+ <pre class="codeblock" id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-87385945-E0DB-5396-A8EB-8B8F2B2EA80F"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-87385945-E0DB-5396-A8EB-8B8F2B2EA80F"><!-- --></a>void InitialiseSecondLevelDispatch()
+    // Bind and enable the second-level dispatcher
+    {
+    Interrupt::Bind(EMainIntChainIrq,SecondLevelIrqDispatch,NULL);
+    Interrupt::Enable( EMainIntChainIrq );
+    }
+</pre>
+ <div class="fignone" id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-4109B9AA-BAE7-5454-9556-DC6D40AC75B9"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-4109B9AA-BAE7-5454-9556-DC6D40AC75B9"><!-- --></a><span class="figcap">Figure 1. Interrupt sources</span>
+
+<img src="GUID-970EC5A9-8ED3-53C5-93A3-2EC1A7B6F25F_d0e389683_href.png"/>
+</div>
+ <ul>
+<li id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-7257146C-52C7-5C2F-B6F6-B32B558A0620"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-7257146C-52C7-5C2F-B6F6-B32B558A0620"><!-- --></a><p>The second level dispatcher, <samp class="codeph">SecondLevelIrqDispatch()</samp>,
+is itself an ISR, and takes a <a href="GUID-6D079976-9119-31FA-8E21-C3B815F94648.html"><span class="apiname">TAny</span></a> * parameter, but is
+not needed in this specific example. It reads the interrupt pending register
+of the second-level interrupt controller. Note, however, that the <a href="GUID-6D079976-9119-31FA-8E21-C3B815F94648.html"><span class="apiname">TAny</span></a> *
+parameter may be useful when the second level dispatcher is in the variant
+as opposed to the ASSP. In that case you have separate interrupt IDs for variant
+level interrupts and separate ISR tables. The <a href="GUID-6D079976-9119-31FA-8E21-C3B815F94648.html"><span class="apiname">TAny</span></a> * parameter
+can point to the appropriate ISR table. Alternatively the <a href="GUID-6D079976-9119-31FA-8E21-C3B815F94648.html"><span class="apiname">TAny</span></a> *
+can point to a data block containing IO addresses - especially useful if you
+have many I/O devices mapped as hardware chunks. See the code in <span class="filepath">...\assabet\specific\variant.cpp</span>. </p>
+ </li>
+
+<li id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-7ACA87E5-136F-56C2-855C-2F0C7486C13F"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-7ACA87E5-136F-56C2-855C-2F0C7486C13F"><!-- --></a><p>The index count starts
+at offset <samp class="codeph">EStartOfSecondLevelIntId</samp> into the ISR table, where
+the second-level interrupt ISRs are located. In this example, this symbol
+would equate to 32. </p>
+ </li>
+
+<li id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-0CDF7519-D979-5F49-ABBB-C3DC55426065"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-0CDF7519-D979-5F49-ABBB-C3DC55426065"><!-- --></a><p> <samp class="codeph">EMainIntChainIrq</samp> is
+the interrupt ID of the chained interrupt source to the main interrupt controller. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-BE4C910E-5FC7-4F83-AFF9-1070464FDA59"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-BE4C910E-5FC7-4F83-AFF9-1070464FDA59"><!-- --></a><h2 class="sectiontitle">Dealing with multiple interrupt sources</h2> <p>The case
+where multiple peripherals are connected to the same interrupt source can
+be handled through the technique of pseudo interrupt sources. This involves
+assigning pseudo-interrupt IDs in the ISR table to correspond to each of the
+peripherals that is attached to the interrupt line, i.e. ISRs are bound to
+these pseudo-interrupt sources. </p>
+ <p>Dealing with pseudo interrupt sources
+is, in essence, a special case of <a href="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC.html#GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-9026A4AC-57AF-545D-887C-AF43E0B37EDC">Chained
+interrupts</a>. </p>
+ <p>The dispatcher can do one of two things: </p>
+ <ul>
+<li id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-152A4626-FE77-5EED-9648-6ED1B08C04E8"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-152A4626-FE77-5EED-9648-6ED1B08C04E8"><!-- --></a><p>examine the peripheral
+hardware to determine which of the interrupts are pending, and then call the
+appropriate ISR </p>
+ </li>
+
+<li id="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-320CC5CC-A60D-5681-92AD-922DE1F97D95"><a name="GUID-8B8CAEED-A89D-53B3-A311-51CF45B334B1__GUID-320CC5CC-A60D-5681-92AD-922DE1F97D95"><!-- --></a><p>call all the ISRs and
+leave them to determine whether their peripheral is actually signalling an
+interrupt. </p>
+ </li>
+
+</ul>
+ <p>As usual, it is entirely up to you to choose the ID numbers for these
+pseudo-interrupts. </p>
+ <p>There should be no need to alter the implementations
+of <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-4E3CB472-3525-32F8-9BC4-8ECFEE931E7B"><span class="apiname">Interrupt::Bind()</span></a> or <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-CCC9A397-608C-3EAF-830F-A59800C2E8E5"><span class="apiname">Interrupt::Unbind()</span></a> but
+you will need some special handling in <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-BB169E6E-D8F9-3762-899D-6DBA4B29CF87"><span class="apiname">Interrupt::Enable()</span></a> to
+enable the true interrupt source, and <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-2D14E023-E6ED-39BF-8B31-6FA510957A8A"><span class="apiname">Interrupt::Disable()</span></a> to
+disable this interrupt source. </p>
+ <p>Dispatching the interrupt can be done
+in either of the two ways described in dealing with <a href="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC.html#GUID-76A30EC4-4B99-5471-9E80-F853C91485BC__GUID-9026A4AC-57AF-545D-887C-AF43E0B37EDC">chained interrupts</a>. Making use of a special case in the main interrupt
+dispatcher is acceptable for simple cases, but for more complicated cases
+with large numbers of pseudo-interrupts or a combination of chained and pseudo-interrupts,
+it is better to use an ISR dispatcher bound to the true interrupt source. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-3C34724F-B476-5329-B0B1-6D5A34294979.html" title="Describes how to implement the Interrupt Dispatcher part of the ASSP/Variant.">Interrupt Dispatcher Tutorial</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

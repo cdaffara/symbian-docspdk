@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to Get Location Information"/>
+<meta name="abstract" content="This document demonstrates how a client application uses the Location Acquisition API to get a position."/>
+<meta name="description" content="This document demonstrates how a client application uses the Location Acquisition API to get a position."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D0318BB6-0B9F-5A1C-AB0B-61BA22D28661.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-7F476137-5E7F-5288-9F4A-6C20F0A1AD9B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-55F5F029-6A00-5894-8892-90836DE4BA40.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-45980E0C-4DA4-5AC1-8721-490442DA7F3C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D0318BB6-0B9F-5A1C-AB0B-61BA22D28661.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to Get Location Information</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2402590 id2402946 id2402960 id2402974 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-7F476137-5E7F-5288-9F4A-6C20F0A1AD9B.html">Location Based Services (LBS) Guide</a> &gt; <a href="GUID-55F5F029-6A00-5894-8892-90836DE4BA40.html" title="The Location Management collection contains components to manage location requests and to interface with a network. It also contains several common core LBS libraries that are used by many components of the LBS subsystem.">Location Management</a> &gt; <a href="GUID-45980E0C-4DA4-5AC1-8721-490442DA7F3C.html" title="Location Admin is an LBS component that contains several common LBS libraries grouped for convenience in a single system component.">Location Admin</a> &gt; <a href="GUID-D0318BB6-0B9F-5A1C-AB0B-61BA22D28661.html" title="Client applications use the Location Acquisition API to obtain the position of the mobile device from the LBS subsystem.">The Location Acquisition API</a> &gt; </div>
+<h1 class="topictitle1">How to Get Location Information</h1>
+<div><p>This document demonstrates how a client application uses the Location Acquisition API to get a position. </p>
+<div class="section"><h2 class="sectiontitle">Purpose</h2> <p>This tutorial explains how to get location information using the Location Acquisition API. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Required background</h2> <p><a href="GUID-65E9C040-AAB6-5C1E-9724-8828DADFC741.html" title="Applications use the Location Acquisition API to obtain location fixes from the LBS subsystem.">Location Acquisition API Overview</a> describes the main client/server classes of the API. </p>
+ <p><a href="GUID-ABC01315-D65D-55EA-9D42-4DE6384D517D.html" title="This document describes the basic and extended classes that hold position data.">Position Data and Info Classes</a> describes the classes that hold location information. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Getting location information</h2> <p>This section describes how to get location information using the Location Acquisition API. </p>
+ <p><strong>Introduction</strong> </p>
+ <p>Client applications use the <a href="GUID-0ADC4654-7F7B-3B53-A2F9-7035670F501B.html"><span class="apiname">RPositionServer</span></a> and <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html"><span class="apiname">RPositioner</span></a> classes to get position updates. <samp class="codeph">RPositionServer</samp> is used by client applications to manage a session with the Location Server and to get Positioning Module information. <samp class="codeph">RPositioner</samp> is used by client applications to manage a subsession with the Location Server and to get position updates. </p>
+ <p><strong>GPS positioning modes</strong> </p>
+ <p>The Global Positioning System (GPS) is a technology that is often included in devices that support LBS. </p>
+ <p>For each location request from a client, the LBS subsystem can operate in one of several different GPS positioning modes. The Location Acquisition API hides the details of which GPS positioning mode is in use from client applications. A client makes the same sequence of calls to the API to get a position update whichever positioning mode is used. Note that only some of these positioning modes may be available to a client application at runtime. </p>
+ <p>Each GPS positioning mode is a different way of getting a position fix: </p>
+ <ul><li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-2BDDAACC-EB8D-5191-A42E-0BFA0B26C7DC"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-2BDDAACC-EB8D-5191-A42E-0BFA0B26C7DC"><!-- --></a><p>Autonomous </p>
+ <p>LBS uses a GPS Positioning Module to calculate position fixes without assistance data from the network. This mode typically takes the longest time to obtain a location fix compared to the other modes. </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-B2E24A6F-F46A-529E-A8F5-FC52F7CD8F0D"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-B2E24A6F-F46A-529E-A8F5-FC52F7CD8F0D"><!-- --></a><p>Terminal Based Mode </p>
+ <p>LBS uses an A-GPS Positioning Module to calculate position fixes using assistance data from the network. Assistance data specifies the GPS satellites that are above the horizon as seen from the mobile device's current location. Assistance data is used by an A-GPS Positioning Module to reduce the time necessary to obtain a position fix. </p>
+ <p>The network can also supply a <em>reference position</em> to the LBS subsystem as part of the sequence of events. This position is calculated in the network using cell-based techniques and may be less accurate than that obtained from GPS. If a reference position is available, it may be returned to the client before a GPS position. </p>
+ <p>See <a href="GUID-4E56E531-5757-5740-9C7D-705D427FA9D5.html" title="This document describes some differences in runtime behaviour that application clients may observe depending on the Symbian platform on which they are running.">Location Acquisition API Runtime Behaviour</a> for more information about the position updates that can be returned by LBS. </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-018CA9E1-F191-5CC9-8DCD-8FE08CAABD28"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-018CA9E1-F191-5CC9-8DCD-8FE08CAABD28"><!-- --></a><p>Terminal Assisted Mode </p>
+ <p>LBS uses an A-GPS Positioning Module to obtain GPS measurements (using assistance data from the network). GPS measurements are the raw data used to calculate a GPS fix. Measurements are sent to the network and a position fix is calculated by a remote server. The remotely calculated position fix is returned to the mobile device and is known as the <em>final network position</em>. The LBS subsystem returns this position to the client. </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-9B1678F5-A53B-5245-9EE4-5809461E2EBB"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-9B1678F5-A53B-5245-9EE4-5809461E2EBB"><!-- --></a><p>Simultaneous Terminal Based Mode and Terminal Assisted Mode. </p>
+ <p>LBS passes GPS measurements to the network (as in Terminal Assisted Mode), but also attempts to use those measurements to calculate a GPS position fix (as in Terminal Based Mode). The position returned to the client may be either a GPS position (calculated in the mobile device) or a final network position (calculated using the measurements by a remote server in the network). The position that is calculated first (the GPS position or the final network position) is generally returned to the client. The final network position may also be returned to the client after the return of the GPS position. </p>
+ </li>
+ </ul>
+ <p>Some devices also support a Cell-based Mode in which LBS obtains a position fix from the network without using GPS. This position fix is sometimes less accurate than that obtained using GPS. </p>
+ <p>A client application cannot directly choose the GPS positioning mode that is used for its location request. A handset manufacturer may provide an LBS settings application where the GPS mode can be selected by an end user. However for modes that involve the network (Terminal Based Mode, Terminal Assisted Mode and Cell-based Mode) it is possible for a network operator to override the GPS mode as part of the location request. If a client wants to know precisely how a position fix was calculated, this information is available in the returned position info object (as described in more detail later in this document). </p>
+ <p><strong>Example sequence</strong> </p>
+ <p>Figure 1 shows a simplified sequence for a client requesting a position update from LBS. The sequence shows simplified behaviour for Terminal Based Mode. The <em>A-GPS Module</em> is a Positioning Module that uses Assisted GPS to calculate a position. The <em>Network Protocol Module</em> is a Positioning Module that obtains GPS assistance data and reference positions (often approximate positions) from the network. Note that Terminal Based Mode may not be available on all mobile devices. This depends on the Positioning Modules that have been installed by the mobile device creator. </p>
+ <div class="fignone" id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-FD5FEC83-B76D-5D45-AF40-DF5C2F17D404"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-FD5FEC83-B76D-5D45-AF40-DF5C2F17D404"><!-- --></a><span class="figcap">Figure 1. 
+                Figure 1. Simplified Terminal Based Mode Sequence 
+             </span> <img src="GUID-D9C4D520-821D-5097-A63C-0BF4C7F59827_d0e439829_href.png"/></div>
+ <p><strong>Example code and description</strong> </p>
+ <p>The following code shows a simple example of how a client application can get a single position update. The numbers in the code comments refer to sections that follow the code example. </p>
+ <pre class="codeblock" id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-7B350944-5178-586B-B381-87DC5104DD1F"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-7B350944-5178-586B-B381-87DC5104DD1F"><!-- --></a>#include &lt;lbs.h&gt;
+#include &lt;lbserrors.h&gt;
+
+...
+
+RPositionServer server;
+RPositioner positioner;
+
+// 1. Create a session with the Location Server
+User::LeaveIfError(server.Connect());
+CleanupClosePushL(server);
+
+// 2. Create a subsession with the Location Server using default positioning module
+User::LeaveIfError(positioner.Open(server));
+CleanupClosePushL(positioner);
+
+// 3. Set the requester information - in this example define a requester stack... 
+
+_LIT(KCntPhone, "+358501234567");
+_LIT(KSrvName, "MyService");
+RRequestorStack stack;
+CRequestor* contact = CRequestor::NewLC(CRequestor::ERequestorContact, CRequestor::EFormatTelephone, KCntPhone);
+stack.Append(contact);
+CRequestor* service = CRequestor::NewLC(CRequestor::ERequestorService,    CRequestor::EFormatApplication, KSrvName);
+stack.Append(service);
+User::LeaveIfError(positioner.SetRequestor(stack));
+
+TPositionInfo posInfo;
+TPosition pos;
+TRequestStatus status;
+
+/* 4. To set update options, call RPositioner::SetUpdateOptions(). 
+      See the description in section 4 below */
+
+/* 5. Request location information
+      Could also call positioner.GetLastKnownPosition(posInfo, status) 
+      to get cached location information */
+positioner.NotifyPositionUpdate(posInfo, status);
+User::WaitForRequest(status);
+
+// 6. Receive location information
+if (status != KErrNone)
+ {
+ // Handle possible client/server errors
+ ...
+ }
+
+// Get the position data object from the wrapper info object
+posInfo.GetPosition(pos);
+
+// Use the position data
+...
+
+// Reissue the location request if necessary by calling NotifyPositionUpdate() again
+
+/* 7. To cancel or complete a location request a client
+ calls RPositioner::CancelRequest() or RPositioner::CompleteRequest() */
+
+// 8. Cleanup
+stack.Reset();
+CleanupStack::PopAndDestroy(service);
+CleanupStack::PopAndDestroy(contact);
+CleanupStack::PopAndDestroy(&amp;positioner);
+CleanupStack::PopAndDestroy(&amp;server);
+</pre>
+ <p>The following describes the steps to get location information as shown in the above example: </p>
+ <p><strong>1. Create a session with the Location Server </strong> </p>
+ <p>To create a session with the Location Server, a client application: </p>
+ <ul><li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-2AD36917-A3B1-52D1-BBBB-C9A48592E5AA"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-2AD36917-A3B1-52D1-BBBB-C9A48592E5AA"><!-- --></a><p>Creates an instance of <a href="GUID-0ADC4654-7F7B-3B53-A2F9-7035670F501B.html"><span class="apiname">RPositionServer</span></a>  </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-5771DD5B-C660-5408-8F34-C94D2E8A3419"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-5771DD5B-C660-5408-8F34-C94D2E8A3419"><!-- --></a><p>Calls <a href="GUID-0ADC4654-7F7B-3B53-A2F9-7035670F501B.html#GUID-0ADC4654-7F7B-3B53-A2F9-7035670F501B__GUID-23285930-A1D5-3A97-AED4-E979BFA96FDD"><span class="apiname">RPositionServer::Connect()</span></a>  </p>
+ </li>
+ </ul>
+ <p>Standard client-server error codes are returned by calls to open the session. A panic occurs if the client application has already created a session with the Location Server. Error and panic codes specific to LBS are defined in <span class="filepath">LbsErrors.h</span>. </p>
+ <p><strong>2. Create a subsession with the Location Server </strong> </p>
+ <p>Location information requests are issued on a subsession. </p>
+ <p>To create a subsession, an application calls one of three overloaded <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-AF3D9B5F-8025-3AFF-A101-82025520EBD6"><span class="apiname">RPositioner::Open()</span></a> member functions: </p>
+ <ul><li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-D6A2BD94-DFE6-5B2D-9CE4-E5C565323F6E"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-D6A2BD94-DFE6-5B2D-9CE4-E5C565323F6E"><!-- --></a><p> <samp class="codeph">RPositioner::Open(RPositionServer&amp; aPosServer)</samp> uses the Default Positioning Module to get location information. The client application does not specify any position quality criteria (which specify the required position accuracy) and therefore LBS uses default position quality criteria (horizontal accuracy = 50m, vertical accuracy = 1000m, request timeout = 30 seconds). </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-B6357BFF-A3DF-5036-90BF-ED2243C752C0"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-B6357BFF-A3DF-5036-90BF-ED2243C752C0"><!-- --></a><p> <samp class="codeph">RPositioner::Open(RPositionServer&amp; aPosServer,
+                  TPositionModuleId aModuleId)</samp> allows a specific Positioning Module to be specified by the client application. LBS uses position quality criteria associated with the specified Positioning Module. No quality criteria are specified and so LBS uses the capabilities of the Positioning Module as the default criteria. </p>
+ <p>See <a href="GUID-BADAAC2D-8614-5036-95BC-3889457F7ED0.html" title="This document describes the classes that give information about Positioning Modules.">Positioning Modules</a> for information about Positioning Module position quality and <a href="GUID-A4B47A7A-17EB-570C-AD88-6756B34AF634.html" title="This document describes how a client application uses the API to get information about the available Positioning Modules.">How to Use Positioning Module Information</a> for more information about how to get a module ID. </p>
+ </li>
+ </ul>
+ <p>The LBS subsystem does not compare the vertical accuracy of a calculated position with the vertical accuracy specified by a client application (specified by position quality criteria, by a quality profile or by a Positioning Module). Only the horizontal accuracy of a calculated position is used to decide if it is accurate enough to be returned to a client application. </p>
+ <p><strong>3. Set client requester details </strong> </p>
+ <p>A client application can specify the client requesters by calling <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-E1B082DC-9C01-3852-B1D8-B2FD18235319"><span class="apiname">RPositioner::SetRequestorL()</span></a> before calling <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-321F6046-3551-3ACE-B0A3-26D51FAEB477"><span class="apiname">RPositioner::NotifyPositionUpdate()</span></a>. </p>
+ <p>This is an optional step. Calling <samp class="codeph">SetRequestorL()</samp> has no effect in this version of the Symbian platform. Calling <samp class="codeph">SetRequestorL()</samp> is required in some devices based on earlier versions of Symbian. To ensure an LBS application runs on devices based on earlier versions of Symbian, it is recommended that it calls <samp class="codeph">SetRequestorL()</samp>. </p>
+ <p>See <a href="GUID-ACD9E338-DF75-5811-B696-C3900B498218.html" title="This document describes the classes that were used in earlier versions of the Symbian platform to identify the requester of location information to the LBS subsystem.">Privacy Requester Classes</a> for more information. </p>
+ <p><strong>4. Set update options </strong> </p>
+ <p>A client application calls <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-7A8BC23A-6FF9-3AAF-99BF-A6B074FDEA7B"><span class="apiname">RPositioner::SetUpdateOptions()</span></a> to set the update options. Calling this method only affects future calls to <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-321F6046-3551-3ACE-B0A3-26D51FAEB477"><span class="apiname">RPositioner::NotifyPositionUpdate()</span></a> and <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-D9E0BC1D-7783-35BA-8D88-223576E4C85E"><span class="apiname">RPositioner::GetLastKnownPosition()</span></a> and does not affect any outstanding requests. </p>
+ <p>A <a href="GUID-E60595B9-B6E2-38E1-BE1E-A82113C7EC94.html"><span class="apiname">TPositionUpdateOptions</span></a> parameter specifies the update options and is passed in <samp class="codeph">RPositioner::SetUpdateOptions()</samp>. The properties of <samp class="codeph">TPositionUpdateOptions</samp> are set either on its construction or via setter methods. The following properties can be defined: </p>
+ <ul><li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-239CCE63-0455-525A-9CC7-8FCE0530B7CB"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-239CCE63-0455-525A-9CC7-8FCE0530B7CB"><!-- --></a><p>The time interval between position updates </p>
+ <p> <samp class="codeph">TPositionUpdateOptions::SetUpdateInterval(TTimeIntervalMicroSeconds
+                  aInterval)</samp> sets the time interval between position updates. </p>
+ <p>Setting a non-zero value indicates that the client requires periodic updates (this is also known as 'tracking'). LBS attempts to send position updates to the client application with this interval between the updates. Note that setting <samp class="codeph">aInterval</samp> to <samp class="codeph">0</samp> (or not setting it) indicates that the client is not tracking. </p>
+ <p> <em>Note that when a client application is tracking, LBS does not return reference positions as periodic updates. See the section on Tracking later in this document for more information on tracking behaviour.</em>  </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-3BDBCE8C-53D1-5DE7-B81A-86145460C1BA"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-3BDBCE8C-53D1-5DE7-B81A-86145460C1BA"><!-- --></a><p>A position update timeout </p>
+ <p> <samp class="codeph">TPositionUpdateOptions::SetUpdateTimeOut(TTimeIntervalMicroSeconds
+                  aTimeOut)</samp> sets a timeout for the location request. It specifies how long the client application is prepared to wait to obtain a position update. If the timeout expires <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-321F6046-3551-3ACE-B0A3-26D51FAEB477"><span class="apiname">RPositioner::NotifyPositionUpdate()</span></a> completes and the client's <samp class="codeph">RunL()</samp> method is called. </p>
+ <p>After a timeout the value set for the client's <samp class="codeph">TRequestStatus</samp> parameter depends on the configuration of the LBS subsystem and may be either <samp class="codeph">KErrTimeOut</samp> or <samp class="codeph">KPositionQualityLoss</samp>. See <a href="GUID-4E56E531-5757-5740-9C7D-705D427FA9D5.html" title="This document describes some differences in runtime behaviour that application clients may observe depending on the Symbian platform on which they are running.">Location Acquisition API runtime behaviour</a> for more information. </p>
+ <p> <em>Note that calling SetUpdateTimeOut() with a value of 0 (or not setting it) indicates that LBS should not timeout the location request from a client. </em>  </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-C0405589-A7DC-58E4-A39A-145943152B50"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-C0405589-A7DC-58E4-A39A-145943152B50"><!-- --></a><p>The maximum age of a position update </p>
+ <p> <samp class="codeph">TPositionUpdateOptions::SetMaxUpdateAge(TTimeIntervalMicroSeconds
+                  aMaxAge)</samp> specifies the maximum age of the position data returned by <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-321F6046-3551-3ACE-B0A3-26D51FAEB477"><span class="apiname">RPositioner::NotifyPositionUpdate()</span></a>. Setting this value allows the Location Server to use cached location information in some cases. The default value of 0 indicates that new position data is required. </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-EBCB9F00-1331-5627-95B6-4B1E851776CF"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-EBCB9F00-1331-5627-95B6-4B1E851776CF"><!-- --></a><p>Acceptance of partial updates </p>
+ <p>A partial update is a position update that contains only partial position data. Such a position is called an <em>incomplete position</em>. An example of an incomplete position is one that contains data about the satellites used to obtain a GPS fix but no latitude or longitude data.<samp class="codeph"/> LBS defines an incomplete position to be one where either <samp class="codeph">TPosition::Latitude()</samp> or <samp class="codeph">TPosition::Longitude()</samp> is <samp class="codeph">NaN</samp> (Not a Number). </p>
+ <p> <samp class="codeph">TPositionUpdateOptions::SetAcceptPartialUpdates(TBool
+                  aPartial)</samp> allows an application to choose to accept partial updates. If a partial update is returned an application's <samp class="codeph">TRequestStatus</samp> parameter is set to <samp class="codeph">KPositionPartialUpdate</samp> when <samp class="codeph">NotifyPositionUpdate()</samp> completes. </p>
+ <p>If partial updates are not set the default behaviour is for <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-321F6046-3551-3ACE-B0A3-26D51FAEB477"><span class="apiname">RPositioner::NotifyPositionUpdate()</span></a> to complete only when the Positioning Module used for the location request has obtained as much information as possible. Note however that this behaviour is configurable by a Symbian device creator (see <a href="GUID-4E56E531-5757-5740-9C7D-705D427FA9D5.html" title="This document describes some differences in runtime behaviour that application clients may observe depending on the Symbian platform on which they are running.">Location Acquisition API runtime behaviour</a> for more information). </p>
+ </li>
+ </ul>
+ <p><strong>Important note on setting update options </strong> </p>
+ <p>The default constructor of <a href="GUID-E60595B9-B6E2-38E1-BE1E-A82113C7EC94.html"><span class="apiname">TPositionUpdateOptions</span></a> sets all update options to zero by default and is the equivalent of calling the following: </p>
+ <ul><li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-FA830ED1-156A-5EE9-B27F-7C4AD064A061"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-FA830ED1-156A-5EE9-B27F-7C4AD064A061"><!-- --></a><p> <samp class="codeph">TPositionUpdateOptions::SetUpdateInterval(0)</samp> meaning that tracking is off </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-0AF71B28-0EE0-549B-BE23-A82A85A3CC1E"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-0AF71B28-0EE0-549B-BE23-A82A85A3CC1E"><!-- --></a><p> <samp class="codeph">TPositionUpdateOptions::SetUpdateTimeout(0)</samp> meaning that LBS should not timeout the client's request </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-A66326A6-8350-5B0A-BA67-1E67C8416FEC"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-A66326A6-8350-5B0A-BA67-1E67C8416FEC"><!-- --></a><p> <samp class="codeph">TPositionUpdateOptions::SetMaxUpdateAge(0)</samp> meaning that new position data is required </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-8FFDD522-7CE8-5627-A630-100562B6AC61"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-8FFDD522-7CE8-5627-A630-100562B6AC61"><!-- --></a><p> <samp class="codeph">TPositionUpdateOptions::SetAcceptPartialUpdates(EFalse)</samp> meaning the partial updates are not returned </p>
+ </li>
+ </ul>
+ <p>When setting update options, a client should beware of causing unexpected side effects. For example, if a client wants to accept partial updates, it might do the following: </p>
+ <ul><li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-2C3A765E-9000-55D0-AF80-959E30FC6BCF"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-2C3A765E-9000-55D0-AF80-959E30FC6BCF"><!-- --></a><p>Create a new <samp class="codeph">TPositionUpdateOptions</samp> options object </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-412495C8-DD14-5F18-B49A-4AB577F7ADFA"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-412495C8-DD14-5F18-B49A-4AB577F7ADFA"><!-- --></a><p>Call <samp class="codeph">TPositionUpdateOptions::SetAcceptPartialUpdates(ETrue)</samp>  </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-0F75DB2C-A3AE-50DD-AE5F-A9C0767E92EF"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-0F75DB2C-A3AE-50DD-AE5F-A9C0767E92EF"><!-- --></a><p>Call <samp class="codeph">RPositioner::SetUpdateOptions()</samp> passing the options object as a parameter </p>
+ </li>
+ </ul>
+ <p>However, this process has the side-effect of setting all the other update options to their default values as described above. In particular the client request will now not timeout which is unlikely to be the desired behaviour. To avoid this, a client should usually modify the current update options as follows: </p>
+ <ul><li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-95B83378-4262-5861-A17A-1813DA6FC339"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-95B83378-4262-5861-A17A-1813DA6FC339"><!-- --></a><p>Get the current update options by calling <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-69E1F34F-FEF9-3E0C-88B6-DE0458E005A5"><span class="apiname">RPositioner::GetUpdateOptions()</span></a>  </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-7C5DE68E-D192-551F-8F30-F4DC35E9D736"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-7C5DE68E-D192-551F-8F30-F4DC35E9D736"><!-- --></a><p>Call the appropriate <samp class="codeph">TPositionUpdateOptions::SetXXX()</samp> methods for the options to be changed </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-E889905E-5AE5-53D0-BA99-8F430EAC3177"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-E889905E-5AE5-53D0-BA99-8F430EAC3177"><!-- --></a><p>Call <samp class="codeph">RPositioner::SetUpdateOptions()</samp> passing the modified options object as a parameter </p>
+ </li>
+ </ul>
+ <p><strong>Examples </strong> </p>
+ <p>The following code shows a simple example of how to set update options. Note that all the options are changed by the client. </p>
+ <pre class="codeblock" id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-A6C75044-19AF-5A77-BB17-18F4B8AA32EE"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-A6C75044-19AF-5A77-BB17-18F4B8AA32EE"><!-- --></a>...
+
+TPositionUpdateOptions options;
+
+// Frequency of updates in microseconds
+const TTimeIntervalMicroSeconds KUpdateInterval(2000000);
+
+// How long the application is willing to wait before timing out the request
+const TTimeIntervalMicroSeconds KTimeOut(4000000);
+
+// The maximum acceptable age of the information in an update
+const TTimeIntervalMicroSeconds KMaxUpdateAge(1000000);
+
+options.SetUpdateInterval(KUpdateInterval);
+options.SetUpdateTimeOut(KTimeOut);
+options.SetMaxUpdateAge(KMaxUpdateAge);
+options.SetAcceptPartialUpdates(EFalse);
+
+User::LeaveIfError(positioner.SetUpdateOptions(options));
+
+/* Now when the application requests location information
+it will be provided with these options */ 
+
+positioner.NotifyPositionUpdate(posInfo, status);
+
+...
+
+</pre>
+ <p>The following code example shows an example of how to change one update option (to accept partial updates). </p>
+ <pre class="codeblock" id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-6AEAAEBA-0841-502C-A6AF-11E9A5B5BD88"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-6AEAAEBA-0841-502C-A6AF-11E9A5B5BD88"><!-- --></a>...
+
+TPositionUpdateOptions options;
+
+User::LeaveIfError(positioner.GetUpdateOptions(options));
+options.SetAcceptPartialUpdates(ETrue);
+User::LeaveIfError(positioner.SetUpdateOptions(options));
+
+// The other update options are unchanged
+
+positioner.NotifyPositionUpdate(posInfo, status);
+
+...
+
+</pre>
+ <p> <strong>Notes</strong>  </p>
+ <p>When a call to <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-321F6046-3551-3ACE-B0A3-26D51FAEB477"><span class="apiname">RPositioner::NotifyPositionUpdate()</span></a> or <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-D9E0BC1D-7783-35BA-8D88-223576E4C85E"><span class="apiname">RPositioner::GetLastKnownPosition()</span></a> completes, it is necessary to re-issue the request by calling one of these methods again to obtain further updates even if <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-7A8BC23A-6FF9-3AAF-99BF-A6B074FDEA7B"><span class="apiname">RPositioner::SetUpdateOptions()</span></a> has been called. Setting update options allows a client to specify when the next position update is required, but does not cause periodic requests to the Location Server to be made. </p>
+ <p>A client application can only have one outstanding request for location information per <samp class="codeph">RPositioner</samp> subsession. An attempt to make a second request for location information while one is still outstanding causes a panic to occur. An application must cancel an outstanding request before it makes another request. This process is described in step 7. </p>
+ <p><strong>5. Request the location information </strong> </p>
+ <p>An application can call one the following methods to obtain position data: </p>
+ <ul><li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-8026ACFD-3519-5917-B64C-6BB5349E0793"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-8026ACFD-3519-5917-B64C-6BB5349E0793"><!-- --></a><p> <em>RPositioner::NotifyPositionUpdate()</em>  </p>
+ <p>A client application calls <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-321F6046-3551-3ACE-B0A3-26D51FAEB477"><span class="apiname">RPositioner::NotifyPositionUpdate()</span></a> to request a position update. The LBS subsystem can either request that a Positioning Module obtains a new position and returns it to the client or simply returns an existing position calculated at some earlier time. The precise action taken by LBS depends on the quality of position required by the client because it is possible that a position obtained some time ago may meet the client application's position quality requirements. </p>
+ <p> <samp class="codeph">RPositioner::NotifyPositionUpdate()</samp> is a client-server asynchronous call. The client application can pass any position info class that derives from <a href="GUID-73D6F438-C270-33B9-974B-D4D1583E1738.html"><span class="apiname">TPositionInfoBase</span></a>. The standard position info class is <a href="GUID-D5B2E933-209D-3871-8E27-CC5C8855C745.html"><span class="apiname">TPositionInfo</span></a> which is supported by all Positioning Modules. An application can get extended location information (if there is a Positioning Module that can supply it) by passing one of the specialised position info classes such as <a href="GUID-E438D9D8-8DC2-39E3-B5D2-9EBD1D2EED82.html"><span class="apiname">TCourseInfo</span></a> or <a href="GUID-54AE0674-C49D-3329-8B77-3A58EFFC03D7.html"><span class="apiname">TPositionSatelliteInfo</span></a> instead of <a href="GUID-D5B2E933-209D-3871-8E27-CC5C8855C745.html"><span class="apiname">TPositionInfo</span></a>. </p>
+ <p>See <a href="GUID-ABC01315-D65D-55EA-9D42-4DE6384D517D.html" title="This document describes the basic and extended classes that hold position data.">Position data and info classes</a> for more information about position data and wrapper info classes. </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-8C8CD6DD-5ED1-5F73-9FCD-611579838CD0"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-8C8CD6DD-5ED1-5F73-9FCD-611579838CD0"><!-- --></a><p> <em>RPositioner::GetLastKnownPosition()</em>  </p>
+ <p>A client application calls <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-D9E0BC1D-7783-35BA-8D88-223576E4C85E"><span class="apiname">RPositioner::GetLastKnownPosition()</span></a> to request the device's last known position. </p>
+ <p> <samp class="codeph">RPositioner::GetLastKnownPosition()</samp> is a client-server asynchronous call. Calling this method does not instigate a new position fix even if the LBS subsystem does not have a last known position. It is therefore possible that this method will fail to return a position if one was not previously calculated. Client applications must check for this possibility by checking the values of <samp class="codeph">TCoordinate::Latitude()</samp> and <samp class="codeph">TCoordinate::Longitude()</samp> of the <a href="GUID-AB9F288E-86C6-327A-9E53-2EA746416038.html"><span class="apiname">TPosition</span></a> object inside of the <a href="GUID-D5B2E933-209D-3871-8E27-CC5C8855C745.html"><span class="apiname">TPositionInfo</span></a> parameter. If latitude and longitude data are not available they are set to <samp class="codeph">NaN</samp> (Not a Number). An application may also need to check the timestamp of the information to ensure it still meets its needs as it is possible that the last position update was obtained some time ago. </p>
+ <p>If the LBS subsystem has a position from a previous request a call to <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-D9E0BC1D-7783-35BA-8D88-223576E4C85E"><span class="apiname">RPositioner::GetLastKnownPosition()</span></a> is more efficient in terms of request response time and device power consumption. It may also be cheaper for the mobile device owner who may be charged to obtain a new position. </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-462ACD7E-9E6E-5366-8538-4EF5416CB2E7"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-462ACD7E-9E6E-5366-8538-4EF5416CB2E7"><!-- --></a><p> <em>RPositioner::GetLastKnownPositionArea()</em>  </p>
+ <p>A client application calls <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-A8484963-B2C4-339D-AF8C-056792444D89"><span class="apiname">RPositioner::GetLastKnownPositionArea()</span></a> to request the last known position that most closely matches the device's current location. The device's current location is estimated from the network cell ID received from the network. </p>
+ <p> <samp class="codeph">RPositioner::GetLastKnownPositionArea()</samp> is a client-server asynchronous call. The client application can request the LBS subsystem to provide either basic or the extended area information. The exact signature of the method is as follows: </p>
+ <p> <samp class="codeph">RPositioner::GetLastKnownPositionArea(TPositionInfoBase&amp;
+                  aPosInfo, TPositionAreaInfoBase&amp; aAreaInfo, TRequestStatus&amp; aStatus)
+                  const;</samp>  </p>
+ <p>A client passes in <samp class="codeph">aPosInfo</samp>, <samp class="codeph">aAreaInfo</samp> and <samp class="codeph">aStatus</samp> parameters. </p>
+ <ul><li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-44BEA85B-1CFF-5380-B9FE-8659029CD52D"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-44BEA85B-1CFF-5380-B9FE-8659029CD52D"><!-- --></a><p>On completion, <samp class="codeph">aPosInfo</samp> contains the last known position that is the best match with information received from the network. </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-8A708090-5281-5BC7-8EFE-A935317F9531"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-8A708090-5281-5BC7-8EFE-A935317F9531"><!-- --></a><p> <samp class="codeph">aAreaInfo</samp> contains an estimate of the accuracy of the last known position. <samp class="codeph">TPositionAreaInfoBase</samp> is the base class for two position area data classes. A client can pass a <a href="GUID-5FA78254-70C7-3105-B6CE-E1A294C8F773.html"><span class="apiname">TPositionAreaInfo</span></a> object to get basic position accuracy information, or it can pass a <a href="GUID-BC7DEDAF-80AE-34DC-8FD8-CF77FA511B3D.html"><span class="apiname">TPositionAreaExtendedInfo</span></a> object to get extra information about how the accuracy estimate was calculated. </p>
+ </li>
+ </ul>
+ <p>If successful, <samp class="codeph">GetLastKnownPositionArea()</samp> returns the best matching last known position in the <samp class="codeph">aPosInfo</samp> parameter, an estimate of the position accuracy in the <samp class="codeph">aAreaInfo</samp> parameter and a result code of <samp class="codeph">KErrNone</samp>. </p>
+ <p>See <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-A8484963-B2C4-339D-AF8C-056792444D89"><span class="apiname">RPositioner::GetLastKnownPositionArea()</span></a> for more information about using this method and the returned error codes. </p>
+ <p>See <a href="GUID-70E1117B-17F0-5CF4-A5D0-35D3BEBB0FEA.html" title="This document describes the basic and extended position area data classes that contain information about the accuracy of the position returned to an application when it calls RPositioner::GetLastKnownPositionArea().">Position Area Data Classes</a> for information about the classes that used to obtain the position accuracy estimate. </p>
+ <p>The following code fragment shows how to use the method and check the accuracy of the returned position: </p>
+ <pre class="codeblock" id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-2AC03D72-4105-5752-A294-08D64CAFB3A5"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-2AC03D72-4105-5752-A294-08D64CAFB3A5"><!-- --></a>
+// Create an RPositionServer, RPositioner, TRequestStatus as normal and open a session (see above)
+
+...
+
+// Want to know basic position accuracy, so use TPositionAreaInfo
+
+TRequestStatus status;
+TPositionInfo posInfo;
+TPositionAreaInfo areaInfo;
+
+// Get the last known location and an estimate of its accuracy
+
+positioner.GetLastKnownLocationArea(posInfo, areaInfo, status);
+User::WaitForRequest(status);
+
+// Check the return status 
+
+if ( status == KErrNone )
+ {
+
+ TPosition pos;
+ posInfo.GetPosition(pos);
+ TReal64 latitude = pos.Latitude();
+ TReal64 longitude = pos.Longitude();
+ TTime time = pos.Time();
+
+ /*
+ Check the posInfo object to see if it contains valid position data before trying to use it.
+ Check position latitude, longitude and (if necessary) altitude for Math::IsNaN().
+ Also a good idea to check the timestamp against current time, because this position could be old.
+ Details omitted...
+ */
+
+ // Get the accuracy of the position
+ TPositionAreaInfo::TArea area = areaInfo.Area();
+ 
+ // Does this position meet your accuracy requirements?
+
+ if (area == TPositionAreaInfo::EAreaCity)
+  {
+  
+  /* 
+  In this example, want city level position accuracy.
+  Is this position accurate enough for your application?
+  
+  If not you could also check for EAreaDistrict and EAreaStreet.
+  TPositionAreaInfo::_TArea defines the values you can check for.
+  
+  If this position is accurate enough, do something useful with your returned position data...
+  
+  If it is not accurate enough, you may need to get a new full position fix
+  Call positioner.NotifyPositionUpdate() to do this.
+  */
+  
+  }
+ 
+ }
+
+else
+
+    {
+
+ /*
+ Function returned something other than KErrNone.
+ It could be KErrNotFound which indicates that no stored position was found.
+ Or it could be a system error code if something went wrong - you need to check it.
+ */
+
+ }
+</pre>
+ </li>
+ </ul>
+ <p>Client applications must always check the value of the <samp class="codeph">TRequestStatus</samp> parameter as this indicates the success or failure of the location request and may indicate that specified location accuracy criteria could not be satisfied at the time of the request. </p>
+ <p>The value of <samp class="codeph">TRequestStatus</samp> that is set when a position update occurs or times out depends on the configuration of the LBS subsystem. See <a href="GUID-4E56E531-5757-5740-9C7D-705D427FA9D5.html" title="This document describes some differences in runtime behaviour that application clients may observe depending on the Symbian platform on which they are running.">Location Acquisition API runtime behaviour</a> for more information. </p>
+ <p><strong>6. Receive and use the location information </strong> </p>
+ <p>When the Location Server obtains a position, the client's <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html"><span class="apiname">TRequestStatus</span></a> variable is updated. In the example, the <a href="GUID-D5B2E933-209D-3871-8E27-CC5C8855C745.html"><span class="apiname">TPositionInfo</span></a> object that was passed to <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-321F6046-3551-3ACE-B0A3-26D51FAEB477"><span class="apiname">RPositioner::NotifyPositionUpdate()</span></a> holds the new position data in a <a href="GUID-AB9F288E-86C6-327A-9E53-2EA746416038.html"><span class="apiname">TPosition</span></a> object. </p>
+ <p> <strong>Important notes</strong>  </p>
+ <p>An application should test what kind of position is returned by <samp class="codeph">NotifyPositionUpdate()</samp>. <a href="GUID-73D6F438-C270-33B9-974B-D4D1583E1738.html#GUID-73D6F438-C270-33B9-974B-D4D1583E1738__GUID-AC9654DD-2FC8-3B27-8743-83D7B8C58B79"><span class="apiname">TPositionInfoBase::PositionMode()</span></a> returns a bitmask value of type <a href="GUID-B098F3DB-E2FE-3C5A-8508-4B04D954AB26.html#GUID-B098F3DB-E2FE-3C5A-8508-4B04D954AB26__GUID-AE121191-0B6A-39D8-9379-386EFF58CF0A"><span class="apiname">TPositionModuleInfo::TTechnologyType</span></a> that is composed of values of type <a href="GUID-B098F3DB-E2FE-3C5A-8508-4B04D954AB26.html#GUID-B098F3DB-E2FE-3C5A-8508-4B04D954AB26__GUID-03AF8C51-1CAF-3F4C-BED1-17844FAE8423"><span class="apiname">TPositionModuleInfo::_TTechnologyType</span></a>. Valid combinations of this value are as follows: </p>
+ 
+<div class="tablenoborder"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-8D2D95EF-9749-5D72-9F1D-FB878961DE84"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-8D2D95EF-9749-5D72-9F1D-FB878961DE84" frame="border" border="1" rules="all"><thead align="left"><tr><th class="cellrowborder" valign="top" id="d2190369e963">TPositionInfoBase::PositionMode()</th>
+ <th class="cellrowborder" valign="top" id="d2190369e966">Meaning</th>
+ </tr>
+ </thead>
+ <tbody><tr><td class="cellrowborder" valign="top" headers="d2190369e963 "><p>ETechnologyNetwork </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d2190369e966 "><p>A reference position obtained from the network </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d2190369e963 "><p>ETechnologyTerminal | ETechnologyAssisted </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d2190369e966 "><p>A position calculated using GPS with assistance data from the network </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d2190369e963 "><p>ETechnologyNetwork | ETechnologyAssisted </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d2190369e966 "><p>A position calculated using GPS measurements by a remote server in the network </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d2190369e963 "><p>ETechnologyTerminal </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d2190369e966 "><p>A position calculated using GPS without assistance data (autonomous mode) </p>
+ </td>
+ </tr>
+ </tbody>
+ </table>
+</div>
+ <p>A reference position <em>may</em> be returned to a client application by the Location Server before a more accurate position fix is available. Whether a reference position is made available to the Location Server depends on the implementation of the Positioning Modules by the Symbian device creator or handset manufacturer. </p>
+ <p>If a reference position is returned, the behaviour is as follows: </p>
+ <p> <strong>For the first call to RPositioner::NotifyPositionUpdate()</strong>  </p>
+ <p> <samp class="codeph">NotifyPositionUpdate()</samp> completes and a <em>reference position</em> is returned to the client. The client application can check for return of a reference position by checking for <samp class="codeph">TPositionInfoBase()::PositionMode() ==
+             TPositionModuleInfo::ETechnologyNetwork</samp>. If a reference position is returned it may not satisfy the application's position accuracy quality criteria and the application will need to make another <samp class="codeph">NotifyPositionUpdate()</samp> request. </p>
+ <p> <strong>For subsequent calls to RPositioner::NotifyPositionUpdate()</strong> (made by the same client subsession) </p>
+ <p> <samp class="codeph">NotifyPositionUpdate()</samp> completes and a position is returned to the client. This position may be either: </p>
+ <ul><li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-F707A545-244D-5110-80CF-CBE9FFECC05C"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-F707A545-244D-5110-80CF-CBE9FFECC05C"><!-- --></a><p>Calculated in the mobile device by GPS with assistance data (for Terminal Based Mode) </p>
+ <p> <samp class="codeph">TPositionInfo::PositionMode() ==
+                  TPositionInfoBase::ETechnologyTerminal |
+                  TPositionInfoBase::ETechnologyAssisted</samp>  </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-289DE4DD-469D-58F0-8534-0B4353CDEC24"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-289DE4DD-469D-58F0-8534-0B4353CDEC24"><!-- --></a><p>Returned from the network, a position known as the <em>final network position</em> (for Terminal Assisted Mode) </p>
+ <p>The value of <a href="GUID-D5B2E933-209D-3871-8E27-CC5C8855C745.html#GUID-D5B2E933-209D-3871-8E27-CC5C8855C745__GUID-A01CF36E-6EF9-395A-94DC-AB94478C66BE"><span class="apiname">TPositionInfo::PositionMode()</span></a> for a final network position depends on the configuration of the LBS subsystem: </p>
+ <p>Normal behaviour is to return <samp class="codeph">TPositionInfo::PositionMode()
+                  == TPositionModuleInfo::ETechnologyNetwork |
+                  TPositionModuleInfo::ETechnologyAssisted</samp>, but it is possible for LBS to return <samp class="codeph">TPositionModuleInfo::ETechnologyTerminal |
+                  TPositionModuleInfo::ETechnologyAssisted</samp> if it is configured to do so. See <a href="GUID-4E56E531-5757-5740-9C7D-705D427FA9D5.html" title="This document describes some differences in runtime behaviour that application clients may observe depending on the Symbian platform on which they are running.">Location Acquisition API runtime behaviour</a> for more information. </p>
+ </li>
+ </ul>
+ <p>Note that <samp class="codeph">NotifyPositionUpdate()</samp> may complete early if a GPS positioning module signals to LBS that it will be unable to return a location fix with the required quality criteria. In this case the Location Server returns the best location fix it can obtain to the client. The value of the <samp class="codeph">TRequestStatus</samp> parameter of the client is set to either <samp class="codeph">KPositionQualityLoss</samp> or <samp class="codeph">KErrNone</samp> depending on the configuration of <a href="GUID-4E56E531-5757-5740-9C7D-705D427FA9D5.html" title="This document describes some differences in runtime behaviour that application clients may observe depending on the Symbian platform on which they are running.">Location Acquisition API runtime behaviour</a>. </p>
+ <p><strong>Tracking </strong> </p>
+ <p>A position update time line for tracking is shown in figure 2. Note that the exact behaviour of tracking on systems may differ from that shown in Figure 2. </p>
+ <p>A client application has previously called <samp class="codeph">TPositionUpdateOptions::SetUpdateInterval(T)</samp> and <samp class="codeph">RPositioner::SetUpdateOptions()</samp> (not shown in figure 2). Partial updates are not set. LBS is also configured to return reference positions and accurate positions only (see <a href="GUID-4E56E531-5757-5740-9C7D-705D427FA9D5.html" title="This document describes some differences in runtime behaviour that application clients may observe depending on the Symbian platform on which they are running.">Location Acquisition API runtime behaviour</a> for more information about this behaviour). The important points are: </p>
+ <ul><li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-644F7437-0207-5B16-B38C-C695DC5BB83B"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-644F7437-0207-5B16-B38C-C695DC5BB83B"><!-- --></a><p>A client application makes its first call to <samp class="codeph">RPositioner::NotifyPositionUpdate()</samp> (First NPUD in figure 2). </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-E9F2BBA1-8F8A-516C-BB01-640535090820"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-E9F2BBA1-8F8A-516C-BB01-640535090820"><!-- --></a><p>After a time t, the client's <samp class="codeph">RunL()</samp> method is called and it receives its first position update (the reference position update Ref Pos in figure 2). This first position update is delivered to the client by LBS as soon as possible (t is as short as possible and is not equal to T). The client then makes its next call to <samp class="codeph">NotifyPositionUpdate()</samp> (the next NPUD in figure 2). When tracking, a client application should make its next call to <samp class="codeph">RPositioner::NotifyPositionUpdate()</samp> as soon as possible in its <samp class="codeph">RunL()</samp> method. The time between the client's <samp class="codeph">RunL()</samp> and the client's next NPUD is exaggerated for clarity in Figure 2. </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-8D670561-5F51-5836-AA24-3B0CC0417BB7"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-8D670561-5F51-5836-AA24-3B0CC0417BB7"><!-- --></a><p>At a time t + T (where T is the update interval) the client's <samp class="codeph">RunL()</samp> method is called and it receives the next position update (GPS Pos in figure 2). The client makes its next call to <samp class="codeph">NotifyPositionUpdate()</samp>. </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-E93AE6CA-DF93-56AD-B68B-A60A1B96F128"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-E93AE6CA-DF93-56AD-B68B-A60A1B96F128"><!-- --></a><p>The next position update is expected at time t + 2T, but in the case shown in figure 2 this is not possible (the mobile device may have moved into an area where the GPS signal is weak). In general if it is not possible to obtain an accurate GPS fix by time t + nT, but the fix is obtained a short time later, the next position update is delivered as soon as possible after time t + nT (after t + 2T in figure 2). </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-9E52BD1C-7BD4-55F8-BF75-98669883C0CF"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-9E52BD1C-7BD4-55F8-BF75-98669883C0CF"><!-- --></a><p>The client makes its next call to <samp class="codeph">NotifyPositionUpdate()</samp> and at time t + (n+1)T the next position update is delivered (at t + 3T in figure 2). </p>
+ <p> <em>The important point to note is that LBS attempts to deliver position updates at regular times t + nT but the time interval between position updates may temporarily be greater than or less than T.</em>  </p>
+ </li>
+ <li id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-A7F59CB4-BFC7-5F88-8AF2-C8D6C24122D9"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-A7F59CB4-BFC7-5F88-8AF2-C8D6C24122D9"><!-- --></a><p>Note that if partial updates were enabled, an incomplete position would be delivered at time t + 2T if it were available. Also note that an inaccurate position would be delivered if one was available at that time and LBS was configured to return it. </p>
+ <p> </p>
+ </li>
+ </ul>
+ <div class="fignone" id="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-916FB3EF-08C6-5A0C-8D72-881FEEC7C161"><a name="GUID-F6B5F777-D12F-5913-AECE-047DF8C72F1F__GUID-916FB3EF-08C6-5A0C-8D72-881FEEC7C161"><!-- --></a><span class="figcap">Figure 2. 
+                Figure 2. Position updates when tracking 
+             </span> <img src="GUID-C6DDF01D-DF54-5C65-9FAC-D3693D30819F_d0e440794_href.png"/></div>
+ <p><strong>Error codes </strong> </p>
+ <p>The value of a client's <samp class="codeph">TRequestStatus</samp> can be set to an LBS error code (defined in <span class="filepath">lbserrors.h</span>) <em>or an error code defined in a licensee's Positioning Module</em>. An error causes <samp class="codeph">NotifyPositionUpdate()</samp> to complete. An application should always check the value of <samp class="codeph">TRequestStatus</samp> when its <samp class="codeph">RunL()</samp> method is called. </p>
+ <p><strong>7. Cancel or complete a location information request </strong> </p>
+ <p>To cancel a location request a client application calls <a href="GUID-BC95F637-51F6-3D99-9265-C6DFD903C5BC.html#GUID-BC95F637-51F6-3D99-9265-C6DFD903C5BC__GUID-168130E7-459D-3108-9418-94773D802EAE"><span class="apiname">RPositionerSubSessionBase::CancelRequest()</span></a>, passing a <a href="GUID-355E1EEF-A312-3BB8-9655-9DD6805A3CDD.html"><span class="apiname">EPositionerNotifyPositionUpdate</span></a> parameter. The client's <samp class="codeph">TRequestStatus</samp> is set to <samp class="codeph">KErrCancel</samp> if the request was successfully cancelled and no position update is returned. </p>
+ <p>To complete a location request early, a client application calls <a href="GUID-BC95F637-51F6-3D99-9265-C6DFD903C5BC.html#GUID-BC95F637-51F6-3D99-9265-C6DFD903C5BC__GUID-88F0FA62-BC72-3BC5-B42E-FA0A26F3E405"><span class="apiname">RPositionerSubSessionBase::CompleteRequest()</span></a> passing a <a href="GUID-355E1EEF-A312-3BB8-9655-9DD6805A3CDD.html"><span class="apiname">EPositionerNotifyPositionUpdate</span></a> parameter. Calling this method does not cancel the position update, but asks the Location Server to return any available position data. The returned position update may be different from that which would have been returned if the request had been allowed to complete normally. If the request is completed early, the client's <samp class="codeph">TRequestStatus</samp> is set to <samp class="codeph">KPositionEarlyComplete</samp>. </p>
+ <p><strong>8. Close the subsession and session </strong> </p>
+ <p> <a href="GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575.html#GUID-1EAEB7EF-0AC7-37C7-B35F-C9B780FFC575__GUID-DE09BADB-6D90-3995-A893-F949F9C37A2B"><span class="apiname">RPositioner::Close()</span></a> closes the subsession. <a href="GUID-0ADC4654-7F7B-3B53-A2F9-7035670F501B.html#GUID-0ADC4654-7F7B-3B53-A2F9-7035670F501B__GUID-3D081F5B-F8D6-3168-951F-EDBC2364EB76"><span class="apiname">RPositionServer::Close()</span></a> closes the server session. In the code example the cleanup stack function is used. Any privacy requester objects created by a client must also be cleaned up. </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-D0318BB6-0B9F-5A1C-AB0B-61BA22D28661.html" title="Client applications use the Location Acquisition API to obtain the position of the mobile device from the LBS subsystem.">The Location Acquisition API</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Writing a CSBEClient for Restore"/>
+<meta name="abstract" content="This section describes the recommended conn::CSBEClient function calls for a partial and incremental restore."/>
+<meta name="description" content="This section describes the recommended conn::CSBEClient function calls for a partial and incremental restore."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F9E9A096-6F70-5146-AE1E-49670905756D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A0D4B6EC-8FA7-5FD9-AE5A-E811D876D585.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-78045215-99B0-5D66-8E5F-5396E2D23259.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0FE60A65-6CB6-50AB-B85F-2B60FE96ECFE.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F9E9A096-6F70-5146-AE1E-49670905756D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0BD22FDB-1A5C-56AA-A7FC-BD2271B2F928.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Writing a CSBEClient for Restore</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2534806 id2534820 id2534828 id2534890 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-A0D4B6EC-8FA7-5FD9-AE5A-E811D876D585.html">Remote Connectivity Guide</a> &gt; <a href="GUID-78045215-99B0-5D66-8E5F-5396E2D23259.html">Backup and Restore</a> &gt; <a href="GUID-0FE60A65-6CB6-50AB-B85F-2B60FE96ECFE.html">Backup Engine</a> &gt; <a href="GUID-F9E9A096-6F70-5146-AE1E-49670905756D.html">Writing a Backup Engine Client (CSBEClient) Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Writing
+a CSBEClient for Restore</h1>
+<div><p>This section describes the recommended <samp class="codeph">conn::CSBEClient</samp> function
+calls for a partial and incremental restore. </p>
+
+<div class="section" id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-8D835F01-211A-4358-9751-F913E3E04727"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-8D835F01-211A-4358-9751-F913E3E04727"><!-- --></a><h2 class="sectiontitle">Context</h2> <p>A partial restore restores the data of
+specified data owners. The Security IDs (SIDs) of the specified data owners
+must be passed to the Backup Engine. </p>
+ <p>An incremental restore restores
+files that are saved in the previous incremental backup. After each incremental
+backup, a snapshot, which saves the file list and details of each data owner,
+is saved. Before each incremental restore, the previously saved backup snapshots
+must be provided to the Backup Engine. </p>
+ </div>
+
+<div class="section" id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-FAF6DC1F-C569-5573-9503-EC65FF9C94E1"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-FAF6DC1F-C569-5573-9503-EC65FF9C94E1"><!-- --></a><h2 class="sectiontitle">Steps</h2><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-5CF38BF0-1174-575C-929E-64C260260C0C"><!-- --></a><ol id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-5CF38BF0-1174-575C-929E-64C260260C0C">
+<li id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-AA22D309-4E70-527F-8B97-B18423E7A8CC"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-AA22D309-4E70-527F-8B97-B18423E7A8CC"><!-- --></a><p>The user application
+must instantiate <a href="GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2.html#GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2__GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C"><span class="apiname">conn::CSBEClient</span></a> to connect to the Backup
+Engine. </p>
+ <pre class="codeblock" id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-01B82F51-F453-5042-B77D-3AF1BC046A5F"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-01B82F51-F453-5042-B77D-3AF1BC046A5F"><!-- --></a>iRestoreClient = CSBEClient::NewL();</pre>
+ </li>
+
+<li id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-4DC27B19-1573-520F-98E7-FA77F524EEC1"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-4DC27B19-1573-520F-98E7-FA77F524EEC1"><!-- --></a><p>Supply the list of data
+owners got from the host PC to the Backup Engine. </p>
+ <p>To restore the data
+of specified data owners, pass the array of the SID of these data owners to
+the Backup Engine. </p>
+ <pre class="codeblock" id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-5F0F4CE6-AC01-5248-B9D5-BF15A3F7E38A"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-5F0F4CE6-AC01-5248-B9D5-BF15A3F7E38A"><!-- --></a>iRestoreClient-&gt;SetSIDListForPartialBURL(RSIDArray&amp; aSIDs);</pre>
+ </li>
+
+<li id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-1A91A122-BB2D-590F-8D3C-74BCA5100ABC"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-1A91A122-BB2D-590F-8D3C-74BCA5100ABC"><!-- --></a><p>Set the Back Engine
+to the restore mode which signals the start of a restore. </p>
+ <p>The Backup
+Engine then <a href="GUID-88A5F321-17BA-566B-B025-22DB11664E54.html" title="This section describes the subscribe and publish flag for backup and restore.">publishes
+the mode to the subscribed data owners</a>. This gives the data owners
+some time to prepare for the restore, for example they can release resources
+in case of file lock or data conflict. </p>
+ <p>The mode contains the restore
+types: full or partial, base or incremental. </p>
+ <pre class="codeblock" id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-223EE0DD-DBD2-543C-9917-CD4DB938154E"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-223EE0DD-DBD2-543C-9917-CD4DB938154E"><!-- --></a>iRestoreClient-&gt;SetBURModeL (
+                              const TDriveList&amp; aDriveList,
+                             
+                              //Specify partial restore,
+                              //defined in epoc32/include/connect/sbdefs.h
+                              TBURPartType aBURType,      
+
+                              //Specifiy incremental restore,
+                              //defined in epoc32/include/connect/sbdefs.h
+                              TBackupIncType aBackupIncType
+                            );
+</pre>
+ </li>
+
+<li id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-7F3051A3-BD5C-591A-ABCE-74DED46E9E3D"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-7F3051A3-BD5C-591A-ABCE-74DED46E9E3D"><!-- --></a><p>Supply system files
+to the Backup Engine for restore. </p>
+ <pre class="codeblock" id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-8E1098CB-B432-51CE-8D80-292B6E185A70"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-8E1098CB-B432-51CE-8D80-292B6E185A70"><!-- --></a>iRestoreClient -&gt;SupplyDataL(
+                              CSBGenericTransferType&amp; aGenericTransferType,
+                              TBool aFinished
+                             );</pre>
+ </li>
+
+<li id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-89F6E682-8B16-5B83-A791-52BE036EBC89"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-89F6E682-8B16-5B83-A791-52BE036EBC89"><!-- --></a><p>Signal that all system
+files have been restored. </p>
+ <p>This step must be invoked to ensure that
+system files have been released for data owners to use. It triggers the Backup
+Engine to start data owners for the restore. </p>
+ <pre class="codeblock" id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-9F669D8B-3BFB-5EB2-A4A3-456B2F75DC4E"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-9F669D8B-3BFB-5EB2-A4A3-456B2F75DC4E"><!-- --></a>iRestoreClient-&gt;AllSystemFilesRestored();</pre>
+ </li>
+
+<li id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-7BCA299B-803F-5C10-B9FB-4833983B0619"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-7BCA299B-803F-5C10-B9FB-4833983B0619"><!-- --></a><p>Request the state of
+active data owners. </p>
+ <p>This step ensures that the data owners are ready
+to supply the data, for example file locks are released. </p>
+ <pre class="codeblock" id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-80A8205B-5B54-5986-A285-F185587573E6"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-80A8205B-5B54-5986-A285-F185587573E6"><!-- --></a>iRestoreClient-&gt;SIDStatusL(RSIDStatusArray&amp; aSIDStatus);</pre>
+ </li>
+
+<li id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-113A8BCF-B055-51A7-B54B-AF1A8FA57A21"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-113A8BCF-B055-51A7-B54B-AF1A8FA57A21"><!-- --></a><p>Supply passive private
+data and its snapshot to the Backup Engine for restore. </p>
+ <pre class="codeblock" id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-32C548A1-A04D-5470-B6BF-72B994183DFB"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-32C548A1-A04D-5470-B6BF-72B994183DFB"><!-- --></a>iRestoreClient-&gt;SupplyDataL(
+                             CSBGenericTransferType&amp; aGenericTransferType,
+                             TBool aFinished
+                            );</pre>
+ <p> <strong>Note</strong>: For more information
+about creating snapshot transfer types, refer to the <a href="GUID-8BFC185E-91FD-5E04-A26C-728B06F31FDD-GENID-1-12-1-28-1-1-4-1-3-1-6-1-6-1.html" title="To transfer data between the Backup Engine and the backup server, a particular type of conn::CSBGenericTransferType must be created.">Creating
+transfer types</a> section. </p>
+ </li>
+
+<li id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-C5ED3083-8876-59CB-8D3C-CB404F1CCC71"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-C5ED3083-8876-59CB-8D3C-CB404F1CCC71"><!-- --></a><p>The backup server restores
+the public files. </p>
+ <p>Similar to a backup, the Backup Engine does not
+restore public files. Device creators must get the public files from the host
+PC and restore them to the device in their backup server implementations. </p>
+ </li>
+
+<li id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-2BE0338B-6C06-5159-A3F1-4B8B85E56048"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-2BE0338B-6C06-5159-A3F1-4B8B85E56048"><!-- --></a><p>Supply active private
+data to the Backup Engine for restore. </p>
+ <pre class="codeblock" id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-9CC18592-E7F6-517B-8937-4E06A2EC1E80"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-9CC18592-E7F6-517B-8937-4E06A2EC1E80"><!-- --></a>iRestoreClient-&gt;SupplyDataL(
+                             CSBGenericTransferType&amp; aGenericTransferType,
+                             TBool aFinished
+                            );</pre>
+ </li>
+
+<li id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-04CC0D4A-F4C1-5515-ABA3-9D746309455D"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-04CC0D4A-F4C1-5515-ABA3-9D746309455D"><!-- --></a><p>Set the Backup Engine
+into the normal mode. </p>
+ <p>After the data is restored on the device, set
+the Backup Engine to the normal mode. The subscribed data owners respond to
+the signal and resume the state before the backup. For example resume file
+locks or a GUI application recovers to the state and view prior to the restore. </p>
+ <pre class="codeblock" id="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-DA11715F-2F70-5AA8-978E-982B2C857E37"><a name="GUID-A5ED089C-8831-5E25-AE7C-8E6F1C21D3BE__GUID-DA11715F-2F70-5AA8-978E-982B2C857E37"><!-- --></a>iRestoreClient-&gt;SetBURModeL(
+                             const TDriveList&amp; aDriveList,
+                             TBURPartType aBURType,
+                             TBackupIncType aBackupIncType
+                            );</pre>
+ </li>
+
+</ol>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-F9E9A096-6F70-5146-AE1E-49670905756D.html">Writing a Backup Engine Client (CSBEClient) Tutorials</a></div>
+</div>
+<div class="relinfo reltasks"><strong>Related tasks</strong><br/>
+<div><a href="GUID-0BD22FDB-1A5C-56AA-A7FC-BD2271B2F928.html" title="The Backup Engine exports conn::CSBEClient, which provides data to a host PC for backup and receives data from a host PC while restoring data. Device creators can call this API to write a backup server that handles PC requests for backup and restore.">Writing a
+Backup Engine Client (CSBEClient)</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Introduction to libgmodule"/>
+<meta name="abstract" content="libgmodule has APIs that provide a portable method for dynamically loading 'plug-ins' or, in other words, DLLs. Any program that wants to dynamically load modules must be linked to libgmodule."/>
+<meta name="description" content="libgmodule has APIs that provide a portable method for dynamically loading 'plug-ins' or, in other words, DLLs. Any program that wants to dynamically load modules must be linked to libgmodule."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-94D67092-5EB3-4D83-A164-CA628F2E2DB0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-01E7AE98-024C-4119-87D0-5BB9D53DA119"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Introduction to libgmodule</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-01E7AE98-024C-4119-87D0-5BB9D53DA119"><a name="GUID-01E7AE98-024C-4119-87D0-5BB9D53DA119"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2383355 id2383375 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-94D67092-5EB3-4D83-A164-CA628F2E2DB0.html" title="GLib is a general-purpose utility library, which provides many useful data types, macros, type conversions, string utilities, file utilities, a main loop abstraction, and so on. It works on many UNIX-like platforms, Windows, OS/2, and BeOS.">GLib</a> &gt; <a href="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html">GLib Concepts</a> &gt; </div>
+<h1 class="topictitle1">Introduction
+to <samp class="codeph">libgmodule</samp></h1>
+<div><p><samp class="codeph">libgmodule</samp> has APIs that provide a portable method
+for dynamically loading 'plug-ins' or, in other words, DLLs. Any program that
+wants to dynamically load modules must be linked to <samp class="codeph">libgmodule</samp>.</p>
+
+<p>In order to use the <samp class="codeph">libgmodule</samp> APIs, the user must check
+whether dynamic loading of DLLs is supported by the platform by using the <samp class="codeph">g_module_supported()</samp> API
+which returns TRUE if the dynamic loading of modules is supported. P.I.P.S.
+provides the implementation of <samp class="codeph">libdl</samp>, where dynamic loading
+of modules is supported, but to write code which runs across platforms the
+user must do a check before using the <samp class="codeph">libgmodule</samp> APIs.  </p>
+
+<p>If the dynamic loading of DLLs is supported, use <samp class="codeph">g_module_open()</samp> to
+open the module. It takes the name of the module as the first argument and
+the flags as the second argument.</p>
+
+<div class="note"><span class="notetitle">Note:</span> <samp class="codeph">G_MODULE_BIND_LOCAL</samp> is the only flag currently supported.
+The other flags are not supported. If the user specifies any other flag, the
+module is loaded using the flag <samp class="codeph">G_MODULE_BIND_LOCAL</samp> and not
+by the user-specified flag.</div>
+
+<p><strong><samp class="codeph">GModule * g_module_open(const gchar *file_name, GModuleFlags
+flags);</samp></strong></p>
+
+<ul>
+<li><p><strong><samp class="codeph">file_name</samp>:</strong> The name of the file containing
+the module.</p>
+</li>
+
+<li><p><strong><samp class="codeph">flags</samp>:</strong> The flags used for opening the module. </p>
+</li>
+
+</ul>
+
+<p>Once the module is opened, the user can find the module symbols (for example,.
+function names) using the function </p>
+
+<p><samp class="codeph">g_module_symbol()</samp>.</p>
+
+<p><strong><samp class="codeph">gboolean g_module_symbol (GModule *module, const gchar *symbol_name,
+gpointer *symbol);</samp></strong></p>
+
+<ul>
+<li><p><strong><samp class="codeph">*module</samp>:</strong> This is a pointer returned when a
+module is opened using <samp class="codeph">g_module_open()</samp>.</p>
+</li>
+
+<li><p><strong><samp class="codeph">symbol_name</samp>:</strong> This is the ordinal number of
+the symbol that one wants to open. There is a difference between Symbian GLib
+and OSS GLib; as in Linux the <samp class="codeph">symbol_name</samp> is the name of
+the symbol and not a number. The ordinal number must be passed as a string
+and not a number.</p>
+</li>
+
+<li><p><strong><samp class="codeph">symbol</samp>:</strong> This is the pointer to the symbol value </p>
+</li>
+
+</ul>
+
+<p>The <samp class="codeph">GModule</samp> can be closed by using the <samp class="codeph">g_module_close()</samp> API.
+This API returns TRUE if it successfully closed the module; else it returns
+FALSE.</p>
+
+<p><strong><samp class="codeph">gboolean g_module_close(GModule *module);</samp></strong></p>
+
+<ul>
+<li><p><strong><samp class="codeph">*module</samp></strong> The <samp class="codeph">GModule</samp> to close. </p>
+</li>
+
+</ul>
+
+<p>The following example code explains the usage of the <samp class="codeph">libgmodule</samp> APIs.
+It opens a module <span class="filepath">libmoduletestplugin_a.dll</span> and uses
+its <samp class="codeph">gplugin_a_func1()</samp> API which is ordinal number 1. Finally,
+the module is closed.</p>
+
+<pre class="codeblock">#include &lt;gmodule.h&gt;
+#include &lt;glib.h&gt;
+typedef int (*SimpleFunc) (void);
+
+int main()
+{
+  GModule *module = NULL;
+  gpointer func;
+  SimpleFunc f_a;
+  int retVal;
+  
+  if (!g_module_supported())
+  {
+        g_print ("Dynamic Opening of modules is not supported");
+        return 1;
+  }
+  
+  /* G_MODULE_BIND_LAZY is overridden and the module is opened with
+   * flag G_MODULE_BIND_LOCAL
+   */
+  module = g_module_open("libmoduletestplugin_a.dll",G_MODULE_BIND_LAZY);
+  
+  // 1 is the ordinal number for gplugin_a_func1
+  if(module &amp;&amp; g_module_symbol(module, "1" ,&amp;func)) 	
+  {
+        f_a = (SimpleFunc)func;
+        retVal = f_a();	
+        g_print("Function at ordinal number 1 of module libgmodule_a returns %d",retVal);
+  }
+  else
+  {
+        g_print("Error quering symbol at ordinal number 1");
+        return 1;
+  }
+  
+  return 0;
+}</pre>
+
+<p>See the <strong>Libgmodule APIs</strong> section in <a href="GUID-4ADD8234-4AFD-4E80-94A4-AC018FE83276.html">Differences
+between OSS and Symbian GLib</a> for more details about <samp class="codeph">libgmodule</samp> limitations
+in the Symbian GLib implementation.  </p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html">GLib Concepts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

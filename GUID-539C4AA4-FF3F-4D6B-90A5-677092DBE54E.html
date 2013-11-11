@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Exporting Global Data from a DLL"/>
+<meta name="abstract" content="Exporting global data from a DLL to be accessed by either P.I.P.S. or Symbian C++ applications is one of the typical problems that developers encounter."/>
+<meta name="description" content="Exporting global data from a DLL to be accessed by either P.I.P.S. or Symbian C++ applications is one of the typical problems that developers encounter."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-539C4AA4-FF3F-4D6B-90A5-677092DBE54E"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Exporting Global Data from a DLL</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-539C4AA4-FF3F-4D6B-90A5-677092DBE54E"><a name="GUID-539C4AA4-FF3F-4D6B-90A5-677092DBE54E"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381193 id2381201 id2381344 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html">Generic Open Libraries</a> &gt; <a href="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html">Open Environment Core (P.I.P.S.)</a> &gt; <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Exporting
+Global Data from a DLL</h1>
+<div><p>Exporting global data from a DLL to be accessed by either P.I.P.S.
+or Symbian C++ applications is one of the typical problems that developers
+encounter.</p>
+
+<p>It is strongly recommended to avoid having global data in DLLs due to following
+reasons:</p>
+
+<ul>
+<li><p>EKA2 emulator allows only a DLL with WSD to load into a single process.</p>
+</li>
+
+<li><p>RAM usage for WSD data chunk is atleast one 4K RAM page (the smallest
+possible RAM allocation), irrespective of how much static data is required.</p>
+</li>
+
+<li><p>Chunks are a finite resource on ARMv5. Every process loading WSD enabled
+DLLs uses a chunk to hold the data.</p>
+</li>
+
+<li><p>There are ARM architecture 4 and 5 specific costs and limitations that
+apply only to DLLs that link against “fixed processes”.</p>
+</li>
+
+<li><p> There is a limit on the number of DLLs in a process with WSD. </p>
+</li>
+
+</ul>
+
+<p>On having understood the above limitations, the following pattern can be
+used for exporting global data from a DLL:</p>
+
+<ol>
+<li id="GUID-539C4AA4-FF3F-4D6B-90A5-677092DBE54E__GUID-CB5A6042-22D6-4A55-AB95-238D36B29E4D"><a name="GUID-539C4AA4-FF3F-4D6B-90A5-677092DBE54E__GUID-CB5A6042-22D6-4A55-AB95-238D36B29E4D"><!-- --></a><p>Do not export global
+variables. Within DLL, say there is one global variable, for example:</p>
+<pre class="codeblock">int globalVal; </pre>
+</li>
+
+<li id="GUID-539C4AA4-FF3F-4D6B-90A5-677092DBE54E__GUID-441655B4-C2E0-4923-AA61-9AD71B9E8E43"><a name="GUID-539C4AA4-FF3F-4D6B-90A5-677092DBE54E__GUID-441655B4-C2E0-4923-AA61-9AD71B9E8E43"><!-- --></a><p>Export one method that
+returns a pointer to that variable.</p>
+<pre class="codeblock">extern "C" EXPORT_C int* GlbData ()
+    {
+    return &amp;globalVal
+    }
+</pre>
+</li>
+
+<li id="GUID-539C4AA4-FF3F-4D6B-90A5-677092DBE54E__GUID-8C06D549-3F94-455B-981D-D0D19B004BE1"><a name="GUID-539C4AA4-FF3F-4D6B-90A5-677092DBE54E__GUID-8C06D549-3F94-455B-981D-D0D19B004BE1"><!-- --></a><p>Define a macro for the
+user of the DLL. Within the DLL header (for example, <span class="filepath">xxx.h</span>),
+define the following:</p>
+<pre class="codeblock">#ifdef __cplusplus
+extern "C" 
+#endif
+IMPORT_C int* GlbData ();
+#define globalVal (*GlbData())</pre>
+<p>And the usage is like: </p>
+<pre class="codeblock">#include &lt;xxx.h&gt;  // DLL header
+int main()
+    {
+    int i = 0;
+    globalVal = 10;
+    globalVal++;
+    i = globalVal;
+    return 0;
+    }
+</pre>
+</li>
+
+</ol>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

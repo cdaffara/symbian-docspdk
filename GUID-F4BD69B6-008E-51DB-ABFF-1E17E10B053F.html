@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to use sessions efficiently"/>
+<meta name="abstract" content="This topic describes how to use file server session effectively."/>
+<meta name="description" content="This topic describes how to use file server session effectively."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-30B2AF3F-E120-5D47-AAA2-529555625B55.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BB9760B4-4F3F-5326-81FB-B644C82F0E65.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-198DCED1-F429-5C95-A51D-53AE416687E8.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-30B2AF3F-E120-5D47-AAA2-529555625B55.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-F4BD69B6-008E-51DB-ABFF-1E17E10B053F"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to use sessions efficiently</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-F4BD69B6-008E-51DB-ABFF-1E17E10B053F"><a name="GUID-F4BD69B6-008E-51DB-ABFF-1E17E10B053F"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2399034 id2399048 id2399138 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-BB9760B4-4F3F-5326-81FB-B644C82F0E65.html" title="Symbian platform manages the basic permanent storage of data through file systems. Drives and file systems are common resources used by many programs, and access to them is managed by the File Server. The File Server is flexible, and can use many different file system formats and physical storage media. Applications and services access files, directories, and drives through the File Server client side API.">File Server</a> &gt; <a href="GUID-198DCED1-F429-5C95-A51D-53AE416687E8.html">File Server Client Side</a> &gt; <a href="GUID-30B2AF3F-E120-5D47-AAA2-529555625B55.html" title="This topic describes how to use file server sessions, files and directories effectively.">How To use sessions, files and directories</a> &gt; </div>
+<h1 class="topictitle1">How
+to use sessions efficiently</h1>
+<div><p>This topic describes how to use file server session effectively.</p>
+
+<p>For most purposes, it is not necessary for the user of the file server
+to be aware that it is implemented in a client-server architecture. However,
+for some purposes, you can make your programs much more efficient if you are
+aware of the implications of client-server interaction. </p>
+
+<p>Essentially, you gain efficiency by using as few as possible client-server
+calls. The main technique for achieving this is to transfer more data with
+each file server function call. Things to watch out for include: </p>
+
+<ul>
+<li id="GUID-F4BD69B6-008E-51DB-ABFF-1E17E10B053F__GUID-FD15653A-9127-5665-A572-C45B95705D93"><a name="GUID-F4BD69B6-008E-51DB-ABFF-1E17E10B053F__GUID-FD15653A-9127-5665-A572-C45B95705D93"><!-- --></a><p>Data transfer: use a
+large buffer, and then read bytes from the buffer. The main data-transfer
+clients of the file server all operate through the stream store and the relational
+database. Buffering has been highly optimized for these two components. Therefore,
+application programs using these components automatically gain the maximum
+efficiency in data transfer, without needing any explicit optimization. </p>
+ </li>
+
+<li id="GUID-F4BD69B6-008E-51DB-ABFF-1E17E10B053F__GUID-52E7009A-368B-5596-AD14-D5C493119472"><a name="GUID-F4BD69B6-008E-51DB-ABFF-1E17E10B053F__GUID-52E7009A-368B-5596-AD14-D5C493119472"><!-- --></a><p>Reading directories </p>
+ <p>There
+are functions to read a single directory entry at a time, but it is often
+more useful to read multiple directory entries from the server and then to
+scan through them client-side. </p>
+ </li>
+
+<li id="GUID-F4BD69B6-008E-51DB-ABFF-1E17E10B053F__GUID-4E5A5D73-018B-5ED9-8B3C-5968F40F07C7"><a name="GUID-F4BD69B6-008E-51DB-ABFF-1E17E10B053F__GUID-4E5A5D73-018B-5ED9-8B3C-5968F40F07C7"><!-- --></a><p>Large-scale copying,
+moving and other file management operations </p>
+ <p>A single class, <a href="GUID-82CEC14F-1479-3922-846A-9FCDB6465EF7.html"><span class="apiname">CFileMan</span></a>,
+provides high-level function for this, involving only a small number of client-server
+calls. </p>
+ </li>
+
+</ul>
+
+<p>The <a href="GUID-F673F02A-AC5B-3D0F-8D14-21E6221E5015.html"><span class="apiname">TParseBase</span></a> hierarchy of classes, for analyzing file
+names, operates without client-server interaction. </p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-30B2AF3F-E120-5D47-AAA2-529555625B55.html" title="This topic describes how to use file server sessions, files and directories effectively.">How To use sessions, files and directories</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

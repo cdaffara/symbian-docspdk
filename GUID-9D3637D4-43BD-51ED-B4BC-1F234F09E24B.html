@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to construct and manipulate a singly linked list"/>
+<meta name="abstract" content="Code fragments showing how to create a singly linked list and how to manipulate the list and the elements of the list."/>
+<meta name="description" content="Code fragments showing how to create a singly linked list and how to manipulate the list and the elements of the list."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-052E9582-9A35-50B0-A32E-F7E6A01A2E2A.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2E085BAD-AAD7-5D1A-89A7-287EE42D1069.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-052E9582-9A35-50B0-A32E-F7E6A01A2E2A.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to construct and manipulate a singly linked list</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2392089 id2392192 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-2E085BAD-AAD7-5D1A-89A7-287EE42D1069.html">Arrays And Lists</a> &gt; <a href="GUID-052E9582-9A35-50B0-A32E-F7E6A01A2E2A.html">Using Singly Linked Lists</a> &gt; </div>
+<h1 class="topictitle1">How
+to construct and manipulate a singly linked list</h1>
+<div><p>Code fragments showing how to create a singly linked list and how
+to manipulate the list and the elements of the list.</p>
+
+<p>The following code fragments show how a singly linked list can be constructed
+and manipulated. The list consists of instances of an example class, <samp class="codeph">CItem</samp>,
+which forms items on a stack implemented as a singly linked list using the <samp class="codeph">iSlink</samp> data
+member as the link object. In this example, a <samp class="codeph">CItem</samp> object
+can contain an item of text implemented as an <samp class="codeph">HBufC</samp>.</p>
+
+<p>The class is declared as:</p>
+
+<pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-EF742BDF-7292-51DF-B7D4-6219D9CDFFCE"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-EF742BDF-7292-51DF-B7D4-6219D9CDFFCE"><!-- --></a>class CItem : public CBase
+    {
+public  :
+    static CItem* NewL(const TDesC&amp; aText);
+    static CItem* NewLC(const TDesC&amp; aText); 
+                  CItem();
+    virtual       ~CItem();
+    const HBufC*  GetText(); 
+public  :        
+    static const  TInt iOffset;
+private :
+    void          ConstructL(const TDesC&amp; aText);
+private :    
+    TSglQueLink   iSlink;
+    HBufC*        iText;
+    friend  class CStack;
+    };</pre>
+
+<p>The <samp class="codeph">CItem</samp> member functions are implemented as:</p>
+
+<pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-2B4A1C64-7C4C-5950-93F0-2A80A0AEF343"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-2B4A1C64-7C4C-5950-93F0-2A80A0AEF343"><!-- --></a>const TInt CItem::iOffset = _FOFF(CItem,iSlink);</pre>
+
+<pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-67788B52-9B64-556B-B4BF-D940C49B2E3E"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-67788B52-9B64-556B-B4BF-D940C49B2E3E"><!-- --></a>CItem* CItem::NewLC(const TDesC&amp; aText)
+    {
+    CItem* self = new (ELeave) CItem();
+    CleanupStack::PushL(self);
+    self-&gt;ConstructL(aText);
+    return self;
+    }</pre>
+
+<pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-5CC6AD98-E877-5699-9BAC-14DE0A4413E2"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-5CC6AD98-E877-5699-9BAC-14DE0A4413E2"><!-- --></a>CItem* CItem::NewL(const TDesC&amp; aText)
+    {
+    CItem* self = CItem::NewLC(aText);
+    CleanupStack::Pop();
+    return self;
+    }</pre>
+
+<pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-14D5FB76-1FC9-5D7D-A35C-9AC87222DA64"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-14D5FB76-1FC9-5D7D-A35C-9AC87222DA64"><!-- --></a>void CItem::ConstructL(const TDesC&amp; aText)
+    {
+    iText    = aText.AllocL();
+    }</pre>
+
+<pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-44FB4D1A-D567-5181-B425-D988BF364A55"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-44FB4D1A-D567-5181-B425-D988BF364A55"><!-- --></a>CItem::CItem()
+    {}</pre>
+
+<pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-DF4603B2-56E0-5CC1-8920-27C04FCE2899"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-DF4603B2-56E0-5CC1-8920-27C04FCE2899"><!-- --></a>CItem::~CItem()
+    {
+    delete iText;
+    }</pre>
+
+<pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-E306FFA8-9A93-5047-9999-A36DE087D9BF"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-E306FFA8-9A93-5047-9999-A36DE087D9BF"><!-- --></a>const HBufC* CItem::GetText()
+    {
+    return (iText);
+    }
+</pre>
+
+<p>As part of the construction process, a <samp class="codeph">CItem</samp> constructs
+an <samp class="codeph">HBufC</samp> of the correct length and copies the content of
+the descriptor parameter into it.</p>
+
+<p>The stack is implemented by an instance of the example class <samp class="codeph">CStack</samp>.
+This maintains the stack by adding <samp class="codeph">CItem</samp> objects onto the
+end of the list and removing them from the end of the list. When removing
+them from the end of the list, a pointer to the removed <samp class="codeph">CItem</samp> object
+is returned.</p>
+
+<p>In this example, the list header, <samp class="codeph">iStack</samp>, and the iterator, <samp class="codeph">iStackIter</samp>,
+are declared as data members of the class and are constructed when the <samp class="codeph">CStack</samp> object
+is constructed. A C++ constructor must be supplied so that <samp class="codeph">iStackIter</samp> can
+be constructed. (<samp class="codeph">TSglQueIter</samp> has no default constructor).</p>
+
+<p><samp class="codeph">AddToStack()</samp> takes a <samp class="codeph">CItem</samp> object and
+adds it to the end of the singly linked list.</p>
+
+<p><samp class="codeph">RemoveFromStack()</samp> takes the <samp class="codeph">CItem</samp> object
+at the end of the singly linked list, removes it from the list and returns
+a pointer to it.</p>
+
+<p>The <samp class="codeph">CStack</samp> class is declared as:</p>
+
+<pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-9640ACCC-5C02-5238-9866-C3E5F24BF256"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-9640ACCC-5C02-5238-9866-C3E5F24BF256"><!-- --></a>class CStack : public CBase
+    {
+public :
+    static CStack* NewL();
+    static CStack* NewLC();
+                   CStack();
+    void           Construct();
+    virtual        ~CStack();
+    CItem*         RemoveFromStack();
+    void           AddToStack(CItem&amp; anItem);
+private :
+    TSglQue&lt;CItem&gt;     iStack; 
+    TSglQueIter&lt;CItem&gt; iStackIter;
+    };
+</pre>
+
+<p>The <samp class="codeph">CStack</samp> member functions are implemented as:</p>
+
+<pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-6DB67609-DFD9-5C3E-B0DE-DCBF24E2004B"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-6DB67609-DFD9-5C3E-B0DE-DCBF24E2004B"><!-- --></a>CStack* CStack::NewLC()
+    {
+    CStack* self = CStack::NewL();
+    CleanupStack::PushL(self);
+    return self;
+    }</pre>
+
+<pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-1A43592A-6670-5DB7-A66C-586F054DA96B"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-1A43592A-6670-5DB7-A66C-586F054DA96B"><!-- --></a>CStack* CStack::NewL()
+    {
+    CStack* self = new (ELeave) CStack;
+    return self;
+    }</pre>
+
+<pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-7B084689-CEFA-5F12-A112-F57E3969EF64"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-7B084689-CEFA-5F12-A112-F57E3969EF64"><!-- --></a>CStack::CStack()
+    : iStack(CItem::iOffset),iStackIter(iStack) 
+    {}</pre>
+
+<div class="section" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-6C00AE42-5876-4C9B-8530-4E3BCEC12295"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-6C00AE42-5876-4C9B-8530-4E3BCEC12295"><!-- --></a><h2 class="sectiontitle">Using the list
+iterator</h2> <p>The C++ constructor is needed so that the list header
+(<samp class="codeph">iStack</samp>) and the list iterator (<samp class="codeph">iStackIter</samp>)
+can be properly constructed.</p>
+ <p>Before destroying a <samp class="codeph">CStack</samp> object,
+the list is destroyed. This is achieved using the iterator (<samp class="codeph">iStackIter</samp>).
+The iterator pointer is set to point to each element in turn, removing that
+element from the list before destroying it.</p>
+ <p>Once the iterator has reached
+the end of the list, the operator<samp class="codeph">++</samp> returns <samp class="codeph">NULL</samp>.</p>
+ <p>The
+destruction process is safe if the list is empty; the statement <samp class="codeph">iStackIter.SetToFirst()</samp> is
+harmless, the operator<samp class="codeph">++</samp> returns <samp class="codeph">NULL</samp> and
+execution of the body of the <samp class="codeph">while</samp> loop never happens.</p>
+ <pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-05A85DC1-BA5A-52BD-BC3A-6DD27F050B3A"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-05A85DC1-BA5A-52BD-BC3A-6DD27F050B3A"><!-- --></a>CStack::~CStack()
+    {
+    CItem*  item;
+    
+    iStackIter.SetToFirst(); 
+    while ((item = iStackIter++) != NULL)
+        {
+        iStack.Remove(*item);
+        delete item;
+        };
+    }</pre>
+ </div>
+
+<div class="section" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-9B58504D-1C1C-4D2C-93BB-085F04EA62B3"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-9B58504D-1C1C-4D2C-93BB-085F04EA62B3"><!-- --></a><h2 class="sectiontitle">Adding an element
+to the stack</h2> <p>Adding an element to the stack simply involves adding
+the <samp class="codeph">CItem</samp> object to the end of the list.</p>
+ <pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-819F3511-AFC1-57CB-A6B6-0A3A778B9737"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-819F3511-AFC1-57CB-A6B6-0A3A778B9737"><!-- --></a>void CStack::AddToStack(CItem&amp; anItem)
+    {
+    iStack.AddLast(anItem);
+    }</pre>
+ </div>
+
+<div class="section" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-99C58AE1-4EA3-41FA-82AF-C1B9D08FB57F"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-99C58AE1-4EA3-41FA-82AF-C1B9D08FB57F"><!-- --></a><h2 class="sectiontitle">Removing an
+element from the stack</h2> <p>The <samp class="codeph">RemoveFromStack()</samp> function
+returns <samp class="codeph">NULL</samp>, if the list is empty, otherwise it just uses
+the <samp class="codeph">Last()</samp> member function to return a pointer to the last
+element in the list before removing it.</p>
+ <pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-5BDC3F9B-1C99-534B-82CC-18731E3C22B9"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-5BDC3F9B-1C99-534B-82CC-18731E3C22B9"><!-- --></a>CItem* CStack::RemoveFromStack()
+    {
+    CItem* lastitem;
+    
+    if (iStack.IsEmpty())
+        return NULL;
+    
+    lastitem = iStack.Last();
+    iStack.Remove(*lastitem); 
+    
+    return (lastitem);
+    }</pre>
+ </div>
+
+<div class="section" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-BC25EB70-D1D2-4045-8345-C002C17D9114"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-BC25EB70-D1D2-4045-8345-C002C17D9114"><!-- --></a><h2 class="sectiontitle">Executing the
+code</h2> <p>Executing the code results in a singly linked list of <samp class="codeph">CItem</samp> objects
+each containing a pointer to an <samp class="codeph">HBufC</samp> descriptor each of
+which, in turn, contains the text “8”, “89”, and so on through to “89ABCDEF”:</p>
+ <pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-F00B6DDF-54C8-541D-8688-FDD227DC48F4"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-F00B6DDF-54C8-541D-8688-FDD227DC48F4"><!-- --></a>    {
+    CStack*  stack;
+    CItem*   item;
+    TBuf&lt;16&gt; buffer;
+    
+    TRAPD(leavecode,stack = CStack::NewL());
+    if (leavecode != KErrNone)
+        {
+        // Cannot create stack
+        return;
+        }</pre>
+ <pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-18506411-26D8-5866-A80E-D36BD20DFD01"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-18506411-26D8-5866-A80E-D36BD20DFD01"><!-- --></a>    for (TUint jj = 8; jj &lt; 16; jj++)
+        {
+        buffer.AppendNumUC(jj,EHex); 
+        TRAPD(leavecode,item = CItem::NewL(buffer));
+        if (leavecode != KErrNone)
+            {
+            // Cannot create item
+            delete stack;
+            return;
+            }
+        stack-&gt;AddToStack(*item);
+        }</pre>
+ <p>as the following shows:</p>
+ <div class="fignone" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-27C947C7-3035-54A4-BA6E-C701C3007DD6"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-27C947C7-3035-54A4-BA6E-C701C3007DD6"><!-- --></a><span class="figcap">Figure 1. Example singly linked list</span>
+
+<img src="GUID-BF155E49-35AF-5BC1-80C5-8D6C68C464F8_d0e320452_href.png"/>
+</div>
+ </div>
+
+<div class="section" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-CB47362B-7068-45AD-9D60-7D93174ED858"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-CB47362B-7068-45AD-9D60-7D93174ED858"><!-- --></a><h2 class="sectiontitle">Removing elements
+from list</h2> <p>The following code removes each <samp class="codeph">CItem</samp> element
+from the list, starting with the last and working through to the first until
+the list is empty.</p>
+ <pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-36122717-2CA8-5E9E-B223-4921860A4027"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-36122717-2CA8-5E9E-B223-4921860A4027"><!-- --></a>    while ((item = stack-&gt;RemoveFromStack()) != NULL)
+        {
+        // item-&gt;GetText());can be used to access the text.
+        delete item;
+        };</pre>
+ <pre class="codeblock" id="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-7A4C3458-9676-5ED2-82DB-703C48F347DB"><a name="GUID-9D3637D4-43BD-51ED-B4BC-1F234F09E24B__GUID-7A4C3458-9676-5ED2-82DB-703C48F347DB"><!-- --></a>    delete stack;</pre>
+ <p>Note
+that unlike doubly linked lists, elements can only be added to the start or
+the end of a singly linked list. Elements <em>cannot</em> be added to the middle
+of the list.</p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-052E9582-9A35-50B0-A32E-F7E6A01A2E2A.html">Using Singly Linked Lists</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

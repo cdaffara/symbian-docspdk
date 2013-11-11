@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Restoring Pictures Tutorial"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-520AC2F0-009E-51F3-A661-3B6E949F1423.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E89F034F-C807-5FF9-B06B-F7CCD2441041.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1E68A78A-52E5-5DF7-B540-85C7194E4617.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-520AC2F0-009E-51F3-A661-3B6E949F1423.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-520AC2F0-009E-51F3-A661-3B6E949F1423.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5CEE36FC-C5A9-5C4E-9DBC-9C7B5B44EA2F.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Restoring Pictures Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61"><a name="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2384330 id2385294 id2385411 id2385479 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html">Graphics Guide</a> &gt; <a href="GUID-E89F034F-C807-5FF9-B06B-F7CCD2441041.html" title="The Graphics Device Interface (GDI) collection provides important functionality within the Graphics subsystem. The functionality includes graphics device abstraction, linear digital differential analysis, font description and information, printer devices abstraction, line breaking and text rendering.">Graphics Device Interface (GDI) Collection</a> &gt; <a href="GUID-1E68A78A-52E5-5DF7-B540-85C7194E4617.html" title="This section provides examples of working with the GDI API to perform various drawing operations, to store and restore pictures and to zoom.">Graphics Device Interface Tutorials</a> &gt; <a href="GUID-520AC2F0-009E-51F3-A661-3B6E949F1423.html" title="This section provides examples of working with pictures. In this context a picture is an object that can be drawn to a graphics context and can be stored and restored.">Picture Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Restoring Pictures Tutorial</h1>
+<div><p>Pictures can be restored in two different ways. One way is to restore the picture header and restore the data immediately afterwards. The other way is to restore the picture header and defer the loading of the picture data until a later time. </p>
+ <p>This second way is commonly used when loading rich text documents that include pictures. Using a deferred loading scheme, pictures that occur towards the end of a document need not be loaded until they are needed to be displayed, thus economizing on memory use. </p>
+ <div class="section"><h2 class="sectiontitle">Restoring the picture header</h2> <p>This fragment assumes that the picture header is stored in the root stream of the store, making it easy to restore: </p>
+ <pre class="codeblock" id="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-44712CF8-FBB7-5898-B1F9-C43BB82C17EC"><a name="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-44712CF8-FBB7-5898-B1F9-C43BB82C17EC"><!-- --></a>// The file used in the example
+_LIT(KFileName,"C:\\grpict.dat");
+    
+// Open the direct file store
+CDirectFileStore* store = CDirectFileStore::OpenLC(fsSession,KFileName,EFileRead);
+    
+// Read the header stream
+RStoreReadStream stream;
+stream.OpenLC(*store,store-&gt;Root());
+TPictureHeader header;
+header.InternalizeL(stream);</pre>
+ <pre class="codeblock" id="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-8F9F9D3D-36E7-534A-BA05-5FF545487DDB"><a name="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-8F9F9D3D-36E7-534A-BA05-5FF545487DDB"><!-- --></a>// Close store
+CleanupStack::PopAndDestroy(2); // stream, store</pre>
+ <a name="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-A3461FFF-48C2-5447-AA8E-E23C3E9696B7"><!-- --></a><ol id="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-A3461FFF-48C2-5447-AA8E-E23C3E9696B7"><li id="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-12F9B67D-4A85-5648-89BB-B3CA41DCFBC1"><a name="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-12F9B67D-4A85-5648-89BB-B3CA41DCFBC1"><!-- --></a><p>Open the direct file store containing the picture. </p>
+ </li>
+ <li id="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-F43C5DEB-BFB9-5076-BCEC-61495B3F326A"><a name="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-F43C5DEB-BFB9-5076-BCEC-61495B3F326A"><!-- --></a><p>Open the root stream of the store, and InternalizeL the picture header. </p>
+ </li>
+ <li id="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-5E9FDE2A-4E64-5262-92E9-B15870C6D5AD"><a name="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-5E9FDE2A-4E64-5262-92E9-B15870C6D5AD"><!-- --></a><p>Close the stream and store. </p>
+ </li>
+ </ol>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Restoring the picture data: an example of a MPictureFactory-derived class</h2> <p>To restore the picture data itself, it must have an associated entry in a picture factory. The picture factory ensures that the picture data in the store is restored to the correct picture type, which is specified by a UID in the picture header. A picture factory can allow a number of different types of picture to be restored, calling the correct constructor for the class indicated by the UID. In the following example code the picture factory allows only pictures of type <samp class="codeph">CSmileyPicture</samp> to be restored, and panics if the picture data in the store is of another type. </p>
+ <p><strong>Restoring the picture </strong> </p>
+ <pre class="codeblock" id="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-F05D870C-C1D6-5D04-81AE-703F50054191"><a name="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-F05D870C-C1D6-5D04-81AE-703F50054191"><!-- --></a>// The file used in the example
+_LIT(KFileName,"C:\\grpict.dat");
+    
+// Open the direct file store
+CDirectFileStore* store = CDirectFileStore::OpenLC(fsSession,KFileName,EFileRead);
+    
+// Read the picture
+TExamplePictureFactory factory;
+TPictureHeader header;
+factory.NewPictureL(header,*store);
+iPicture = (CSmileyPicture *) header.iPicture.AsPtr();
+    
+// Close store
+CleanupStack::PopAndDestroy();</pre>
+ <p><strong>Picture factory </strong> </p>
+ <pre class="codeblock" id="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-578BC9C7-9D62-5ADF-A2B5-6601588FE384"><a name="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-578BC9C7-9D62-5ADF-A2B5-6601588FE384"><!-- --></a>class TExamplePictureFactory: public MPictureFactory
+    {
+public:
+    void NewPictureL(TPictureHeader&amp; aHeader,
+            const CStreamStore&amp; aDeferredPictureStore) const;
+    };
+</pre>
+ <pre class="codeblock" id="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-C5CCB0B1-3D13-581E-8990-15084212BFB3"><a name="GUID-F9471A5D-D239-5B24-A116-2B5B2C1F5C61__GUID-C5CCB0B1-3D13-581E-8990-15084212BFB3"><!-- --></a>void TExamplePictureFactory::NewPictureL(TPictureHeader&amp; aHeader,
+            const CStreamStore&amp; aDeferredPictureStore) const
+    {
+    if (aHeader.iPictureType == KUidExampleSmileyPicture)
+        {
+            // Restore new picture from store into 
+            // the TSwizzle, which changes from
+            // stream id to pointer.
+            // Construct CSmileyPicture object and 
+            // restore from stream.
+        if (aHeader.iPicture.IsId())
+            aHeader.iPicture = CSmileyPicture::NewL(aDeferredPictureStore,aHeader.iPicture.AsId());
+        }
+    else
+        {
+            // Leave
+        User::Leave(KErrNoMemory);
+        }
+    }</pre>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-520AC2F0-009E-51F3-A661-3B6E949F1423.html" title="This section provides examples of working with pictures. In this context a picture is an object that can be drawn to a graphics context and can be stored and restored.">Picture Tutorials</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-520AC2F0-009E-51F3-A661-3B6E949F1423.html" title="This section provides examples of working with pictures. In this context a picture is an object that can be drawn to a graphics context and can be stored and restored.">Picture Tutorials</a></div>
+<div><a href="GUID-5CEE36FC-C5A9-5C4E-9DBC-9C7B5B44EA2F.html" title="This section introduces pictures. In this context a picture is an object that can be drawn to a graphics context and can be stored and restored.">Picture Concepts</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

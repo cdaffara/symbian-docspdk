@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Parent and Child IPC Using Named Pipes or FIFOs"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ADB9AD91-37A2-4FE6-B378-C43CD0A7B513.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AF07AD54-86F1-5DB7-80FF-633A559DA4BD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ADB9AD91-37A2-4FE6-B378-C43CD0A7B513.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-383C128C-15EB-4C64-9A1F-F1EA826323D0"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Parent and Child IPC Using Named Pipes or FIFOs</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-383C128C-15EB-4C64-9A1F-F1EA826323D0"><a name="GUID-383C128C-15EB-4C64-9A1F-F1EA826323D0"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381193 id2381201 id2381344 id2381410 id2381418 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html">Generic Open Libraries</a> &gt; <a href="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html">Open Environment Core (P.I.P.S.)</a> &gt; <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a> &gt; <a href="GUID-AF07AD54-86F1-5DB7-80FF-633A559DA4BD.html">Creating Processes and Threads</a> &gt; <a href="GUID-ADB9AD91-37A2-4FE6-B378-C43CD0A7B513.html" title="P.I.P.S. supports some industry standard alternatives for fork() and exec() while creating child processes. The scenarios are discussed in the following sections:">Alternatives to fork() and exec() for creating child processes</a> &gt; </div>
+<h1 class="topictitle1">Parent
+and Child IPC Using Named Pipes or FIFOs</h1>
+<div>
+<p>An alternative approach to using the <a href="GUID-A9DB6E7C-B8D6-377A-BBE6-39E0A7A09E5D.html"><span class="apiname">popen()</span></a> function
+is to use named pipes, or FIFOs. The advantage of using them over the <a href="GUID-A9DB6E7C-B8D6-377A-BBE6-39E0A7A09E5D.html"><span class="apiname">popen()</span></a> mechanism
+is that they allow the code in both the parent and child processes to continue
+to use file descriptors for communication rather than streams (and avoid modification
+to the<samp class="codeph"> stdin()</samp>/<samp class="codeph">stdout()</samp> streams of the child
+process). </p>
+
+<p>In addition, since each created FIFO is referenced as a file in the file
+system, FIFOs allow for more complicated IPC schemes than those offered by
+the <a href="GUID-A9DB6E7C-B8D6-377A-BBE6-39E0A7A09E5D.html"><span class="apiname">popen()</span></a> function, for example, inter-child process
+communication. For more information about the use of FIFOs, see <a href="http://www.opengroup.org" target="_blank">http:\\www.opengroup.org</a>. </p>
+
+<p><strong>Parent process P.I.P.S. example using FIFOs</strong></p>
+
+<p>The following code shows how FIFOs can be used in P.I.P.S. by the parent
+process.</p>
+
+<pre class="codeblock">int main(int argc, char *argv[])
+{
+   char fifoFileName[] = "/root/PortDoc/Example2_c/Symbian/fifofile";
+
+   int fifoResult = mkfifo(fifoFileName,S_IXGRP);
+  
+   if(fifoResult == -1)
+   {
+      //FIFO creation failure.
+      printf("\n*** failure mkfifo ***\n");
+
+      return EXIT_FAILURE;
+   }
+   else
+   {
+      //FIFO creation successful.
+      
+      //Spawn the child process.
+      pid_t Childpid;
+      char execFileName[] = "/root/PortDoc/Example2_c/Symbian/ChildProg";
+      int RetVal= posix_spawn(&amp;Childpid,execFileName,NULL,NULL,NULL,NULL);
+      
+      if(RetVal != 0)
+      {
+         printf("\n*** failure posix_spawn ***\n");
+
+         return EXIT_FAILURE;
+      }
+      else
+      {
+         //Open the FIFO. Parent reads from the FIFO
+         int ReadFifoFd = open(fifoFileName,O_RDONLY);
+ 
+         if(ReadFifoFd == -1)
+         {
+            //Failed to open the Fifo
+            printf("\n*** failure Fifo Open ***\n");
+
+            return EXIT_FAILURE;
+         }
+         else
+         {
+            //create a receive buffer and clear
+            char RxBuffer[100];
+            memset(RxBuffer,0,sizeof(RxBuffer));
+      
+            //Wait for data from the child process. Child sends a string.
+            int nbytes = read(ReadFifoFd,RxBuffer,sizeof(RxBuffer));
+
+            printf("\nMessage Received by Parent=%s",RxBuffer);
+      
+            //close the FIFO
+            (void)close(ReadFifoFd);
+         }
+
+         //wait for the child process to finish      
+         (void)waitpid(Childpid,NULL,0);
+   
+         //unlink the FIFO
+         unlink(fifoFileName);
+      }
+   }
+   return EXIT_SUCCESS;
+}
+</pre>
+
+<p><strong>Child process P.I.P.S. example using FIFOs</strong></p>
+
+<p>The following code shows how FIFOs can be used in P.I.P.S. by the child
+process. </p>
+
+<pre class="codeblock">int main(int argc, char *argv[])
+{
+   char fifoFileName[] = "/root/PortDoc/Example2_c/Symbian/fifofile";
+
+   //Open the FIFO. child writes to parent
+   int WriteFifoFd = open(fifoFileName,O_WRONLY);
+     
+   if(WriteFifoFd == -1)
+   {
+      //Failed to open the Fifo
+      printf("\n*** child failure Fifo Open ***\n");
+      return EXIT_FAILURE;
+   }
+   else
+   {
+      //create a message to send.
+      char TxMsg[] = "Hello Parent\n";
+       
+      //Wait for data from the child process. Child sends a string.
+      write(WriteFifoFd,TxMsg,sizeof(TxMsg));
+     
+      //close the FIFO
+     (void)close(WriteFifoFd);
+   }
+   return EXIT_SUCCESS;
+}
+</pre>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-ADB9AD91-37A2-4FE6-B378-C43CD0A7B513.html" title="P.I.P.S. supports some industry standard alternatives for fork() and exec() while creating child processes. The scenarios are discussed in the following sections:">Alternatives to fork() and exec() for creating child processes</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

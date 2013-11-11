@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="Building ROM Tutorial"/>
+<meta name="abstract" content="Describes how to build a ROM that will use demand paging. It assumes that the configuration files have been suitably modified."/>
+<meta name="description" content="Describes how to build a ROM that will use demand paging. It assumes that the configuration files have been suitably modified."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2D8B8FF1-7A35-5E98-BDDB-2B0BD8DE6215.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2B7D04D9-98DE-5284-836D-01DB4FA8949D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2D8B8FF1-7A35-5E98-BDDB-2B0BD8DE6215.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Building ROM Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378"><a name="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388574 id2388657 id2388718 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html">Demand Paging</a> &gt; <a href="GUID-2B7D04D9-98DE-5284-836D-01DB4FA8949D.html">Writable Data Paging</a> &gt; <a href="GUID-2D8B8FF1-7A35-5E98-BDDB-2B0BD8DE6215.html">Writable Data Paging Tutorial</a> &gt; </div>
+<h1 class="topictitle1">Building
+ROM Tutorial </h1>
+<div><p>Describes how to build a ROM that will use demand paging. It assumes
+that the configuration files have been suitably modified. </p>
+
+<div class="section" id="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-0EF40712-F6BE-516A-871E-5E98BA86F3BF"><a name="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-0EF40712-F6BE-516A-871E-5E98BA86F3BF"><!-- --></a><p>This is the final
+step required to build a ROM that can use Writable Data Paging (WDP). The
+previous steps required to produce a ROM image that can use Writable Data
+Paging (WDP) are: </p>
+ <ul>
+<li id="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-E4AB8E69-E18D-522A-8CD1-CF0CFBA0E387"><a name="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-E4AB8E69-E18D-522A-8CD1-CF0CFBA0E387"><!-- --></a><p><a href="GUID-16423056-C435-5C4D-BE3D-4A15F95F7F68.html" title="Describes the steps required in producing a ROM that will work with Writable Data Paging (WDP).">Configuration
+Tutorial</a>  </p>
+ </li>
+
+<li id="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-53279F00-E850-53C7-BD67-054B80747697"><a name="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-53279F00-E850-53C7-BD67-054B80747697"><!-- --></a><p><a href="GUID-4862EA2E-6BFE-5E11-B527-7EBA94BB0EA2.html" title="Describes the new demand paging keywords available to the OBY. file.">oby
+tutorial</a>  </p>
+ </li>
+
+<li id="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-EB986AF2-E4F8-5C22-B303-17F434ACDBB0"><a name="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-EB986AF2-E4F8-5C22-B303-17F434ACDBB0"><!-- --></a><p><a href="GUID-16423056-C435-5C4D-BE3D-4A15F95F7F68.html#GUID-16423056-C435-5C4D-BE3D-4A15F95F7F68__GUID-9A892A74-0823-57D7-A146-BC8E14508B99">mmp tutorial</a>  </p>
+ </li>
+
+</ul>
+ <div class="p"> <div class="note"><span class="notetitle">Note:</span>  It is assumed that the both the configuration files and the
+media drivers have been modified to use demand paging.</div>
+  </div>
+ </div>
+
+<a name="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-95FD1C29-408C-55FE-A9D0-30D2CED91C65"><!-- --></a><ol id="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-95FD1C29-408C-55FE-A9D0-30D2CED91C65"><li class="stepexpand" id="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-5C1EB773-0F2F-59CC-9B6C-3836C3D8CC4C"><a name="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-5C1EB773-0F2F-59CC-9B6C-3836C3D8CC4C"><!-- --></a><span/><br/>
+ If the new OBY file appears before <span class="filepath">base.iby</span>, then
+no change to the configuration of the rombuild command is needed. 
+</li>
+<li class="stepexpand" id="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-29B770D9-9823-518A-A6F9-980FC134AE16"><a name="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-29B770D9-9823-518A-A6F9-980FC134AE16"><!-- --></a><span/><br/>
+ If the new OBY file appears after <span class="filepath">base.iby</span>, then <samp class="codeph">USE_DATA_PAGING</samp> must
+be defined on the command line (along with <samp class="codeph">PAGED_ROM, USE_CODE_PAGING
+and CODE_PAGING_FROM_ROFS</samp>) 
+  <samp class="codeph">USE_DATA_PAGING, PAGED_ROM, USE_CODE_PAGING and CODE_PAGING_FROM_ROFS</samp> are
+macros that are used to indicate which types of paging is to be used. If they
+are specified in the parameter list for buildrom (with -D in fount of it)
+then that type of paging will be implemented. 
+</li>
+</ol>
+
+<div class="section" id="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-619040F2-098F-5A57-840B-78B1BD223E3B"><a name="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-619040F2-098F-5A57-840B-78B1BD223E3B"><!-- --></a><p>Executing the buildrom
+command builds the ROM image with no errors or warnings. </p>
+ </div>
+
+<div class="example" id="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-E065C47A-B95B-579D-A64F-1ADADF2430A1"><a name="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-E065C47A-B95B-579D-A64F-1ADADF2430A1"><!-- --></a><h2 class="sectiontitle">buildrom example</h2> <p>An
+example of a buildrom command that produces a demand paging ROM is: </p>
+ <pre class="codeblock" id="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-05DF5C47-B13F-5054-826B-88D50E6CC991"><a name="GUID-6B9041F7-79A6-5CCA-9B4D-B8EF377FD378__GUID-05DF5C47-B13F-5054-826B-88D50E6CC991"><!-- --></a>buildrom –D_NAND2 -DWITH_FLEXIBLE_MM –DPAGED_ROM –DUSE_CODE_PAGING –DCODE_PAGING_FROM_ROFS –DUSE_DATA_PAGING h4hrp techview MyDPConfig</pre>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-2D8B8FF1-7A35-5E98-BDDB-2B0BD8DE6215.html">Writable Data Paging Tutorial</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

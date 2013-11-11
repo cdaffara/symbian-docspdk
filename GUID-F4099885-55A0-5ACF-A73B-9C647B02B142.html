@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Customising a Parser Plug-in"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-82AF5F49-EE25-54C7-AEE9-D1F41BD5190F.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A25E730C-F34D-5464-BE78-650B3DEA4A88.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AF28D930-6BD1-5DC5-9BE5-7512241E90CD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Customising a Parser Plug-in</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142"><a name="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2436889 id2436897 id2436992 id2437012 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-82AF5F49-EE25-54C7-AEE9-D1F41BD5190F.html">XML Services Guide</a> &gt; <a href="GUID-A25E730C-F34D-5464-BE78-650B3DEA4A88.html">XML</a> &gt; <a href="GUID-AF28D930-6BD1-5DC5-9BE5-7512241E90CD.html">XML Framework</a> &gt; <a href="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html">XML Framework Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Customising a Parser Plug-in</h1>
+<div><p>The parser plug-ins supplied with the XML framework can be customised to suit the structure of a particular document. This section explains how to customise the WBXML parser. </p>
+ <div class="section"><h2 class="sectiontitle">Introduction</h2> <p>To parse a WBXML document with a DTD which has not previously been implemented for the Symbian platform XML framework, add a new string table representing the DTD. </p>
+ <p>Parsers use <a href="GUID-0D16866C-F46B-5A2B-B974-324278588A1B.html" title="This section explains the concept of String Dictionary in XML Framework.">string dictionaries</a> to convert a file of text strings into a <a href="GUID-27340D18-A31D-512E-920A-B06C784A978A.html">string pool</a> of <samp class="codeph">RString</samp> objects. The strings within the dictionary are linked to the String Table statically at compile time. A string table is a text file having a <samp class="codeph">.st</samp> extension. It contains the name of C++ enumeration constants paired with the strings they refer to. Each pair occupies a line of text and its two elements are separated by white space, as shown in the following example: </p>
+ <pre class="codeblock" id="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142__GUID-CDAF42C3-C791-5A60-9ED8-AB841559C66D"><a name="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142__GUID-CDAF42C3-C791-5A60-9ED8-AB841559C66D"><!-- --></a>
+stringtable Wml1_1CodePage00TagTable
+EA          a
+EAnchor     anchor
+EAccess     access
+</pre>
+ <p>The simplest use of a string table arises when WBXML is used as a method of compressing generic XML. In such scenario, create a single .st file for all frequently used strings. In the example scenario, the task is slightly complex because a specific XML application which conforms to a DTD is being parsed. A DTD specifies elements along with attributes. Create three separate <samp class="codeph">.st</samp> files as to place these attribute values, as shown in the above example. It is the file containing attribute values which are required. The left hand column of an attribute value string table must be exactly the same as the left hand column of the corresponding attribute string table. That is, it must list the same constant names and list them in the same order. The right hand column of an attribute value table contains the values defined for the attributes. However, it may be that no value is defined for some attributes. In such scenario, the attribute value table contains a line consisting only of the constant name, followed not by white space but by the end of the line. </p>
+ <p>The following two examples show a fragment of an attribute string table and the corresponding attribute value string table: </p>
+ <pre class="codeblock" id="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142__GUID-452C963F-8215-5D96-B8C8-70AC619663E5"><a name="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142__GUID-452C963F-8215-5D96-B8C8-70AC619663E5"><!-- --></a>
+EAcceptcharset                  accept-charset
+EAlign1                         align
+EAlign2                         align
+EAlign3                         align
+</pre>
+ <pre class="codeblock" id="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142__GUID-A6A3DBDC-3AFF-5A8A-A5BB-C8909D1EA561"><a name="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142__GUID-A6A3DBDC-3AFF-5A8A-A5BB-C8909D1EA561"><!-- --></a>
+EAcceptcharset
+EAlign1
+EAlign2                         bottom
+EAlign3                         top
+</pre>
+ <p>In this example, the <samp class="codeph">accept-charset</samp> attribute has no value defined for it. Hence, the constant name <samp class="codeph">EAcceptCharset</samp> is paired with nothing in the attribute value table. The attribute 'align' may take no value or the values 'bottom' and 'top'. Therefore, the first table pairs it with three different constant names and the second table pairs the constant names with nothing, 'bottom' and 'top'. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Procedure</h2> <a name="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142__GUID-B4CC5842-72DA-5F42-8E7E-D03CF7B6FA0D"><!-- --></a><ol id="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142__GUID-B4CC5842-72DA-5F42-8E7E-D03CF7B6FA0D"><li id="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142__GUID-C7C894E1-75F2-5908-90C1-3560FCEFB38B"><a name="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142__GUID-C7C894E1-75F2-5908-90C1-3560FCEFB38B"><!-- --></a><p>Implement a new string table. </p>
+ </li>
+ <li id="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142__GUID-B2B0C09F-2088-54E6-9CA4-38B011EDAE53"><a name="GUID-F4099885-55A0-5ACF-A73B-9C647B02B142__GUID-B2B0C09F-2088-54E6-9CA4-38B011EDAE53"><!-- --></a><p>Convert the string table to the code. </p>
+ <p>Convert the string tables to C++ by invoking the conversion tool from the build files when you compile your parser. The conversion tool can be found in <span class="filepath">...\epoc32\tools\</span>. For more information about the tool, refer to <a href="GUID-27340D18-A31D-512E-920A-B06C784A978A.html">String pools</a>. </p>
+ </li>
+ </ol>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html">XML Framework Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

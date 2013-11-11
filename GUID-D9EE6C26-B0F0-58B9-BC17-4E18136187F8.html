@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Cancelling and closing transactions"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B4A54501-4AA4-5ACB-96D7-4427C7752639.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C0D38954-2FC5-4E8B-BC11-229464DCF16C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1E8904E3-43AC-5332-A2EF-F11F5728DBE8.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B4A54501-4AA4-5ACB-96D7-4427C7752639.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-D9EE6C26-B0F0-58B9-BC17-4E18136187F8"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Cancelling and closing transactions</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-D9EE6C26-B0F0-58B9-BC17-4E18136187F8"><a name="GUID-D9EE6C26-B0F0-58B9-BC17-4E18136187F8"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387372 id2387380 id2387389 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C0D38954-2FC5-4E8B-BC11-229464DCF16C.html">High Level Internet Protocols Guide</a> &gt; <a href="GUID-1E8904E3-43AC-5332-A2EF-F11F5728DBE8.html">Application Layer Protocols</a> &gt; <a href="GUID-B4A54501-4AA4-5ACB-96D7-4427C7752639.html">Using HTTP Client</a> &gt; </div>
+<h1 class="topictitle1">Cancelling and closing transactions</h1>
+<div><p>Transactions that have been submitted can be cancelled at any time using <a href="GUID-2E673024-239B-3965-8880-C47B7CC24EF6.html#GUID-2E673024-239B-3965-8880-C47B7CC24EF6__GUID-48A73A16-E6EB-39F4-88A5-0D84BD164FF2"><span class="apiname">RHTTPTransaction::Cancel()</span></a>. When this is done, no further events are received for that transaction as originally submitted. </p>
+ <p>An example from <span class="filepath">HTTPEXAMPLECLIENT</span>: </p>
+ <pre class="codeblock" id="GUID-D9EE6C26-B0F0-58B9-BC17-4E18136187F8__GUID-E403CB8C-D262-5AC6-8BD3-FFE0A67EC274"><a name="GUID-D9EE6C26-B0F0-58B9-BC17-4E18136187F8__GUID-E403CB8C-D262-5AC6-8BD3-FFE0A67EC274"><!-- --></a>void CHttpEventHandler::MHFRunL(RHTTPTransaction aTransaction, const THTTPEvent&amp; aEvent)
+    {
+    switch (aEvent.iStatus)
+        {
+        case THTTPEvent::EGotResponseHeaders:
+            {
+            ...
+            // If we're cancelling, do it now...
+            if (cancelling)
+                {
+                iUtils.Test().Printf(_L("\nTransaction Cancelled\n"));
+                aTransaction.Close();
+                CActiveScheduler::Stop();
+                }
+...</pre>
+ <p>In this case, the transaction is left in a cancelled state. The client now has the option to modify the request if required, and to resubmit the transaction. This might be done, for example, if the HTTP server has indicated with a 400-series status code that there was a client error. </p>
+ <p>When a transaction is resubmitted after cancellation, it is exactly as if it had been submitted for the first time. For example, no preferential treatment is given to it in terms of time-to-service. </p>
+ <p>The process of cancelling in an <samp class="codeph">MHFRunL()</samp> method, modifying the request, and resubmitting is common in filter design. See <a href="GUID-AA2A730E-A7C9-5647-AD42-11C3BAF4C38D.html">Filters</a> for more information. </p>
+ <p>If the client wants to abort a transaction, it can close the transaction using <a href="GUID-2E673024-239B-3965-8880-C47B7CC24EF6.html#GUID-2E673024-239B-3965-8880-C47B7CC24EF6__GUID-0ABF9404-EA7F-3CB3-B08B-D9154EF6F2D8"><span class="apiname">RHTTPTransaction::Close()</span></a>. It is not necessary to cancel first, since a <samp class="codeph">Cancel()</samp> is done automatically during the <samp class="codeph">Close()</samp>. Closing the transaction enables HTTP to clean up resources allocated during the execution of that transaction. </p>
+ <p>Once a transaction is closed, it must <em>not</em> be reused. Reusing a closed transaction causes the client to behave unpredictably. </p>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-B4A54501-4AA4-5ACB-96D7-4427C7752639.html">Using HTTP Client</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

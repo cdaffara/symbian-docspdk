@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Notifier framework"/>
+<meta name="abstract" content="This document describes the notifier framework."/>
+<meta name="description" content="This document describes the notifier framework."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-E634E701-0DA2-572E-852B-8A1F88F05E5A"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Notifier framework</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-E634E701-0DA2-572E-852B-8A1F88F05E5A"><a name="GUID-E634E701-0DA2-572E-852B-8A1F88F05E5A"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; </div>
+<h1 class="topictitle1">Notifier
+framework</h1>
+<div><p>This document describes the notifier framework.</p>
+
+<div class="section" id="GUID-E634E701-0DA2-572E-852B-8A1F88F05E5A__GUID-CED154FC-CFBE-5E07-843B-D409660C5816"><a name="GUID-E634E701-0DA2-572E-852B-8A1F88F05E5A__GUID-CED154FC-CFBE-5E07-843B-D409660C5816"><!-- --></a><h2 class="sectiontitle">The framework</h2> <p>The
+text window server notifier framework is a system that loads plug-in DLLs
+from <span class="filepath">\sys\bin\tnotifiers</span>. </p>
+ <p>It is used only in
+test ROMs and is never used in production code. For production code, use the
+Extended Notifier Framework. The architecture of both frameworks is identical;
+however, the interface classes have different names. </p>
+ <p>These DLLs are
+expected to export a single factory function at ordinal #1 that returns an
+array of notifiers. A special notifier target type is supported by makmake.
+The second Uid for notifiers should be 0x10005522. </p>
+ <p>The behaviour of
+notifiers is supplied by providing an implementation of the <a href="GUID-E2C0E005-4138-3C2A-839C-ADB9C935F64B.html"><span class="apiname">MNotifierBase</span></a> interface.
+A notifier is associated with a channel and a priority. Priority is used to
+determine the order of activation if more than one notifier is activated at
+any time. Priority only affects notifiers on the same channel (e.g. a screen
+or LED). This means that two notifiers can be active at the same time provided
+that they are on different channels. </p>
+ <p>The channel and priority used
+by all the notifiers in the system needs to be considered carefully to avoid
+them interfering with each other in unexpected ways. The <a href="GUID-E2C0E005-4138-3C2A-839C-ADB9C935F64B.html"><span class="apiname">MNotifierBase</span></a> derived
+class also needs to be implemented correctly. Text window server notifiers
+run in the window server thread and are accessed on the client side via <a href="GUID-A6B66713-FECA-3BE7-BB81-1AE5551AD83D.html"><span class="apiname">RNotifier</span></a>.
+Note that if a notifier panics it will lead to a device reset. </p>
+ </div>
+
+<div class="section" id="GUID-E634E701-0DA2-572E-852B-8A1F88F05E5A__GUID-DA49D735-4C8E-5EFD-A170-5E5A23D30884"><a name="GUID-E634E701-0DA2-572E-852B-8A1F88F05E5A__GUID-DA49D735-4C8E-5EFD-A170-5E5A23D30884"><!-- --></a><h2 class="sectiontitle">The factory
+function</h2> <p>The factory function at ordinal #1 is expected to return
+an array of notifiers. The following is a typical implementation: </p>
+ <pre class="codeblock" id="GUID-E634E701-0DA2-572E-852B-8A1F88F05E5A__GUID-389A6F11-4700-5423-B7CA-B8F5F0E4391D"><a name="GUID-E634E701-0DA2-572E-852B-8A1F88F05E5A__GUID-389A6F11-4700-5423-B7CA-B8F5F0E4391D"><!-- --></a>EXPORT_C CArrayPtr&lt;MNotifierBase&gt;* NotifierArray()
+    {
+    CArrayPtrFlat&lt;MNotifierBase&gt;* notifiers=new CArrayPtrFlat&lt;MNotifierBase&gt;(5);
+       if (notifiers)
+        {
+        TRAPD(err, CreateNotifiersL(notifiers));
+        if(err)
+            {
+            TInt count = notifiers-&gt;Count();
+            while(count--)
+                {
+                (*notifiers)[count]-&gt;Release();
+                }
+            delete notifiers;
+            notifiers = NULL;
+            }
+        }
+    return(notifiers);
+    }
+</pre>
+ <p>Note that ownership of the notifier array or its contents
+is not transferred to the framework until this function returns. To avoid
+memory leaks, all acquired resources must be freed if anything goes wrong
+part of the way through its processing. </p>
+ <p>Calling <samp class="codeph">Release()</samp> on
+a notifier should cause that notifier to free all of its resources, and as
+a minimum should call <samp class="codeph">delete           this;</samp>. See <a href="GUID-E2C0E005-4138-3C2A-839C-ADB9C935F64B.html#GUID-E2C0E005-4138-3C2A-839C-ADB9C935F64B__GUID-ADFAC896-1888-3BFF-9335-1CF83B9726A4"><span class="apiname">MNotifierBase::Release()</span></a>. </p>
+ <p>Returning
+a <samp class="codeph">Null</samp> value from this function causes the framework to leave
+with <a href="GUID-64F6761A-4716-37C3-8984-FF18FC8B7B7D.html"><span class="apiname">KErrNoMemory</span></a>. </p>
+ <p>The <samp class="codeph">CreateNotifiersL()</samp> function
+should be implemented as follows: </p>
+ <pre class="codeblock" id="GUID-E634E701-0DA2-572E-852B-8A1F88F05E5A__GUID-3CC86675-ECC5-59E4-8CD3-86AD0BAE0B90"><a name="GUID-E634E701-0DA2-572E-852B-8A1F88F05E5A__GUID-3CC86675-ECC5-59E4-8CD3-86AD0BAE0B90"><!-- --></a>LOCAL_C void CreateNotifiersL(CArrayPtrFlat&lt;MNotifierBase&gt;* aNotifiers)
+    {
+    MNotifierBase* notifier;
+    notifier = CMyNotifierA::NewL();
+    CleanupStack::PushL(notifier);
+       aNotifiers-&gt;AppendL(notifier);
+       CleanupStack::Pop(notifier);
+    ... 
+    ...
+    // typically, repeat this procedure for as
+    // many notifiers as are implemented
+    // in the plug-in DLL.
+    }</pre>
+ <p>Note the use of the standard Symbian platform technique
+of using the cleanup stack to hold pointers to allocated objects for as long
+as these objects have no owner; this prevents memory leaks. For this reason,
+avoid using a technique such as <samp class="codeph">aNotifiers-&gt;AppendL(CMyNotifierA::NewL());</samp>,
+which, although shorter, will result in a memory leak if the <samp class="codeph">AppendL()</samp> operation
+fails. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

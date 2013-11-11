@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="MCFListener"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-2DB5C4D1-5B64-3CCC-95D5-FEC4CC3924F0"/>
+
+<title>MCFListener</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-2DB5C4D1-5B64-3CCC-95D5-FEC4CC3924F0"><a name="GUID-2DB5C4D1-5B64-3CCC-95D5-FEC4CC3924F0"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2483429 id2486128 id2486179 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">MCFListener Class Reference</h1>
+	<table class="signature"><tr><td>class MCFListener</td></tr></table><div class="section"><div>
+			<p>Interface for CF listener. <a href="GUID-2DB5C4D1-5B64-3CCC-95D5-FEC4CC3924F0.html#GUID-2DB5C4D1-5B64-3CCC-95D5-FEC4CC3924F0">MCFListener</a> receives indications of context changes and action indications according to the subscriptions. Also possible error situations are notified through <a href="GUID-2DB5C4D1-5B64-3CCC-95D5-FEC4CC3924F0.html#GUID-2DB5C4D1-5B64-3CCC-95D5-FEC4CC3924F0">MCFListener</a> interface.</p>
+
+			<div class="p">Context indication: To receive context indications client first needs to subscribe a context. See cfclient.h how to subscribe contexts. When a context which is affected by the context subscription made by the client is updated a context indication is informed to client. Context indication consists of the changed context: <pre class="codeblock">  void CClient::ContextIndicationL( const CCFContextIndication&amp; aChangedContext )
+    {
+    _LIT( KSomeSource, "Source" );
+    _LIT( KSomeType, "Type" );
+    const CCFContextObject&amp; context = aChangedContext.Context();
+    if( context.Source() == KSomeSource &amp;&amp; context.Type() == KSomeType )
+      {
+      // Handle context indication...
+      }
+    }</pre>
+</div>
+
+			<div class="p">Action indication: To receive action indications client first needs to subscribe a certain action. See cfclient.h how to subscribe actions. When a rule which has an action, sbscribed by the client, associated to is evaluated to true client will receive an action indication. Action indication contains the action ID which is needed to be executed and all the parameters defined in the rule: <pre class="codeblock">  void CClient::ActionIndicationL( const CCFActionIndication&amp; aActionToExecute )
+    {
+    _LIT( KSomeActionId, "ActionId" );
+    if( aActionToExecute.Identifier() == KSomeActionId )
+      {
+      const RKeyValueArray&amp; params = aActionToExecute.Parameters();
+      TInt paramCount = params.Count();
+      for( TInt i = 0; i &lt; paramCount; i++ )
+        {
+        // Process parameters
+        const CCFKeyValuePair&amp; parameter = params[i];
+        ...
+        // Execute action
+        ...
+        }
+      }
+    }</pre>
+</div>
+
+			<div class="p">Subscription error: If client is subcribing a context which it does not have sufficient capabilities this will lead to a context subscription error. Since contexts can be subscribed before they have been defined context subscription errors will be asynchronously notified everytime: <pre class="codeblock">  void CClient::HandleContextFrameworkError( TCFError aError,
+    const TDesC&amp; aSource,
+    const TDesC&amp; aType )
+    {
+    _LIT( KSubscribedSource, "Source" );
+    _LIT( KSubscribedType, "Type" );
+    if( aError == MCFListener::ESecurityCheckErrorForContextSubscription )
+      {
+      if( aSource == KSubscribedSource &amp;&amp; aType == KSubscribedType )
+        {
+        // Handle error...
+        }
+      }
+    }</pre>
+</div>
+
+			<div class="p">- <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+		</div></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">void</td><td><a href="#GUID-E1056F7A-A490-3FA6-A5FD-428345DF94A7">ActionIndicationL</a>(const CCFActionIndication &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-5C587496-2890-34F1-A44F-FA903D5F38B9">ContextIndicationL</a>(const CCFContextIndication &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td><a href="#GUID-815102BC-B210-3E75-9644-311E572FB0C5">Extension</a>(const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-E3849279-D3E1-3711-9B9C-4EE82F29090A">HandleContextFrameworkError</a>(<a href="GUID-2DB5C4D1-5B64-3CCC-95D5-FEC4CC3924F0.html">TCFError</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Enumerations</th></tr></thead><tbody><tr><td align="right" valign="top">enum</td><td><a href="#GUID-1D662679-BB9A-3AF4-B56F-C6A92D615C88">TCFError</a> { <a href="#GUID-277C92F0-5B23-3FDB-8751-B9BA5CC28A45">EGeneralError</a>, <a href="#GUID-B5B97493-5D86-39E0-87B4-C73327A218B4">ESecurityCheckErrorForContextSubscription</a> }</td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-E1056F7A-A490-3FA6-A5FD-428345DF94A7"><a name="GUID-E1056F7A-A490-3FA6-A5FD-428345DF94A7"><!-- --></a>
+		<h2 class="topictitle2">ActionIndicationL(const CCFActionIndication &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ActionIndicationL</td><td>(</td><td>const CCFActionIndication &amp;</td><td>aActionToExecute</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Indicates that specified action is needed to be executed. When action indication is received certain rule has been triggered and action is needed to be performed.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const CCFActionIndication &amp; aActionToExecute</td><td>Action indication.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5C587496-2890-34F1-A44F-FA903D5F38B9"><a name="GUID-5C587496-2890-34F1-A44F-FA903D5F38B9"><!-- --></a>
+		<h2 class="topictitle2">ContextIndicationL(const CCFContextIndication &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ContextIndicationL</td><td>(</td><td>const CCFContextIndication &amp;</td><td>aChangedContext</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Indicates a change in context for subscribed clients. If client has subscribed to partial context class path, only the changed context will be indicated.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const CCFContextIndication &amp; aChangedContext</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-815102BC-B210-3E75-9644-311E572FB0C5"><a name="GUID-815102BC-B210-3E75-9644-311E572FB0C5"><!-- --></a>
+		<h2 class="topictitle2">Extension(const TUid &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>Extension</td><td>(</td><td>const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;</td><td>aExtensionUid</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Returns an extension interface. The extension interface is mapped with the extension UID.</p>
+
+				<p>If the client does not support the requested interface, client must return NULL. Otherwise client needs to return the correct interface combined with the UID.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp; aExtensionUid</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E3849279-D3E1-3711-9B9C-4EE82F29090A"><a name="GUID-E3849279-D3E1-3711-9B9C-4EE82F29090A"><!-- --></a>
+		<h2 class="topictitle2">HandleContextFrameworkError(TCFError, const TDesC &amp;, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>HandleContextFrameworkError</td><td>(</td><td><a href="GUID-2DB5C4D1-5B64-3CCC-95D5-FEC4CC3924F0.html">TCFError</a></td><td>aError,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSource,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aType</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Indicates that error has occured.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2DB5C4D1-5B64-3CCC-95D5-FEC4CC3924F0.html">TCFError</a> aError</td><td>Error code.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSource</td><td> </td></tr><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aType</td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Enumerations Documentation</h1><div class="nested1" id="GUID-1D662679-BB9A-3AF4-B56F-C6A92D615C88"><a name="GUID-1D662679-BB9A-3AF4-B56F-C6A92D615C88"><!-- --></a>
+		<h2 class="topictitle2">Enum TCFError</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EGeneralError</td><td> </td></tr><tr class="bg"><td valign="top">ESecurityCheckErrorForContextSubscription</td><td> </td></tr></table></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

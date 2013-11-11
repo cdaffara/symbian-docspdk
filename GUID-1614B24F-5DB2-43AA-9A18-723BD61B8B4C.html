@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Handling key events in your application"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-1614B24F-5DB2-43AA-9A18-723BD61B8B4C"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Handling key events in your application</title>
+
+     
+<?php     
+   include_once ($_SERVER["DOCUMENT_ROOT"]. '/includes/skin_constants.php');
+   include_once (CURRENT_SKIN_PATH.'/sdl_head.html');
+?>
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-1614B24F-5DB2-43AA-9A18-723BD61B8B4C"><a name="GUID-1614B24F-5DB2-43AA-9A18-723BD61B8B4C"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"/>
+<h1 class="topictitle1">Handling
+key events in your application</h1>
+<div>
+<p>The application framework offers key events to UI controls on the control
+stack by calling <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-47C26178-E83E-3B21-95A3-FD6370000844"><span class="apiname">CCoeControl::OfferKeyEventL()</span></a> for each
+UI control until the key event is consumed or until there are no more UI controls
+on the control stack. To handle an event in a UI control, you must override <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-47C26178-E83E-3B21-95A3-FD6370000844"><span class="apiname">CCoeControl::OfferKeyEventL()</span></a>.
+If a UI control is a compound control, then forward key events to other controls
+within the compound control. The control that consumes the event must be a <a href="Chunk355813341.html">window-owning control</a>.
+An example of an implementation is as follows:</p>
+
+<pre class="codeblock" id="GUID-1614B24F-5DB2-43AA-9A18-723BD61B8B4C__GUID-D93EBAD0-6C04-4E97-ABE2-9999EAA6F442"><a name="GUID-1614B24F-5DB2-43AA-9A18-723BD61B8B4C__GUID-D93EBAD0-6C04-4E97-ABE2-9999EAA6F442"><!-- --></a>KeyResponse CMyAppView::OfferKeyEventL(const TKeyEvent&amp; aKeyEvent, TEventCode aType)
+    {
+    TKeyResponse response = EKeyWasNotConsumed;
+    //Check first that event type is EEventKey. It could be also
+    //EEventKeyUp or EEventKeyDown which just inform that some key
+    // is pressed or released.
+    if( aType == EEventKey )
+        {
+        // Take out the code of the key
+        TInt code = aKeyEvent.iCode;
+        TBuf&lt; KMessageLength &gt; buf;
+        buf.AppendNum( code );
+        // Show the code
+        iEikonEnv-&gt;InfoMsg(buf);
+        // Forward the key event to the focused control
+        if( iListBox-&gt;IsFocused() )
+            {
+            response = iListBox-&gt;OfferKeyEventL( aKeyEvent, aType );
+            }
+        else if( iEditView-&gt;IsFocused() )
+            {
+            response =
+            iEditView-&gt;OfferKeyEventL( aKeyEvent, aType );
+            }
+        }
+        // Return the key consumption status
+        return response;
+    }
+</pre>
+
+<p><span class="parmname">CMyAppView</span> is a window-owning compound control
+and <span class="parmname">iListBox</span> and <span class="parmname">iEditView</span> are controls
+inside <span class="parmname">CMyAppView</span>. Key events are offered to controls
+depending on the focus.</p>
+
+<p>If your implementation consumes the event handed to it, you must return <span class="parmname">EKeyWasConsumed</span>.
+If your implementation does not process the event, your code must return <span class="parmname">EKeyWasNotConsumed</span>.
+The application framework continues to offer the event to controls registered
+with the control stack from top to bottom until the event is consumed or until
+there are no more controls, in which case the event is handed to the UI controller
+by calling <a href="GUID-92361912-7768-3D2C-835E-BD3EF1366D6D.html#GUID-92361912-7768-3D2C-835E-BD3EF1366D6D__GUID-D4D9CA3F-19A2-3D29-91D6-0DD8C8B2C2FE"><span class="apiname">CCoeAppUI::HandleKeyEventL()</span></a> for the UI controller. </p>
+
+<p>Handle key events in your UI controller by overriding <a href="GUID-92361912-7768-3D2C-835E-BD3EF1366D6D.html#GUID-92361912-7768-3D2C-835E-BD3EF1366D6D__GUID-D4D9CA3F-19A2-3D29-91D6-0DD8C8B2C2FE"><span class="apiname">CCoeAppUI::HandleKeyEventL()</span></a>.
+An example of an implementation is as follows:</p>
+
+<pre class="codeblock" id="GUID-1614B24F-5DB2-43AA-9A18-723BD61B8B4C__GUID-3A2D3630-C28F-4165-8589-73AA4627D008"><a name="GUID-1614B24F-5DB2-43AA-9A18-723BD61B8B4C__GUID-3A2D3630-C28F-4165-8589-73AA4627D008"><!-- --></a>TKeyResponse CMyViewAppUi::HandleKeyEventL( const TKeyEvent&amp; aKeyEvent,TEventCode /*aType*/)
+    {
+    if( iTabGroup == NULL )
+        {
+        return EKeyWasNotConsumed;
+        }
+
+    TInt active = iTabGroup-&gt;ActiveTabIndex();
+    TInt count = iTabGroup-&gt;TabCount();
+
+    switch( aKeyEvent.iCode )
+        {
+        case EKeyLeftArrow:
+            if ( active &gt; 0 )
+                {
+                active--;
+                iTabGroup-&gt;SetActiveTabByIndex( active );
+                // ActivateLocalViewL() is used to change the view. 
+                // To change view from another application we would use ActivateViewL()
+                // Send an empty message
+                ActivateLocalViewL( TUid::Uid( iTabGroup-&gt;TabIdFromIndex( active ) ) );
+                }
+            break;
+        case EKeyRightArrow:
+            if( ( active + 1 ) &lt; count )
+                {
+                active++;
+                iTabGroup-&gt;SetActiveTabByIndex( active );
+                // ActivateLocalViewL() is used to change the view. 
+                // To change view from another application we would use ActivateViewL()
+                ActivateLocalViewL( TUid::Uid( iTabGroup-&gt;TabIdFromIndex( active ) ) );
+                }
+            break;
+        default:
+            return EKeyWasNotConsumed;
+            break;
+        }
+
+    return EKeyWasConsumed;
+    }
+</pre>
+
+<p><span class="parmname">CMyAppView</span> is a UI controller that is using key
+events from the selection key of a device to switch between two <a href="GUID-11967EBB-7439-3775-B287-7560ECA0AF1F.html"><span class="apiname">CAknView</span></a>-derived
+views. <span class="parmname">EKeyLeftArrow</span> and <span class="parmname">EKeyRightArrow</span> are
+codes enumerated in <span class="parmname">TKeyCode</span> and are contained in <span class="parmname">KeyEvent.iCode</span>.</p>
+
+<div class="note"><span class="notetitle">Note:</span> 
+<p>The above code snippet was taken from the <em>MyView</em> example application
+provided in the <span class="parmname">Platform Application Views</span> package available
+from <a href="http://www.forum.nokia.com/info/sw.nokia.com/id/226649f9-4118-4c8a-92e6-6d72fb251ae1/S60_Platform_Application_Views_v2_1_en.zip.html" target="_blank">Forum Nokia</a> . </p>
+
+</div>
+
+<p>See <a href="GUID-B67B6ED5-6C8F-3B36-934C-B47A109A515F.html"><span class="apiname">TKeyCode</span></a> for more information.</p>
+
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

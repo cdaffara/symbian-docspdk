@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Device Driver Structure"/>
+<meta name="abstract" content="This document describes the structures used to implement device drivers as LDDs and PDDs."/>
+<meta name="description" content="This document describes the structures used to implement device drivers as LDDs and PDDs."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-EBF4F1F1-F76B-455B-B8EE-B7965CF0717E.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-EBF4F1F1-F76B-455B-B8EE-B7965CF0717E.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Device Driver Structure</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496"><a name="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 id2388175 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; <a href="GUID-EBF4F1F1-F76B-455B-B8EE-B7965CF0717E.html" title="This document describes how device drivers are implemented as logical device drivers (LDDs) and physical device drivers (PDDs).">The LDD/PDD Model</a> &gt; </div>
+<h1 class="topictitle1">Device
+Driver Structure</h1>
+<div><p>This document describes the structures used to implement device
+drivers as LDDs and PDDs.</p>
+
+<p>Both LDDs and PDDs are DLLs. </p>
+
+<p>They implement a specific interface that allows the kernel to initialise
+them, and for user-side code to communicate with them. </p>
+
+<p>An LDD must implement: </p>
+
+<ul>
+<li id="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496__GUID-A57D8838-EF0B-5096-99EC-D9197C58EE35"><a name="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496__GUID-A57D8838-EF0B-5096-99EC-D9197C58EE35"><!-- --></a><p>A <samp class="codeph">DLogicalChannel</samp> or <samp class="codeph">DLogicalChannelBase</samp> derived
+class, representing the logical channel, which handles user requests. </p>
+ </li>
+
+<li id="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496__GUID-1E3CD4B7-15BC-59B1-939B-2AF34F0438BB"><a name="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496__GUID-1E3CD4B7-15BC-59B1-939B-2AF34F0438BB"><!-- --></a><p>A <samp class="codeph">DLogicalDevice</samp> derived
+class, which provides a factory for the logical channel objects, called the
+LDD factory. </p>
+ </li>
+
+<li id="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496__GUID-2342FF0C-4CC0-561F-81CB-2643E09351B4"><a name="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496__GUID-2342FF0C-4CC0-561F-81CB-2643E09351B4"><!-- --></a><p>A DLL entry point function
+at ordinal 1, which constructs the LDD factory object. </p>
+ <p>It is possible
+that a device driver is also an extension, in which case the entry point will
+also be used for extension initialisation. </p>
+ </li>
+
+</ul>
+
+<p>A PDD must implement: </p>
+
+<ul>
+<li id="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496__GUID-0D5220C0-764F-5711-970F-60D19AD21320"><a name="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496__GUID-0D5220C0-764F-5711-970F-60D19AD21320"><!-- --></a><p>A <samp class="codeph">DBase</samp> derived
+class representing the physical channel, which is the interface between the
+logical device and the physical device. </p>
+ </li>
+
+<li id="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496__GUID-BEC551B8-AED6-5EEC-8FDA-C742B4C1F7DC"><a name="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496__GUID-BEC551B8-AED6-5EEC-8FDA-C742B4C1F7DC"><!-- --></a><p>A <samp class="codeph">DPhysicalDevice</samp> derived
+class, which provides a factory for the physical channel objects, called the
+PDD factory. </p>
+ </li>
+
+<li id="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496__GUID-9D72BF3C-6D13-5D9F-A8E3-D376D445AC08"><a name="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496__GUID-9D72BF3C-6D13-5D9F-A8E3-D376D445AC08"><!-- --></a><p>A DLL entry point function
+at ordinal 1, which constructs the PDD factory object. </p>
+ </li>
+
+</ul>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-EBF4F1F1-F76B-455B-B8EE-B7965CF0717E.html" title="This document describes how device drivers are implemented as logical device drivers (LDDs) and physical device drivers (PDDs).">The LDD/PDD Model</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

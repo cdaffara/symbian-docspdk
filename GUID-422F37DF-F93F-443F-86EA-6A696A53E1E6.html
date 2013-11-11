@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Listening for scrollbar touch events"/>
+<meta name="abstract" content="If your custom control contains a scrollbar, you need to listen for touch events in the scrollbar."/>
+<meta name="description" content="If your custom control contains a scrollbar, you need to listen for touch events in the scrollbar."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-26A4F760-C85A-4030-8910-15D239323E9D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-29486886-CB54-4A83-AD6D-70F971A86DFC.html"/>
+<meta name="DC.Relation" scheme="URI" content="Chunk1444803053.html#GUID-A9330FEF-C559-4E2B-B064-0151FDADEA8C"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-26A4F760-C85A-4030-8910-15D239323E9D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-422F37DF-F93F-443F-86EA-6A696A53E1E6"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Listening for scrollbar touch events</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-422F37DF-F93F-443F-86EA-6A696A53E1E6"><a name="GUID-422F37DF-F93F-443F-86EA-6A696A53E1E6"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2561792 id2561806 id2561942 id2840148 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html">Classic UI Guide</a> &gt; <a href="GUID-29486886-CB54-4A83-AD6D-70F971A86DFC.html">Application and UI frameworks</a> &gt; <a href="Chunk1444803053.html#GUID-A9330FEF-C559-4E2B-B064-0151FDADEA8C">Event handling</a> &gt; <a href="GUID-26A4F760-C85A-4030-8910-15D239323E9D.html">Touch-specific events</a> &gt; </div>
+<h1 class="topictitle1">Listening
+for scrollbar touch events</h1>
+<div><p>If your custom control contains a scrollbar, you need to listen
+for touch events in the scrollbar.</p>
+
+<p>For custom controls that override <samp class="codeph">CCoeControl::HandleScrollEventL()</samp>,
+you must also call the base class implementation of the function.</p>
+
+<div class="fignone" id="GUID-422F37DF-F93F-443F-86EA-6A696A53E1E6__GUID-ECD9B9C0-0134-4D8A-B350-A797A5C1BE0F"><a name="GUID-422F37DF-F93F-443F-86EA-6A696A53E1E6__GUID-ECD9B9C0-0134-4D8A-B350-A797A5C1BE0F"><!-- --></a><span class="figcap">Figure 1. Scrollbar</span>
+
+<img src="GUID-8C8D6B06-E794-4269-B4DF-D2BE4DDB9E8B_d0e67941_href.png" height="84.4" width="128"/>
+</div>
+
+<p>For an implementation example, see below.</p>
+
+<pre class="codeblock">void CMyContainerControl::HandleScrollEventL( CEikScrollBar* aScrollBar, TEikScrollEvent aEventType )
+    {
+    if( !aScrollBar )
+        {
+        return;
+        }
+
+    TInt newPosition = aScrollBar-&gt;ThumbPosition();
+    
+    switch( aEventType )
+        {
+        case EEikScrollUp: // Moving up one step
+            {
+            MoveFocusUpL();
+            break;
+            }
+        case EEikScrollDown: // Moving down one step
+            {
+            MoveFocusDownL();
+            break;
+            }
+        case EEikScrollThumbDragVert: // Drag started
+        case EEikScrollThumbReleaseVert: // Drag released
+            {
+            if( newPosition &lt; iFocusedIndex )
+                {
+                MoveFocusUpL();
+                }
+            else if( newPosition &gt; iFocusedIndex )
+                {
+                MoveFocusDownL();
+                }
+            break;
+            }
+        case EEikScrollPageUp:
+            {
+            while( newPosition &lt; iFocusedIndex )
+                {
+                MoveFocusUpL();
+                }
+            break;
+            }
+        case EEikScrollPageDown:
+            {
+            while( newPosition &gt; iFocusedIndex )
+                {
+                MoveFocusDownL();
+                }
+            break;
+            }
+        default:
+            {
+            break;
+            }
+        }
+    DrawNow();
+    }</pre>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-26A4F760-C85A-4030-8910-15D239323E9D.html">Touch-specific events</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

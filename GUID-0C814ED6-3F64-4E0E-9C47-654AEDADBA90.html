@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Going Beyond Hello: A Tutorial for Symbian C++ Applications"/>
+<meta name="abstract" content="This tutorial shows how you can extend that basic example to create a small paint application, along the way learning more about the application frameworks (e.g. defining menus, how to handle touch-screen events, drawing to the screen etc.)."/>
+<meta name="description" content="This tutorial shows how you can extend that basic example to create a small paint application, along the way learning more about the application frameworks (e.g. defining menus, how to handle touch-screen events, drawing to the screen etc.)."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AFAD9FAE-D09B-4778-8981-47A8073BC044.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AFAD9FAE-D09B-4778-8981-47A8073BC044.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Going Beyond Hello: A Tutorial for Symbian C++ Applications</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id1198393 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-AFAD9FAE-D09B-4778-8981-47A8073BC044.html" title="An introduction to mobile application development with Symbian C++.">Getting Started</a> &gt; </div>
+<h1 class="topictitle1">Going Beyond Hello: A Tutorial for Symbian C++ Applications</h1>
+<div><p>This tutorial shows how you can extend that basic example
+to create a small paint application, along the way learning more about
+the application frameworks (e.g. defining menus, how to handle touch-screen
+events, drawing to the screen etc.).</p>
+
+<p>In the <a href="GUID-301E5FAA-A1C3-4FD7-9D84-DAA61C66981B.html" title="This Quick Start is relevant if you want to create Symbian C++ applications that run on Symbian devices - i.e. &#34;on top&#34; of the Symbian platform. Typically this will include: professional application and games developers, professional service companies, hobbyist developers and students.">Symbian
+C++ Quick Start</a> you learned how to create a basic example application
+using Carbide.c++, and how to build and run it on the Windows emulator
+and on a device.  </p>
+
+<p><strong>Comes with Code</strong>: <a href="http://developer.symbian.org/wiki/images/e/eb/HelloSymbianWorld_Example_Code.zip" target="_blank">File: HelloSymbianWorld Example Code.zip</a></p>
+
+<div class="section" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-14C6D367-D806-45F8-BC44-C5DBC78096D9"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-14C6D367-D806-45F8-BC44-C5DBC78096D9"><!-- --></a><h2 class="sectiontitle"> Application Structure</h2>              <p>Carbide.c++ offers two ways
+of exploring your project. The traditional <strong>Project Explorer</strong> window, which can also be found in Eclipse, lists the files belonging
+to the project in the same directory structure as in the file system.
+ </p>
+<p>The <strong>Symbian Project Navigator</strong> contains the same contents,
+but displays them in a logical hierarchy according to <a href="http://developer.symbian.org/wiki/index.php/Coding_Standards_and_Conventions" target="_blank">Symbian Conventions</a>. </p>
+<p> You might wonder
+why a basic "Hello World" application contains so many files. The
+answer is straightforward - a much simpler Hello World wouldn’t be
+a very good starting point for real-world applications.  </p>
+<p>Instead
+the wizard generates the project for a complete and readily extensible
+application. The project separates code and data, and uses a form
+of the <a href="http://wiki.forum.nokia.com/index.php/Design_Patterns_in_Symbian#Model-View-Control_Pattern" target="_blank">model view controller pattern</a> for structuring
+your code. The application already reacts to system events and contains
+everything that is required for localization. </p>
+<p/>
+<div class="p"><strong>What
+are the directories of a project?</strong><div class="fignone" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-898488F8-5CF9-4A01-95F8-45E2C5D2E501"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-898488F8-5CF9-4A01-95F8-45E2C5D2E501"><!-- --></a>
+<img src="GUID-FFC6F01E-15AB-43E6-90E8-0E42DA297AE9_d0e2270_href.png"/>
+</div>
+</div>
+<p/>
+<strong>\group</strong><ul>
+<li><p><strong>bld.inf</strong>: Component-definition file. This specifies the <samp class="codeph">mmp</samp> files that belong to your component, any shared header
+files that it exports, and the default build targets (e.g. GCCE, WINSCW).</p>
+<ul>
+<li><p><samp class="codeph">Bld.inf</samp> is used to generate the makefiles
+and <samp class="codeph">abld.bat</samp> used to build for the command-line (see <a href="GUID-301E5FAA-A1C3-4FD7-9D84-DAA61C66981B.html" title="This Quick Start is relevant if you want to create Symbian C++ applications that run on Symbian devices - i.e. &#34;on top&#34; of the Symbian platform. Typically this will include: professional application and games developers, professional service companies, hobbyist developers and students.">Symbian C++ Quick
+Start</a>). </p>
+</li>
+
+<li><p>This file is the starting point when you want to import a Symbian
+C++ project into Carbide.c++, because it contains references to all
+executables in your project (see the section on Importing Other Examples). </p>
+</li>
+
+</ul>
+</li>
+
+<li><p><strong>HelloWorld.mmp</strong>: Project-definition file. This specifies
+how to build an executable (in this case <samp class="codeph">HelloWorld.exe</samp>) in a platform- and compiler-independent way. It contains information
+such as resource files to be compiled, source files to include when
+compiling, and the libraries to include when linking. </p>
+</li>
+
+<li><p><strong>Icons_aif_scalable_dc.mk</strong>: Makefile used to create the
+application's icon from the <samp class="codeph">*.svg</samp> file in the <samp class="codeph">/gfx</samp> folder. </p>
+</li>
+
+</ul>
+<p> </p>
+<p><strong>\src</strong></p>
+<ul>
+<li><p> <strong>HelloWorldApplication.cpp</strong>: This file contains the entry
+point for the EXE file (<samp class="codeph">E32Main()</samp>) as well as the
+implementation of the Application class (which provides some basic
+functionality for the GUI framework). Normally this is "boilerplate"
+code and you do not need to make any changes. </p>
+</li>
+
+<li><p><strong>HelloWorldDocument.cpp</strong>: This class is supposed to take
+care of the persistent data model of your application and therefore
+provides some functions to load and save <samp class="codeph">.ini</samp> files.
+This mechanism is disabled by default - for most applications you
+may treat this as "boilerplate" code. </p>
+</li>
+
+<li><p><strong>HelloWorldAppUi.cpp</strong>: This is the main controller of
+your application. It contains the logic for handling application-wide
+events (so you don’t have to handle, for example, the exit event in
+every view). It owns all the views that you use. </p>
+</li>
+
+<li><p><strong>HelloWorldContainerView.cpp</strong>: This is a kind of controller,
+which is responsible for handling events and the UI elements of the
+currently visible view. It’s not visible itself, but owns and manages
+the <em>Container</em> (below), which corresponds to the view in the
+traditional model view controller pattern.</p>
+</li>
+
+<li><p><strong>HelloWorldContainer.cpp</strong>: Contains the UI elements that
+should be displayed by the view. Therefore, the ContainerView and
+the Container usually have a very strong relationship. </p>
+</li>
+
+</ul>
+<p>During start-up, one class instance creates the next:</p>
+<div class="fignone" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-2A3EE3C2-3515-4217-BCB3-182A01936898"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-2A3EE3C2-3515-4217-BCB3-182A01936898"><!-- --></a>
+<img src="GUID-AC3F5010-ECA6-4257-98B5-77FB26B4987F_d0e2376_href.png"/>
+</div>
+<p/>
+<p><strong>\inc</strong></p>
+<ul>
+<li><p><strong>HelloWorldApplication.h</strong>, <strong>HelloWorldDocument.h</strong>, <strong>HelloWorldAppUi.h</strong>, <strong>HelloWorldContainerView.h</strong>, <strong>HelloWorldContainer.h</strong>: Header files corresponding to each of
+the main source files above. </p>
+</li>
+
+<li><p><strong>HelloWorld.hrh</strong>: UIDs/identifiers for UI elements including
+views. These are shared between the resource file definitions for
+UI elements and the source code command handlers.</p>
+</li>
+
+<li><p><strong>HelloWorld.pan</strong>: Panic code and method definitions.</p>
+</li>
+
+</ul>
+<p/>
+<p><strong>\data</strong></p>
+<ul>
+<li><p><strong>HelloWorld_reg.rss</strong>: Contains registration information
+about the application, such as its title.</p>
+</li>
+
+<li><p><strong>HelloWorld.rss</strong>: Main resource file. Contains additional
+information about the application, as well as user interface and text
+resource definitions.      </p>
+</li>
+
+<li><p><strong>HelloWorld.loc</strong>, <strong>HelloWorld.l01</strong>: Localization
+files. Strings used by UI are defined in separate localization resource
+files. Each file has the format <samp class="codeph">.lxx</samp>, where <em>xx</em> is a language specific numeric file extension - e.g. UK English
+is ‘01’, French ‘02’ and German ‘03’. The <samp class="codeph">.loc</samp> file
+is a kind of junction that <samp class="codeph">#includes</samp> the language
+specific files. The languages are compiled into separate resource
+files (extension <samp class="codeph">.rxx</samp>; the resource file for the
+current language is loaded by the UI framework at runtime</p>
+</li>
+
+</ul>
+<p/>
+<p><strong>\gfx</strong></p>
+<ul>
+<li><p><strong>list_icon.bmp</strong>, <strong>list_icon_mask.bmp</strong>, <strong>mark_icon.bmp</strong>, <strong>mark_icon_mask.bmp</strong>: Bitmap and bitmap masks. These are compiled
+into the MultiBitMap (<samp class="codeph">mbm</samp>) format for display in
+the application.</p>
+</li>
+
+<li><p> <strong>qgn_menu_HelloWorld.svg</strong>: SVG-T image that gets compiled
+into the <samp class="codeph">HelloWorld_aif.mif</samp> MultiImageFile (<samp class="codeph">mif</samp>) used for the application icon.</p>
+</li>
+
+</ul>
+<p/>
+<p><strong>\sis</strong></p>
+<ul>
+<li><p><strong>HelloWorld.pkg</strong>: Defines the contents that should be
+packaged into the installable <samp class="codeph">.sis</samp> file for the device.
+This includes the executable as well as all resources required by
+the application (graphics and so on).</p>
+</li>
+
+<li><p><strong>HelloWorld.sis</strong>: Compressed and self-contained installation
+file for the device. Compiled based on the package file.     </p>
+</li>
+
+<li><p><strong>HelloWorld.sisx</strong>: <samp class="codeph">.sis</samp> file which has
+been signed with a certificate (in this case self-signed).</p>
+</li>
+
+</ul>
+     </div>
+
+<div class="section" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-65BEDD17-334B-4C42-8D89-DAB355F97F51"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-65BEDD17-334B-4C42-8D89-DAB355F97F51"><!-- --></a><h2 class="sectiontitle"> Extending
+Hello World – Drawing</h2><p>To make our application a little bit
+more interactive, we are going to implement a simple paint tool, allowing
+the user to draw lines by touching the screen.    </p>
+<p>We could
+draw the lines directly on the screen, but then everything would get
+lost when something caused our application to redraw the screen –
+for example, a telephone call that came through while our application
+was running. Therefore, we have to draw the lines to a bitmap, which
+is simply copied to the screen whenever required.   </p>
+<p>Another
+solution (more difficult but also more flexible!) would be to store
+all lines in a list and to iterate over the list each time the application
+needs to draw the contents of the screen. </p>
+</div>
+
+<div class="section" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-217EFA6E-9B5F-4B65-8B99-E056CC26156D"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-217EFA6E-9B5F-4B65-8B99-E056CC26156D"><!-- --></a><h2 class="sectiontitle"> Using
+the SDK Documentation</h2><p>The class that can handle bitmap data
+is called <samp class="codeph">CFbsBitmap</samp>. Let’s take a look at the documentation
+for this class to find out more about the required header files, libraries
+and available methods.    </p>
+<p><a href="http://developer.symbian.org/search/search_results.php?txtSearch=CFbsBitmap&amp;site=sdl_collection.dita">Search</a> the online documentation for the class you're interested
+in, in this case <samp class="codeph">CFbsBitmap</samp>. <a href="http://developer.symbian.org/main/documentation/reference/s%5E2/doc_source/reference/tb91sf-PP/fontandbitmapserver/index.html" target="_blank">CFbsBitmap in Os Font_and_Bitmap_Server</a> should
+be (one of the) first topics you find. </p>
+<p/>
+<div class="note"><span class="notetitle">Note:</span> If you're
+working offline you can also search for documentation in the SDK. <strong>Start</strong> menu: <strong>Start - S60 Developer Tools - 5th Edition SDK,
+v<em>1.0</em> - SDK Documentation</strong></div>
+<p>Right at the top of the
+reference page you will see that the header file we need to use is <samp class="codeph">FBS.H</samp> and the library we need to link against is called <samp class="codeph">fbscli.lib</samp>. </p>
+<div class="fignone" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-23B3B7CF-E676-4FBC-8B26-E7B88764781C"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-23B3B7CF-E676-4FBC-8B26-E7B88764781C"><!-- --></a>
+<img src="GUID-0B0EF90E-45A4-467F-8CD9-33FBC612B3BD_d0e2574_href.png"/>
+</div>
+<p>This class is capable of storing a bitmap. It's also possible
+to get direct access to the bitmap data. However for more convenient
+methods of drawing we will work through a drawing device and context.
+   </p>
+<p>To find out more about bitmaps, contexts and drawing functions, <a href="http://developer.symbian.org/search/search_results.php?txtSearch=bitmaps&amp;site=sdl_collection" target="_blank">Search for ‘bitmaps’</a> in the documentation,
+and go to the page <strong>Bitmaps in Using Bitmaps</strong>, or <strong>Using Bitmaps
+in Using Graphics Device Interfaces</strong>.    Symbian provides several
+different device and context classes. For our application we’re going
+to use <samp class="codeph">CFbsBitmapDevice</samp> (header file: <samp class="codeph">bitdev.h</samp>, library: <samp class="codeph">bitgdi.lib</samp>) and <samp class="codeph">CFbsBitGc</samp> (header file: <samp class="codeph">bitstd.h</samp>, library: <samp class="codeph">bitgdi.lib</samp>). </p>
+</div>
+
+<div class="section" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-D9C51891-11DE-4042-AE32-CC7EA362C32A"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-D9C51891-11DE-4042-AE32-CC7EA362C32A"><!-- --></a><h2 class="sectiontitle"> Adding
+Libraries To a Project</h2><p>In the previous step, we determined
+that we need two libraries in order to use all three bitmap-related
+classes: <samp class="codeph">fbscli.lib</samp> and <samp class="codeph">bitgdi.lib</samp>. To add them to our project, open the <samp class="codeph">HelloWorld.mmp</samp> project file (in the <samp class="codeph">/group/</samp> folder if you’re using
+the <strong>Project Explorer</strong> window). Switch to the <strong>Libraries</strong> tab.    At the top of this page, you will see a list of included
+libraries. <samp class="codeph">fbscli.lib</samp> is already in the list, so
+we don’t need to add it. However <samp class="codeph">bitgdi.lib</samp> is missing. </p>
+<div class="note"><span class="notetitle">Note:</span> There are more libraries in the list than are used by our project
+(added by the wizard!). These cause no harm so we choose not to remove
+them.</div>
+<p>Click on the <strong>Add</strong> button. Search for <samp class="codeph">bitgdi.lib</samp> in the list and add it to the <strong>Libraries</strong> list. </p>
+<div class="fignone" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-7D1E15B4-5157-4F48-9084-6DDBD6EE0208"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-7D1E15B4-5157-4F48-9084-6DDBD6EE0208"><!-- --></a>
+<img src="GUID-E5FB2D04-D57E-4EEA-850F-40F813C75D8C_d0e2652_href.png"/>
+</div>
+<p>When you’re finished, make sure that both libraries are in
+the <strong>Libraries</strong> list.    </p>
+<div class="p">When you compile your application
+again, Carbide.c++ will detect the changes in the .mmp file and ask
+you what to do. Click on <strong>Compile and Link</strong> to update the project
+with the changes we have made to the <samp class="codeph">.mmp</samp> file. <div class="fignone" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-77F781CD-A2EF-4489-BAE2-EB283057670E"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-77F781CD-A2EF-4489-BAE2-EB283057670E"><!-- --></a>
+<img src="GUID-10540A35-7E8E-40F0-BF93-CBC01884550C_d0e2669_href.png"/>
+</div>
+</div>
+</div>
+
+<div class="section" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-F2A4FC0F-8C67-4151-8BD2-808FCEDD121F"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-F2A4FC0F-8C67-4151-8BD2-808FCEDD121F"><!-- --></a><h2 class="sectiontitle"> Creating
+Bitmaps</h2><p>Now the libraries have been added, we can use the
+bitmap classes in our project. Open the file <samp class="codeph">HelloWorldContainer.h</samp> and add the following include statements: </p>
+<pre class="codeblock">#include &lt;fbs.h&gt;
+#include &lt;bitdev.h&gt;
+#include &lt;bitstd.h&gt;
+</pre>
+<p>We also need to store the bitmap objects as instance
+(member) variables. Add the following definitions to a private section
+of the <samp class="codeph">CHelloWorldContainer</samp> class. Be careful not
+to write anything into areas managed by the UI designer, because your
+changes could be overwritten. These areas are marked by comments.
+    </p>
+<pre class="codeblock">private:  
+CFbsBitmap* iBitmap;  
+CFbsBitmapDevice* iBmpDevice;  
+CFbsBitGc* iBmpGc;   </pre>
+<p>Symbian C++ uses some <a href="http://developer.symbian.org/wiki/index.php/Coding_Standards_and_Conventions#Naming_Conventions" target="_blank">naming conventions</a>. Instance variables should
+have a lowercase <samp class="codeph">i</samp> at the beginning of the variable
+name (<samp class="codeph">iBitmap</samp>). Arguments should be marked by an
+a (<samp class="codeph">aBitmap</samp>). Normal local variables that you create
+inside a function do not need any prefix. That way, you instantly
+know where the variable is coming from – this is very important when
+deleting objects.    Next, we want to create the bitmap. Define and
+implement a new method: </p>
+<samp class="codeph">void CHelloWorldContainer::CreateBitmapsL()</samp><p>Let’s go line by line through the required code for this method:
+   First, we have to make sure that any previous objects are deleted
+if they already exist. This would be required (for example) if the
+running application needs to re-create the bitmap because the screen
+layout changes. You don’t need to add an if statement to check if
+the pointer is NULL beforehand – the C++ <samp class="codeph">delete</samp> statement
+only deletes the object if the pointer is not NULL. You do however
+need to ensure that the objects are set to NULL after deletion to
+avoid possible "double deletion" in the destructor. </p>
+<pre class="codeblock">delete iBitmap; iBitmap = NULL;  
+delete iBmpDevice; iBmpDevice = NULL;  
+delete iBmpGc; iBmpGc = NULL;</pre>
+<p>This following line of
+code should look familiar – it simply creates an instance of the <samp class="codeph">CFbsBitmap</samp> class:      </p>
+<p><samp class="codeph"> iBitmap = new (ELeave)
+CFbsBitmap();</samp>       </p>
+<p>The (<samp class="codeph">ELeave</samp>)
+parameter is Symbian C++ specific. This causes a <a href="http://developer.symbian.org/wiki/index.php/Leaves_%26_The_Cleanup_Stack_(Fundamentals_of_Symbian_C%2B%2B)" target="_blank"> leave</a> (the Symbian C++ equivalent of standard
+exceptions) if allocating the object fails – for example, because
+there is not enough free memory. With the (<samp class="codeph">ELeave</samp>), you don’t have to manually check if the pointer is actually pointing
+to a valid object after creating the object instance. You can find
+out more about leaves in <a href="http://developer.symbian.org/wiki/index.php/Fundamentals_of_Symbian_C%2B%2B" target="_blank">Fundamentals of C++</a>.    </p>
+<p>We do not handle
+the potential leave here; that’s why the method name (<samp class="codeph">CreateBitmapL()</samp>) has a trailing L to show that it can also leave. More on this topic
+in a moment.    </p>
+<p>Now, it’s time to let the <samp class="codeph">CFbsBitmap</samp> class allocate the memory for the bitmap it is going to manage.
+The available drawing size for our container can be queried by the
+method <samp class="codeph">Size()</samp> from its base class. <samp class="codeph">EColor16MU</samp> specifies the color depth – in this case, it’s a true color display
+mode with 32 bits per pixel; the top byte is unused. The color mode <samp class="codeph">EColor16MA</samp> would use the top byte for the alpha channel,
+several other modes are available as well.   </p>
+<p><samp class="codeph">iBitmap-&gt;Create(Size(),
+EColor16MU);</samp>    </p>
+<p>The next line creates a graphics device
+based on the bitmap. A graphics device represents the medium being
+drawn to and is needed to create a graphics context. The use of a <samp class="codeph">NewL()</samp> method is common in Symbian C++; it is a static factory
+function which returns a fully constructed object of the desired type.
+  </p>
+<p><samp class="codeph"> iBmpDevice = CFbsBitmapDevice::NewL(iBitmap);</samp>    </p>
+<p>A graphics context provides a large number of drawing
+operations, along with state settings defining how the drawing is
+performed. The bitmap graphics context used here is a specialization
+of the generic graphics context and adds some methods that can be
+used for bitmaps only – such as clearing and copying rectangular areas.
+   </p>
+<p><samp class="codeph">iBmpDevice-&gt;CreateContext(iBmpGc);</samp>    </p>
+<p>Whenever you create objects, it’s best to think about where and
+when they are going to be deleted right away. Memory leaks are a serious
+issue on a mobile device where no virtual memory is available and
+the main memory is limited to 30-80 MB. Therefore, go to the destructor
+of <samp class="codeph">CHelloWorldContainer</samp> and add the required statements
+for deleting the three objects:      </p>
+<div class="p"> <pre class="codeblock">delete iBmpGc;  
+delete iBmpDevice;  
+delete iBitmap;</pre>
+       </div>
+<p>The next step addresses the
+remaining question: where to call the <samp class="codeph">CreateBitmapsL()</samp> method. Of course, you could do this from the construction methods
+of the class. But what if, while your application is running, the
+user physically turns the phone, causing it to switch from portrait
+to landscape mode? Because the bitmap was created with the portrait
+size in mind, the user would no longer be able to use the full screen
+for drawing.    </p>
+<p>Therefore, we have to react to events that
+inform us when the screen size is changed. In those situations, <samp class="codeph">SizeChanged()</samp> is executed. When the container is first constructed,
+its size changes as well. Because of this, we can simply call our <samp class="codeph">CreateBitmapsL()</samp> method from within <samp class="codeph">SizeChanged()</samp>:       </p>
+<div class="p"><pre class="codeblock">void CHelloWorldContainer::SizeChanged()  
+	{  
+	CCoeControl::SizeChanged();  
+	LayoutControls();     
+	// [[[ begin generated region: do not modify [Generated Contents]
+	// ]]] end generated region [Generated Contents]
+	if (!iBitmap || (iBitmap &amp;&amp; iBitmap-&gt;SizeInPixels() != Size()))
+		{
+		TRAPD(err, CreateBitmapsL());
+		}
+	}</pre>
+      </div>
+<p>In the source code above, an additional
+check ensures that the bitmap is only re-created if the size available
+for the container is really different to the existing bitmap size
+– the <samp class="codeph">SizeChanged()</samp> method is also called, for example,
+when the option menu obscures part of our view. This does not affect
+the available space for our drawing area and therefore should not
+lead to re-creating the bitmap.    </p>
+<p>But what is the <samp class="codeph">TRAPD()</samp> statement doing here? Let’s use this to take a closer
+look at the concept of leaves. </p>
+<p/>
+<p><strong>Leaves</strong></p>
+<p>When
+programming using Symbian C++, an L is appended to the name of methods
+that can leave (usually because it contains other methods that can
+leave and does not choose to "TRAP" them). Note: this is a helpful
+convention, but is not checked or required by the compiler.    </p>
+<p>Our <samp class="codeph">CreateBitmapsL()</samp> method contains two methods
+that can leave: the (<samp class="codeph">ELeave</samp>) parameter causes a leave
+if there is not enough memory to allocate the object. The <samp class="codeph">NewL()</samp> method from the graphics device also has a trailing <samp class="codeph">L</samp> – meaning that this method can also leave. We did not
+catch any (all) of those leaves in the <samp class="codeph">CreateBitmapsL()</samp> method so it was named with a trailing <samp class="codeph">L</samp>.    </p>
+<p>Any leaves are passed up in the call stack until caught by a <samp class="codeph">TRAPD</samp> macro. The <samp class="codeph">SizeChanged()</samp> method traps
+any leaves from <samp class="codeph">CreateBitmapsL()</samp> and consequently
+does <strong>not</strong> need to have a trailing <samp class="codeph">L</samp>.    </p>
+<p>The error code of the leave is stored in the err variable, which
+is declared as a normal integer by this macro. It would be a good
+idea to take a look at the contents of this variable and to handle
+errors instead of ignoring them as we’re doing here. But for the sake
+of simplicity, we do not handle any errors that might occur in this
+situation. </p>
+<p/>
+<p><strong>Tip</strong></p>
+<p>A good way to automatically
+check your code for potential problems is to use the <em>CodeScanner</em> tool that comes with Carbide.c++. It is a static code-analysis tool
+looking at Symbian coding rules and standards. Find out more at: <a href="http://carbidehelp.nokia.com/help/topic/com.nokia.carbide.cpp.codescanner/html/codescanner.htm" target="_blank">http://carbidehelp.nokia.com/help/topic/com.nokia.carbide.cpp.codescanner/html/codescanner.htm</a></p>
+</div>
+
+<div class="section" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-7E4A9491-8F22-4D68-9890-95332D31412B"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-7E4A9491-8F22-4D68-9890-95332D31412B"><!-- --></a><h2 class="sectiontitle"> Handling
+Touch Events</h2><div class="p">Before we start handling the touch events,
+we need one more instance variable in our code. To draw a line from
+one touch position to the next, it’s necessary to save the first position.
+Therefore, add the following private instance variable to <samp class="codeph">CHelloWorldContainer</samp>: <pre class="codeblock">TPoint iLastPos;</pre>
+</div>
+<p><samp class="codeph">TPoint</samp> is a convenience class that stores
+two integers that can be used as co-ordinates. Additionally, it provides
+some methods to modify the point. We do not need to initialize the
+variable in the constructor of the <samp class="codeph">CHelloWorldContainer</samp> class – the container class is indirectly derived from the class <samp class="codeph">CBase</samp>, which automatically zero-initializes all member variables.
+   Touch events are delivered to the container class, which is responsible
+for managing the visible UI content in the main pane of your application.
+To handle the events ourselves, we have to override the following
+method in <samp class="codeph">CHelloWorldContainer</samp>: </p>
+<p><samp class="codeph">void
+CHelloWorldContainer::HandlePointerEventL(const TPointerEvent&amp;
+aPointerEvent)</samp></p>
+<div class="p">Define this method in the header file
+(can be private or protected) and add its implementation in the <samp class="codeph">.cpp</samp> file.    The information about the new event is sent
+through the argument <samp class="codeph">aPointerEvent</samp>. We are interested
+in the up event for the first button (there is only one in current
+touch devices; you can’t click with a right button as you would with
+a mouse). Whenever the user releases the stylus or finger from the
+touch screen, we want to draw a line to this position. Put the following
+code into this if statement: <pre class="codeblock">if (aPointerEvent.iType == TPointerEvent::EButton1Up)
+  {
+  }</pre>
+</div>
+<p>Drawing the line itself is rather simple. First,
+define the color and style that should be used for drawing, then call
+the function for drawing the line. Note that the settings concerning
+the color and style stay active until they are changed again in this
+graphics context – you do not need to set them every time when executing
+consecutive drawing operations. </p>
+<pre class="codeblock">iBmpGc-&gt;SetPenColor(KRgbRed);  
+iBmpGc-&gt;SetPenSize(TSize(2,2));  
+iBmpGc-&gt;DrawLine(iLastPos, aPointerEvent.iPosition);</pre>
+<p>Next, we have to save the new position, because it will be required
+as the starting point for the next line. </p>
+<samp class="codeph">iLastPos = aPointerEvent.iPosition;</samp><p>Finally, issue a request to the framework to redraw the screen.
+Otherwise, the user won’t see the new line! </p>
+<samp class="codeph">DrawDeferred();</samp><p>At the end of the method, also call the <samp class="codeph">HandlePointerEventL()</samp> method of the base class (the container is derived from <samp class="codeph">CCoeControl</samp>, because it is a normal UI control by itself): </p>
+<samp class="codeph">CCoeControl::HandlePointerEventL(aPointerEvent);</samp><p>To sum it up, this is the final code for the <samp class="codeph">HandlePointerEvent()</samp> method: </p>
+<pre class="codeblock">void CHelloWorldContainer::HandlePointerEventL(const TPointerEvent&amp; aPointerEvent)
+    {
+    if (aPointerEvent.iType == TPointerEvent::EButton1Up)
+      {
+      iBmpGc-&gt;SetPenColor(KRgbRed);
+      iBmpGc-&gt;SetPenSize(TSize(2,2));
+      iBmpGc-&gt;DrawLine(iLastPos, aPointerEvent.iPosition);
+      iLastPos = aPointerEvent.iPosition;
+      DrawDeferred();
+      }
+    CCoeControl::HandlePointerEventL(aPointerEvent);
+    }</pre>
+<p>We’ve already added all the code required for
+drawing to the bitmap, but this bitmap still has to be transferred
+to the screen. The <samp class="codeph">CHelloWorldContainer::Draw()</samp> method
+is called when the system wants the contents of the container to be
+redrawn. Therefore, we need to add the following line of code to the
+end of the <samp class="codeph">Draw()</samp> method, which copies the bitmap
+to the top left of the graphics context of the screen: </p>
+<samp class="codeph">gc.BitBlt(TPoint(0, 0), iBitmap);</samp><p>Now compile the project.
+It should already work – you can draw red lines by just clicking inside
+the main pane of the emulator! </p>
+<div class="fignone" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-CFD29EE4-464B-498C-80F5-493847DE0AEE"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-CFD29EE4-464B-498C-80F5-493847DE0AEE"><!-- --></a>
+<img src="GUID-700CD2E2-DBB7-40BD-BC6D-9BC79C5A0BBF_d0e2949_href.png"/>
+</div>
+</div>
+
+<div class="section" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-8DC096A0-807D-437C-9A96-ABAFE2AF7F26"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-8DC096A0-807D-437C-9A96-ABAFE2AF7F26"><!-- --></a><h2 class="sectiontitle">  Defining
+a Menu </h2><p>The application would be improved if the user could
+clear the drawing during use, rather than having to restart it. This
+section shows how you add and handle menu items to provide this functionality,
+and to exit the application    Open the <samp class="codeph">HelloWorldContainer.uidesign</samp> document. You can find it in the root folder of your project in
+the <strong>Project Explorer</strong> or in the <strong>UI Designs</strong> folder of
+the Symbian Project Navigator.    </p>
+<p>Click on the <strong>Options</strong> menu item below the UI design to reveal the menu. As indicated,
+you simply need to click on the empty menu item and start typing. </p>
+<div class="fignone" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-96D944A2-87C5-4530-AB0C-580C3277285D"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-96D944A2-87C5-4530-AB0C-580C3277285D"><!-- --></a>
+<img src="GUID-20FEEF54-23CB-4D30-B846-11B4ACE8E772_d0e2973_href.png"/>
+</div>
+<p>Add two menu items – <strong>Clear</strong> (for clearing the image)
+and <strong>Exit</strong> (for closing the application).    </p>
+<p>Then click
+once on the Exit menu item to select it. Go to the <strong>Behavior</strong> group of the <strong>Properties</strong> window and change the command ID
+to <samp class="codeph">EAknCmdExit</samp> (this is available in the drop-down
+list). This command will also be sent to your application if the operating
+system wants to shut it down, for example, when the phone does not
+have enough memory left. Therefore, it is necessary that every application
+always responds to this event and instantly shuts the application
+down. It is already handled by the basic application that the Carbide.c++
+wizard generated for you; you don’t need to implement the command
+handling for this event yourself. </p>
+<div class="fignone" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-8FD2973F-23FF-4734-AE16-CA39C02C7DE5"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-8FD2973F-23FF-4734-AE16-CA39C02C7DE5"><!-- --></a>
+<img src="GUID-D7F000F0-019A-486E-BB0C-C0065D08C5F6_d0e2996_href.png"/>
+</div>
+<p>If you try your application now, you will see that the Exit
+menu item already works. </p>
+<p/>
+<p><strong>Tip</strong></p>
+<p> When testing
+the application, always quit your application using the <strong>Exit</strong> command (rather than just closing the emulator). The application
+environment will then automatically check for memory leaks. If you
+just shut down the emulator you may not discover the leak until much
+later, making it a lot more difficult to find the cause.</p>
+</div>
+
+<div class="section" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-0090F731-A243-44C7-96ED-1EC5DB172F8D"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-0090F731-A243-44C7-96ED-1EC5DB172F8D"><!-- --></a><h2 class="sectiontitle"> Clearing
+the Drawing </h2><p>Whenever the <strong>Clear</strong> menu item is selected
+the view class method <samp class="codeph">CHelloWorldContainerView::HandleCommandL()</samp> is called with the command ID of the menu item as a parameter. 
+ </p>
+<p> If we want to handle the menu item, the UI designer can create
+the necessary code for us. Right-click on the menu item and choose <strong>Handle ‘selected’ Event</strong>. The UI designer will ask you to save
+the design – choose <strong>Yes</strong>. The code will then be generated and
+you will jump into the code view to a new method called <samp class="codeph">HandleClearMenuItemSelectedL()</samp> – a more convenient place to put your command-handling code than
+directly in a big <samp class="codeph">HandleCommandL()</samp> method that receives
+all commands. The auto-generated source code therefore calls the new
+extra method from within <samp class="codeph">HandleCommandL()</samp> (take a
+look at that method to see what really happens). </p>
+<div class="fignone" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-8E944FEE-EFDF-4AFE-BEB8-F3B216B91A98"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-8E944FEE-EFDF-4AFE-BEB8-F3B216B91A98"><!-- --></a>
+<img src="GUID-881C353C-6482-4DFE-9D43-CFB80DEB77A5_d0e3040_href.png"/>
+</div>
+<p>Now, we only need to tell the container that it should clear
+its bitmap buffer. To do this, create a new public method in the container: </p>
+<pre class="codeblock">void CHelloWorldContainer::ClearDrawing()
+  {
+  iBmpGc-&gt;Clear();
+  DrawDeferred();
+  }</pre>
+<p>Now, call this method from the menu item handler
+method. As explained in the section about the application architecture,
+the view class (<samp class="codeph">CHelloWorldContainerView</samp>) is the
+controller and owner for/of the container class (<samp class="codeph">CHelloWorldContainer</samp>). Therefore, this class has a pointer to the container as an instance
+variable, which you can use to clear the drawing. </p>
+<pre class="codeblock">TBool CHelloWorldContainerView::HandleClearMenuItemSelectedL(TInt aCommand)
+  {
+  iHelloWorldContainer-&gt;ClearDrawing();
+  return ETrue;
+  }</pre>
+<p>The menu command should now clear the image.    </p>
+<p>Congratulations, you have completed the tutorial and have created
+your own small mobile painting application! </p>
+</div>
+
+<div class="section" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-2BD775FF-BD36-4550-A388-48A3B1832D9E"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-2BD775FF-BD36-4550-A388-48A3B1832D9E"><!-- --></a><h2 class="sectiontitle"> Further
+Exercises</h2><p>As an exercise, it’s a good idea to extend the
+application by yourself – for example, you could add some menu items
+that allow the end user to change the color of the pen. </p>
+<p/>
+<p><strong>Tip</strong></p>
+<p> It’s a good idea to learn keyboard shortcuts
+as early as possible, because they can significantly increase the
+efficiency of your work. For example, you can press <strong>Ctrl + B</strong> to build the project, instead of using the icon or the menu commands.
+Also very helpful: <strong>Ctrl + Shift + F</strong> automatically formats and
+indents your code. You can get a full list of commands by pressing <strong>Ctrl + 3</strong>. A hot keys list appears when you press <strong>Ctrl + Shift
++ L</strong>.</p>
+<p/>
+<p> <strong>Importing Other Examples</strong></p>
+<p>The S60
+SDK itself installs many examples; additional applications can be
+downloaded from the developer.symbian.org and Forum Nokia (see the
+Related Info section  for more information).    To import ready-made
+applications in Carbide.c++, go to <strong>File | Import</strong>. In the following
+dialog, select <strong>Symbian OS Bld.inf file</strong> and click <strong>Next</strong>. </p>
+<div class="fignone" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-8E8F4507-70E7-496C-AE4D-16DAD8146ABA"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-8E8F4507-70E7-496C-AE4D-16DAD8146ABA"><!-- --></a>
+<img src="GUID-631E27DB-97A7-47E2-8FC1-856198435FFF_d0e3102_href.png"/>
+</div>
+<p/>
+<p>Now, click <strong>Browse</strong> and navigate to the <samp class="codeph">bld.inf</samp> file of the project you want to import. It’s usually
+stored in the <samp class="codeph">/group/</samp> subfolder of the project. </p>
+<div class="fignone" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-B682943D-10EE-4DC8-B510-7C2D54C536EE"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-B682943D-10EE-4DC8-B510-7C2D54C536EE"><!-- --></a>
+<img src="GUID-C588B869-6940-42B2-84F9-71467F6A4306_d0e3118_href.png"/>
+</div>
+<p>In the following step, select which SDKs you would like to
+use. The same considerations as those explained when creating your
+Hello World application apply. </p>
+<div class="fignone" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-5A381CA4-CCE0-4359-8F02-697AEDA72BDE"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-5A381CA4-CCE0-4359-8F02-697AEDA72BDE"><!-- --></a>
+<img src="GUID-D492CF6C-F889-4299-AC75-951EF343AC9F_d0e3124_href.png"/>
+</div>
+<p>You can usually accept the default values for the next step
+and let the wizard import everything.    </p>
+<p>In the last step,
+you have to define the <strong>Project Properties</strong>. In most cases, you
+can leave the default values. </p>
+<div class="fignone" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-1AB6D789-9407-4AB0-8F52-B1138DE063BD"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-1AB6D789-9407-4AB0-8F52-B1138DE063BD"><!-- --></a>
+<img src="GUID-F18A6C91-136D-450E-90F0-7C2B9263777C_d0e3135_href.png"/>
+</div>
+<p>Afterwards, the project is imported and you can start working.
+The project contents will not be copied to the current Carbide.c++
+workspace, so you will work directly on the original directory and
+the original files. Copy the project to a different directory first
+if you want to keep the original project or example in its original
+state – for example, into the workspace directory.    </p>
+<p><strong>Troubleshooting</strong>: If <span class="keyword">importing</span> the project fails, take special
+care of the last step of the import process: the root directory should
+be set correctly to the root directory of the project and not one
+level above it. Also, the project name should be the same as the last
+part of the root directory. From time to time, the default values
+are not configured properly, causing problems in the import process. </p>
+<p/>
+<p><strong>Warning</strong>  </p>
+<p>Do not use the standard (Eclipse)
+project import! The reason is that this import method would also import
+all build configuration settings, including references to installed
+SDKs and paths on the original system. Therefore, if you import a
+project from somebody else but don’t have the SDK installed in exactly
+the same directory, the build configurations will no longer work.
+The <samp class="codeph">bld.inf</samp> import method recreates the SDK bindings
+and only imports the real contents of the project.</p>
+</div>
+
+<div class="section" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-191D5D9D-00FB-47F0-B88B-8B87588A20C8"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-191D5D9D-00FB-47F0-B88B-8B87588A20C8"><!-- --></a><h2 class="sectiontitle"> Summary</h2><p>This part of the tutorial has shown how we can extend the basic
+skeleton from the <a href="GUID-301E5FAA-A1C3-4FD7-9D84-DAA61C66981B.html" title="This Quick Start is relevant if you want to create Symbian C++ applications that run on Symbian devices - i.e. &#34;on top&#34; of the Symbian platform. Typically this will include: professional application and games developers, professional service companies, hobbyist developers and students.">Symbian C++ Quick Start</a> to create a small paint application.
+The tutorial explains the application framework, including how you
+define menus, how to handle touch-screen events, drawing to the screen
+etc. </p>
+</div>
+
+<div class="section" id="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-8B6E602D-CA6B-41DD-B3DC-4C3BC9A04154"><a name="GUID-0C814ED6-3F64-4E0E-9C47-654AEDADBA90__GUID-8B6E602D-CA6B-41DD-B3DC-4C3BC9A04154"><!-- --></a><h2 class="sectiontitle"> Related
+Info</h2><ul>
+<li><p><a href="GUID-301E5FAA-A1C3-4FD7-9D84-DAA61C66981B.html" title="This Quick Start is relevant if you want to create Symbian C++ applications that run on Symbian devices - i.e. &#34;on top&#34; of the Symbian platform. Typically this will include: professional application and games developers, professional service companies, hobbyist developers and students.">Symbian
+C++ Quick Start</a></p>
+</li>
+
+<li><p><a href="http://developer.symbian.org/wiki/index.php/Getting_Started_with_Debugging_on_the_Device" target="_blank">Getting Started with Debugging on the Device</a></p>
+</li>
+
+<li><p><a href="http://developer.symbian.org/wiki/images/e/eb/HelloSymbianWorld_Example_Code.zip" target="_blank">File: HelloSymbianWorld Example Code.zip</a> 
+(code example associated with this article)</p>
+</li>
+
+</ul>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-AFAD9FAE-D09B-4778-8981-47A8073BC044.html" title="An introduction to mobile application development with Symbian C++.">Getting Started</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

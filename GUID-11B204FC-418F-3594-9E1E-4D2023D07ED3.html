@@ -1,0 +1,852 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CThumbnailManager"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3"/>
+
+<title>CThumbnailManager</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3"><a name="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2511826 id2511831 id2511945 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CThumbnailManager Class Reference</h1>
+	<table class="signature"><tr><td>class CThumbnailManager : public CBase</td></tr></table><div class="section"><div>
+			<p>Thumbnail engine.</p>
+
+			<p>This is the main interface class to thumbnail engine. Thumbnail engine can be used to request thumbnails for different kinds of media objects.</p>
+
+			<p>The client using thumbnail engine must implement the <a href="GUID-D13DBA1B-7601-381D-BEF2-9563F2D4CE95.html#GUID-D13DBA1B-7601-381D-BEF2-9563F2D4CE95">MThumbnailManagerObserver</a>. The observer interface is used to provide thumbnail data when it is available.</p>
+
+			<div class="p">Typical use of thumbnail engine consists of 4 parts:<ul><li><p>creating an engine instance using NewL</p>
+</li>
+<li><p>setting thumbnail parameters using <a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html#GUID-B0034306-E46D-3824-B542-4A6CCFF94C36">SetThumbnailSizeL()</a>, SetFlags(), and so on</p>
+</li>
+<li><p>creating an object source (<a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html#GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF">CThumbnailObjectSource</a>) and using it to request thumbnails</p>
+</li>
+<li><p>handling <a href="GUID-D13DBA1B-7601-381D-BEF2-9563F2D4CE95.html#GUID-D13DBA1B-7601-381D-BEF2-9563F2D4CE95">MThumbnailManagerObserver</a> callbacks when the thumbnail request is complete</p>
+</li>
+</ul>
+</div>
+
+			<p>Here is an example of how thumbnail engine could be used by a typical application:</p>
+
+			<div class="p">
+				<pre class="codeblock">  #include &lt;thumbnailmanagerobserver.h&gt;
+  #include &lt;thumbnailmanager.h&gt;
+
+  class CMyThumbnailControl: public CCoeControl,
+                             public MThumbnailManagerObserver
+      {
+  public:
+      CMyThumbnailControl();
+      ~CMyThumbnailControl();
+      ...
+
+      // Callbacks from MThumbnailManagerObserver for getting thumbnails
+      void ThumbnailPreviewReady(
+          MThumbnailData&amp; aThumbnail,
+          TThumbnailRequestId aId );
+      void ThumbnailReady(
+          TInt aError, 
+          MThumbnailData&amp; aThumbnail, 
+          TThumbnailRequestId aId );
+
+  private:
+      void ConstructL();
+      CThumbnailManager* iManager;
+      CFbsBitmap* iBitmap;
+      }
+
+  _LIT( KTestFilePath, "e:\\TestImage.jpg" );
+  _LIT( KTestFileType, "image/jpeg" );
+
+  void CMyThumbnailControl::ConstructL()
+      {
+      // Create Thumbnail Manager instance. This object is the observer.
+      iManager = CThumbnailManager::NewL( *this ); 
+
+      // Set flags: If the aspect ratio of the media object does not match
+      // 4:3 then we would like it to be cropped. We don t mind getting
+      // smaller images than requested.
+      iManager-&gt;SetFlagsL( CThumbnailManager::ECropToAspectRatio |
+                           CThumbnailManager::EAllowAnySize );
+
+      // Preferred size is 160x120 (or less)
+      iManager-&gt;SetSizeL( TSize( 160, 120 ) );
+
+      // Get a preview thumbnail first, if available.
+      // The preview thumbnail is delivered via a ThumbnailPreviewReady()
+      // callback.
+      iManager-&gt;SetQualityPreferenceL(
+          CThumbnailManager::EOptimizeForQualityWithPreview );
+
+      // Create an object source representing a path to a file on local
+      // file system.
+      CThumbnailObjectSource* source = CThumbnailObjectSource::NewLC(
+          KTestFilePath,   // File path
+          KTestFileType ); // Let Thumbnail Manager know it s a JPEG, so
+                           // it doesn t need to recognize the file format
+
+      // Issue the request using default priority
+      iManager-&gt;GetThumbnailL( *source );
+
+      // If GetThumbnailL() did not leave, the ThumbnailReady() callback is
+      // now guaranteed to be called, unless the request is cancelled or
+      // CThumbnailManager instance is deleted.
+
+      // The source can be deleted immediately after issuing the request
+      CleanupStack::PopAndDestroy( source );
+      }
+
+  CMyThumbnailControl::~CMyThumbnailControl()
+      {
+      // Bitmap should be destroyed before Thumbnail Manager
+      delete iBitmap;
+      delete iManager;
+      }
+
+  void CMyThumbnailControl::ThumbnailReady(
+      TInt aError,
+      MThumbnailData&amp; aThumbnail,
+      TThumbnailRequestId aId )
+      {
+      // This function must not leave.
+
+      delete iBitmap; iBitmap = NULL;
+      if ( !aError )
+          {
+          // Claim ownership of the bitmap instance for later use
+          iBitmap = aThumbnail.DetachBitmap();
+
+          // We can now use iBitmap in our Draw() method
+          DrawDeferred();
+          }
+      else
+          {
+          // An error occurred while getting the thumbnail.
+          // Perhaps we should show a broken image icon to the user.
+          }
+      }</pre>
+
+			</div>
+
+			<div class="p">thumbnailmanager.lib <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 v5.0 </dd>
+</dl>
+</div>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CThumbnailManager<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-A87D4AB8-D241-3759-B788-792C6BDBF02D">~CThumbnailManager</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-CE9AB4CC-2822-3173-93C5-D9CE28C43DCE">CancelRequest</a>(<a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-AA95BBEE-07B3-36A1-AA83-3776ADC5ABA7">ChangePriority</a>(<a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a>
+				</td><td><a href="#GUID-8917CE90-357A-36E8-BFB4-6883395B0CE3">CreateThumbnails</a>(<a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-0C0B3F8E-641C-35AC-AC72-C6A2C7A1A420">DeleteThumbnails</a>(<a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-FAF26B51-A54A-3E7E-9C55-BE031B6B0C24">DeleteThumbnails</a>(const <a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailId</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-50EC74AA-3EB6-34B8-A03B-42A2422F73D6.html">TDisplayMode</a>
+				</td><td><a href="#GUID-C864479E-EC43-3691-B037-93A9A7EE353E">DisplayMode</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html">TThumbnailFlags</a>
+				</td><td><a href="#GUID-55B8EBEF-3DCB-398D-89CC-D2AAA5ECB362">Flags</a>()</td></tr><tr><td align="right" class="code">const <a href="GUID-9EC9CD13-91FB-38F7-9E55-F41C584AC5A6.html">CDesCArray</a> &amp;</td><td><a href="#GUID-EFBC9C81-9C52-313E-B125-FCC2B7836C91">GetSupportedMimeTypesL</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a>
+				</td><td><a href="#GUID-44848DAD-8245-3E3F-A203-507F259E0A0C">GetThumbnailL</a>(<a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a>
+				</td><td><a href="#GUID-ED150A20-5E32-371D-B352-63E3B5A2C3BC">GetThumbnailL</a>(const <a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailId</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a>
+				</td><td><a href="#GUID-E0AFBB33-5A01-37F9-8B14-6CE5C01B6834">ImportThumbnailL</a>(<a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html">CThumbnailManager</a> *</td><td><a href="#GUID-11F9917A-C42C-393A-A307-CB166A06741B">NewL</a>(<a href="GUID-D13DBA1B-7601-381D-BEF2-9563F2D4CE95.html">MThumbnailManagerObserver</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html">CThumbnailManager</a> *</td><td><a href="#GUID-8EBDB7B1-8674-3500-9565-B6945F8AD998">NewLC</a>(<a href="GUID-D13DBA1B-7601-381D-BEF2-9563F2D4CE95.html">MThumbnailManagerObserver</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html">TThumbnailQualityPreference</a>
+				</td><td><a href="#GUID-FC40294F-9AAA-3A4A-8349-35D67F106233">QualityPreference</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-F4050F8A-0867-398B-81E5-41103E7CBF8B">RemoveRequestObserver</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a>
+				</td><td><a href="#GUID-5219EF98-F10E-3B16-9C99-B235A7DAF7FB">RenameThumbnailsL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-E455E63F-1306-33EE-B42F-35B0B8AC2B11">SetDisplayModeL</a>(<a href="GUID-50EC74AA-3EB6-34B8-A03B-42A2422F73D6.html">TDisplayMode</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-3F687E1D-4FBF-3B72-B03D-22CA278345FA">SetFlagsL</a>(<a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html">TThumbnailFlags</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-DF07ADEA-62DC-3323-924C-104FF2446422">SetQualityPreferenceL</a>(<a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html">TThumbnailQualityPreference</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-C5E031B1-78B8-3E7B-B701-21355587F435">SetRequestObserver</a>(<a href="GUID-BF8CF978-D4EF-3AC4-BC99-DB5B00798A63.html">MThumbnailManagerRequestObserver</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a>
+				</td><td><a href="#GUID-FB052D24-7310-3214-A223-E8ABFBFF6E00">SetThumbnailL</a>(<a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-B0034306-E46D-3824-B542-4A6CCFF94C36">SetThumbnailSizeL</a>(const <a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-D10FC3F8-D859-354F-BD08-096BC156823A">SetThumbnailSizeL</a>(const <a href="GUID-50EC74AA-3EB6-34B8-A03B-42A2422F73D6.html">TThumbnailSize</a>)</td></tr><tr><td align="right" class="code">const <a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a> &amp;</td><td><a href="#GUID-07C84CE1-2D6F-3268-AEDC-D4ECD35B4E46">ThumbnailSize</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-898A3564-8932-36D4-BC92-535AE9FAFF99">UpdateThumbnailsL</a>(const <a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailId</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt64</a>, const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Enumerations</th></tr></thead><tbody><tr><td align="right" valign="top">enum</td><td><a href="#GUID-313B1995-F1C1-30B4-8BC9-261637E1ECD6">TThumbnailFlags</a> { <a href="#GUID-BD967AD2-419E-341C-BE23-AF42A7963E09">EDefaultFlags</a> = 0, <a href="#GUID-992BF5CB-C46E-333C-9972-416F06C04518">EAllowAnySize</a> = 1, <a href="#GUID-E198AD65-54A1-37B7-BE63-8DEFA36184D7">EDoNotCreate</a> = 2, <a href="#GUID-09F04BCC-DE2B-3E7F-9FF3-A7F8ED3C4694">ECropToAspectRatio</a> = 4 }</td></tr><tr class="bg"><td align="right" valign="top">enum</td><td><a href="#GUID-AE7CA99D-5C21-33C1-A252-FDD18B58F79E">TThumbnailQualityPreference</a> { <a href="#GUID-A21B495A-29D2-3CB2-87E5-98E2A743F1A4">EOptimizeForQuality</a>, <a href="#GUID-1CCDDDCF-3668-3857-8220-1C6A6DD592DE">EOptimizeForPerformance</a>, <a href="#GUID-449C09BF-517A-3306-A857-843EC0FA9B7D">EOptimizeForQualityWithPreview</a> }</td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-A87D4AB8-D241-3759-B788-792C6BDBF02D"><a name="GUID-A87D4AB8-D241-3759-B788-792C6BDBF02D"><!-- --></a>
+		<h2 class="topictitle2">~CThumbnailManager()</h2>
+		<table class="signature"><tr><td>~CThumbnailManager</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Destructor</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-CE9AB4CC-2822-3173-93C5-D9CE28C43DCE"><a name="GUID-CE9AB4CC-2822-3173-93C5-D9CE28C43DCE"><!-- --></a>
+		<h2 class="topictitle2">CancelRequest(TThumbnailRequestId)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>CancelRequest</td><td>(</td><td><a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a></td><td>aId</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Cancel a thumbnail operation.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a> aId</td><td>Request ID for the operation to be cancelled.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AA95BBEE-07B3-36A1-AA83-3776ADC5ABA7"><a name="GUID-AA95BBEE-07B3-36A1-AA83-3776ADC5ABA7"><!-- --></a>
+		<h2 class="topictitle2">ChangePriority(TThumbnailRequestId, TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>ChangePriority</td><td>(</td><td><a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a></td><td>aId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aNewPriority</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Change the priority of a queued thumbnail operation.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a> aId</td><td>Request ID for the request which to assign a new priority.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aNewPriority</td><td>New priority value  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8917CE90-357A-36E8-BFB4-6883395B0CE3"><a name="GUID-8917CE90-357A-36E8-BFB4-6883395B0CE3"><!-- --></a>
+		<h2 class="topictitle2">CreateThumbnails(CThumbnailObjectSource &amp;, TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a>
+				</td><td>CreateThumbnails</td><td>(</td><td><a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp;</td><td>aObjectSource,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPriority = CActive::EPriorityIdle</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Create thumbnail for a given object. This is an asynchronous operation, which always returns immediately. No callbacks are emitted.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp; aObjectSource</td><td>Source object or file  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPriority = CActive::EPriorityIdle</td><td>Priority for this operation  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0C0B3F8E-641C-35AC-AC72-C6A2C7A1A420"><a name="GUID-0C0B3F8E-641C-35AC-AC72-C6A2C7A1A420"><!-- --></a>
+		<h2 class="topictitle2">DeleteThumbnails(CThumbnailObjectSource &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>DeleteThumbnails</td><td>(</td><td><a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp;</td><td>aObjectSource</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Delete all thumbnails for a given object. This is an asynchronous operation, which always returns immediately.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp; aObjectSource</td><td>Source object or file  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-FAF26B51-A54A-3E7E-9C55-BE031B6B0C24"><a name="GUID-FAF26B51-A54A-3E7E-9C55-BE031B6B0C24"><!-- --></a>
+		<h2 class="topictitle2">DeleteThumbnails(const TThumbnailId)</h2>
+		<table class="signature"><tr><td>void</td><td>DeleteThumbnails</td><td>(</td><td>const <a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailId</a></td><td>aItemId</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Delete thumbnails by TThumbnailId. This is an asynchronous operation, which always returns immediately.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailId</a> aItemId</td><td>TThumbnailId  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C864479E-EC43-3691-B037-93A9A7EE353E"><a name="GUID-C864479E-EC43-3691-B037-93A9A7EE353E"><!-- --></a>
+		<h2 class="topictitle2">DisplayMode()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-50EC74AA-3EB6-34B8-A03B-42A2422F73D6.html">TDisplayMode</a>
+				</td><td>DisplayMode</td><td>(</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get the current display mode for thumbnail bitmaps.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-55B8EBEF-3DCB-398D-89CC-D2AAA5ECB362"><a name="GUID-55B8EBEF-3DCB-398D-89CC-D2AAA5ECB362"><!-- --></a>
+		<h2 class="topictitle2">Flags()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html">TThumbnailFlags</a>
+				</td><td>Flags</td><td>(</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get current flags for thumbnail generation.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-EFBC9C81-9C52-313E-B125-FCC2B7836C91"><a name="GUID-EFBC9C81-9C52-313E-B125-FCC2B7836C91"><!-- --></a>
+		<h2 class="topictitle2">GetSupportedMimeTypesL()</h2>
+		<table class="signature"><tr><td>const <a href="GUID-9EC9CD13-91FB-38F7-9E55-F41C584AC5A6.html">CDesCArray</a> &amp;</td><td>GetSupportedMimeTypesL</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get a list of supported file formats for object files.</p>
+
+				<p>The return value is a reference to a list that contains each supported MIME type. There may also be wildcards, such as "image/*".</p>
+
+				<p>The returned reference is valid until <a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html#GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3">CThumbnailManager</a> is destroyed or <a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html#GUID-EFBC9C81-9C52-313E-B125-FCC2B7836C91">GetSupportedMimeTypesL()</a> is called again.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-44848DAD-8245-3E3F-A203-507F259E0A0C"><a name="GUID-44848DAD-8245-3E3F-A203-507F259E0A0C"><!-- --></a>
+		<h2 class="topictitle2">GetThumbnailL(CThumbnailObjectSource &amp;, TAny *, TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a>
+				</td><td>GetThumbnailL</td><td>(</td><td><a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp;</td><td>aObjectSource,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aClientData = NULL,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPriority = CActive::EPriorityStandard</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get a thumbnail for an object file. If a thumbnail already exists, it is loaded and if a thumbnail does not exist, it is created transparently. ThumbnailReady() callback will be called when the operation is complete. In addition, ThumbnailPreviewReady() callback may be called if EOptimizeForQualityWithPreview mode was defined.</p>
+
+				<p>Current values for display mode, thumbnail size, flags and performance preference are used.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp; aObjectSource</td><td>Source object or file  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aClientData = NULL</td><td>Pointer to arbitrary client data. This pointer is not used by the API for anything other than returning it in the ThumbnailReady callback.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPriority = CActive::EPriorityStandard</td><td>Priority for this operation  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-ED150A20-5E32-371D-B352-63E3B5A2C3BC"><a name="GUID-ED150A20-5E32-371D-B352-63E3B5A2C3BC"><!-- --></a>
+		<h2 class="topictitle2">GetThumbnailL(const TThumbnailId, TAny *, TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a>
+				</td><td>GetThumbnailL</td><td>(</td><td>const <a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailId</a></td><td>aThumbnailId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aClientData = NULL,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPriority = CActive::EPriorityStandard</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get a persistent thumbnail for an object file. If a thumbnail already exists, it is loaded and if a thumbnail does not exist, it is created transparently. ThumbnailReady() callback will be called when the operation is complete. In addition, ThumbnailPreviewReady() callback may be called if EOptimizeForQualityWithPreview mode was defined.</p>
+
+				<p>Current values for display mode, thumbnail size, flags and performance preference are used.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailId</a> aThumbnailId</td><td>Thumbnail ID  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aClientData = NULL</td><td>Pointer to arbitrary client data. This pointer is not used by the API for anything other than returning it in the ThumbnailReady callback.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPriority = CActive::EPriorityStandard</td><td>Priority for this operation  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E0AFBB33-5A01-37F9-8B14-6CE5C01B6834"><a name="GUID-E0AFBB33-5A01-37F9-8B14-6CE5C01B6834"><!-- --></a>
+		<h2 class="topictitle2">ImportThumbnailL(CThumbnailObjectSource &amp;, const TDesC &amp;, TAny *, TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a>
+				</td><td>ImportThumbnailL</td><td>(</td><td><a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp;</td><td>aObjectSource,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aTargetUri,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aClientData = NULL,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPriority = CActive::EPriorityIdle</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Import an image to be used as thumbnail for an object. If a thumbnail already exists, it is loaded and if a thumbnail does not exist, it is created transparently. ThumbnailReady() callback will be called when the operation is complete. In addition, ThumbnailPreviewReady() callback may be called if EOptimizeForQualityWithPreview mode was defined.</p>
+
+				<p>Current values for display mode, thumbnail size, flags and performance preference are used.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp; aObjectSource</td><td>Source object or file  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aTargetUri</td><td>Target URI to which the imported thumbnail is linked.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aClientData = NULL</td><td>Pointer to arbitrary client data. This pointer is not used by the API for anything other than returning it in the ThumbnailReady callback.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPriority = CActive::EPriorityIdle</td><td>Priority for this operation  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-11F9917A-C42C-393A-A307-CB166A06741B"><a name="GUID-11F9917A-C42C-393A-A307-CB166A06741B"><!-- --></a>
+		<h2 class="topictitle2">NewL(MThumbnailManagerObserver &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html">CThumbnailManager</a> *</td><td>NewL</td><td>(</td><td><a href="GUID-D13DBA1B-7601-381D-BEF2-9563F2D4CE95.html">MThumbnailManagerObserver</a> &amp;</td><td>aObserver</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Two-phased constructor.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-D13DBA1B-7601-381D-BEF2-9563F2D4CE95.html">MThumbnailManagerObserver</a> &amp; aObserver</td><td>Observer to receive notifications about completed operations.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8EBDB7B1-8674-3500-9565-B6945F8AD998"><a name="GUID-8EBDB7B1-8674-3500-9565-B6945F8AD998"><!-- --></a>
+		<h2 class="topictitle2">NewLC(MThumbnailManagerObserver &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html">CThumbnailManager</a> *</td><td>NewLC</td><td>(</td><td><a href="GUID-D13DBA1B-7601-381D-BEF2-9563F2D4CE95.html">MThumbnailManagerObserver</a> &amp;</td><td>aObserver</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Two-phased constructor.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-D13DBA1B-7601-381D-BEF2-9563F2D4CE95.html">MThumbnailManagerObserver</a> &amp; aObserver</td><td>Observer to receive notifications about completed operations.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-FC40294F-9AAA-3A4A-8349-35D67F106233"><a name="GUID-FC40294F-9AAA-3A4A-8349-35D67F106233"><!-- --></a>
+		<h2 class="topictitle2">QualityPreference()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html">TThumbnailQualityPreference</a>
+				</td><td>QualityPreference</td><td>(</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get the current quality versus performance preference.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-F4050F8A-0867-398B-81E5-41103E7CBF8B"><a name="GUID-F4050F8A-0867-398B-81E5-41103E7CBF8B"><!-- --></a>
+		<h2 class="topictitle2">RemoveRequestObserver()</h2>
+		<table class="signature"><tr><td>void</td><td>RemoveRequestObserver</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Remove optional request observer.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>Symbian^3 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-5219EF98-F10E-3B16-9C99-B235A7DAF7FB"><a name="GUID-5219EF98-F10E-3B16-9C99-B235A7DAF7FB"><!-- --></a>
+		<h2 class="topictitle2">RenameThumbnailsL(const TDesC &amp;, const TDesC &amp;, TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a>
+				</td><td>RenameThumbnailsL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aCurrentPath,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aNewPath,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPriority = CActive::EPriorityIdle</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Rename Thumbnails. This is an asynchronous operation, which always returns immediately.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aCurrentPath</td><td>Current path of the Thumbnail  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aNewPath</td><td>New path for the Thumbnail  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPriority = CActive::EPriorityIdle</td><td>Priority for this operation  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E455E63F-1306-33EE-B42F-35B0B8AC2B11"><a name="GUID-E455E63F-1306-33EE-B42F-35B0B8AC2B11"><!-- --></a>
+		<h2 class="topictitle2">SetDisplayModeL(TDisplayMode)</h2>
+		<table class="signature"><tr><td>void</td><td>SetDisplayModeL</td><td>(</td><td><a href="GUID-50EC74AA-3EB6-34B8-A03B-42A2422F73D6.html">TDisplayMode</a></td><td>aDisplayMode</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Set the current display mode for thumbnail bitmaps.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-50EC74AA-3EB6-34B8-A03B-42A2422F73D6.html">TDisplayMode</a> aDisplayMode</td><td>New display mode value for the thumbnail bitmaps.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3F687E1D-4FBF-3B72-B03D-22CA278345FA"><a name="GUID-3F687E1D-4FBF-3B72-B03D-22CA278345FA"><!-- --></a>
+		<h2 class="topictitle2">SetFlagsL(TThumbnailFlags)</h2>
+		<table class="signature"><tr><td>void</td><td>SetFlagsL</td><td>(</td><td><a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html">TThumbnailFlags</a></td><td>aFlags</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Set flags for thumbnail generation. Several flags may be enabled by combining the values using bitwise or.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html">TThumbnailFlags</a> aFlags</td><td>New flags.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DF07ADEA-62DC-3323-924C-104FF2446422"><a name="GUID-DF07ADEA-62DC-3323-924C-104FF2446422"><!-- --></a>
+		<h2 class="topictitle2">SetQualityPreferenceL(TThumbnailQualityPreference)</h2>
+		<table class="signature"><tr><td>void</td><td>SetQualityPreferenceL</td><td>(</td><td><a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html">TThumbnailQualityPreference</a></td><td>aQualityPreference</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Set quality versus performance preference.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-11B204FC-418F-3594-9E1E-4D2023D07ED3.html">TThumbnailQualityPreference</a> aQualityPreference</td><td>New quality versus performance preference value.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C5E031B1-78B8-3E7B-B701-21355587F435"><a name="GUID-C5E031B1-78B8-3E7B-B701-21355587F435"><!-- --></a>
+		<h2 class="topictitle2">SetRequestObserver(MThumbnailManagerRequestObserver &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>SetRequestObserver</td><td>(</td><td><a href="GUID-BF8CF978-D4EF-3AC4-BC99-DB5B00798A63.html">MThumbnailManagerRequestObserver</a> &amp;</td><td>aObserver</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Set optional request observer for getting information about completed requests that don't include a thumbnail.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>Symbian^3 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-BF8CF978-D4EF-3AC4-BC99-DB5B00798A63.html">MThumbnailManagerRequestObserver</a> &amp; aObserver</td><td>Observer to receive notifications.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-FB052D24-7310-3214-A223-E8ABFBFF6E00"><a name="GUID-FB052D24-7310-3214-A223-E8ABFBFF6E00"><!-- --></a>
+		<h2 class="topictitle2">SetThumbnailL(CThumbnailObjectSource &amp;, TAny *, TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailRequestId</a>
+				</td><td>SetThumbnailL</td><td>(</td><td><a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp;</td><td>aObjectSource,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td> = NULL,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPriority = CActive::EPriorityIdle</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Set a thumbnail for an object file generated from buffer delivered in source object. ThumbnailReady() callback will be called when the operation is complete. In addition, ThumbnailPreviewReady() callback may be called if EOptimizeForQualityWithPreview mode was defined.</p>
+
+				<p>Current values for display mode, thumbnail size, flags and performance preference are used.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-EB8E096A-53F0-36DC-B3CC-A542E74642FF.html">CThumbnailObjectSource</a> &amp; aObjectSource</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *  = NULL</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPriority = CActive::EPriorityIdle</td><td>Priority for this operation  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B0034306-E46D-3824-B542-4A6CCFF94C36"><a name="GUID-B0034306-E46D-3824-B542-4A6CCFF94C36"><!-- --></a>
+		<h2 class="topictitle2">SetThumbnailSizeL(const TSize &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>SetThumbnailSizeL</td><td>(</td><td>const <a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a> &amp;</td><td>aThumbnailSize</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Set desired size for thumbnail bitmaps.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a> &amp; aThumbnailSize</td><td>New quality for the desired thumbnail size.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D10FC3F8-D859-354F-BD08-096BC156823A"><a name="GUID-D10FC3F8-D859-354F-BD08-096BC156823A"><!-- --></a>
+		<h2 class="topictitle2">SetThumbnailSizeL(const TThumbnailSize)</h2>
+		<table class="signature"><tr><td>void</td><td>SetThumbnailSizeL</td><td>(</td><td>const <a href="GUID-50EC74AA-3EB6-34B8-A03B-42A2422F73D6.html">TThumbnailSize</a></td><td>aThumbnailSize</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Set desired size for thumbnail bitmaps.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-50EC74AA-3EB6-34B8-A03B-42A2422F73D6.html">TThumbnailSize</a> aThumbnailSize</td><td>Desired thumbnail size.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-07C84CE1-2D6F-3268-AEDC-D4ECD35B4E46"><a name="GUID-07C84CE1-2D6F-3268-AEDC-D4ECD35B4E46"><!-- --></a>
+		<h2 class="topictitle2">ThumbnailSize()</h2>
+		<table class="signature"><tr><td>const <a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a> &amp;</td><td>ThumbnailSize</td><td>(</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get the current desired size for thumbnail bitmaps.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-898A3564-8932-36D4-BC92-535AE9FAFF99"><a name="GUID-898A3564-8932-36D4-BC92-535AE9FAFF99"><!-- --></a>
+		<h2 class="topictitle2">UpdateThumbnailsL(const TThumbnailId, const TDesC &amp;, const TInt, const TInt64, const TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>UpdateThumbnailsL</td><td>(</td><td>const <a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailId</a></td><td>aItemId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aPath,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aOrientation,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt64</a></td><td>aModified,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPriority</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Update Thumbnails by TThumbnailId. This is an asynchronous operation, which always returns immediately.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-E5B48E26-6D74-3E4D-82F9-A64BE1C964EC.html">TThumbnailId</a> aItemId</td><td>TThumbnailId  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aPath</td><td>(New) path for the Thumbnail  </td></tr><tr><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aOrientation</td><td>Thumbnail orientation  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt64</a> aModified</td><td>Last modified  </td></tr><tr><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPriority</td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Enumerations Documentation</h1><div class="nested1" id="GUID-313B1995-F1C1-30B4-8BC9-261637E1ECD6"><a name="GUID-313B1995-F1C1-30B4-8BC9-261637E1ECD6"><!-- --></a>
+		<h2 class="topictitle2">Enum TThumbnailFlags</h2>
+		<div class="section"><div>
+				<p>Flags for thumbnail creation. These can be combined using bitwise or. </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EDefaultFlags = 0</td><td>
+							<div class="p">Default flags. This means that:<ul><li><p>Thumbnail must be as large as requested (unless the actual object is smaller).</p>
+</li>
+<li><p>Smaller thumbnails may be up scaled to desired resolution.</p>
+</li>
+<li><p>Aspect ratio is maintained and thumbnails are not cropped. The resulting thumbnail may smaller in either width or height if the aspect ratio of the object does not match the aspect ratio of the requested size. </p>
+</li>
+</ul>
+</div>
+
+						 </td></tr><tr class="bg"><td valign="top">EAllowAnySize = 1</td><td>
+							<p>Allow thumbnails which are smaller than requested are. Thumbnail bitmaps are never up scaled if this flag is set. </p>
+
+						 </td></tr><tr><td valign="top">EDoNotCreate = 2</td><td>
+							<p>New thumbnail images are not created if this flag is set. Only existing thumbnails may be returned. If a requested thumbnail does not exist, KErrNotFound error is returned in ThumbnailReady() callback. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ECropToAspectRatio = 4</td><td>
+							<p>Thumbnail images are cropped to match requested aspect ratio. If this flag is set, the size of the resulting thumbnail always matches the requested size. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AE7CA99D-5C21-33C1-A252-FDD18B58F79E"><a name="GUID-AE7CA99D-5C21-33C1-A252-FDD18B58F79E"><!-- --></a>
+		<h2 class="topictitle2">Enum TThumbnailQualityPreference</h2>
+		<div class="section"><div>
+				<p>Quality versus speed preference setting </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EOptimizeForQuality</td><td>
+							<p>Prefer thumbnails in the highest quality possible disregarding any negative impact on performance. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EOptimizeForPerformance</td><td>
+							<p>Get thumbnails as fast as possible, even if it means lower quality. </p>
+
+						 </td></tr><tr><td valign="top">EOptimizeForQualityWithPreview</td><td>
+							<p>Get lower quality preview thumbnail as fast as possible first and then a higher quality thumbnail later. The preview thumbnail is provided in the ThumbnailPreviewReady() callback and the high quality thumbnail in ThumbnailReady(). ThumbnailPreviewReady() is not get called at all if a suitable existing thumbnail is not found or if a high quality version is already available. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="The LDD/PDD Model"/>
+<meta name="abstract" content="This document describes how device drivers are implemented as logical device drivers (LDDs) and physical device drivers (PDDs)."/>
+<meta name="description" content="This document describes how device drivers are implemented as logical device drivers (LDDs) and physical device drivers (PDDs)."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32B82E5C-FD53-48E6-9ABC-88F82ACF71BC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D291C9E9-5207-4B23-B287-C240464087B9.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C98DF912-A903-4FDB-B27A-CC8E75E3E40F.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8798F896-E0CB-4B9B-8F88-3C8B58574213.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-EBF4F1F1-F76B-455B-B8EE-B7965CF0717E"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>The LDD/PDD Model</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-EBF4F1F1-F76B-455B-B8EE-B7965CF0717E"><a name="GUID-EBF4F1F1-F76B-455B-B8EE-B7965CF0717E"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; </div>
+<h1 class="topictitle1">The LDD/PDD
+Model</h1>
+<div><p>This document describes how device drivers are implemented as logical
+device drivers (LDDs) and physical device drivers (PDDs).</p>
+
+<div class="section" id="GUID-EBF4F1F1-F76B-455B-B8EE-B7965CF0717E__GUID-4549DF88-EEB0-4CF2-BC93-A234E3ED553F"><a name="GUID-EBF4F1F1-F76B-455B-B8EE-B7965CF0717E__GUID-4549DF88-EEB0-4CF2-BC93-A234E3ED553F"><!-- --></a>             <p>Device
+driver DLLs come in two types - the logical device driver (LDD), and the physical
+device driver (PDD). Typically, a single LDD supports functionality common
+to a class of hardware devices, whereas a PDD supports a specific member of
+that class. This means that the generic code in the LDD only needs to be written
+once, and the same user-side API can be used for all variants of a device. </p>
+ <p>Many
+PDDs may be associated with a single LDD. For example, there is a single serial
+communications LDD (<span class="filepath">ECOMM.LDD</span>) which is used with all
+UARTs. This LDD provides buffering and flow control functions that are required
+with all types of UART. On a particular hardware platform, this LDD will be
+accompanied by one or more PDDs, which support the different types of UART
+present. A single PDD can support more than one UART of the same type; separate
+PDDs are only required for UARTs with different programming interfaces. Typically,
+the PDD is kept as small as possible. </p>
+ <p>Only LDDs communicate with user-side
+code; PDDs communicate only with the corresponding LDD, with the variant or
+kernel extensions, and with the hardware itself. Device drivers provide their
+interface for user side applications by implementing a class derived from
+the Kernel API <a href="GUID-6FBFA078-8253-3E24-B1F8-5F75E86C3066.html"><span class="apiname">RBusLogicalChannel</span></a>. The functions of the
+derived class form a thin layer over the functions defined in <samp class="codeph">RBusLogicalChannel</samp> and
+are commonly implemented inline and published in a header file. However, if
+the API functions need to do more complex tasks, then they can be implemented
+in their own DLL. The kernel also provides a API <a href="GUID-92BAC78E-8ACF-3952-8E77-CCF93ED3BDC9.html"><span class="apiname">RDevice</span></a>,
+which enables user side code to get information about a device. </p>
+ <p>The
+following diagram shows the general idea: </p>
+<div class="fignone" id="GUID-EBF4F1F1-F76B-455B-B8EE-B7965CF0717E__GUID-CB291406-75EC-572E-8A21-280A5F0A6B9E"><a name="GUID-EBF4F1F1-F76B-455B-B8EE-B7965CF0717E__GUID-CB291406-75EC-572E-8A21-280A5F0A6B9E"><!-- --></a><span class="figcap">Figure 1.               Device driver LDD/PDD model            </span>
+
+<img src="GUID-6EB38F10-849D-5763-96A0-A0A108982D67_d0e294857_href.png"/>
+</div>
+<p>To make porting to particular hardware platforms easier, some drivers
+make a further logical split in their PDD code between a platform-independent
+layer (PIL), which contains code that is common to all the hardware platforms
+that the driver could be deployed on, and a platform-specific layer (PSL),
+which contains code such as the reading and writing of hardware-specific registers. </p>
+ <p>Depending
+on the device or the type of device to access, this split between LDD and
+PDD may not be necessary; the device driver may simply consist of an LDD alone. </p>
+ 
+   </div>
+
+</div>
+<div>
+<ul class="ullinks">
+<li class="ulchildlink"><strong><a href="GUID-D207C135-EF02-4D1A-A48C-4AB8C6703496.html">Device Driver Structure</a></strong><br/>
+This document describes the structures used to implement device drivers as LDDs and PDDs.</li>
+<li class="ulchildlink"><strong><a href="GUID-32B82E5C-FD53-48E6-9ABC-88F82ACF71BC.html">The LDD Entry Point and Factory</a></strong><br/>
+This document describes how LDDs are created.</li>
+<li class="ulchildlink"><strong><a href="GUID-D291C9E9-5207-4B23-B287-C240464087B9.html">The PDD Entry Point and Factory</a></strong><br/>
+This document describes how PDDs are created.</li>
+<li class="ulchildlink"><strong><a href="GUID-C98DF912-A903-4FDB-B27A-CC8E75E3E40F.html">The Logical Channel</a></strong><br/>
+This document describes how device driver code is accessed through a logical channel.</li>
+<li class="ulchildlink"><strong><a href="GUID-8798F896-E0CB-4B9B-8F88-3C8B58574213.html">The Physical Channel</a></strong><br/>
+This document describes how a logical device communicates with a physical device over a physical channel.</li>
+</ul>
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

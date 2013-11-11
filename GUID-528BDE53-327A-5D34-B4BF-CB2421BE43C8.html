@@ -1,0 +1,1140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Writing a controller plugin"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B58DEF65-B08F-5D0B-98E7-EB8DB7082F8B.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1DE5CDAD-8D71-5384-9E98-5665D5A4C792.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-97F83011-BE3C-512C-9599-028CBB92BD51.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B58DEF65-B08F-5D0B-98E7-EB8DB7082F8B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3E341F9F-2635-589B-A59A-B999FE7DF9BE.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Writing a controller plugin</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2405098 id2396821 id2396835 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-1DE5CDAD-8D71-5384-9E98-5665D5A4C792.html">Multimedia Guide</a> &gt; <a href="GUID-97F83011-BE3C-512C-9599-028CBB92BD51.html" title="The Multimedia Plug-ins collection facilitates a plug-in framework to handle the Multimedia audio, video and image data.">Multimedia Plug-ins Collection</a> &gt; <a href="GUID-B58DEF65-B08F-5D0B-98E7-EB8DB7082F8B.html">Multimedia Plug-in Collection Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Writing
+a controller plugin</h1>
+<div>
+<p>This document explains how to write a controller plugin. </p>
+
+<div class="section" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-215B50CF-605A-58BA-8E87-CAB942F11741"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-215B50CF-605A-58BA-8E87-CAB942F11741"><!-- --></a><h2 class="sectiontitle">Purpose</h2> <p>A
+controller plugin is the main type of multimedia framework (MMF) plugin. A
+controller plugin typically supports playing or recording one or more multimedia
+formats, <samp class="codeph">mp3</samp> or <samp class="codeph">avi</samp> for example. A controller
+plugin is able to read data from one or more sources, apply any required data
+transformations and write the data to the appropriate sink. </p>
+ <p><strong>Required
+Background</strong> </p>
+ <p>You need to be familiar with the Symbian platform Plugin
+Framework. </p>
+ </div>
+
+<div class="section" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-0DB9E8B5-8B2A-4EB3-998F-376762CAC3D5"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-0DB9E8B5-8B2A-4EB3-998F-376762CAC3D5"><!-- --></a><h2 class="sectiontitle">Using the Controller
+Plugin </h2> <p>The following tasks will be covered in this tutorial: </p>
+ <ul>
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-BDA97F96-C90A-5F4E-BEBE-93478FB24453"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-BDA97F96-C90A-5F4E-BEBE-93478FB24453"><!-- --></a><p><a href="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8.html#GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-3C8AEA0B-5FE3-5691-B108-05C87F229D07">Implementing the core controller plugin interface</a>  </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-501F72DA-77B8-5FC8-81AB-CCDE9490DF2D"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-501F72DA-77B8-5FC8-81AB-CCDE9490DF2D"><!-- --></a><p><a href="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8.html#GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-C5696F98-4ECF-5086-AC1A-BF17BCFECC29">Implementing the standard custom command interfaces</a>  </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-94D36263-EC2D-5145-9D22-F0C1BDDB209B"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-94D36263-EC2D-5145-9D22-F0C1BDDB209B"><!-- --></a><p><a href="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8.html#GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-A305F052-58F4-57B9-AB0F-C172768E462F">Interaction with MMF Base Classes and other plugins</a>  </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-9A37DC2C-2E8D-55FC-9C85-A34008FC4F9C"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-9A37DC2C-2E8D-55FC-9C85-A34008FC4F9C"><!-- --></a><p><a href="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8.html#GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-9FD6AAA8-4024-578F-9AB4-48F7017D3EB6">Integrating the controller into the ECom plugin framework</a>  </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-B53B937C-2D8A-5311-92E2-6458B0CEF2B0"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-B53B937C-2D8A-5311-92E2-6458B0CEF2B0"><!-- --></a><p><a href="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8.html#GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-0F96339A-BF77-570C-908D-A59AFD2036DB">Testing</a>  </p>
+ </li>
+
+</ul>
+ <p><strong>Basic
+Procedure</strong> </p>
+ <p>The basic steps for writing a controller plugin are
+shown here: </p>
+ <a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-D235DD92-682F-542D-AE6D-0EF5B7199E10"><!-- --></a><ol id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-D235DD92-682F-542D-AE6D-0EF5B7199E10">
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-5806F6ED-FBDA-5BCC-80C8-C70DEBDAB3A9"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-5806F6ED-FBDA-5BCC-80C8-C70DEBDAB3A9"><!-- --></a><p><a href="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8.html#GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-3C8AEA0B-5FE3-5691-B108-05C87F229D07">Implementing the core controller plugin interface</a>  </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-00D29242-1610-5ACD-9E97-C87945CF7D4C"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-00D29242-1610-5ACD-9E97-C87945CF7D4C"><!-- --></a><p><a href="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8.html#GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-C5696F98-4ECF-5086-AC1A-BF17BCFECC29">Implementing the standard custom command interfaces</a>  </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-B925D042-C292-51B4-8490-5D4DD769A307"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-B925D042-C292-51B4-8490-5D4DD769A307"><!-- --></a><p><a href="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8.html#GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-A305F052-58F4-57B9-AB0F-C172768E462F">Interaction with MMF Base Classes and other plugins</a>  </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-4F7B6585-23AC-5C0E-9BB6-9354C41BD27A"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-4F7B6585-23AC-5C0E-9BB6-9354C41BD27A"><!-- --></a><p><a href="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8.html#GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-9FD6AAA8-4024-578F-9AB4-48F7017D3EB6">Integrating the controller into the ECom plugin framework</a>  </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-6F8A6A17-29BC-5268-95D9-FACB91622C3E"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-6F8A6A17-29BC-5268-95D9-FACB91622C3E"><!-- --></a><p><a href="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8.html#GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-0F96339A-BF77-570C-908D-A59AFD2036DB">Testing</a>  </p>
+ </li>
+
+</ol>
+ </div>
+
+<div class="section" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-3C8AEA0B-5FE3-5691-B108-05C87F229D07"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-3C8AEA0B-5FE3-5691-B108-05C87F229D07"><!-- --></a><h2 class="sectiontitle">Implementing
+the core controller plugin interface</h2> <p>The controller plugin API
+is defined by the controller framework element of the MMF. All controller
+plugin implementations must derive from the abstract class <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html"><span class="apiname">CMMFController</span></a> and
+implement its pure virtual methods. </p>
+ <p>As well as providing the controller
+API, the <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html"><span class="apiname">CMMFController</span></a> base class also provides functionality
+such as instantiation of controller plugins via the <a href="GUID-9E92EE30-F2E2-5F28-BB2A-391C09EC69D2.html">ECom</a> plugin
+framework, inter-thread message decoding and parameter unpacking, an object
+reference counting mechanism and a few utility methods for use by controller
+plugins. </p>
+ <p>The following sections describe how to implement the controller
+API. </p>
+ <p><strong>Sources and sinks </strong> </p>
+ <p>Sources and sinks are themselves <a href="GUID-9E92EE30-F2E2-5F28-BB2A-391C09EC69D2.html">ECom</a> plugins and provide
+an interface that allows the controller to read and write raw data buffers.
+The type of source or sink, along with any source- specific or sink-specific
+initialisation parameters (for example, the file name for a file source),
+is specified by the client. The source or sink is then created and owned by
+the controller framework. It is then passed into the controller plugin via
+a call to <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-11623B04-A83E-3E32-A06E-6454D8407ADB"><span class="apiname">CMMFController::AddDataSourceL()</span></a> or <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-8842FF05-7822-317A-A650-225775B758FD"><span class="apiname">CMMFController::AddDataSinkL()</span></a> for
+a data source or a data sink respectively. </p>
+ <p> <strong> Note :</strong> The ownership
+of a source or sink always remains with the controller framework and not with
+the controller plugin, and that a controller plugin should never delete a
+source or sink. If the controller plugin leaves during the call to <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-11623B04-A83E-3E32-A06E-6454D8407ADB"><span class="apiname">CMMFController::AddDataSourceL()</span></a> or <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-8842FF05-7822-317A-A650-225775B758FD"><span class="apiname">CMMFController::AddDataSinkL()</span></a>, the source or sink will be destroyed by the controller framework. </p>
+ <p>There
+is no limit on the number of sources or sinks that can be added to a particular
+controller plugin, other than the limit provided by the plugin itself. For
+example, an audio controller would have one source and one sink. A video playing
+controller would have one source and two sinks (display and speaker). </p>
+ <p>Sources
+and sinks can also be removed from the controller plugin by the client. The
+reference of the particular source or sink being removed is passed into either
+the <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-6CA27841-ACBE-303B-84A6-225F77B6CC53"><span class="apiname">CMMFController::RemoveDataSourceL()</span></a> or <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-FD6A61E9-B355-36BA-9FF5-AA5E694F76FA"><span class="apiname">CMMFController::RemoveDataSinkL()</span></a> method
+to remove a data source or a data sink respectively. The controller plugin
+should remove any reference that it has to the source or sink; the source
+or sink will then be deleted by the controller framework. </p>
+ <p> <strong>Note:</strong> If
+the controller plugin leaves during these calls (for example, if it does not
+support the removal of sources or sinks), the controller framework will not
+delete the source or sink. </p>
+ <p><strong>Controller states </strong> </p>
+ <p>The Controller plugin states, along with
+the commands to transition the plugin between the states, are: </p>
+ <ul>
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-15FEBAAD-0C40-5029-B8ED-080967BD5980"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-15FEBAAD-0C40-5029-B8ED-080967BD5980"><!-- --></a><p> <samp class="codeph">Open</samp>,
+this is the current state of the controller, after it has been created. Once
+the controller has been configured, it moves to the <samp class="codeph">Stopped</samp> state.
+This transition typically involves adding the source(s) and sink(s) and configuring
+any utility objects or other plugins owned by the controller. </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-4BD7C0FB-AB98-5373-B7A8-BFCF8E6ECC76"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-4BD7C0FB-AB98-5373-B7A8-BFCF8E6ECC76"><!-- --></a><p> <samp class="codeph">Stopped</samp>,
+in this state the controller should not have any resources or buffers allocated,
+and the position should be zero. </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-BBDACB71-F927-5AB0-B6CA-838DB6B48422"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-BBDACB71-F927-5AB0-B6CA-838DB6B48422"><!-- --></a><p> <samp class="codeph">Primed</samp>,
+in moving to the primed state, the controller should allocate any buffers
+and resources that will be required to perform playback. The playback or recording
+position should also be stored when the controllere is in the <samp class="codeph">primed</samp> state.
+Controllers should only be moved into this state just before play, otherwise
+unnecessary memory and resources will be used. </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-8D3C5466-1A8E-5F0B-9607-AFE4CF651D23"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-8D3C5466-1A8E-5F0B-9607-AFE4CF651D23"><!-- --></a><p> <samp class="codeph">Playing</samp>,
+when in this state, the controller plugin should be transferring data between
+source(s) and sink(s). </p>
+ </li>
+
+</ul>
+ <p>Calling <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-AA743B27-C597-3D6A-B10C-C51224EC78FA"><span class="apiname">CMMFController::ResetL()</span></a> on the controller
+plugin should cause it to revert back to the <samp class="codeph">Open</samp> state.
+This will involve stopping playback, deleting any allocated resources, and
+removing any references to sources and sinks. </p>
+ <p><strong>Position and Duration </strong> </p>
+ <p>Position and duration can be set by
+deriving from the pure virtual methods <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-01BBB3DC-0178-392C-9A8C-F2B8A563FC1B"><span class="apiname">CMMFController::PositionL()</span></a>, <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-8DA4E77A-07EF-304B-9AA6-0A744C6CD3B4"><span class="apiname">CMMFController::SetPositionL()</span></a> and <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-D61C8034-587A-3FEC-9659-155E547F9042"><span class="apiname">CMMFController::DurationL()</span></a>. </p>
+ <p> <samp class="codeph">Note:</samp> The <em>position</em> has
+meaning only in the <samp class="codeph">Primed</samp> and <samp class="codeph">Playing</samp> states.
+The controller plugin should leave with <samp class="codeph">KErrNotReady</samp> if an
+attempt is made to set or get the position when the controller is in any other
+state. However, it should be possible to query the duration as soon as the
+data source or data sink has been added. </p>
+ <p><strong>Custom Commands </strong> </p>
+ <p>Custom commands allow controller plugin writers
+to extend the basic controller API. They sends messages from the client through
+the controller framework to the controller plugin. </p>
+ <p>The <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-C3ADC1F7-97DB-3324-9C3C-CFD391AC7F35"><span class="apiname">CMMFController::CustomCommand()</span></a> method
+can be implemented in the controller plugin to support custom commands. The
+default implementation provided by the base class is to complete the message
+with <samp class="codeph">KErrNotSupported</samp>. </p>
+ <p> <strong>Note:</strong> It is imperative
+that the message is always completed by this method and that this method cannot
+leave. Any error that occurs must be passed back to the client by completing
+the message with the error code. </p>
+ <p>Each <a href="GUID-3AF511EA-1E66-3286-9FD0-B90EC22BFAC1.html"><span class="apiname">TMMFMessage</span></a> has
+an associated interface UID which should be checked before handling any message
+to make sure that the command is supported. </p>
+ <p>The following code illustrates
+a typical custom command implementation. </p>
+ <pre class="codeblock" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-88B2D503-D009-502A-923A-EA683A28061B"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-88B2D503-D009-502A-923A-EA683A28061B"><!-- --></a>void CMyController::CustomCommand(TMMFMessage&amp; aMessage)
+    {
+    // First, check we can handle message by checking its interface id
+    if (aMessage.InterfaceId() != KUidMyControllerCustomCommandInterface)
+       {
+        aMessage.Complete(KErrNotSupported);
+        return;
+       }
+
+    // Next, dispatch the command to the appropriate method.
+    TInt error = KErrNone;
+    switch (aMessage.Function())
+        {
+    case EMyCustomCommandOne:
+        error = HandleCustomCommandOne(aMessage);
+        break;
+    case EMyCustomCommandTwo:
+        error = HandleCustomCommandTwo(aMessage);
+        break;
+    default:
+        error = KErrNotSupported;
+break;
+        }
+    aMessage.Complete(error);
+    }
+
+</pre>
+ <p>The above example shows synchronous command handling. If the
+plugin needs to do some task that requires a long time, the <samp class="codeph">aMessage</samp> parameter
+should be copied, stored and completed later when processing has finished. </p>
+ <p>The
+methods <samp class="codeph">HandleCustomCommandOne</samp> and <samp class="codeph">HandleCustomCommandTwo</samp> above,
+copy any data to and from the client. This can be done using the appropriate <a href="GUID-3AF511EA-1E66-3286-9FD0-B90EC22BFAC1.html"><span class="apiname">TMMFMessage</span></a> methods. </p>
+ <p><strong>Asynchronous Error Reporting </strong> </p>
+ <p>The <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-35FFB275-95ED-323C-B0AC-7914CBA2319D"><span class="apiname">CMMFController::DoSendEventToClient()</span></a> utility
+method allows a controller plugin to send an event to its client. </p>
+ <p>The
+multimedia client utilities listen for specific event types and error codes.
+If the controller plugin is accessed by clients that are using the multimedia
+client utility APIs (which will usually be the case) then those event types
+and error codes should be used. The event types and error codes for which
+the multimedia client utilities listen are listed below: </p>
+ 
+<div class="tablenoborder"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-4BE6C78B-5E14-50EF-94EB-05AFA08DFD2D"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-4BE6C78B-5E14-50EF-94EB-05AFA08DFD2D" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <strong>Client utility</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Event type</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Error code</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Meaning</strong>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>Audio Player Utility (<a href="GUID-778D24B5-A68E-3C91-B66A-69007FBA4791.html"><span class="apiname">CMdaAudioPlayerUtility</span></a>) </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Any </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>KErrOverflow </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Playback complete, the end of the data was reached. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Any </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>KErrEof </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Playback complete, the end of the data was reached. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>Audio Recorder Utility (<a href="GUID-29FB1DE6-D00C-3E6B-A8AA-476FAFD7F26C.html"><span class="apiname">CMdaAudioRecorderUtility</span></a>) </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Any </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>KErrOverflow </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Playback complete, the end of the data was reached. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Any </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>KErrUnderflow </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Recording complete, no more source data from microphone. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Any </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>KErrEof </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Playback or recording complete, end of data reached. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>Audio Converter Utility (<a href="GUID-810D29DA-8332-3E63-8A63-5B8A04EC9688.html"><span class="apiname">CMdaAudioConvertUtility</span></a>) </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Any </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>KErrOverflow </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Conversion complete, end of data reached. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Any </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>KErrEof </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Conversion complete, end of data reached. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>Video Player Utility (<a href="GUID-0F1F8AC6-B99F-3274-A785-9977197AF762.html"><span class="apiname">CVideoPlayerUtility</span></a>) </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Any </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>KErrOverflow </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Playback complete, end of data reached. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Any </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>KErrEof </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Playback complete, end of data reached. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>KMMFEventCategory VideoOpenComplete </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Any </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Open complete. Must be used otherwise clients will not be notified
+when the clip has been opened. This is used because video clips can take a
+long time to process on opening. The error code is passed back to the client. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>KMMFEventCategory PlaybackComplete </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Any </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Playback complete. Can be used instead of <samp class="codeph">KErrOverflow</samp> or <samp class="codeph">KErrEof</samp>.
+The error code is passed back to the client. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>KMMFEventCategory VideoRebufferStarted </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Any </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Re-buffering has begun. Client will be notified so it can update
+its UI. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>KMMFEventCategory VideoRebufferComplete </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Any </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Re-buffering has finished. Client will be notified so it can update
+its UI. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p><strong>MMF Objects </strong> </p>
+ <p>The controller framework contains an object referencing
+mechanism that allows a client to send messages to arbitrary objects in the
+controller thread without having to go via the controller plugin itself. In
+order to achieve this, the arbitrary object must be derived from <a href="GUID-C2938956-C3DE-34F0-AD68-4E502F252FE4.html"><span class="apiname">CMMFObject</span></a> and
+added to the object container. The object container can be accessed via the <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-C13AA1D6-94D3-33EA-B901-C4EFBA127D3A"><span class="apiname">CMMFController::MMFObjectContainerL()</span></a> method. </p>
+ <p>Sources and sinks have a <a href="GUID-C2938956-C3DE-34F0-AD68-4E502F252FE4.html"><span class="apiname">CMMFObject</span></a> wrapper placed around
+them by the controller framework, and can receive messages from the client.
+This mechanism is also used to reference source(s) and sink(s), so the client
+can specify exactly the source or sink when calling the <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-6CA27841-ACBE-303B-84A6-225F77B6CC53"><span class="apiname">CMMFController::RemoveDataSourceL()</span></a> or <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-FD6A61E9-B355-36BA-9FF5-AA5E694F76FA"><span class="apiname">CMMFController::RemoveDataSinkL()</span></a> methods. </p>
+ <p> <strong>Note:</strong> The objects added to the <a href="GUID-C2B766A9-493D-3B90-B205-F7915B39EBAF.html"><span class="apiname">CMMFObjectContainer</span></a> are
+owned by the <samp class="codeph">CMMFObjectContainer</samp>. </p>
+ <p>Each object added
+to the <samp class="codeph">CMMFObjectContainer</samp> is assigned a handle. This handle
+must be passed back to the client in order for the client to be able to send
+messages directly to the object. </p>
+ <p>The client should use this handle
+to set the handle of the <a href="GUID-40C533CC-ACA4-3DBC-B31C-F17DACB7F321.html"><span class="apiname">TMMFMessageDestination</span></a> parameter
+in the <a href="GUID-9DEDFB0F-C963-3FB7-9237-DDDB276C8841.html#GUID-9DEDFB0F-C963-3FB7-9237-DDDB276C8841__GUID-A3976673-6919-307E-AA6A-4E6B18D96619"><span class="apiname">RMMFController::CustomCommandAsync()</span></a> or <a href="GUID-9DEDFB0F-C963-3FB7-9237-DDDB276C8841.html#GUID-9DEDFB0F-C963-3FB7-9237-DDDB276C8841__GUID-E0CBE252-799E-3972-8C14-B1C6E135C458"><span class="apiname">RMMFController::CustomCommandSync()</span></a> method
+for asynchronous or synchronous operation respectively. The custom command
+will then be routed directly to the <a href="GUID-C2938956-C3DE-34F0-AD68-4E502F252FE4.html"><span class="apiname">CMMFObject</span></a> by the controller
+framework. </p>
+ </div>
+
+<div class="section" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-C5696F98-4ECF-5086-AC1A-BF17BCFECC29"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-C5696F98-4ECF-5086-AC1A-BF17BCFECC29"><!-- --></a><h2 class="sectiontitle">Implementing
+the standard custom command interfaces</h2> <p>The core controller plugin
+API provides only basic support for controlling the flow of data. The application-level
+multimedia utility APIs (for example, <a href="GUID-778D24B5-A68E-3C91-B66A-69007FBA4791.html"><span class="apiname">CMdaAudioPlayerUtility</span></a> )
+contain much richer functionality. The application-level multimedia utility
+APIs provide clients with a concrete API to access extended controller functionality,
+and to give controller plugins a concrete mixin API to implement. </p>
+ <p>Several
+sets of standard custom command APIs have been defined. The following table
+shows which of these classes must be implemented to allow the controller plugin
+to be used properly from each of the application-level utility APIs. </p>
+ 
+<div class="tablenoborder"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-2B37F10D-C1B3-5449-A211-77192872974E"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-2B37F10D-C1B3-5449-A211-77192872974E" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <strong>Application-level Utility API</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Required Custom Command APIs</strong>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-47EA759D-94C2-3655-B6E8-6C87F8F449A9.html"><span class="apiname">CmdaAudioPlayerUtility</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <a href="GUID-9004EBF7-A519-3825-91DC-0CB5EE2AE91E.html"><span class="apiname">MMMFAudioPlayDeviceCustomCommandImplementor</span></a>  </p>
+ <p> <a href="GUID-9EBEDC0D-2AE8-3A15-A72F-E18999056879.html"><span class="apiname">MMMFAudioPlayControllerCustomCommandImplementor</span></a> </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-E83933DA-64D2-3B7F-ACF6-0A72E6132E16.html"><span class="apiname">CmdaAudioRecorderUtility</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <a href="GUID-9004EBF7-A519-3825-91DC-0CB5EE2AE91E.html"><span class="apiname">MMMFAudioPlayDeviceCustomCommandImplementor</span></a>  </p>
+ <p> <a href="GUID-6257431B-91C0-3F11-B9B8-6CA07BE81DF0.html"><span class="apiname">MMMFAudioRecordDeviceCustomCommandImplementor</span></a> </p>
+ <p> <a href="GUID-9EBEDC0D-2AE8-3A15-A72F-E18999056879.html"><span class="apiname">MMMFAudioPlayControllerCustomCommandImplementor</span></a> </p>
+ <p> <a href="GUID-955A29AB-D7FE-3747-A451-A75B01867675.html"><span class="apiname">MMMFAudioRecordControllerCustomCommandImplementor</span></a> </p>
+ <p> <a href="GUID-B9EF7125-3D50-375D-904E-2148F650765D.html"><span class="apiname">MMMFAudioControllerCustomCommandImplementor</span></a>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-A11E409C-894A-3C91-8924-5CF6C53D7F7D.html"><span class="apiname">CmdaAudioConvertUtility</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <a href="GUID-9EBEDC0D-2AE8-3A15-A72F-E18999056879.html"><span class="apiname">MMMFAudioPlayControllerCustomCommandImplementor</span></a> </p>
+ <p> <a href="GUID-955A29AB-D7FE-3747-A451-A75B01867675.html"><span class="apiname">MMMFAudioRecordControllerCustomCommandImplementor</span></a> </p>
+ <p> <a href="GUID-B9EF7125-3D50-375D-904E-2148F650765D.html"><span class="apiname">MMMFAudioControllerCustomCommandImplementor</span></a>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-3F3FEBAA-DA64-3D83-999C-33AF27B9F0B2.html"><span class="apiname">CvideoPlayerUtility</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <a href="GUID-4D1C7814-76D6-3A1C-9441-4091C4787826.html"><span class="apiname">MMMFVideoControllerCustomCommandImplementor</span></a>  </p>
+ <p> <a href="GUID-1FBF69A5-100C-30D6-B934-AD208C320C52.html"><span class="apiname">MMMFVideoPlayControllerCustomCommandImplementor</span></a> </p>
+ <p> <a href="GUID-9004EBF7-A519-3825-91DC-0CB5EE2AE91E.html"><span class="apiname">MMMFAudioPlayDeviceCustomCommandImplementor</span></a>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-EA89F469-D402-34B4-9038-895ABA696AF6.html"><span class="apiname">CvideoRecorderUtility</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <a href="GUID-4D1C7814-76D6-3A1C-9441-4091C4787826.html"><span class="apiname">MMMFVideoControllerCustomCommandImplementor</span></a>  </p>
+ <p> <a href="GUID-E66BBFA9-17C5-30C0-88F0-2680825585D6.html"><span class="apiname">MMMFVideoRecordControllerCustomCommandImplementor</span></a> </p>
+ <p> <a href="GUID-6257431B-91C0-3F11-B9B8-6CA07BE81DF0.html"><span class="apiname">MMMFAudioRecordDeviceCustomCommandImplementor</span></a> </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p>In order to implement the required custom command APIs, the controller
+plugin should derive from the mixins shown in the table above, and use the <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-DAB14DA3-E897-3C57-ADAC-8748D6B06E7B"><span class="apiname">CMMFController::AddCustomCommandParserL()</span></a> method
+to register itself as being able to handle that API. </p>
+ <p>The <a href="GUID-92F9FFAA-1A8F-34B4-98E4-7BAF505BDE45.html"><span class="apiname">CMMFCustomCommandParserBase</span></a> derived
+object decodes the custom command on behalf of the controller plugin and calls
+the concrete API via the mixin interface. The following table shows which <a href="GUID-92F9FFAA-1A8F-34B4-98E4-7BAF505BDE45.html"><span class="apiname">CMMFCustomCommandParserBase</span></a> object
+should be used with each mixin class. </p>
+ 
+<div class="tablenoborder"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-7C4650A0-ED5A-5B9B-8349-3B348D16DCBB"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-7C4650A0-ED5A-5B9B-8349-3B348D16DCBB" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <strong>Mixin Interface</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Custom Command Parser</strong>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-B9EF7125-3D50-375D-904E-2148F650765D.html"><span class="apiname">MMMFAudioControllerCustomCommandImplementor</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <a href="GUID-0E8AE2BE-D2E4-31D1-A9EE-8C134AC08A44.html"><span class="apiname">CMMFAudioControllerCustomCommandParser</span></a>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-9EBEDC0D-2AE8-3A15-A72F-E18999056879.html"><span class="apiname">MMMFAudioPlayControllerCustomCommandImplementor</span></a> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <a href="GUID-4446548D-A1C6-37E9-8C93-5DE06BC9733F.html"><span class="apiname">CMMFAudioPlayControllerCustomCommandParser</span></a>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-955A29AB-D7FE-3747-A451-A75B01867675.html"><span class="apiname">MMMFAudioRecordControllerCustomCommandImplementor</span></a> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <a href="GUID-F37B8FE6-ABD8-311A-89CA-3495FE88EE32.html"><span class="apiname">CMMFAudioRecordControllerCustomCommandParser</span></a> </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-4D1C7814-76D6-3A1C-9441-4091C4787826.html"><span class="apiname">MMMFVideoControllerCustomCommandImplementor</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <a href="GUID-4C75EEA6-3F0E-3EDE-B02C-83B8AE6F4563.html"><span class="apiname">CMMFVideoControllerCustomCommandParser</span></a>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-1FBF69A5-100C-30D6-B934-AD208C320C52.html"><span class="apiname">MMMFVideoPlayControllerCustomCommandImplementor</span></a> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <a href="GUID-E45B8292-04DE-3929-8E10-46E8D259A3B3.html"><span class="apiname">CMMFVideoPlayControllerCustomCommandParser</span></a>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-E66BBFA9-17C5-30C0-88F0-2680825585D6.html"><span class="apiname">MMMFVideoRecordControllerCustomCommandImplementor</span></a> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <a href="GUID-7BF02827-4A99-3127-873A-BA5D5CD1DFDB.html"><span class="apiname">CMMFVideoRecordControllerCustomCommandParser</span></a> </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-9004EBF7-A519-3825-91DC-0CB5EE2AE91E.html"><span class="apiname">MMMFAudioPlayDeviceCustomCommandImplementor</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <a href="GUID-C27DB2A9-1AD6-3AA2-A9A7-F97D8B493B20.html"><span class="apiname">CMMFAudioPlayDeviceCustomCommandParser</span></a>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-6257431B-91C0-3F11-B9B8-6CA07BE81DF0.html"><span class="apiname">MMMFAudioRecordDeviceCustomCommandImplementor</span></a> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <a href="GUID-CAB4C3DA-43E3-37C5-B9BD-0DE3341A7D59.html"><span class="apiname">CMMFAudioRecordDeviceCustomCommandParser</span></a>  </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p>The following example code shows how the controller should register
+itself with the controller framework to receive standard custom commands. </p>
+ <pre class="codeblock" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-DDC6EA9D-C01D-599D-9ADA-F3445675D252"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-DDC6EA9D-C01D-599D-9ADA-F3445675D252"><!-- --></a>class CMyControllerPlugin : public    CMMFController,
+                                      MMMFAudioControllerCustomCommandImplementor,
+                                      MMMFAudioPlayDeviceCustomCommandImplementor
+    {
+...
+private:
+    void ConstructL();
+    };
+
+void CMyControllerPlugin::ConstructL()
+    {
+...
+    // Construct custom command parsers
+
+    CMMFAudioControllerCustomCommandParser* audConParser =
+                                     CMMFAudioControllerCustomCommandParser::NewL(*this);
+    CleanupStack::PushL(audParser);
+    AddCustomCommandParserL(*audConParser); //parser now owned by controller framework
+    CleanupStack::Pop(audConParser);
+
+    CMMFAudioPlayDeviceCustomCommandParser* audPlayDevParser = 
+                                     CMMFAudioPlayDeviceCustomCommandParser::NewL(*this);
+    CleanupStack::PushL(audPlayDevParser);
+    AddCustomCommandParserL(*audPlayDevParser); //parser now owned by controller framework
+    CleanupStack::Pop();//audPlayDevParser
+
+
+    }
+</pre>
+ <p>It is also possible for controller plugins to define their
+own standard custom command classes. This might be useful if a group of plugins
+have the same API (for example, a group of <samp class="codeph">MIDI</samp> controller
+plugins). Clients would then be able to access equivalent functionality in
+each plugin using the same API. </p>
+ </div>
+
+<div class="section" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-A305F052-58F4-57B9-AB0F-C172768E462F"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-A305F052-58F4-57B9-AB0F-C172768E462F"><!-- --></a><h2 class="sectiontitle">Interaction
+with MMF Base Classes and other Plugins</h2> <p>The MMF provides a set
+of utility classes and other types of plugins to aid with writing controller
+plugins. All utility classes are provided in the library <samp class="codeph">MMFServerBaseClasses.DLL</samp>.
+A brief description of each of the classes follows. </p>
+ <p> <strong>Note:</strong> The
+use of data sources, data sinks and buffers is mandatory. The use of the other
+classes is optional. </p>
+ <ul>
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-55EAC53C-8F71-5A3B-AE7C-695EBC3C53D0"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-55EAC53C-8F71-5A3B-AE7C-695EBC3C53D0"><!-- --></a><p>Data Sources and Sinks </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-EF0BF115-FF08-56FE-90C7-CF48D85A6C0B"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-EF0BF115-FF08-56FE-90C7-CF48D85A6C0B"><!-- --></a><p>Buffers </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-4B99F28F-8EB3-5B66-B9BF-8AEE3DA5253E"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-4B99F28F-8EB3-5B66-B9BF-8AEE3DA5253E"><!-- --></a><p>Datapath </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-C5CAE5D5-7C82-5068-9AAB-6D9E66DE5D6B"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-C5CAE5D5-7C82-5068-9AAB-6D9E66DE5D6B"><!-- --></a><p>Codecs </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-174E2D35-3208-5AEA-8257-4952E147F72D"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-174E2D35-3208-5AEA-8257-4952E147F72D"><!-- --></a><p>Formats </p>
+ </li>
+
+</ul>
+ <p><strong>Data Sources and Sinks </strong> </p>
+ <p>Data sources and sinks are <a href="GUID-9E92EE30-F2E2-5F28-BB2A-391C09EC69D2.html">ECom</a> plugins,
+and are derived from the base class <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html"><span class="apiname">MDataSource</span></a> or <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html"><span class="apiname">MDataSink</span></a> respectively.
+The currently available data sources and sinks are listed below: </p>
+ <ul>
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-E7874D8E-528E-50BE-9BBE-1F3B721D0274"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-E7874D8E-528E-50BE-9BBE-1F3B721D0274"><!-- --></a><p> <a href="GUID-9914ABBD-B15F-3CDB-9F4E-1C9002A30269.html"><span class="apiname">CMMFFile</span></a>  </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-52F6F014-B4AA-5301-A099-19A7B3415CD0"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-52F6F014-B4AA-5301-A099-19A7B3415CD0"><!-- --></a><p> <a href="GUID-ADF29263-C4FB-31A8-AB06-0E10E39B7C39.html"><span class="apiname">CMMFDescriptor</span></a>  </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-52A43340-E2C7-56BE-BA1E-AF96A49DD8F2"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-52A43340-E2C7-56BE-BA1E-AF96A49DD8F2"><!-- --></a><p> <a href="GUID-D9BCF418-34D3-3D47-8968-A70C5C01E5DF.html"><span class="apiname">CMMFAudioInput</span></a>  </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-C95CADA7-9917-5C4E-A93D-1E16CB34171F"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-C95CADA7-9917-5C4E-A93D-1E16CB34171F"><!-- --></a><p> <a href="GUID-CB3745FF-6DC0-325A-95CC-70BF5112DD70.html"><span class="apiname">CMMFAudioOutput</span></a> <a href="GUID-D9BCF418-34D3-3D47-8968-A70C5C01E5DF.html"><span class="apiname">CMMFAudioInput</span></a> </p>
+ </li>
+
+</ul>
+ <p>They are created by the controller framework and passed into the
+controller plugin by reference using the <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-11623B04-A83E-3E32-A06E-6454D8407ADB"><span class="apiname">CMMFController::AddDataSourceL()</span></a> or <a href="GUID-123B3A78-9E84-3283-AB73-6B4293939A5D.html#GUID-123B3A78-9E84-3283-AB73-6B4293939A5D__GUID-8842FF05-7822-317A-A650-225775B758FD"><span class="apiname">CMMFController::AddDataSinkL()</span></a> method. </p>
+ <p>Some sources and sinks have extended APIs that allow the controller plugin
+to perform actions, such as setting the volume. The type of the source or
+sink can be checked by the controller plugin using the methods <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-D931704C-4349-36EE-9E05-BADF10253373"><span class="apiname">MDataSource::DataSourceType()</span></a> and <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-E03D973E-75A5-3FBA-9D24-04A5F6B23A7C"><span class="apiname">MDataSink::DataSinkType()</span></a>. These methods return a UID which can be checked against known UIDs to identify
+the extended API of the source or sink. For example, the following code would
+be used to set the volume of a speaker sink. </p>
+ <pre class="codeblock" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-8CCA0B72-6A76-5235-B397-17745DAB1A18"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-8CCA0B72-6A76-5235-B397-17745DAB1A18"><!-- --></a>MMMFAudioOutput* audioOutput = static_cast(MMMFAudioOutput*,(iDataSink));
+audioOutput-&gt;SoundDevice().SetVolume(14);
+</pre>
+ <p>It is possible dynamically to add new data sources and sinks
+to the system, see <a href="GUID-2062A92D-2A3C-5D38-B25E-6D4CF3E4BC98.html">writing
+a Source/Sink plugin</a> for information. </p>
+ <p><strong>Buffers </strong> </p>
+ <p>Buffers are used to contain data as it is being transferred
+from a source to a sink. There are several buffer types all derived from a
+common base class <a href="GUID-9A7A83ED-592B-3A0C-BABB-3B90099BCF7C.html"><span class="apiname">CMMFBuffer</span></a>: <a href="GUID-AE26E6A4-C1AD-3B35-B5F7-CE0AB60169BB.html"><span class="apiname">CMMFDataBuffer</span></a>, <a href="GUID-74A246CD-24ED-3506-9E98-0C6A7EFD1AC3.html"><span class="apiname">CMMFDescriptorBuffer</span></a> and <a href="GUID-4899998E-6DE7-3A9F-874B-6B4524CE33E4.html"><span class="apiname">CMMFTransferBuffer</span></a>. </p>
+ <p><strong>Datapath </strong> </p>
+ <p>The datapath is a utility class that transfers data
+from a single source to a single sink, via a codec plugin if the source and
+sink data types differ. The API of the datapath is very similar to that of
+the basic controller plugin API, and much of the complexity of controller
+plugins can be avoided by using the datapath. </p>
+ <p>The datapath can be
+used either through: </p>
+ <ul>
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-12E661D0-9317-551F-8D9E-876AF0153CCC"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-12E661D0-9317-551F-8D9E-876AF0153CCC"><!-- --></a><p> <a href="GUID-930A17D8-92C9-379A-A524-176AA68FE8E3.html"><span class="apiname">CMMFDataPath</span></a>,
+in which case the data will be transferred from the source to the sink in
+the main thread of the controller plugin. </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-B7B80AD5-7977-56C7-92A6-A722C66FA7EA"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-B7B80AD5-7977-56C7-92A6-A722C66FA7EA"><!-- --></a><p> <a href="GUID-1869F1F6-AEAE-3932-8A9C-54B641CE9CD5.html"><span class="apiname">RMMFDataPath</span></a>,
+in which case a new thread will be launched to transfer the data from the
+source to the sink. This is useful if a controller has multiple sources and
+sinks (a video controller for example). The multiple datapaths can each be
+executed in their own thread to improve performance. </p>
+ </li>
+
+</ul>
+ <p>If the source and sink data types are the same then no codec is required
+and the datapath will use a <samp class="codeph">null</samp> codec and the buffers will
+be transferred straight from the source to the sink without being copied in
+between. </p>
+ <p><strong>Codecs </strong> </p>
+ <p>Codec plugins are derived from <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html"><span class="apiname">CMMFCodec</span></a> and
+can be used by controller plugins to convert data from one data type to another.
+Codec plugins are designed to be used by different controller plugins, for
+example both an audio controller and a video controller might want to make
+use of a <samp class="codeph">PCM8</samp> to <samp class="codeph">PCM16</samp> codec. </p>
+ <p>See <a href="GUID-7261FEC6-5AA6-555C-AB72-2173BD3F1FA5.html">writing a codec plugin</a> for
+details of how to implement codec plugins. </p>
+ <p><strong>Formats </strong> </p>
+ <p>Controller plugin writers may wish to implement their
+format support by writing format plugins. While format plugins can only be
+used by one controller plugin, this does make it much easier to dynamically
+extend the formats supported by the controller plugin without providing a
+whole new controller plugin. See <a href="GUID-BDC081CA-FB0D-5F56-8C1B-F7AC9DD6875D.html">writing
+a format plugin</a> for details of how to implement format plugins. </p>
+ </div>
+
+<div class="section" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-9FD6AAA8-4024-578F-9AB4-48F7017D3EB6"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-9FD6AAA8-4024-578F-9AB4-48F7017D3EB6"><!-- --></a><h2 class="sectiontitle">Integrating
+the Controller into the ECom Plugin Framework</h2> <p>This section describes
+how to write the ECom plugin registry file. See <a href="GUID-9E92EE30-F2E2-5F28-BB2A-391C09EC69D2.html">ECom</a> for
+generic instructions on how to write an ECom plugin. </p>
+ <p>The controller
+plugin resolver is decides which controller plugin should be used to provide
+support for a particular format. Controller plugins provide information in
+their <samp class="codeph">ECom</samp> resource file which allows the controller framework
+(and ultimately the client application) to determine: </p>
+ <ul>
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-B14BEDD7-34F4-5EB6-A0C3-EAFD2427254D"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-B14BEDD7-34F4-5EB6-A0C3-EAFD2427254D"><!-- --></a><p>The display name and
+supplier of the controller plugin. </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-CCE1BACF-7EA4-5160-A132-387BB2E27BE1"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-CCE1BACF-7EA4-5160-A132-387BB2E27BE1"><!-- --></a><p>The media types supported
+by the controller plugin (e.g. audio or video). </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-2207F37F-C06F-5E7C-A92F-2B07D4E19CDE"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-2207F37F-C06F-5E7C-A92F-2B07D4E19CDE"><!-- --></a><p>The formats the controller
+plugin can play and record. </p>
+ </li>
+
+</ul>
+ <p>For each format supported, for both playing and recording, the information
+below is provided: </p>
+ <ul>
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-9BE53029-AE39-5A88-802D-7907936D23D4"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-9BE53029-AE39-5A88-802D-7907936D23D4"><!-- --></a><p>Display Name of the
+format. </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-D4E3EA7C-BE26-5CC5-ABFA-80F37C662D9C"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-D4E3EA7C-BE26-5CC5-ABFA-80F37C662D9C"><!-- --></a><p>Supplier of the format
+(in case support for this format was provided by a different party to the
+controller plugin). </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-0222405C-A868-5C71-900D-0181F071E718"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-0222405C-A868-5C71-900D-0181F071E718"><!-- --></a><p>The Media Types supported
+by the format. </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-3D9FE26B-DF8A-58D8-BDDC-CCD55FEEBBF9"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-3D9FE26B-DF8A-58D8-BDDC-CCD55FEEBBF9"><!-- --></a><p>The MIME types applicable
+to the format. </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-EC8EB39A-6C09-50AD-90F8-48C7E7A9B356"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-EC8EB39A-6C09-50AD-90F8-48C7E7A9B356"><!-- --></a><p>The file extensions
+that identify files that can be handled by the format. </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-EF2278A1-9878-5408-B689-A27A181C5855"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-EF2278A1-9878-5408-B689-A27A181C5855"><!-- --></a><p>Any header data segments
+that could be matched to the first few bytes of multimedia data to identify
+that the data could be handled using this format. </p>
+ </li>
+
+</ul>
+ <p>Most of the information outlined above is provided by the plugin
+in the <samp class="codeph">opaque_data</samp> field of the ECom resource file. This
+field takes an 8-bit string and is limited to 127 characters in length. A
+tagged data scheme is used to separate the different types of data. The tags
+are all three characters in length, and the scheme only uses opening tags
+(i.e. no end tags) to reduce overhead and complexity. The tags available are: </p>
+ 
+<div class="tablenoborder"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-1F208E5B-912E-5973-BB47-0A84F917CF23"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-1F208E5B-912E-5973-BB47-0A84F917CF23" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p>Tag </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Usage </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Description </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>&lt;s&gt; </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Controller, Format </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>The supplier of the plugin. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>&lt;i&gt; </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Controller, Format </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>A media ID supported by this plugin. Multiple entries can be included. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>&lt;p&gt; </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Controller </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>The UID of the play format collection for this controller (see below). </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>&lt;r&gt; </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Controller </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>The UID of the record format collection for this controller (see
+below). </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>&lt;m&gt; </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Format </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>A mime type that describes the format. Multiple entries with this
+tag can be included. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>&lt;e&gt; </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Format </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>A file extension supported by this format. Multiple entries with
+this tag can be included. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>&lt;h&gt; </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Format </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>A segment of header data that can be matched against the first few
+bytes of a clip to check whether this format is capable of handling the clip.
+Multiple entries with this tag can be included. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p>Formats can be supported by controller plugins either: </p>
+ <ul>
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-D7548E83-D055-5444-B53C-DDEBE26EB84C"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-D7548E83-D055-5444-B53C-DDEBE26EB84C"><!-- --></a><p> <strong>Internally:</strong> In
+this case, the controller is able to read or write the format by itself. Controller
+plugins can specify the formats they support internally with extra entries
+in their plugin resource file. They define two new <a href="GUID-9E92EE30-F2E2-5F28-BB2A-391C09EC69D2.html">ECom</a> plugin
+interface uids (one for play formats, the other for record formats) in their <samp class="codeph">opaque_data</samp> field
+using the tags <samp class="codeph">&lt;p&gt;</samp> and <samp class="codeph">&lt;r&gt;</samp>. The play
+formats they support are then listed as <samp class="codeph">ECom</samp> plugin implementations
+of the play format interface UID, and likewise with the record formats. These
+interface UIDs and implementations do not correspond to any real plugins.
+They are simply a way of letting the controller framework know exactly which
+formats the controller supports in a scalable manner. The implementation UIDs
+of each format should be known to the controller so that a client can specify
+the format that a controller should use by using this UID. </p>
+ </li>
+
+<li id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-DAA4BF7F-D830-5A8B-A2D9-EA6B1BB6D9C0"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-DAA4BF7F-D830-5A8B-A2D9-EA6B1BB6D9C0"><!-- --></a><p> <strong> By using format
+plugins:</strong> The <a href="GUID-8BAA3621-DC04-357F-8342-D72A313CCA86.html"><span class="apiname">MMFServerBaseClasses</span></a> component defines
+base classes for both encoding and decoding format plugins. By using format
+plugins, the formats supported by a controller plugin can be extended dynamically
+without having to change the controller plugin itself. The <a href="GUID-9E92EE30-F2E2-5F28-BB2A-391C09EC69D2.html">ECom</a> plugin
+resource file of each format plugin contains the UID of the controller plugin
+that it extends, allowing the controller framework to build up an accurate
+picture of the formats supported by each controller. </p>
+ </li>
+
+</ul>
+ <p>The following is an example of a resource file for an audio controller
+plugin that supports playing <samp class="codeph">WAV</samp> and <samp class="codeph">AU</samp>,
+and recording <samp class="codeph">AU</samp>. </p>
+ <pre class="codeblock" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-E9D08E5B-F29E-5668-83CC-74B39AAA139D"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-E9D08E5B-F29E-5668-83CC-74B39AAA139D"><!-- --></a>RESOURCE REGISTRY_INFO theInfo
+    {
+    dll_uid = 0x101F1234;
+    interfaces = 
+        {
+        INTERFACE_INFO // Controller Plugin Description
+           {
+           interface_uid = KMmfUidPluginInterfaceController ;
+           implementations = 
+               {
+               IMPLEMENTATION_INFO
+                   {
+                   implementation_uid = 0x101F1235 ;
+                   version_no = 1;
+                   display_name = "Symbian Audio controller";
+                   default_data = "?";
+                   opaque_data = 
+                          “&lt;s&gt;Symbian&lt;i&gt;0x101F5D07&lt;p&gt;0x101F0001&lt;r&gt;0x101F0002";
+                           // SUPPLIER = Symbian
+                           // MEDIA ID = uid for audio media type
+                           // PLAY FORMATS = look at interface uid 0x101f0001
+                           // RECORD FORMATS = look at interface uid 0x101f0002
+                   }
+               };
+            },
+        INTERFACE_INFO // Play Formats Description
+            {
+            interface_uid = 0x101F0001 ;
+            implementations = 
+               {
+               IMPLEMENTATION_INFO
+                   {
+                   implementation_uid = 0x101F1236 ;
+                   version_no = 1;
+                   display_name = "WAV Play Format";
+                   default_data = "?";
+                   opaque_data = 
+                   “&lt;s&gt;Symbian&lt;i&gt;0x101f5d07&lt;e&gt;.wav&lt;h&gt;RIFF????WAVE&lt;m&gt;Audio/Wave";
+                   // SUPPLIER = Symbian
+                   // MEDIA ID = uid for audio media type
+                   // FILE EXTENSION = .wav
+                   // HEADER DATA = look for RIFF????WAVE in header data. The’?’s
+                   // indicate a single character wildcard.
+                   // MIME TYPE = Audio/Wave
+                   },
+               IMPLEMENTATION_INFO
+                   {
+                   implementation_uid = 0x101F1237 ;
+                   version_no = 1;
+                   display_name = "AU Play Format";
+                   default_data = "?";
+                   opaque_data = 
+                   “&lt;s&gt;Symbian&lt;i&gt;0x101f5d07&lt;e&gt;.au&lt;h&gt;.snd";
+                   // SUPPLIER = Symbian
+                   // MEDIA ID = uid for audio media type
+                   // FILE EXTENSION = .au
+                   // HEADER DATA = look for .snd in header data.
+                   // MIME TYPE = No mime type
+                   }
+               };
+            },
+        INTERFACE_INFO // Record Formats Description
+            {
+            interface_uid = 0x101F0002 ;
+            implementations = 
+               {
+               IMPLEMENTATION_INFO
+                   {
+                   implementation_uid = 0x101F1238 ;
+                   version_no = 1;
+                   display_name = "WAV Record Format";
+                   default_data = "?";
+                   opaque_data = 
+                   “&lt;s&gt;Symbian&lt;i&gt;0x101f5d07&lt;e&gt;.wav&lt;h&gt;RIFF????WAVE&lt;m&gt;Audio/Wave";
+                   // SUPPLIER = Symbian
+                   // MEDIA ID = uid for audio media type
+                   // FILE EXTENSION = .wav
+                   // HEADER DATA = look for RIFF????WAVE in header data. The’?’s
+                   // indicate a single character wildcard.
+                   // MIME TYPE = Audio/Wave
+                   }
+                };
+            }
+        };
+    }
+
+</pre>
+ <p> <strong>Note:</strong> The <samp class="codeph">default_data</samp> field is not
+used by the controller framework. A <samp class="codeph">UTF8</samp> to <samp class="codeph">unicode</samp> conversion
+is performed on the Supplier. All other data is left in <samp class="codeph">ascii</samp>. </p>
+ </div>
+
+<div class="section" id="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-0F96339A-BF77-570C-908D-A59AFD2036DB"><a name="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8__GUID-0F96339A-BF77-570C-908D-A59AFD2036DB"><!-- --></a><h2 class="sectiontitle">Testing</h2> <p>The
+controller plugin should be tested by exercising any application-level utility
+APIs that are meant to be supported by the plugin. For example, a video player
+controller would be tested using the <a href="GUID-FFD6114E-36B4-3176-ABDD-987DDA2F2099.html"><span class="apiname">CVideoPlayer</span></a> API. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-B58DEF65-B08F-5D0B-98E7-EB8DB7082F8B.html">Multimedia Plug-in Collection Tutorials</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-3E341F9F-2635-589B-A59A-B999FE7DF9BE.html">Multimedia
+APIs and Frameworks</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

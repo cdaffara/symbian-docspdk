@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="String Conversions"/>
+<meta name="abstract" content="In case the developer is developing applications where P.I.P.S.-based functionality is called from a Symbian/S60 application, the need for conversions between Symbian descriptors and different string types provided by P.I.P.S. is needed."/>
+<meta name="description" content="In case the developer is developing applications where P.I.P.S.-based functionality is called from a Symbian/S60 application, the need for conversions between Symbian descriptors and different string types provided by P.I.P.S. is needed."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>String Conversions</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313"><a name="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381193 id2381201 id2381344 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html">Generic Open Libraries</a> &gt; <a href="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html">Open Environment Core (P.I.P.S.)</a> &gt; <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a> &gt; </div>
+<h1 class="topictitle1">String
+Conversions</h1>
+<div><p>In case the developer is developing applications where P.I.P.S.-based
+functionality is called from a Symbian/S60 application, the need for conversions
+between Symbian descriptors and different string types provided by P.I.P.S.
+is needed. </p>
+
+<div class="section" id="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313__GUID-A6479BB3-0176-4321-8D33-1465DCCAB049-GENID-1-12-1-14-1-1-5-1-3-1-7-1-10-1-3-1"><a name="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313__GUID-A6479BB3-0176-4321-8D33-1465DCCAB049-GENID-1-12-1-14-1-1-5-1-3-1-7-1-10-1-3-1"><!-- --></a><h2 class="sectiontitle">Symbian
+descriptors and C strings compared</h2>              <p>The main difference between
+Symbian descriptors and C strings is that the Symbian descriptors know how
+many characters are in a data array. A C string does not know its length,
+so when length is needed the NULL character that indicates the end of the
+string has to be scanned.  </p>
+<p>Another difference arises with buffers.
+When C code reserves a buffer from the heap or stack, it has to keep the maximum
+length somewhere. Many C methods that alter the buffer contents do not respect
+the maximum size of the buffer and can override the reserved memory, causing
+unknown behavior. Some methods take the maximum length as a parameter but
+it is difficult to use those types in functions, since a pointer to an array
+and maximum length have to be passed separately. Buffer descriptors can tell
+the maximum length, and all the methods they provide respect the buffer limits.
+ </p>
+<p>When using neutral descriptor types there is no need to worry about
+character widths. In a C program, the programmer has to explicitly specify
+which method to use, for example <samp class="codeph">strcat</samp> or <samp class="codeph">wcscat</samp>.</p>
+<p>The
+table below contains a comparison of standard C string functions and Symbian
+counter parts:</p>
+
+<div class="tablenoborder"><a name="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313__GUID-0580FD76-A651-4F23-81FF-4460DAF1992E"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313__GUID-0580FD76-A651-4F23-81FF-4460DAF1992E" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p><strong>C function</strong></p>
+</td>
+
+<td class="cellrowborder" valign="top"><p><strong>Symbian</strong></p>
+</td>
+
+<td class="cellrowborder" valign="top"><p><strong>Description</strong></p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">sprintf, swprintf</samp></td>
+
+<td class="cellrowborder" valign="top"><samp class="codeph">TDes::Format</samp></td>
+
+<td class="cellrowborder" valign="top"><p>Write formatted data to a string.</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">strcat, wcscat, strncat, wcsncat </samp></td>
+
+<td class="cellrowborder" valign="top"><samp class="codeph">TDes::Append</samp></td>
+
+<td class="cellrowborder" valign="top"><p>Append a string to another. </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">strcmp, strncmp, wcsncmp </samp></td>
+
+<td class="cellrowborder" valign="top"><samp class="codeph">TDesC::Compare</samp></td>
+
+<td class="cellrowborder" valign="top"><p>Compare strings lexicographically. </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">strcpy, wcscpy strncpy, wcsncpy </samp></td>
+
+<td class="cellrowborder" valign="top"><samp class="codeph">TDes::Copy </samp></td>
+
+<td class="cellrowborder" valign="top"><p>Copy a string to another. </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">strchr, wcschr</samp></td>
+
+<td class="cellrowborder" valign="top"><samp class="codeph">TDesC::Locate </samp></td>
+
+<td class="cellrowborder" valign="top"><p>Find a character in a string. </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">strrchr, wcsrchr</samp></td>
+
+<td class="cellrowborder" valign="top"><samp class="codeph">TDesC:: LocateReverse </samp></td>
+
+<td class="cellrowborder" valign="top"><p>Scan the index of the first character from a string that does not
+exist in the alphabet array. </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">strspn, wcsspn</samp></td>
+
+<td class="cellrowborder" valign="top"><p>None </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>Scan index of the first character from string that doesn't exist
+in alphabet array. </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">strcspn, wcscspn</samp></td>
+
+<td class="cellrowborder" valign="top"><p>None </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>Scan the index of the first occurrence of a character in a string
+that belongs to the set of characters. </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">strstr, wcsstr</samp></td>
+
+<td class="cellrowborder" valign="top"><samp class="codeph">TDesC::Find </samp></td>
+
+<td class="cellrowborder" valign="top"><p>Find a substring. </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">strtok, wcstok</samp></td>
+
+<td class="cellrowborder" valign="top"><samp class="codeph">TLex::</samp></td>
+
+<td class="cellrowborder" valign="top"><p>Find the next token in a string. </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">strlen, wcslen</samp></td>
+
+<td class="cellrowborder" valign="top"><samp class="codeph">TDesC::Length</samp></td>
+
+<td class="cellrowborder" valign="top"><p>Get the length of a string. </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">strcoll, wcscoll</samp></td>
+
+<td class="cellrowborder" valign="top"><samp class="codeph">TDesC::CompareC </samp></td>
+
+<td class="cellrowborder" valign="top"><p>Compare strings using locale-specific information. </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><samp class="codeph">strftime, wcsftime</samp></td>
+
+<td class="cellrowborder" valign="top"><p>Using <samp class="codeph">TDes::Format</samp> and <samp class="codeph">TTime </samp></p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>Format a time string. </p>
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+     </div>
+
+<div class="section" id="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313__GUID-A6479BB3-0176-4321-8D33-1465DCCAB049-GENID-1-12-1-14-1-1-5-1-3-1-7-1-10-1-3-2"><a name="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313__GUID-A6479BB3-0176-4321-8D33-1465DCCAB049-GENID-1-12-1-14-1-1-5-1-3-1-7-1-10-1-3-2"><!-- --></a><h2 class="sectiontitle">How
+to convert <samp class="codeph">TBuf16</samp> to a <samp class="codeph">char</samp> buffer</h2>        
+     <p>A <samp class="codeph">TBuf16</samp> buffer can be converted to a <samp class="codeph">char</samp> buffer
+using the <samp class="codeph">wcstombs</samp> API. The example below illustrates how
+the conversion can be done.</p>
+<pre class="codeblock">#include &lt;e32base.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;wchar.h&gt;
+
+#define SIZE 20
+_LIT(KData,"hello");
+  
+int main (void)
+{
+    TBuf16&lt;SIZE&gt; buf(KData);
+    size_t ret;
+    char carray[SIZE];
+   
+    ret = wcstombs(carray, (const wchar_t *)buf.PtrZ(), SIZE );
+    printf("TBuf converted to char buffer : %s\n",carray);
+    getchar();
+    return (1);
+}
+</pre>
+     </div>
+
+<div class="section" id="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313__GUID-A6479BB3-0176-4321-8D33-1465DCCAB049-GENID-1-12-1-14-1-1-5-1-3-1-7-1-10-1-3-3"><a name="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313__GUID-A6479BB3-0176-4321-8D33-1465DCCAB049-GENID-1-12-1-14-1-1-5-1-3-1-7-1-10-1-3-3"><!-- --></a><h2 class="sectiontitle">How
+to convert <samp class="codeph">TBuf8</samp> to <samp class="codeph">wchar_t</samp></h2>           
+  <p>A <samp class="codeph">TBuf8</samp> buffer can be converted to <samp class="codeph">wchar_t</samp> using
+the <samp class="codeph">mbstowcs</samp> API.</p>
+<pre class="codeblock">#include &lt;e32base.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;wchar.h&gt;
+
+#define SIZE 20
+ 
+ int main (void)
+ {
+     TBuf8&lt;SIZE&gt; buf(_L8("hello"));
+     size_t ret;
+     wchar_t warray[SIZE];
+  
+     ret = mbstowcs(warray, (const char *)buf.PtrZ(), SIZE );
+     printf("TBuf8 converted to wchar buffer : %ls\n",warray);
+     getchar();
+     
+     return (1);
+ }
+</pre>
+     </div>
+
+<div class="section" id="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313__GUID-A6479BB3-0176-4321-8D33-1465DCCAB049-GENID-1-12-1-14-1-1-5-1-3-1-7-1-10-1-3-4"><a name="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313__GUID-A6479BB3-0176-4321-8D33-1465DCCAB049-GENID-1-12-1-14-1-1-5-1-3-1-7-1-10-1-3-4"><!-- --></a><h2 class="sectiontitle">How
+to convert <samp class="codeph">TText16</samp> to <samp class="codeph">char</samp></h2>            
+ <p>The <samp class="codeph">wcstombs</samp> API can be used to convert a <samp class="codeph">TText16</samp> buffer
+to a <samp class="codeph">char</samp> buffer. This is one of the examples of converting
+from a Symbian data type to a C data type.</p>
+<pre class="codeblock">#include &lt;e32def.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;wchar.h&gt;
+
+#define SIZE 32
+
+int main (void)
+{
+   TText arr[SIZE] = L"abcdef";
+   char carray[SIZE];
+   size_t ret;
+
+   ret = wcstombs(carray, (const wchar_t *)arr, SIZE);
+   printf("TText converted to char buffer : %s",carray);
+   getchar();
+
+   return (1);
+}
+</pre>
+     </div>
+
+<div class="section" id="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313__GUID-A6479BB3-0176-4321-8D33-1465DCCAB049-GENID-1-12-1-14-1-1-5-1-3-1-7-1-10-1-3-5"><a name="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313__GUID-A6479BB3-0176-4321-8D33-1465DCCAB049-GENID-1-12-1-14-1-1-5-1-3-1-7-1-10-1-3-5"><!-- --></a><h2 class="sectiontitle">How
+to convert a <samp class="codeph">char</samp> array and a <samp class="codeph">wide char</samp> array</h2>        
+     <p>To use both <samp class="codeph">char</samp> and <samp class="codeph">wide char</samp> pointers
+or array in the program, the user must convert buffers from a <samp class="codeph">char</samp> to
+a <samp class="codeph">wide char</samp> and vice versa. Wide character APIs provide methods
+to: </p>
+<ul>
+<li><p>convert a <samp class="codeph">char</samp> array to a <samp class="codeph">wide char</samp> array</p>
+</li>
+
+<li><p>convert a <samp class="codeph">wide char</samp> array to a <samp class="codeph">char</samp> array </p>
+</li>
+
+</ul>
+<p><strong>Converting a <samp class="codeph">char</samp> array to a <samp class="codeph">wide char</samp> array</strong></p>
+<p>The <samp class="codeph">mbstowcs</samp> API
+can be used to convert a <samp class="codeph">char</samp> array to a <samp class="codeph">wide char</samp> array.</p>
+<pre class="codeblock">#include &lt;stdlib.h&gt;
+#include &lt;wchar.h&gt;
+
+#define ARRAY_SIZE 32
+
+int main(void)
+{
+   char *carray = "char array";
+   wchar_t warray[ARRAY_SIZE];
+   size_t ret;
+
+   ret = mbstowcs(warray, (const char *)carray, ARRAY_SIZE);
+   wprintf(L"character array contents : %s\n",carray);
+   wprintf(L"wide char array contents : %ls\n",warray);
+   getwchar();
+
+   return (1);
+}
+</pre>
+<p><strong>Converting a <samp class="codeph">wide char</samp> array to a <samp class="codeph">char</samp> array </strong></p>
+<p>The <samp class="codeph">wcstombs</samp> API
+can be used to convert a <samp class="codeph">wide char</samp> array to a <samp class="codeph">char</samp> array. </p>
+<pre class="codeblock">#include &lt;stdlib.h&gt;
+#include &lt;wchar.h&gt;
+
+#define ARRAY_SIZE 32
+
+int main(void)
+{
+   wchar_t *warray = L"wide array";
+   char carray[ARRAY_SIZE];
+   size_t ret;
+
+   ret = wcstombs(carray, (const wchar_t *)warray, ARRAY_SIZE);
+   wprintf(L"wide char array contents : %ls\n",warray);
+   wprintf(L"character array contents : %s\n",carray);
+   getwchar();
+
+   return (1);
+}
+</pre>
+     </div>
+
+<div class="section" id="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313__GUID-A6479BB3-0176-4321-8D33-1465DCCAB049-GENID-1-12-1-14-1-1-5-1-3-1-7-1-10-1-3-6"><a name="GUID-80F2DEC8-152F-4681-A9D0-8EB776131313__GUID-A6479BB3-0176-4321-8D33-1465DCCAB049-GENID-1-12-1-14-1-1-5-1-3-1-7-1-10-1-3-6"><!-- --></a><h2 class="sectiontitle">How
+to declare a <samp class="codeph">wide-char</samp> string</h2>              <p>To declare
+a <samp class="codeph">wide-char</samp> string, prefix the string with 'L'
+[Capital L].  </p>
+<pre class="codeblock">#include &lt;wchar.h&gt;
+
+int main(void)
+{
+     wchar_t *wptr = L"This is a wide char string";
+  
+     wprintf(L"%ls\n",wptr);
+     getwchar(); 
+}
+</pre>
+     </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Pixmap Implementation"/>
+<meta name="abstract" content="This topic provides an introduction to implementing EGL pixmap surfaces on the Symbian platform."/>
+<meta name="description" content="This topic provides an introduction to implementing EGL pixmap surfaces on the Symbian platform."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F094A9FA-D253-5D33-B625-A2AA0B1CE447.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8C6D4350-A38D-57A1-8C8D-C777EA7E8A3E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D252E75C-C8CA-5C51-8DA3-95B937A1295C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F094A9FA-D253-5D33-B625-A2AA0B1CE447.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DC3A8785-3ED3-5696-A5ED-AB66588A5C14.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A03FB1BF-F67B-519D-A904-74CA3F8375D9.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Pixmap Implementation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358"><a name="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2384330 id2386999 id2387013 id2387068 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html">Graphics Guide</a> &gt; <a href="GUID-8C6D4350-A38D-57A1-8C8D-C777EA7E8A3E.html" title="The components within the EGL collection provide access to EGL on the Symbian platform. EGL, an open standard developed by the Khronos Group, provides an interface between rendering APIs such as OpenGL ES or OpenVG and an underlying native platform window system.">EGL Collection</a> &gt; <a href="GUID-D252E75C-C8CA-5C51-8DA3-95B937A1295C.html" title="The EGL Interface component provides a consistent interface to EGL on the Symbian platform, enabling cross-device compatibility. The component includes the Khronos-released header files (which incorporate some minor changes, such as to the in-source comments). It also provides some Symbian-specific header files and some other files (such as LIB, DEF and MMP files) and UIDs. It does not provide any implementations of the APIs.">EGL Interface Component</a> &gt; <a href="GUID-F094A9FA-D253-5D33-B625-A2AA0B1CE447.html" title="This section provides information for EGL implementers working with the Symbian platform.">EGL Implementer's Guide</a> &gt; </div>
+<h1 class="topictitle1">Pixmap
+Implementation</h1>
+<div><p>This topic provides an introduction to implementing EGL pixmap
+surfaces on the Symbian platform. </p>
+
+<p><strong>Target audience</strong>: Device creators. </p>
+
+<p>According to the EGL specification, <a href="GUID-97F2884C-44A0-348F-9AC1-BDF95BCD020A.html"><span class="apiname">EGLNativePixmapType</span></a> is
+defined by the platform, which in this case is Symbian. Historically, Symbian
+has defined <samp class="codeph">EGLNativePixmapType</samp> as being a <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html"><span class="apiname">CFbsBitmap</span></a> pointer.
+It is possible to create an <samp class="codeph">EGLSurface</samp> to render to
+a <samp class="codeph">CFbsBitmap</samp>.</p>
+
+<div class="section"><h2 class="sectiontitle">CFbsBitmap</h2> <p>The <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html"><span class="apiname">CFbsBitmap</span></a> interface
+is used to represent standard bitmaps that are owned by the <a href="GUID-A03FB1BF-F67B-519D-A904-74CA3F8375D9.html" title="The Font and Bitmap Server collection contains only one component—the Font and Bitmap Server. As its name suggests, the Font and Bitmap Server manages fonts and bitmaps.">Font
+and Bitmap Server</a>. <samp class="codeph">CFbsBitmap</samp> can be drawn to a window
+through <a href="GUID-0AEE5955-C530-35F1-A904-69183331B294.html"><span class="apiname">CWindowGc</span></a> or drawn to an off-screen target through <samp class="codeph">CFbsBitGc</samp>.
+There are several different types and formats of <samp class="codeph">CFbsBitmap</samp>.
+An EGL implementation may support a subset of these types and formats. </p>
+ <ul>
+<li id="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-7B427C9B-174E-535F-9C94-866E83546667"><a name="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-7B427C9B-174E-535F-9C94-866E83546667"><!-- --></a><p>Some EGL implementations
+may support only a type of <samp class="codeph">CFbsBitmap</samp> known as a <strong>hardware-bitmap</strong>,
+created by using <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-75E31D3C-842B-303A-B754-0703A5A9A496"><span class="apiname">CFbsBitmap::CreateHardwareBitmap()</span></a>. This
+type of bitmap is implemented under the Screen Driver interface known as <a href="GUID-DE8E21D9-FF93-358D-A479-F84435DBECAD.html"><span class="apiname">RHardwareBitmap</span></a> and
+can be hardware accelerated. However, there are some limitations as described
+in <a href="GUID-37393245-6AA1-528F-A5C1-EC114779791E.html" title="This topic introduces the 2D graphics hardware acceleration support provided by the Screen Driver component. This is generally used only in the non-ScreenPlay variant, because ScreenPlay provides better alternatives for implementing support for graphics acceleration hardware.">Screen Driver Graphics
+Acceleration Support</a>. </p>
+ </li>
+
+<li id="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-C289487D-0591-5503-BD42-C54563B2B89B"><a name="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-C289487D-0591-5503-BD42-C54563B2B89B"><!-- --></a><p>The Symbian reference
+EGL supports rendering to a <samp class="codeph">CFbsBitmap</samp> created through the
+standard <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-465F68BD-A68F-365F-872D-43F5DF3E1794"><span class="apiname">CFbsBitmap::Create()</span></a> function. EGL implementations
+are not required to support rendering to this type of bitmap. </p>
+ </li>
+
+<li id="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-43736F4A-28ED-515F-A71B-8886F6447D7B"><a name="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-43736F4A-28ED-515F-A71B-8886F6447D7B"><!-- --></a><p>ROM bitmaps are intrinsically
+unsuitable as render targets. </p>
+ </li>
+
+<li id="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-1FDD2AB9-E5AD-5189-AA65-A69FB42FC359"><a name="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-1FDD2AB9-E5AD-5189-AA65-A69FB42FC359"><!-- --></a><p>Similarly compressed
+bitmaps are not intended to be used by EGL. </p>
+ </li>
+
+</ul>
+ <p>Implementations are encouraged to identify and reject unsupported
+bitmap types as early as possible—for example, during <samp class="codeph">eglCreatePixmapSurface</samp>. </p>
+ <p>EGL
+implementations vary in their support for <samp class="codeph">CFbsBitmap</samp> pixel
+formats. The Symbian reference EGL supports creating a pixmap surface from
+a <samp class="codeph">CFbsBitmap</samp> of the following formats: </p>
+ <ul>
+<li id="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-8556AB58-BD80-5B00-BFFC-1737D90354AB"><a name="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-8556AB58-BD80-5B00-BFFC-1737D90354AB"><!-- --></a><a href="GUID-A50F9766-76DC-358D-A2FC-BE822C4774D5.html"><span class="apiname">EColor64K</span></a> </li>
+
+<li id="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-CD96E964-0F13-52B5-B37F-3520E5A0A923"><a name="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-CD96E964-0F13-52B5-B37F-3520E5A0A923"><!-- --></a><a href="GUID-11760566-DDF2-3AA3-A7A4-9CF473C6A11B.html"><span class="apiname">EColor16MU</span></a> </li>
+
+<li id="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-A0E93806-019B-593B-A57E-AEF3DE8C951B"><a name="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-A0E93806-019B-593B-A57E-AEF3DE8C951B"><!-- --></a><a href="GUID-2F3E2034-9222-3C26-A9AB-DFB02FAD637E.html"><span class="apiname">EColor16MAP</span></a> </li>
+
+</ul>
+ <p>The <a href="GUID-A03FB1BF-F67B-519D-A904-74CA3F8375D9.html" title="The Font and Bitmap Server collection contains only one component—the Font and Bitmap Server. As its name suggests, the Font and Bitmap Server manages fonts and bitmaps.">Font and
+Bitmap Server</a> is a singleton process that owns bitmaps. <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html"><span class="apiname">CFbsBitmap</span></a> objects
+are actually client-side handles to the bitmap objects, which are stored on
+a globally visible chunk. </p>
+ <p>During any period of access to a bitmap's
+data, you need to bound access to the data as follows: </p>
+ <a name="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-D7891923-A5C5-5D6A-8D1A-93FD0BEE1871"><!-- --></a><ol id="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-D7891923-A5C5-5D6A-8D1A-93FD0BEE1871">
+<li id="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-8A438667-9878-54D5-B8DD-C04E5C1B7B3B"><a name="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-8A438667-9878-54D5-B8DD-C04E5C1B7B3B"><!-- --></a><p>Call <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-AF99611F-27E5-305F-B680-F549F7DCA051"><span class="apiname">CFbsBitmap::BeginDataAccess()</span></a>. </p>
+ </li>
+
+<li id="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-02BEEE91-F2EE-5098-9C86-8173121FA535"><a name="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-02BEEE91-F2EE-5098-9C86-8173121FA535"><!-- --></a><p>Call <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-2AB943ED-7DBE-3FDA-82AF-317F152EDB03"><span class="apiname">CFbsBitmap::DataAddress()</span></a>,
+which returns a pointer. (This remains valid until you call <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-0C2D1B5F-46A8-32A1-9558-24BC8A413258"><span class="apiname">CFbsBitmap::EndDataAccess()</span></a>.) </p>
+ </li>
+
+<li id="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-35EB58B0-A855-57E8-A3B7-C31D72C98F8E"><a name="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-35EB58B0-A855-57E8-A3B7-C31D72C98F8E"><!-- --></a><p>Manipulate the data
+using the pointer returned from <samp class="codeph">DataAddress()</samp>. </p>
+ </li>
+
+<li id="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-B1D818B5-7698-5CB9-8E91-6F581B05C7BE"><a name="GUID-453CFE84-B2BA-56E6-BCB2-1162432B2358__GUID-B1D818B5-7698-5CB9-8E91-6F581B05C7BE"><!-- --></a><p>Call <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-0C2D1B5F-46A8-32A1-9558-24BC8A413258"><span class="apiname">CFbsBitmap::EndDataAccess()</span></a>. </p>
+ </li>
+
+</ol>
+ <p>Some hardware-accelerated implementations of OpenGL ES may require
+hardware-accelerated bitmaps in order to operate correctly. In this case the <samp class="codeph">eglCreatePixmapSurface</samp> function
+can use <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-EAFCDDBF-F121-3324-93D2-6702FC423B69"><span class="apiname">CFbsBitmap::HardwareBitmapHandle()</span></a> to discover
+whether a bitmap is actually a hardware bitmap and can be written to by a
+hardware accelerator. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-F094A9FA-D253-5D33-B625-A2AA0B1CE447.html" title="This section provides information for EGL implementers working with the Symbian platform.">EGL Implementer's Guide</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-DC3A8785-3ED3-5696-A5ED-AB66588A5C14.html" title="This is a guide for implementers of EGL working with the Symbian platform.">EGL Porting
+Guide</a></div>
+<div><a href="GUID-A03FB1BF-F67B-519D-A904-74CA3F8375D9.html" title="The Font and Bitmap Server collection contains only one component—the Font and Bitmap Server. As its name suggests, the Font and Bitmap Server manages fonts and bitmaps.">Font and
+Bitmap Server</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

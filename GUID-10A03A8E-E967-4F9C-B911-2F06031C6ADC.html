@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Using area registry based feedback"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-786D76B7-B827-43B7-8202-BA7A7E5EE03E.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ED56F490-E543-4AD8-AD5E-C760386750CF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-63CB36BD-3ABE-4C0E-94CD-CF128930AC1D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8661A7E0-F19A-41F8-9062-FBFAE70CF658.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-786D76B7-B827-43B7-8202-BA7A7E5EE03E.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-10A03A8E-E967-4F9C-B911-2F06031C6ADC"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Using area registry based feedback</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-10A03A8E-E967-4F9C-B911-2F06031C6ADC"><a name="GUID-10A03A8E-E967-4F9C-B911-2F06031C6ADC"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2561792 id2681718 id2681904 id2682107 id2682139 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html">Classic UI Guide</a> &gt; <a href="GUID-ED56F490-E543-4AD8-AD5E-C760386750CF.html" title="In Symbian^3, all GUI-based applications must work with devices that have touch screens. This section describes how to use UI components with touch support, and how applications can receive touch related events.">Touch UI Support</a> &gt; <a href="GUID-63CB36BD-3ABE-4C0E-94CD-CF128930AC1D.html" title="This section provides information on using the touch UI component and tactile feedback APIs.">API specifications</a> &gt; <a href="GUID-8661A7E0-F19A-41F8-9062-FBFAE70CF658.html" title="The Tactile feedback client API is used for producing tactile feedback for different touch events.">Tactile feedback client API</a> &gt; <a href="GUID-786D76B7-B827-43B7-8202-BA7A7E5EE03E.html">Providing tactile feedback for touch events</a> &gt; </div>
+<h1 class="topictitle1">Using
+area registry based feedback</h1>
+<div>
+<p>To use area registry based feedback, you must usually first call <samp class="codeph">MTouchFeedback::Instance</samp> (unless
+you get a reference to it via another class).</p>
+
+<p>It is recommended that you store the returned pointer as a member variable
+in those places where it is needed frequently. This is because the pointer
+is fetched from thread local storage, which can be somewhat time-consuming. </p>
+
+<p>To add feedback areas to the area registry, use the <samp class="codeph">SetFeedbackArea</samp> function.
+Usually the best place to do this is <samp class="codeph">SizeChanged</samp> function,
+because that is also the place to update feedback areas in case of a layout
+change.</p>
+
+<div class="note"><span class="notetitle">Note:</span> <p>You can also use the same <samp class="codeph">SetFeedbackArea</samp> function
+for updating the feedback area (the API implementation adds the area to the
+registry on the first time, and then just does updates on subsequent calls
+to this function). </p>
+</div>
+
+<p>If you want to change the feedback area or type without giving all the
+parameters again, use the functions <samp class="codeph">ChangeFeedbackArea</samp> and <samp class="codeph">ChangeFeedbackType</samp> for
+the updates. </p>
+
+<p>Also notice that you have to be prepared in case your control is moved
+with <samp class="codeph">CCoeControl::SetPosition</samp> function. For this you need
+to override <samp class="codeph">CCoeControl::PositionChanged</samp>, and update the
+feedback area there the same way as in the <samp class="codeph">SizeChanged</samp> function.
+Moreover, notice that this is necessary only for those non-window-owning controls,
+which produce area registry based feedback. </p>
+
+<p>Feedback areas of a specific control will be automatically disabled in
+case the control becomes dimmed by <samp class="codeph">CCoeControl::SetDimmed( ETrue )</samp> or
+invisible by <samp class="codeph">CCoeControl::MakeVisible( EFalse )</samp>. Feedback
+will be re-enabled again when control becomes both undimmed and visible. This
+functionality is based on using the object provider hierarchy, and thus it
+does not work in case the object provider parent has not been set for the
+control.</p>
+
+<p> If you need to disable a control’s feedback area temporarily (for other
+reasons than dimming or visibility), call <samp class="codeph">EnableFeedbackForControl</samp> with
+second parameter <samp class="codeph">EFalse</samp> to disable the feedback. You can
+then re-enable feedback by calling <samp class="codeph">EnableFeedbackForControl</samp> with
+second parameter <samp class="codeph">ETrue</samp>. Disabling of control’s feedback also
+affects direct feedback if it is generated with the overloaded version, which
+takes the control’s pointer as the second parameter. </p>
+
+<p>In some special cases it may be necessary to only disable audio- or vibra
+feedback for some controls. For this purpose there is a specific overload
+of <samp class="codeph">EnableFeedbackForControl</samp> function.</p>
+
+<p>You must remove your control's feedback areas at the latest when you destroy
+the control. To do this, call the function <samp class="codeph">RemoveFeedbackForControl</samp> .
+This also resets the feedback disabling information for the deleted control.
+If needed, you can remove individual feedback areas with the <samp class="codeph">RemoveFeedbackArea</samp> function
+any time, but you must still call <samp class="codeph">RemoveFeedbackForControl</samp> you
+destroy the control.</p>
+
+<p>The example below illustrates using tactile feedback based on the area
+registry. </p>
+
+<ol>
+<li id="GUID-10A03A8E-E967-4F9C-B911-2F06031C6ADC__GUID-95E49C03-19A2-4E39-BBDE-A907EAC87D3A"><a name="GUID-10A03A8E-E967-4F9C-B911-2F06031C6ADC__GUID-95E49C03-19A2-4E39-BBDE-A907EAC87D3A"><!-- --></a><p>Add the library <samp class="codeph">touchfeedback.lib</samp> into
+your<samp class="codeph"> .mmp</samp> file, and then add the following include to your <samp class="codeph">.cpp</samp> file: </p>
+<pre class="codeblock">#include &lt;touchfeedback.h&gt;</pre>
+</li>
+
+<li id="GUID-10A03A8E-E967-4F9C-B911-2F06031C6ADC__GUID-0E48DB87-9B6B-4E4A-A18D-62CBCD755949"><a name="GUID-10A03A8E-E967-4F9C-B911-2F06031C6ADC__GUID-0E48DB87-9B6B-4E4A-A18D-62CBCD755949"><!-- --></a><p>Update the area registry
+in the <samp class="codeph">SizeChanged</samp> function. </p>
+<div class="note"><span class="notetitle">Note:</span> <p>You don’t need
+to check if you have already the area added to the registry or not, because
+you can use the <samp class="codeph">SetFeedbackArea</samp> function anyway. (On the
+first time this function adds area to the registry, and on the second it updates
+the area.) </p>
+</div>
+<pre class="codeblock">MTouchFeedback* feedback = MTouchFeedback::Instance();
+
+if ( feedback )
+    {
+    feedback-&gt;SetFeedbackArea( 
+        this,
+        0, 
+        Rect(), 
+        ETouchFeedbackBasic,
+        ETouchEventStylusDown );
+    }
+</pre>
+<p>The second parameter given to the <samp class="codeph">SetFeedbackArea</samp> function
+is an index number, which is used to distinguish the feedback areas of same
+control from each other (in case the control has many feedback areas). You
+can choose the index numbers freely. It is recommended that you always use
+zero as the index if your control only has one feedback area.</p>
+</li>
+
+</ol>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-786D76B7-B827-43B7-8202-BA7A7E5EE03E.html">Providing tactile feedback for touch events</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

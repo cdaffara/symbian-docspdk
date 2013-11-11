@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Implementing the FEP API"/>
+<meta name="abstract" content="This topic describes various implementations of FEP."/>
+<meta name="description" content="This topic describes various implementations of FEP."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-68A55CD5-EF01-5DE2-8119-EFA39589960F.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E079315A-E5B6-4D33-B7E3-88697A3F11A4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0C6CCACF-84B2-5715-BCF3-12330E6F05D4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-68A55CD5-EF01-5DE2-8119-EFA39589960F.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Implementing the FEP API</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0"><a name="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2561792 id2839629 id2839186 id2839196 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html">Classic UI Guide</a> &gt; <a href="GUID-E079315A-E5B6-4D33-B7E3-88697A3F11A4.html">Control and animation framework</a> &gt; <a href="GUID-0C6CCACF-84B2-5715-BCF3-12330E6F05D4.html" title="This section explains Front End Processor (FEP), and its implementations and events.">Using Front End Processor (FEPBASE)</a> &gt; <a href="GUID-68A55CD5-EF01-5DE2-8119-EFA39589960F.html">How to Write a FEP</a> &gt; </div>
+<h1 class="topictitle1">Implementing
+the FEP API</h1>
+<div><p>This topic describes various implementations of FEP.</p>
+
+<div class="section" id="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-D0CB0202-D4B6-422B-84AA-F70974DDF7F3"><a name="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-D0CB0202-D4B6-422B-84AA-F70974DDF7F3"><!-- --></a><h2 class="sectiontitle">Post-platform
+security – the ECom plugin interface</h2><p>In the secure platform, FEPs
+must be implemented as ECom plug-ins. ECom provides a secure environment for
+loading FEPs that cannot be achieved using standard, non-ECom polymorphic
+DLLs. The main tasks that are specific to implementing a FEP as an ECom plug-in
+are described in this section. Note that the differences between pre- and
+post-platform security FEPs are imposed by the change from old-style, standard
+polymorphic DLLs to ECom plugins. The C++ APIs involved in FEP creation, which
+are defined in <span class="filepath">fepbase.h</span>, are unchanged. </p>
+ </div>
+
+<div class="section" id="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-97C929BB-0523-45F4-8100-D8065B9A53D5"><a name="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-97C929BB-0523-45F4-8100-D8065B9A53D5"><!-- --></a><h2 class="sectiontitle">Define a class
+that implements the CCoeFepPlugIn interface</h2><p>This class must implement
+the <samp class="codeph">NewFepL()</samp> and <samp class="codeph">SynchronouslyExecuteSettingsDialogL()</samp> functions
+that were, pre-platform security, the first and second exports from the DLL.
+Note that these functions have been redefined and no longer take the const <samp class="codeph">TDesC&amp;
+aFullFileNameOfDll </samp> argument: the ECom plugin implementation is identified
+by a UID rather than a filename. This means that the implementation of <samp class="codeph">SynchronouslyExecuteSettingsDialogL()</samp> is
+now responsible for locating the resource file needed to execute the settings
+dialog itself. </p>
+ <pre class="codeblock" id="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-310F5ADC-B9CB-5A3B-878F-AF13C4C4C08B"><a name="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-310F5ADC-B9CB-5A3B-878F-AF13C4C4C08B"><!-- --></a>class CCoeFepPlugIn : public CBase
+    {
+public:
+    inline static CCoeFepPlugIn* NewL(TUid aFepUid);
+    virtual ~CCoeFepPlugIn();
+public:
+    virtual CCoeFep* NewFepL(CCoeEnv&amp; aConeEnvironment, const CCoeFepParameters&amp; aFepParameters) = 0;
+    virtual void SynchronouslyExecuteSettingsDialogL(CCoeEnv&amp; aConeEnvironment) = 0;
+    };
+</pre>
+ </div>
+
+<div class="section" id="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-939614DA-C3EF-43FD-924A-805596AEC2FD"><a name="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-939614DA-C3EF-43FD-924A-805596AEC2FD"><!-- --></a><h2 class="sectiontitle">Provide the
+factory code required to instantiate the derived class </h2> <p>FEPs must
+provide the standard factory code required by every ECom plugin. For more
+information, see “Using ECom” in the Symbian Developer Library. For example,
+(the following code is taken from <span class="filepath">TFEP1PlugIn.cpp</span>): </p>
+ <pre class="codeblock" id="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-88F37824-8CAA-53B8-BD69-AB5B17B9BBB5"><a name="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-88F37824-8CAA-53B8-BD69-AB5B17B9BBB5"><!-- --></a>const TInt KTstFepPlugInImplementationValue = 0x102024D0;
+const TImplementationProxy ImplementationTable[] = 
+    {
+    IMPLEMENTATION_PROXY_ENTRY(KTstFepPlugInImplementationValue, CTstFepPlugIn::NewL )
+    };
+EXPORT_C const TImplementationProxy* ImplementationGroupProxy(TInt&amp; aTableCount)
+    {
+    aTableCount = sizeof(ImplementationTable) / sizeof(TImplementationProxy);
+    return ImplementationTable;
+    }
+CTstFepPlugIn* CTstFepPlugIn::NewL()
+    { // static
+    return new(ELeave) CTstFepPlugIn;
+    }
+</pre>
+</div>
+
+<div class="section" id="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-FC0B99AB-B579-42A2-8A0C-3A36BE648616"><a name="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-FC0B99AB-B579-42A2-8A0C-3A36BE648616"><!-- --></a><h2 class="sectiontitle">Create an ECom
+resource file</h2> <p>Each FEP must have an ECom resource file. Its interface
+UID must be 0x1020233f, or CONE will not be able to find the FEP. For example, </p>
+ <pre class="codeblock" id="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-5CBDB731-EBAD-5326-909C-4DF78E7AC360"><a name="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-5CBDB731-EBAD-5326-909C-4DF78E7AC360"><!-- --></a>#include &lt;RegistryInfo.rh&gt;
+
+RESOURCE REGISTRY_INFO theInfo
+    {
+    dll_uid = 0x102024D0; // UID3 of the DLL
+    interfaces = 
+        {
+        INTERFACE_INFO
+            {
+            interface_uid = 0x1020233F; // Same for every FEP
+            implementations = 
+                {
+                IMPLEMENTATION_INFO
+                    {
+                    implementation_uid = 0x102024D0;
+                    version_no = 1;
+                    display_name = "FEPNAME";
+                    default_data = "";
+                    opaque_data = "";
+                    }
+                };
+            }
+        };
+    }</pre>
+</div>
+
+<div class="section" id="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-BEDE8AA4-843E-405E-A8F9-EC80893D7D59"><a name="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-BEDE8AA4-843E-405E-A8F9-EC80893D7D59"><!-- --></a><h2 class="sectiontitle">The CCoeFep
+class</h2> <p>The parts of <a href="GUID-ADAA039A-7BF3-3B06-8486-2E3604C2633D.html"><span class="apiname">CCoeFep</span></a> relevant to classes
+deriving from it are shown below: </p>
+ <pre class="codeblock" id="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-14B6DFB4-02DE-5D12-BBFB-0665F6B089E0"><a name="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-14B6DFB4-02DE-5D12-BBFB-0665F6B089E0"><!-- --></a>class CCoeFep : public CBase, protected MFepAttributeStorer, public MCoeForegroundObserver, public MCoeFocusObserver
+{
+public:
+    enum TEventResponse
+        {
+        EEventWasNotConsumed,
+        EEventWasConsumed
+        };
+    class MDeferredFunctionCall
+        {
+    public:
+        virtual void ExecuteFunctionL()=0;
+        };
+    class MModifiedCharacter
+        {
+    public:
+        virtual TUint CharacterCode() const=0;
+        virtual TUint ModifierMask() const=0;
+        virtual TUint ModifierValues() const=0;
+        };
+public:
+    IMPORT_C virtual ~CCoeFep();
+    virtual void CancelTransaction()=0;
+protected:
+    IMPORT_C CCoeFep(CCoeEnv&amp; aConeEnvironment);
+    IMPORT_C void BaseConstructL(const CCoeFepParameters&amp; aFepParameters);
+    IMPORT_C void ReadAllAttributesL();
+    IMPORT_C void MakeDeferredFunctionCall(MDeferredFunctionCall&amp; aDeferredFunctionCall);
+    IMPORT_C void SimulateKeyEventsL(const TArray&lt;TUint&gt;&amp; aArrayOfCharacters);
+    IMPORT_C void SimulateKeyEventsL(const TArray&lt;MModifiedCharacter&gt;&amp; aArrayOfModifiedCharacters);
+    IMPORT_C void WriteAttributeDataAndBroadcastL(TUid aAttributeUid);
+    IMPORT_C void WriteAttributeDataAndBroadcastL(const TArray&lt;TUid&gt;&amp; aAttributeUids);
+    IMPORT_C TBool IsOn() const;
+private:
+    virtual void IsOnHasChangedState()=0;
+    virtual void OfferKeyEventL(TEventResponse&amp; aEventResponse, const TKeyEvent&amp; aKeyEvent, TEventCode aEventCode)=0;
+    virtual void OfferPointerEventL(TEventResponse&amp; aEventResponse, const TPointerEvent&amp; aPointerEvent, const CCoeControl* aWindowOwningControl)=0;
+    virtual void OfferPointerBufferReadyEventL(TEventResponse&amp; aEventResponse, const CCoeControl* aWindowOwningControl)=0;
+    };
+</pre>
+ <p>Note that <a href="GUID-ADAA039A-7BF3-3B06-8486-2E3604C2633D.html"><span class="apiname">CCoeFep</span></a> inherits, but does not
+override, some pure virtual functions from its base classes <a href="GUID-270424BB-124B-39FF-9CDA-5CAFB5407FAE.html"><span class="apiname">MFepAttributeStorer</span></a>, <a href="GUID-2CAC79B0-8BD3-3961-A162-75B004AEE5FC.html"><span class="apiname">MCoeForegroundObserver</span></a> and <a href="GUID-E591B7D7-ED56-3CEF-883F-7091D5833731.html"><span class="apiname">MCoeFocusObserver</span></a>. These therefore need to be overridden in addition
+to <a href="GUID-ADAA039A-7BF3-3B06-8486-2E3604C2633D.html"><span class="apiname">CCoeFep</span></a> ’s own pure virtual member functions. The details
+of the member functions of <a href="GUID-ADAA039A-7BF3-3B06-8486-2E3604C2633D.html"><span class="apiname">CCoeFep</span></a> and its base classes
+are explained in various sections of this document. </p>
+</div>
+
+<div class="section" id="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-ECA1F4AE-1B25-4079-B249-AC8ECF3D3F90"><a name="GUID-6CEAFE12-EB30-5231-94F4-2D097E79BFE0__GUID-ECA1F4AE-1B25-4079-B249-AC8ECF3D3F90"><!-- --></a><h2 class="sectiontitle">The CCoeControl
+class</h2><p>The <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html"><span class="apiname">CCoeControl</span></a> class (defined in <span class="filepath">epoc32\include\COECNTRL.H</span>)
+provides many useful features for implementing a FEP, such as functions for
+handling window server events. In fact, for FEPs wishing to intercept key
+events, writing a class that derives from <samp class="codeph">CCoeControl</samp> is
+a necessity because of the need to use the control stack (see <a href="GUID-CFC70204-1AD4-5DF0-ADDC-CDE4B39CFF96.html#GUID-CFC70204-1AD4-5DF0-ADDC-CDE4B39CFF96__GUID-1B15C661-851B-5922-B8BC-7A772232DBD2">Intercepting key events</a>, below). Thus although deriving from <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html"><span class="apiname">CCoeControl</span></a> is
+not explicitly demanded by the FEP architecture, it is assumed throughout
+this document that the object of the <a href="GUID-ADAA039A-7BF3-3B06-8486-2E3604C2633D.html"><span class="apiname">CCoeFep</span></a> derived
+class owns an object of a <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html"><span class="apiname">CCoeControl</span></a> derived class. </p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-68A55CD5-EF01-5DE2-8119-EFA39589960F.html">How to Write a FEP</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

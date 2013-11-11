@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CHuiLayout"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912"/>
+
+<title>CHuiLayout</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912"><a name="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2414975 id2414979 id2535863 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CHuiLayout Class Reference</h1>
+	<table class="signature"><tr><td>class CHuiLayout : public CHuiVisual</td></tr></table><div class="section"><div>
+			<p>Layouts are visuals that manage the placement of a set of child visuals (or other layouts).</p>
+
+			<p>Layouts are responsible for setting the positions and sizes of their child visuals. Each layout can define a position, a size, or both (or neither) for their children.</p>
+
+			<p>Layouts use the children's ordinal numbers to determine where each of them should be placed. For example, a grid layout could define that the top row contains children with ordinals 0..3, from left to right. The second row could then contain the children 4..7. When the order of the child visuals changes within their parent layout, the parent layout will recalculate the positions and sizes of the affected children.</p>
+
+			<p>When the size of a layout changes, it will immediately recalculate the layout of its children. The transition time that is specified in the size transition of the layout is used when setting the targets of the children's new positions and sizes.</p>
+
+			<p>Layouts are able to notify their controls when their size is changed. These notifications are needed because the size of a layout is not known until the display is refreshed. This means that the <strong>size of a layout is not available when your controls ConstructL is executed</strong>, unless it is explicitly set. The notifications are also handy because they allow the controls to respond to dynamic screen size changes. So unless if the whole screen is not used for the layout, the notifications are the only way to do calculations based on the layout size.</p>
+
+			<p>To make the control receive layout update notifications call:</p>
+
+			<p>
+				<tt> layout-&gt;SetFlags(EHuiVisualFlagLayoutUpdateNotification); </tt>
+			</p>
+
+			<p>.. and override VisualLayoutUpdated() method in your control.</p>
+
+			<p>
+				<a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-01764557-180B-303E-A3B3-574FD842C822">SetSize()</a> <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-DC4C21E8-F5A3-344B-BFD4-9274995A3522">SetFlags()</a> <a href="GUID-F34A5AA1-664D-3850-83CB-1C8FF80C61E7.html#GUID-D764CBE9-29EC-3A0F-8A77-26533D1F3113">CHuiControl::VisualLayoutUpdated()</a>Each layout defines its own local coordinate system used for interpreting the positions and sizes of its child visuals. The base unit of the coordinate system is defined with the <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-B041DDB9-9C83-3EA8-B7F0-F7BFC070A03D">SetBaseUnit()</a> method, which sets a <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html#GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542">THuiXYMetric</a> to use as the basis for all coordinate calculations. The default metric is [1px, 1px] which corresponds to pixels on the display.</p>
+
+			<p>The local coordinate system of a layout can be mirrored horizontally and/or vertically by using a negative magnitude in the relevant <a href="GUID-3DC503DB-A515-3099-B5DB-160687B89FA5.html#GUID-3DC503DB-A515-3099-B5DB-160687B89FA5">THuiMetric</a> of the base unit. Note that this will only affect the local coordinate system of the layout: the contents of the child visuals or child layouts will not be mirrored. Visual mirroring should be done with a CHuiTransformation, and child layouts can be mirrored by further application of the negative base unit metrics. In order to enable a layout to automatically mirror the horizontal component of the base unit based on locale mirroring, set the visual flag <tt>EHuiVisualFlagAutomaticLocaleMirroringEnabled</tt>, note that it is necessary to set this flag for each layout for which this feature is required.</p>
+
+			<p>To create to a fully scalable UI, the appropriate base unit metrics and layout visuals must be used. For example, the EHuiUnitS60 metric unit is dependent on the platform-specified measurement units for layout. <a href="GUID-F40FAF0B-CC6A-3A3B-92FB-34C3676D2C31.html#GUID-F40FAF0B-CC6A-3A3B-92FB-34C3676D2C31">CHuiGridLayout</a> and CHuiAnchorLayout provide support for pixel-independent placement of their children.</p>
+
+			<p>CHuiAnchorLayout <a href="GUID-F40FAF0B-CC6A-3A3B-92FB-34C3676D2C31.html#GUID-F40FAF0B-CC6A-3A3B-92FB-34C3676D2C31">CHuiGridLayout</a>Applications that need more complex layouts should derive their own <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-C2832CE8-BF69-31A7-B757-563DD74B4912">CHuiLayout</a> based classes that implement the necessary layout calculations. In many cases, however, a combination of some of the built-in layout classes such as anchor and grid layouts will be sufficient. </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CHuiLayout<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a><ul class="derivation"><li class="derivation-depth-2 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></li></ul></div>
+<div class="section nested"><h2 class="sectiontitle">Nested Classes and Structures</h2><ul><li><a href="GUID-982936AF-1D9F-3999-8753-62C7FCB7FA1E.html">CHuiLayout::THuiLayoutPrivateData</a></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-72C3FD6A-D3A1-39A3-A919-9708C25E112F">CHuiLayout</a>(<a href="GUID-61F3603B-5B3B-3BB3-8E34-2C9E4FD749FA.html">MHuiVisualOwner</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code"/><td><a href="#GUID-DF3100BE-FDAC-33B8-9604-8FB33F760F20">~CHuiLayout</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html">CHuiLayout</a> *</td><td><a href="#GUID-A016C270-8D87-3CE2-BF51-A62D757A6ECF">AddNewL</a>(<a href="GUID-F34A5AA1-664D-3850-83CB-1C8FF80C61E7.html">CHuiControl</a> &amp;, <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html">CHuiLayout</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-2ABA3F56-4990-396E-9241-D3BF98C8D091">AppendL</a>(<a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a></td><td><a href="#GUID-2CCB7E57-09D2-3FF0-9A5A-D686D5310AFA">BaseUnit</a>()</td></tr><tr class="bg"><td align="right" class="code">THuiRealRect</td><td><a href="#GUID-48010DB9-5B3E-3538-8AC1-8C18E7B61A64">BoundingRect</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TReal32</a></td><td><a href="#GUID-DF2F52F8-8994-30D9-B229-39F71F71E75D">BrushOpacity</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C THuiRealRect</td><td><a href="#GUID-3D74BF00-EAE2-3C0C-9A03-DF4BB3902665">BrushRect</a>()</td></tr><tr><td align="right" class="code">IMPORT_C CHuiSkin &amp;</td><td><a href="#GUID-96D37013-3995-3E35-9CF0-836AE4693660">BrushSkin</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-9F4B32BA-F0FA-30D0-B9A4-616D2226E321">Changed</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-C9ECFC02-9CC0-3BF2-A6C8-77564E4BA311">ChildOrdinal</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-90ECA16A-D136-3B5E-93EE-6A272311F4F4">ChildPos</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-5AD9B4E4-7860-367A-AD9E-E087FF4FD9B8">ChildRect</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, THuiRealRect &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-39A0CE90-D253-385D-9368-F7531A1D5722">ChildSize</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-487ABFF7-C2DD-38E2-B1AC-7ED271063DAA">ClearChanged</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-3CFABA64-782B-31FE-9508-622968B45E02">ConstructL</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-BC365FF0-DD5B-3283-B981-4C8588F9A86D">Count</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F4216A4A-91E2-3EEE-9FC5-447D5FCD7BC6">Draw</a>(<a href="GUID-11110C17-5993-3F82-9E44-287C88774E49.html">CHuiGc</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-5D510CEF-252E-3DCD-82A5-EF5A216C4024">DumpTree</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-EBBA740B-60F7-391F-B3A5-BEFD96D704CE">EffectiveLayoutOrdinal</a>(const <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-FBC7DFDF-B7E5-3182-8241-EC1DAABFAD2C">EnableScrollingL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> *</td><td><a href="#GUID-81BDFB5A-F3B1-3519-8F7A-5E15952596BE">FindTag</a>(const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-C6CE59BE-266D-34BF-B284-96204202D4F9">FindVisual</a>(const <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-0661B11B-70F7-3789-B85E-92989BDD1245">GetClassName</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-DA268816-2D9D-3755-BCD2-7C2A090039AE">GetInstanceName</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-563B3F65-285E-32BD-B594-4BF2AD4A1190">HorizontalInnerPadding</a>()</td></tr><tr><td align="right" class="code">IMPORT_C const <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a> &amp;</td><td><a href="#GUID-25F2D26F-0A05-3623-BC65-F7A6271E9A7C">InnerPadding</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-20E3BC4C-B06D-36DF-AAC0-C48CB0FB9B29.html">THuiRealPoint</a></td><td><a href="#GUID-BA27D449-5936-39FF-AEC4-1184343C53AA">InnerPaddingInBaseUnits</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-1A8AF8EE-69D9-358F-9D36-840BD4C2477D.html">THuiRealSize</a></td><td><a href="#GUID-C8392A4E-8F42-3E9E-902D-3509A781ACCE">InnerSize</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-20E3BC4C-B06D-36DF-AAC0-C48CB0FB9B29.html">THuiRealPoint</a></td><td><a href="#GUID-50C3FC29-9346-3613-AA31-DAAC2370A734">InnerTopLeft</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-830094F5-1B4E-3747-9338-3744BBB76138">InsertL</a>(<a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F866074A-5474-3F53-865F-CD819B6D2527">MoveVisualToBack</a>(<a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-00ABF06F-6DF6-3769-ADF0-21988FC5690F">MoveVisualToFront</a>(<a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-64BA01AD-DA4D-3841-89A1-C8C9E303D104">NotifySkinChangedL</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-2521627A-D642-3AD1-877A-3ECAB518A0DE">PrepareDrawL</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-103D7E12-EFB1-305A-A36A-CE7FEB11652D">Remove</a>(<a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F185FDD8-413C-3507-81CD-58E6DC217B99">RemoveAndDestroyAllD</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-128B2F0F-496B-3CBD-9480-D3B3A3F6D466">Reorder</a>(<a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-DFD6B042-1226-34C1-B9F6-5B51E70AD80D">ReportChanged</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-BE47F4FF-6D7E-368D-9C7A-B00CB44FE101.html">THuiTimedPoint</a> &amp;</td><td><a href="#GUID-87F911BA-42E0-36E5-8DF6-0FAFD34BA878">ScrollOffset</a>()</td></tr><tr><td align="right" class="code">IMPORT_C const <a href="GUID-BE47F4FF-6D7E-368D-9C7A-B00CB44FE101.html">THuiTimedPoint</a> &amp;</td><td><a href="#GUID-F599A671-AFF4-30DC-BC8F-28CEA13E0322">ScrollOffset</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-3B6608B3-4D05-33F8-9036-B92E95F0BBFF">Scrolling</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-30FAE54B-9A21-3B65-B780-81AD380FE7AC">SessionId</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-B041DDB9-9C83-3EA8-B7F0-F7BFC070A03D">SetBaseUnit</a>(const <a href="GUID-3DC503DB-A515-3099-B5DB-160687B89FA5.html">THuiMetric</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-78D65F39-7C57-3F6C-A043-9637D5ACFD2A">SetBaseUnit</a>(const <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-BEA05A58-193C-3922-9048-782FAE6D3F46">SetInnerPadding</a>(const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-8F663BB9-F9C5-385B-9B71-A2CE78B04523">SetInnerPadding</a>(const <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-53D64683-4E17-3C52-8076-24F4EEDCACAE">SetPos</a>(const <a href="GUID-20E3BC4C-B06D-36DF-AAC0-C48CB0FB9B29.html">THuiRealPoint</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-5E5B735B-12C6-32F7-BE6E-FB5DC2591E2D">SetScrollOffsetInBaseUnits</a>(const <a href="GUID-20E3BC4C-B06D-36DF-AAC0-C48CB0FB9B29.html">THuiRealPoint</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-A85B2004-48FF-3CB6-BEB3-926E3C67C0C7">SetSessionId</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-01764557-180B-303E-A3B3-574FD842C822">SetSize</a>(const <a href="GUID-1A8AF8EE-69D9-358F-9D36-840BD4C2477D.html">THuiRealSize</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-9B5C3973-9B45-3D3C-86C2-B1AFCA18D5F8">SetTransitionTime</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-7E0E2767-E9DD-36A9-9BED-1147A63CD46C">TransitionTime</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C TType</td><td><a href="#GUID-FC539207-698E-3013-8412-0A65CB8F05A5">Type</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-DE42736D-6FAE-389B-A090-E56C151D1BBC">UpdateChildLayout</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-34C5F45A-B833-3ED6-9587-6FDF60D23259">UpdateChildrenLayout</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-4A8C8678-5BDF-31A2-94D1-DBC8BC348386">VerticalInnerPadding</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a></td><td><a href="#GUID-C4AD124E-490F-3100-A3FF-8EB044412FA9">VirtualSize</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> &amp;</td><td><a href="#GUID-F22022EB-B705-3A8C-A196-FC0920015844">Visual</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-BCF7A8E1-F6F0-33C7-A832-C66238497C7F">DrawSelf</a>(<a href="GUID-11110C17-5993-3F82-9E44-287C88774E49.html">CHuiGc</a> &amp;, const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-19D81C16-D059-3E24-9E5E-7E889520E8A4">EffectIsAppliedToChildren</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-53F427AC-C295-303D-AAF6-D2A6FEC98956">ExpandRectWithContent</a>(<a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-20E3BC4C-B06D-36DF-AAC0-C48CB0FB9B29.html">THuiRealPoint</a></td><td><a href="#GUID-F64A576E-2858-345E-AE95-58B7ADD8EE86">MetricReferenceForLayoutInPixels</a>(const <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html">CHuiLayout</a> *, const <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-20E3BC4C-B06D-36DF-AAC0-C48CB0FB9B29.html">THuiRealPoint</a></td><td><a href="#GUID-9B2F6C6E-2C74-3FC9-8221-CEC3323C82B5">MetricReferenceForLayoutInPixels</a>(const <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-8B24AB14-A61E-37E7-8F89-41D95FA061D0">VisualExtension</a>(const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> **)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">void</td><td><a href="#GUID-BBA6A09B-4F74-3F93-B786-142BE11D1251">DrawStoredBitmap</a>(<a href="GUID-11110C17-5993-3F82-9E44-287C88774E49.html">CHuiGc</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-6EA71CF8-3EA0-3E75-89A8-BF636B504567">HasActiveChilderen</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::AlignByOrigin(THuiRealPoint &amp;,TBool)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::ApplyMirroring(THuiRealPoint &amp;,THuiReferenceState)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::BoxMetricToPixelRect(const THuiBoxMetric &amp;,THuiRealRect &amp;)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::BoxMetricToPixelRect(const THuiBoxMetric &amp;,THuiRealRect &amp;,THuiReferenceState)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Brushes()</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Brushes()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::CHuiVisual(MHuiVisualOwner &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::CachedDisplayRect()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::ClearFlag(THuiVisualFlags)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::ClearFlags(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Clipping()const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::ConvertMetricLengthToPixels(TReal32 &amp;,const THuiMetric &amp;,TReal32)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::ConvertPixelsToMetricLength(THuiMetric &amp;,TReal32,TReal32)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Display()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::DisplayRect()const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::DisplayRectTarget()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::DisplayToLocal(const THuiRealPoint &amp;)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::DisplayToLocal(const TPoint &amp;)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::DrawBrushes(CHuiGc &amp;,THuiBrushLayer)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::DropShadowHandler()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Effect()const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Effectable()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::EffectiveOpacity()const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::EnableBrushesL(TBool)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::EnableDropShadowL(TBool)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::EnableTransformationL(TBool)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::EnterLocalProjection(CHuiGc &amp;,TBool,TReal32,const THuiRealRect *)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Env()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::FindTacticon(TInt)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Flags()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Freezed()const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::GetDualAlpha(TReal32,TReal32,TInt &amp;,TInt &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::HasTactileFeedback(TInt)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::HorizontalOrigin()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::IsDelayedEffectSource()const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::IsTagged()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Layout()const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::LoadingEffect()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::LocalBaseUnit()const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::LocalPointInPixels(const THuiRealPoint &amp;)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::LocalPointInPixels(const THuiRealPoint &amp;,THuiReferenceState)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::LocalToDisplay(const THuiRealPoint &amp;)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::LocalToDisplay(const TPoint &amp;)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::MaxSize()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::MaxSizeInBaseUnits()const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::MetricReferenceInPixels(const THuiXYMetric &amp;)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::MetricReferenceInPixels(const THuiXYMetric &amp;,THuiReferenceState)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::MetricToPixels(const THuiXYMetric &amp;)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::MetricToPixels(const THuiXYMetric &amp;,THuiReferenceState)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Mimic(const CHuiVisual &amp;,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::MinSize()const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::MinSizeInBaseUnits()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Move(const THuiRealPoint &amp;,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Move(const TPoint &amp;,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::MoveToFront(TInt)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Owner()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Padding()const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::PaddingInPixels()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::PaddingInPixels(THuiReferenceState)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::PixelPointInLocal(const THuiRealPoint &amp;)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::PixelPointInLocal(const THuiRealPoint &amp;,THuiReferenceState)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::PixelPointInUnits(const THuiRealPoint &amp;,const THuiXYMetric &amp;,THuiReferenceState)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::PixelsToMetric(const THuiRealPoint &amp;,THuiXYMetric &amp;)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::PixelsToMetric(const THuiRealPoint &amp;,THuiXYMetric &amp;,THuiReferenceState)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Pos()</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Pos()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::QueryCanvasFlags()</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::QueryExternalContentDrawingEnabled()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::QueryHasDrawableContent()</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::RemoveTactileFeedback(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::ReportLayoutUpdate()</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetCenteredPosAndSize(const THuiRealPoint &amp;,const THuiRealSize &amp;,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetCenteredPosAndSize(const TPoint &amp;,const TSize &amp;,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetChanged()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetClipping(TBool)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetDisplay(CHuiDisplay *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetEffect(CHuiFxEffect *)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetEffectParser(CHuiFxEffectParser *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetFlag(THuiVisualFlags)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetFlags(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetFreezeState(TBool)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetLayout(CHuiLayout *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetLoadingEffect(TBool)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetMaxSize(const THuiRealSize &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetMaxSize(const TSize &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetMinSize(const THuiRealSize &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetMinSize(const TSize &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetOrigin(THuiVisualHOrigin,THuiVisualVOrigin)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetOwner(MHuiVisualOwner &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetPadding(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetPadding(const THuiBoxMetric &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetPadding(const TPoint &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetRect(const THuiRealRect &amp;,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetStoredRenderBuffer(CHuiCanvasRenderBuffer *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetStoredRenderBufferModificationsEnabled(TBool)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetTactileFeedbackL(TInt,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetTagL(const TDesC8 &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::SetTracking(TBool)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Size()</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Size()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Skin()const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::StoredRenderBuffer()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::TactileFeedback(TInt)const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Tag()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Tracking()const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Transform(CHuiGc &amp;,TBool,const THuiRealRect *)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::Transformation()</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::UpdateSiblingLayout(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::VerticalOrigin()const</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::~CHuiVisual()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Enumerations</th></tr></thead><tbody><tr><td align="right" valign="top">enum</td><td><a href="#GUID-0E91F7FD-03A2-3056-B897-C6B3E68DF0D8">EHuiLayoutChildRect</a> { <a href="#GUID-88A988F8-CCA5-37D8-BEF8-D6700A9A901A">THuiLayoutChildRectNotImplemented</a> = -1, <a href="#GUID-5A2AD1FA-00A0-3DE0-A870-93147F818E10">THuiLayoutChildRectUpdateNotNeeded</a> = 0, <a href="#GUID-438E34BA-1E6F-3FD3-ACF3-FCA285A5711D">THuiLayoutChildRectPosUpdateNeeded</a> = 1, <a href="#GUID-75EF0C35-E141-3BEF-9EF0-534478D8C845">THuiLayoutChildRectSizeUpdateNeeded</a> = 2, <a href="#GUID-40DBCAF1-8903-3E0C-88EA-DA6FD85D770D">THuiLayoutChildRectLayoutUpdateNeeded</a> = THuiLayoutChildRectPosUpdateNeeded | THuiLayoutChildRectSizeUpdateNeeded }</td></tr><tr class="bg"><td align="right" valign="top">enum</td><td><a href="#GUID-027332C8-7204-348C-BBED-DC1B7AF43EBE">TExpansionFlags</a> { <a href="#GUID-12BD2E77-9BDA-3256-824C-0D4C51075B7C">EExpandNone</a> = 0, <a href="#GUID-4686A9F2-51EF-375F-92A2-0BA8D48F5F8C">EExpandHorizontally</a> = 1, <a href="#GUID-6E8E0660-32C0-3A1D-9D24-10811AD3457A">EExpandVertically</a> = 2 }</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-982936AF-1D9F-3999-8753-62C7FCB7FA1E.html">THuiLayoutPrivateData</a> *</td><td><a href="#GUID-F34D5B84-EA77-34D6-ADD1-6D4F53AF103C">iHuiLayoutPrivateData</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Attributes</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::iDepthOffset</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::iOpacity</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::iOwner</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::iPreviousDrawn</a></td></tr><tr><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::iSessionId</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual::iTrackVisual</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-72C3FD6A-D3A1-39A3-A919-9708C25E112F"><a name="GUID-72C3FD6A-D3A1-39A3-A919-9708C25E112F"><!-- --></a>
+		<h2 class="topictitle2">CHuiLayout(MHuiVisualOwner &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>CHuiLayout</td><td>(</td><td><a href="GUID-61F3603B-5B3B-3BB3-8E34-2C9E4FD749FA.html">MHuiVisualOwner</a> &amp;</td><td>aOwner</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Constructor. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-61F3603B-5B3B-3BB3-8E34-2C9E4FD749FA.html">MHuiVisualOwner</a> &amp; aOwner</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DF3100BE-FDAC-33B8-9604-8FB33F760F20"><a name="GUID-DF3100BE-FDAC-33B8-9604-8FB33F760F20"><!-- --></a>
+		<h2 class="topictitle2">~CHuiLayout()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CHuiLayout</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Destructor. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-A016C270-8D87-3CE2-BF51-A62D757A6ECF"><a name="GUID-A016C270-8D87-3CE2-BF51-A62D757A6ECF"><!-- --></a>
+		<h2 class="topictitle2">AddNewL(CHuiControl &amp;, CHuiLayout *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html">CHuiLayout</a> *</td><td>AddNewL</td><td>(</td><td><a href="GUID-F34A5AA1-664D-3850-83CB-1C8FF80C61E7.html">CHuiControl</a> &amp;</td><td>aOwnerControl,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html">CHuiLayout</a> *</td><td>aParentLayout = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Construct a new basic layout and give its ownership to a control. Note that <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-C2832CE8-BF69-31A7-B757-563DD74B4912">CHuiLayout</a> has no real layout functionality: its children must be laid out manually.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F34A5AA1-664D-3850-83CB-1C8FF80C61E7.html">CHuiControl</a> &amp; aOwnerControl</td><td>Owner control.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html">CHuiLayout</a> * aParentLayout = 0</td><td>Parent layout for the new layout.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2ABA3F56-4990-396E-9241-D3BF98C8D091"><a name="GUID-2ABA3F56-4990-396E-9241-D3BF98C8D091"><!-- --></a>
+		<h2 class="topictitle2">AppendL(CHuiVisual *, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AppendL</td><td>(</td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> *</td><td>aVisual,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLayoutTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Append a new visual to the layout. If the visual is already a member of some other layout, it will be removed from the old layout first.</p>
+
+				<p>
+					<a href="GUID-B5108D30-E655-3827-B3F6-CD6873840421.html#GUID-41F1C025-E53F-3528-BDC8-5BA15353CF30">TodoAdd a method for appending multiple visuals in one set, so that they only cause a single layout update. </a>
+				</p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> * aVisual</td><td>Visual to append.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLayoutTransitionTime = 0</td><td>How long the transition should take visually, in milliseconds. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2CCB7E57-09D2-3FF0-9A5A-D686D5310AFA"><a name="GUID-2CCB7E57-09D2-3FF0-9A5A-D686D5310AFA"><!-- --></a>
+		<h2 class="topictitle2">BaseUnit()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a></td><td>BaseUnit</td><td>(</td><td>)</td><td>const [virtual]</td></tr></table><div class="section"><div>
+				<p>Returns the layout's base measurement unit. The positions and sizes of the children of this layout are interpreted as multiples of this base unit. For example, the actual X position of a child is determined by <tt>aBaseUnit.iX * childX</tt>.</p>
+
+				<p>The effect of the base unit is limited to the children of this layout -- the grandchildren use the base units of their parents, not this base unit.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>that if the visual flag <tt>EHuiVisualFlagAutomaticLocaleMirroringEnabled</tt> is set, the value returned by this method will change based on the current platform locale mirroring in the X-axis. So for example if the current layout is mirrored, then the value returned by this method will have the X magnitude set to the negative of the value that was set using <tt>SetBaseUnit</tt>.</p>
+
+					</div>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-48010DB9-5B3E-3538-8AC1-8C18E7B61A64"><a name="GUID-48010DB9-5B3E-3538-8AC1-8C18E7B61A64"><!-- --></a>
+		<h2 class="topictitle2">BoundingRect()</h2>
+		<table class="signature"><tr><td>THuiRealRect</td><td>BoundingRect</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Calculate the bounding rectangle for the layout. The rectangle is calculated in the base units of the layout, i.e. it is calculated using unconverted the child coordinates and sizes.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-DF2F52F8-8994-30D9-B229-39F71F71E75D"><a name="GUID-DF2F52F8-8994-30D9-B229-39F71F71E75D"><!-- --></a>
+		<h2 class="topictitle2">BrushOpacity()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TReal32</a></td><td>BrushOpacity</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-3D74BF00-EAE2-3C0C-9A03-DF4BB3902665"><a name="GUID-3D74BF00-EAE2-3C0C-9A03-DF4BB3902665"><!-- --></a>
+		<h2 class="topictitle2">BrushRect()</h2>
+		<table class="signature"><tr><td>IMPORT_C THuiRealRect</td><td>BrushRect</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-96D37013-3995-3E35-9CF0-836AE4693660"><a name="GUID-96D37013-3995-3E35-9CF0-836AE4693660"><!-- --></a>
+		<h2 class="topictitle2">BrushSkin()</h2>
+		<table class="signature"><tr><td>IMPORT_C CHuiSkin &amp;</td><td>BrushSkin</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-9F4B32BA-F0FA-30D0-B9A4-616D2226E321"><a name="GUID-9F4B32BA-F0FA-30D0-B9A4-616D2226E321"><!-- --></a>
+		<h2 class="topictitle2">Changed()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>Changed</td><td>(</td><td>)</td><td>const [virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a> </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C9ECFC02-9CC0-3BF2-A6C8-77564E4BA311"><a name="GUID-C9ECFC02-9CC0-3BF2-A6C8-77564E4BA311"><!-- --></a>
+		<h2 class="topictitle2">ChildOrdinal(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ChildOrdinal</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Determines the layout ordinal for a child visual. The child's placement depends on the ordinal number.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>Index of the child visual.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-90ECA16A-D136-3B5E-93EE-6A272311F4F4"><a name="GUID-90ECA16A-D136-3B5E-93EE-6A272311F4F4"><!-- --></a>
+		<h2 class="topictitle2">ChildPos(TInt, TPoint &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>ChildPos</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aOrdinal,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aPos</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>New virtual method. Determines the position of a child visual according to the layout. The child position is determined using the base units of the layout. Derived layout classes should refer to <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-C8392A4E-8F42-3E9E-902D-3509A781ACCE">InnerSize()</a> and <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-50C3FC29-9346-3613-AA31-DAAC2370A734">InnerTopLeft()</a> to determine the area suitable for placing children into.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aOrdinal</td><td>Layout ordinal of the child visual.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aPos</td><td>New position for the child. This goes to CHuiVisual::SetPos() with no conversions. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5AD9B4E4-7860-367A-AD9E-E087FF4FD9B8"><a name="GUID-5AD9B4E4-7860-367A-AD9E-E087FF4FD9B8"><!-- --></a>
+		<h2 class="topictitle2">ChildRect(TInt, THuiRealRect &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ChildRect</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aOrdinal,</td></tr><tr><td colspan="3"> </td><td>THuiRealRect &amp;</td><td>aRect</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>New virtual method. Determines the position and size of a child visual according to the layout. The child position is determined using the base units of the layout. Derived layout classes should refer to <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-C8392A4E-8F42-3E9E-902D-3509A781ACCE">InnerSize()</a> and <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-50C3FC29-9346-3613-AA31-DAAC2370A734">InnerTopLeft()</a> to determine the area suitable for placing children into.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aOrdinal</td><td>Layout ordinal of the child visual.  </td></tr><tr class="bg"><td class="parameter">THuiRealRect &amp; aRect</td><td>New position for the child. This is used to set the child size and position with no conversions. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-39A0CE90-D253-385D-9368-F7531A1D5722"><a name="GUID-39A0CE90-D253-385D-9368-F7531A1D5722"><!-- --></a>
+		<h2 class="topictitle2">ChildSize(TInt, TSize &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>ChildSize</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aOrdinal,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a> &amp;</td><td>aSize</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>New virtual method. Determines the size of a child visual according to the layout. The child size is determined using the base units of the layout. Derived layout classes should refer to <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-C8392A4E-8F42-3E9E-902D-3509A781ACCE">InnerSize()</a> and <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-50C3FC29-9346-3613-AA31-DAAC2370A734">InnerTopLeft()</a> to determine the area suitable for placing children into.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aOrdinal</td><td>Layout ordinal of the child visual.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a> &amp; aSize</td><td>New target size for the child. This goes to CHuiVisual::SetSize() with no conversions. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-487ABFF7-C2DD-38E2-B1AC-7ED271063DAA"><a name="GUID-487ABFF7-C2DD-38E2-B1AC-7ED271063DAA"><!-- --></a>
+		<h2 class="topictitle2">ClearChanged()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ClearChanged</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a> </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-3CFABA64-782B-31FE-9508-622968B45E02"><a name="GUID-3CFABA64-782B-31FE-9508-622968B45E02"><!-- --></a>
+		<h2 class="topictitle2">ConstructL()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ConstructL</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Second-phase constructor from <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a>, must be called in deriving class </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-BC365FF0-DD5B-3283-B981-4C8588F9A86D"><a name="GUID-BC365FF0-DD5B-3283-B981-4C8588F9A86D"><!-- --></a>
+		<h2 class="topictitle2">Count()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Count</td><td>(</td><td>)</td><td>const [virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a>. Returns the number of child visuals in the layout. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-F4216A4A-91E2-3EEE-9FC5-447D5FCD7BC6"><a name="GUID-F4216A4A-91E2-3EEE-9FC5-447D5FCD7BC6"><!-- --></a>
+		<h2 class="topictitle2">Draw(CHuiGc &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Draw</td><td>(</td><td><a href="GUID-11110C17-5993-3F82-9E44-287C88774E49.html">CHuiGc</a> &amp;</td><td>aGc</td><td>)</td><td>const [virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a>. Draws (renders) this layout.</p>
+
+				<p>The default implementataion applies transformations (affects the positions of the layout), draws brushes and of course children.</p>
+
+				<p>Layout clipping is not affected by transformation.</p>
+
+				<p>
+					<a href="GUID-B5108D30-E655-3827-B3F6-CD6873840421.html#GUID-A16DEE2D-03A3-326E-939B-5A38EE3A814A">TodoClipping doesn't work if there is a transformation? No need to draw children that won't be visible. </a>
+				</p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-11110C17-5993-3F82-9E44-287C88774E49.html">CHuiGc</a> &amp; aGc</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BCF7A8E1-F6F0-33C7-A832-C66238497C7F"><a name="GUID-BCF7A8E1-F6F0-33C7-A832-C66238497C7F"><!-- --></a>
+		<h2 class="topictitle2">DrawSelf(CHuiGc &amp;, const TRect &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>DrawSelf</td><td>(</td><td><a href="GUID-11110C17-5993-3F82-9E44-287C88774E49.html">CHuiGc</a> &amp;</td><td>aGc,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aDisplayRect</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [protected, virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a>. Overridden by subclasses to draw the content of the visual. By default DrawSelf does not draw anything. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-11110C17-5993-3F82-9E44-287C88774E49.html">CHuiGc</a> &amp; aGc</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aDisplayRect</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BBA6A09B-4F74-3F93-B786-142BE11D1251"><a name="GUID-BBA6A09B-4F74-3F93-B786-142BE11D1251"><!-- --></a>
+		<h2 class="topictitle2">DrawStoredBitmap(CHuiGc &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>DrawStoredBitmap</td><td>(</td><td><a href="GUID-11110C17-5993-3F82-9E44-287C88774E49.html">CHuiGc</a> &amp;</td><td>aGc</td><td>)</td><td>const [private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-11110C17-5993-3F82-9E44-287C88774E49.html">CHuiGc</a> &amp; aGc</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5D510CEF-252E-3DCD-82A5-EF5A216C4024"><a name="GUID-5D510CEF-252E-3DCD-82A5-EF5A216C4024"><!-- --></a>
+		<h2 class="topictitle2">DumpTree()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>DumpTree</td><td>(</td><td>)</td><td>const [virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a> </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-19D81C16-D059-3E24-9E5E-7E889520E8A4"><a name="GUID-19D81C16-D059-3E24-9E5E-7E889520E8A4"><!-- --></a>
+		<h2 class="topictitle2">EffectIsAppliedToChildren()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>EffectIsAppliedToChildren</td><td>(</td><td>)</td><td>const [protected]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-EBBA740B-60F7-391F-B3A5-BEFD96D704CE"><a name="GUID-EBBA740B-60F7-391F-B3A5-BEFD96D704CE"><!-- --></a>
+		<h2 class="topictitle2">EffectiveLayoutOrdinal(const CHuiVisual &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>EffectiveLayoutOrdinal</td><td>(</td><td>const <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> &amp;</td><td>aVisual</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Layout is calculated according the ordinals. The effective ordinal may not be the same as the real child ordinal, because some visuals are laid out manually.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>THuiPanic::ELayoutChildVisualNotFound aVisual is not a child of this layout. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> &amp; aVisual</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-FBC7DFDF-B7E5-3182-8241-EC1DAABFAD2C"><a name="GUID-FBC7DFDF-B7E5-3182-8241-EC1DAABFAD2C"><!-- --></a>
+		<h2 class="topictitle2">EnableScrollingL(TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>EnableScrollingL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aScrolling = ETrue</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Enables or disables scrolling in the layout. An offset for the origin of the layout can be defined using <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-87F911BA-42E0-36E5-8DF6-0FAFD34BA878">ScrollOffset()</a> - method and manipulating the <a href="GUID-BE47F4FF-6D7E-368D-9C7A-B00CB44FE101.html#GUID-BE47F4FF-6D7E-368D-9C7A-B00CB44FE101">THuiTimedPoint</a> returned by that method.</p>
+
+				<p>Scroll offset, unlike other layout parameters, is not directly applied to layout children when <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-34C5F45A-B833-3ED6-9587-6FDF60D23259">UpdateChildrenLayout()</a> is called. Instead, the scroll offset is taken into consideration when individual child visual display rectangles are calculated. This way the scroll offset is directly applied to dirty rectangle calculations as well as to visual content rectangle calculations when visuals are drawn.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aScrolling = ETrue</td><td>ETrue to enable scrolling, EFalse to disable.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-53F427AC-C295-303D-AAF6-D2A6FEC98956"><a name="GUID-53F427AC-C295-303D-AAF6-D2A6FEC98956"><!-- --></a>
+		<h2 class="topictitle2">ExpandRectWithContent(TRect &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ExpandRectWithContent</td><td>(</td><td><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aRect</td><td>)</td><td>const [protected, virtual]</td></tr></table><div class="section"><div>
+				<p>Expands the dirty region of the visual depending on the content of the visual. This includes any brushes attached to the visual. Used during dirty region reporting.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aRect</td><td>Dirty region.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-81BDFB5A-F3B1-3519-8F7A-5E15952596BE"><a name="GUID-81BDFB5A-F3B1-3519-8F7A-5E15952596BE"><!-- --></a>
+		<h2 class="topictitle2">FindTag(const TDesC8 &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> *</td><td>FindTag</td><td>(</td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aTag</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a>. Finds a visual whose tag descriptor contains a specific tag. Checks self first, then looks through the child visuals.</p>
+
+				<p>
+					<a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-81BDFB5A-F3B1-3519-8F7A-5E15952596BE">CHuiLayout::FindTag()</a> extends upon the basic implementation in <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-32207F54-ED82-386A-A1EE-6D653CC72E7F">CHuiVisual::FindTag()</a> by adding recursive visual hierarchy searching.</p>
+
+				<p>
+					<a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-77A7DFC6-7C4C-3BA9-B08E-C0502E4C385A">CHuiVisual::Tag()</a> <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-BB0E177C-E099-37EA-9BAE-FD2A34E82FBC">CHuiVisual::SetTagL()</a> <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-708D0315-03DF-3E47-AE48-8AB06A31F11E">CHuiVisual::IsTagged()</a> <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-32207F54-ED82-386A-A1EE-6D653CC72E7F">CHuiVisual::FindTag()</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aTag</td><td>Tag to look for. If this tag is found as a part of a visual's colon-separated tag descriptor, it is treated as a match and the visual is returned. The tag to look for cannot contain separator characters (:). </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C6CE59BE-266D-34BF-B284-96204202D4F9"><a name="GUID-C6CE59BE-266D-34BF-B284-96204202D4F9"><!-- --></a>
+		<h2 class="topictitle2">FindVisual(const CHuiVisual *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>FindVisual</td><td>(</td><td>const <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> *</td><td>aVisual</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Finds a visual's index.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> * aVisual</td><td>Visual to look for. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0661B11B-70F7-3789-B85E-92989BDD1245"><a name="GUID-0661B11B-70F7-3789-B85E-92989BDD1245"><!-- --></a>
+		<h2 class="topictitle2">GetClassName(TDes &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetClassName</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aName</td><td>)</td><td>const [virtual]</td></tr></table><div class="section"><div>
+				<p>Returns the name of the class.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aName</td><td>Name of the visual class.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DA268816-2D9D-3755-BCD2-7C2A090039AE"><a name="GUID-DA268816-2D9D-3755-BCD2-7C2A090039AE"><!-- --></a>
+		<h2 class="topictitle2">GetInstanceName(TDes &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetInstanceName</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aName</td><td>)</td><td>const [virtual]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aName</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6EA71CF8-3EA0-3E75-89A8-BF636B504567"><a name="GUID-6EA71CF8-3EA0-3E75-89A8-BF636B504567"><!-- --></a>
+		<h2 class="topictitle2">HasActiveChilderen()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>HasActiveChilderen</td><td>(</td><td>)</td><td>const [private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-563B3F65-285E-32BD-B594-4BF2AD4A1190"><a name="GUID-563B3F65-285E-32BD-B594-4BF2AD4A1190"><!-- --></a>
+		<h2 class="topictitle2">HorizontalInnerPadding()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>HorizontalInnerPadding</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the inner horizontal padding. This is useless, use <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-BA27D449-5936-39FF-AEC4-1184343C53AA">InnerPaddingInBaseUnits()</a> instead. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-25F2D26F-0A05-3623-BC65-F7A6271E9A7C"><a name="GUID-25F2D26F-0A05-3623-BC65-F7A6271E9A7C"><!-- --></a>
+		<h2 class="topictitle2">InnerPadding()</h2>
+		<table class="signature"><tr><td>IMPORT_C const <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a> &amp;</td><td>InnerPadding</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the current inner padding. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-BA27D449-5936-39FF-AEC4-1184343C53AA"><a name="GUID-BA27D449-5936-39FF-AEC4-1184343C53AA"><!-- --></a>
+		<h2 class="topictitle2">InnerPaddingInBaseUnits()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-20E3BC4C-B06D-36DF-AAC0-C48CB0FB9B29.html">THuiRealPoint</a></td><td>InnerPaddingInBaseUnits</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the inner padding converted to the base units of this layout. These can be summed with the positions and sizes of the layout's children. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C8392A4E-8F42-3E9E-902D-3509A781ACCE"><a name="GUID-C8392A4E-8F42-3E9E-902D-3509A781ACCE"><!-- --></a>
+		<h2 class="topictitle2">InnerSize()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-1A8AF8EE-69D9-358F-9D36-840BD4C2477D.html">THuiRealSize</a></td><td>InnerSize</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Calculate the size of the inner area (bounds without outer padding). The size is calculated in the base units of this layout, so that children can be positioned within the layout based on this size.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-50C3FC29-9346-3613-AA31-DAAC2370A734"><a name="GUID-50C3FC29-9346-3613-AA31-DAAC2370A734"><!-- --></a>
+		<h2 class="topictitle2">InnerTopLeft()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-20E3BC4C-B06D-36DF-AAC0-C48CB0FB9B29.html">THuiRealPoint</a></td><td>InnerTopLeft</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Calculates the top left corner of the inner area (bounds without outer padding). The point is calculated in the base units of this layout, so that the children can be positioned within the layout based on this point.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-830094F5-1B4E-3747-9338-3744BBB76138"><a name="GUID-830094F5-1B4E-3747-9338-3744BBB76138"><!-- --></a>
+		<h2 class="topictitle2">InsertL(CHuiVisual *, TInt, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>InsertL</td><td>(</td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> *</td><td>aVisual,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPosition,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLayoutTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Insert a new visual to the layout, at specified position (position 0 is the first, <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-BC365FF0-DD5B-3283-B981-4C8588F9A86D">Count()</a> -1 is the last). If the visual is already a member of some other layout, it will be removed from the old layout first.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> * aVisual</td><td>Visual to append.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPosition</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLayoutTransitionTime = 0</td><td>How long the transition should take visually, in milliseconds.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F64A576E-2858-345E-AE95-58B7ADD8EE86"><a name="GUID-F64A576E-2858-345E-AE95-58B7ADD8EE86"><!-- --></a>
+		<h2 class="topictitle2">MetricReferenceForLayoutInPixels(const CHuiLayout *, const THuiXYMetric &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-20E3BC4C-B06D-36DF-AAC0-C48CB0FB9B29.html">THuiRealPoint</a></td><td>MetricReferenceForLayoutInPixels</td><td>(</td><td>const <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html">CHuiLayout</a> *</td><td>aLayout,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a> &amp;</td><td>aMetric</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [protected]</td></tr></table><div class="section"><div>
+				<p>Calculate the metric reference for this layout, relative to this layout's base units.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html">CHuiLayout</a> * aLayout</td><td>this parameter is no longer used, an alternative method is provided that does not take this parameter  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a> &amp; aMetric</td><td>the metric for which we need a reference value  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9B2F6C6E-2C74-3FC9-8221-CEC3323C82B5"><a name="GUID-9B2F6C6E-2C74-3FC9-8221-CEC3323C82B5"><!-- --></a>
+		<h2 class="topictitle2">MetricReferenceForLayoutInPixels(const THuiXYMetric &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-20E3BC4C-B06D-36DF-AAC0-C48CB0FB9B29.html">THuiRealPoint</a></td><td>MetricReferenceForLayoutInPixels</td><td>(</td><td>const <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a> &amp;</td><td>aMetric</td><td>)</td><td>const [protected]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a> &amp; aMetric</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F866074A-5474-3F53-865F-CD819B6D2527"><a name="GUID-F866074A-5474-3F53-865F-CD819B6D2527"><!-- --></a>
+		<h2 class="topictitle2">MoveVisualToBack(CHuiVisual &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>MoveVisualToBack</td><td>(</td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> &amp;</td><td>aVisual,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLayoutTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Moves a child visual behind the other children (in drawing order). In other words the visual is drawn first (the other child visuals will be drawn on top of this visual).</p>
+
+				<p>In practise this affects the order of the visuals whithin this layout so that the visual is moved at the beginning of the list (ordinal 0).</p>
+
+				<p>
+					<a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-00ABF06F-6DF6-3769-ADF0-21988FC5690F">MoveVisualToFront()</a> <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-128B2F0F-496B-3CBD-9480-D3B3A3F6D466">Reorder()</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> &amp; aVisual</td><td>Child visual to move.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLayoutTransitionTime = 0</td><td>How long the transition should take visually, in milliseconds.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-00ABF06F-6DF6-3769-ADF0-21988FC5690F"><a name="GUID-00ABF06F-6DF6-3769-ADF0-21988FC5690F"><!-- --></a>
+		<h2 class="topictitle2">MoveVisualToFront(CHuiVisual &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>MoveVisualToFront</td><td>(</td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> &amp;</td><td>aVisual,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLayoutTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Moves a child visual to the front of the other children. In other words the visual is drawn last (on top of the other child visuals). In practise this affects the order of the visuals whithin this layout so that the visual is moved at the end of the list.</p>
+
+				<p>Causes layout recalculation.</p>
+
+				<p>
+					<a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-F866074A-5474-3F53-865F-CD819B6D2527">MoveVisualToBack()</a> <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-128B2F0F-496B-3CBD-9480-D3B3A3F6D466">Reorder()</a> <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-00ABF06F-6DF6-3769-ADF0-21988FC5690F">MoveVisualToFront()</a> - Use this instead! </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> &amp; aVisual</td><td>Child visual to move.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLayoutTransitionTime = 0</td><td>How long the transition should take visually, in milliseconds. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-64BA01AD-DA4D-3841-89A1-C8C9E303D104"><a name="GUID-64BA01AD-DA4D-3841-89A1-C8C9E303D104"><!-- --></a>
+		<h2 class="topictitle2">NotifySkinChangedL()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>NotifySkinChangedL</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Notifies children of the change in the environment's skin. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-2521627A-D642-3AD1-877A-3ECAB518A0DE"><a name="GUID-2521627A-D642-3AD1-877A-3ECAB518A0DE"><!-- --></a>
+		<h2 class="topictitle2">PrepareDrawL()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>PrepareDrawL</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a>. Prepares all children of this layout for drawing. The preparation is done in drawing order.</p>
+
+				<p>Actually this default implementation is not leaving, since it traps the prepare errors inside and handles the errors by calling the visual owners "prepare draw failed" -callback.</p>
+
+				<p>
+					<a href="GUID-61F3603B-5B3B-3BB3-8E34-2C9E4FD749FA.html#GUID-CB4B94A7-D064-39ED-9CB6-DA95F039878E">MHuiVisualOwner::VisualPrepareDrawFailed()</a> </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-103D7E12-EFB1-305A-A36A-CE7FEB11652D"><a name="GUID-103D7E12-EFB1-305A-A36A-CE7FEB11652D"><!-- --></a>
+		<h2 class="topictitle2">Remove(CHuiVisual *, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Remove</td><td>(</td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> *</td><td>aVisual,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLayoutTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Remove a visual from the layout.</p>
+
+				<p>
+					<a href="GUID-B5108D30-E655-3827-B3F6-CD6873840421.html#GUID-B4B27B8F-C844-354C-91A4-F4E90A11FFA7">TodoAdd a method for removing multiple visuals in one set, so that they only cause a single layout update. </a>
+				</p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> * aVisual</td><td>Visual to remove.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLayoutTransitionTime = 0</td><td>How long the transition should take visually, in milliseconds.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F185FDD8-413C-3507-81CD-58E6DC217B99"><a name="GUID-F185FDD8-413C-3507-81CD-58E6DC217B99"><!-- --></a>
+		<h2 class="topictitle2">RemoveAndDestroyAllD()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RemoveAndDestroyAllD</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a>. Removes this layout from its owner and and destroys the layout. Also removes the entire hierarchy of child visuals and destroys all of them. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-128B2F0F-496B-3CBD-9480-D3B3A3F6D466"><a name="GUID-128B2F0F-496B-3CBD-9480-D3B3A3F6D466"><!-- --></a>
+		<h2 class="topictitle2">Reorder(CHuiVisual &amp;, TInt, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Reorder</td><td>(</td><td><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> &amp;</td><td>aVisual,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPosition,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLayoutTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Moves the given child visual to specific position in the layout's list of child visuals. Affects the drawing order (last child is drawn last), and possibly the final laid out position and size of the visual. This is due to that many layout implementations calculate the positioning of their children based on child's order number in the list.</p>
+
+				<p>Causes layout recalculation.</p>
+
+				<p>
+					<a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-F866074A-5474-3F53-865F-CD819B6D2527">MoveVisualToBack()</a> <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-00ABF06F-6DF6-3769-ADF0-21988FC5690F">MoveVisualToFront()</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> &amp; aVisual</td><td>Child visual to move.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPosition</td><td>New position (and ordinal number) in the child list (0 = first, Count()-1 = last).  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLayoutTransitionTime = 0</td><td>How long the transition should take visually, in milliseconds.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DFD6B042-1226-34C1-B9F6-5B51E70AD80D"><a name="GUID-DFD6B042-1226-34C1-B9F6-5B51E70AD80D"><!-- --></a>
+		<h2 class="topictitle2">ReportChanged()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ReportChanged</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a>. Called to inform the display that a dirty region has to be defined.</p>
+
+				<p>Forward the notification request to all the child visuals. Scrolling causes changed reports from the layout itself. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-87F911BA-42E0-36E5-8DF6-0FAFD34BA878"><a name="GUID-87F911BA-42E0-36E5-8DF6-0FAFD34BA878"><!-- --></a>
+		<h2 class="topictitle2">ScrollOffset()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-BE47F4FF-6D7E-368D-9C7A-B00CB44FE101.html">THuiTimedPoint</a> &amp;</td><td>ScrollOffset</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<div class="p">Returns the scroll offset of the layout. The scroll offset is in layout's base units. The scroll offset has to be enabled before this method is called. <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-FBC7DFDF-B7E5-3182-8241-EC1DAABFAD2C">EnableScrollingL()</a><dl class="user"><dt class="dlterm"><strong>panic</strong></dt>
+<dd>THuiPanic::ELayoutNotScrolling Scrolling is not enabled. </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-F599A671-AFF4-30DC-BC8F-28CEA13E0322"><a name="GUID-F599A671-AFF4-30DC-BC8F-28CEA13E0322"><!-- --></a>
+		<h2 class="topictitle2">ScrollOffset()</h2>
+		<table class="signature"><tr><td>IMPORT_C const <a href="GUID-BE47F4FF-6D7E-368D-9C7A-B00CB44FE101.html">THuiTimedPoint</a> &amp;</td><td>ScrollOffset</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-3B6608B3-4D05-33F8-9036-B92E95F0BBFF"><a name="GUID-3B6608B3-4D05-33F8-9036-B92E95F0BBFF"><!-- --></a>
+		<h2 class="topictitle2">Scrolling()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>Scrolling</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Indicates whether scrolling is enabled in this layout. EnableScrolling()</p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-30FAE54B-9A21-3B65-B780-81AD380FE7AC"><a name="GUID-30FAE54B-9A21-3B65-B780-81AD380FE7AC"><!-- --></a>
+		<h2 class="topictitle2">SessionId()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SessionId</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Gets the session id for object. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-B041DDB9-9C83-3EA8-B7F0-F7BFC070A03D"><a name="GUID-B041DDB9-9C83-3EA8-B7F0-F7BFC070A03D"><!-- --></a>
+		<h2 class="topictitle2">SetBaseUnit(const THuiMetric &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetBaseUnit</td><td>(</td><td>const <a href="GUID-3DC503DB-A515-3099-B5DB-160687B89FA5.html">THuiMetric</a> &amp;</td><td>aBaseUnit</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Defines the base unit used for positioning and sizing children within this layout. For example, the actual X position of a child is determined by <tt>aBaseUnit.iX * childX</tt>. The effect of the base unit is limited to the children of this layout -- the grandchildren use the base units of their parents, not this base unit.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>It is recommended to use EHuiUnitNormalized if proportional base units are required. For example, EHuiUnitRelativeToMySize would not make sense as a base unit.</p>
+
+					</div>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-3DC503DB-A515-3099-B5DB-160687B89FA5.html">THuiMetric</a> &amp; aBaseUnit</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-78D65F39-7C57-3F6C-A043-9637D5ACFD2A"><a name="GUID-78D65F39-7C57-3F6C-A043-9637D5ACFD2A"><!-- --></a>
+		<h2 class="topictitle2">SetBaseUnit(const THuiXYMetric &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetBaseUnit</td><td>(</td><td>const <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a> &amp;</td><td>aBaseUnit</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Defines the base unit used for positioning and sizing children within this layout. For example, the actual X position of a child is determined by <tt>aBaseUnit.iX * childX</tt>. The effect of the base unit is limited to the children of this layout -- the grandchildren use the base units of their parents, not this base unit.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a> &amp; aBaseUnit</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BEA05A58-193C-3922-9048-782FAE6D3F46"><a name="GUID-BEA05A58-193C-3922-9048-782FAE6D3F46"><!-- --></a>
+		<h2 class="topictitle2">SetInnerPadding(const TPoint &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetInnerPadding</td><td>(</td><td>const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aInnerPadding</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the inner padding of the layout. This is typically the amount of empty space between child visuals in the layout.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aInnerPadding</td><td>Inner padding (e.g., column, row separation).  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8F663BB9-F9C5-385B-9B71-A2CE78B04523"><a name="GUID-8F663BB9-F9C5-385B-9B71-A2CE78B04523"><!-- --></a>
+		<h2 class="topictitle2">SetInnerPadding(const THuiXYMetric &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetInnerPadding</td><td>(</td><td>const <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a> &amp;</td><td>aInnerPadding</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the inner padding of the layout. This is typically the amount of empty space between child visuals in the layout.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>as paddings are relative to the layout visual, if relative units are required, it is advisable to use EHuiUnitRelativeToMySize so that the paddings are relative to the size of this layout visual</p>
+
+					</div>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-3EB4F40A-E6AE-39AC-8D8D-C55DFCAEE542.html">THuiXYMetric</a> &amp; aInnerPadding</td><td>Inner padding, using metrics.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-53D64683-4E17-3C52-8076-24F4EEDCACAE"><a name="GUID-53D64683-4E17-3C52-8076-24F4EEDCACAE"><!-- --></a>
+		<h2 class="topictitle2">SetPos(const THuiRealPoint &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetPos</td><td>(</td><td>const <a href="GUID-20E3BC4C-B06D-36DF-AAC0-C48CB0FB9B29.html">THuiRealPoint</a> &amp;</td><td>aPos,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a>. Sets the position of the layout. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-20E3BC4C-B06D-36DF-AAC0-C48CB0FB9B29.html">THuiRealPoint</a> &amp; aPos</td><td>Target position, in the local coordinate system as defined by the parent layout (or the display, if there is no parent).  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aTransitionTime = 0</td><td>Transition time in milliseconds.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5E5B735B-12C6-32F7-BE6E-FB5DC2591E2D"><a name="GUID-5E5B735B-12C6-32F7-BE6E-FB5DC2591E2D"><!-- --></a>
+		<h2 class="topictitle2">SetScrollOffsetInBaseUnits(const THuiRealPoint &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetScrollOffsetInBaseUnits</td><td>(</td><td>const <a href="GUID-20E3BC4C-B06D-36DF-AAC0-C48CB0FB9B29.html">THuiRealPoint</a> &amp;</td><td>aOffset,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Specifies the scroll offset of this layout. The scroll offset is defined in layout's base units. The scroll offset has to be enabled before this method is called. <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-2CCB7E57-09D2-3FF0-9A5A-D686D5310AFA">BaseUnit()</a> <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-FBC7DFDF-B7E5-3182-8241-EC1DAABFAD2C">EnableScrollingL()</a></p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-20E3BC4C-B06D-36DF-AAC0-C48CB0FB9B29.html">THuiRealPoint</a> &amp; aOffset</td><td>Offset in layout's base units.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aTransitionTime = 0</td><td>Time when the offset is to be reached in milliseconds.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A85B2004-48FF-3CB6-BEB3-926E3C67C0C7"><a name="GUID-A85B2004-48FF-3CB6-BEB3-926E3C67C0C7"><!-- --></a>
+		<h2 class="topictitle2">SetSessionId(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetSessionId</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aSessionId</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the session id for object. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aSessionId</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-01764557-180B-303E-A3B3-574FD842C822"><a name="GUID-01764557-180B-303E-A3B3-574FD842C822"><!-- --></a>
+		<h2 class="topictitle2">SetSize(const THuiRealSize &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetSize</td><td>(</td><td>const <a href="GUID-1A8AF8EE-69D9-358F-9D36-840BD4C2477D.html">THuiRealSize</a> &amp;</td><td>aSize,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a>. Change the size of the layout. Children's positions and sizes are updated accordingly. Each layout class is responsible for determining how to update children's layout.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-1A8AF8EE-69D9-358F-9D36-840BD4C2477D.html">THuiRealSize</a> &amp; aSize</td><td>Size to set the layout to.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aTransitionTime = 0</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9B5C3973-9B45-3D3C-86C2-B1AFCA18D5F8"><a name="GUID-9B5C3973-9B45-3D3C-86C2-B1AFCA18D5F8"><!-- --></a>
+		<h2 class="topictitle2">SetTransitionTime(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetTransitionTime</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aTransitionTime</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the transition time for the recalculation of this layout's contents. This is used when a visual is added or removed or when the order of the children is changed.</p>
+
+				<p>You need to set the EHuiVisualFlagManualTransitionTime flag of this visual before this setting has any effect. This flag overrides the layout transition time hierarchy and uses a local value instead.</p>
+
+				<p>
+					<a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-9B5C3973-9B45-3D3C-86C2-B1AFCA18D5F8">CHuiLayout::SetTransitionTime()</a> <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-070B3ED6-7D2A-3AB6-8273-6996C1CEED2E">CHuiVisual::SetFlag()</a> <a href="GUID-21FE6C84-698F-325A-8B73-9E1C41206CDA.html#GUID-B87CF41E-C3CD-373F-9F05-056AFDEAFB27">EHuiVisualFlagManualTransitionTime</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aTransitionTime</td><td>Transition time in milliseconds. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7E0E2767-E9DD-36A9-9BED-1147A63CD46C"><a name="GUID-7E0E2767-E9DD-36A9-9BED-1147A63CD46C"><!-- --></a>
+		<h2 class="topictitle2">TransitionTime()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>TransitionTime</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the transition time of this layout.</p>
+
+				<p>
+					<a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-9B5C3973-9B45-3D3C-86C2-B1AFCA18D5F8">CHuiLayout::SetTransitionTime()</a> <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-070B3ED6-7D2A-3AB6-8273-6996C1CEED2E">CHuiVisual::SetFlag()</a> <a href="GUID-21FE6C84-698F-325A-8B73-9E1C41206CDA.html#GUID-B87CF41E-C3CD-373F-9F05-056AFDEAFB27">EHuiVisualFlagManualTransitionTime</a> </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-FC539207-698E-3013-8412-0A65CB8F05A5"><a name="GUID-FC539207-698E-3013-8412-0A65CB8F05A5"><!-- --></a>
+		<h2 class="topictitle2">Type()</h2>
+		<table class="signature"><tr><td>IMPORT_C TType</td><td>Type</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Gets the object type. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-DE42736D-6FAE-389B-A090-E56C151D1BBC"><a name="GUID-DE42736D-6FAE-389B-A090-E56C151D1BBC"><!-- --></a>
+		<h2 class="topictitle2">UpdateChildLayout(TInt, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>UpdateChildLayout</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>New virtual method. Update the layout of one child visual.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>Child visual index.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aTransitionTime = 0</td><td>Time for layout transition.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-34C5F45A-B833-3ED6-9587-6FDF60D23259"><a name="GUID-34C5F45A-B833-3ED6-9587-6FDF60D23259"><!-- --></a>
+		<h2 class="topictitle2">UpdateChildrenLayout(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>UpdateChildrenLayout</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aTransitionTime = 0</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a>. Update the layout of all children. Subclasses can call this to recalculate the layout of all children.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aTransitionTime = 0</td><td>Time for layout transition.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4A8C8678-5BDF-31A2-94D1-DBC8BC348386"><a name="GUID-4A8C8678-5BDF-31A2-94D1-DBC8BC348386"><!-- --></a>
+		<h2 class="topictitle2">VerticalInnerPadding()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>VerticalInnerPadding</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the inner vertical padding. This is useless, use <a href="GUID-C2832CE8-BF69-31A7-B757-563DD74B4912.html#GUID-BA27D449-5936-39FF-AEC4-1184343C53AA">InnerPaddingInBaseUnits()</a> instead. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C4AD124E-490F-3100-A3FF-8EB044412FA9"><a name="GUID-C4AD124E-490F-3100-A3FF-8EB044412FA9"><!-- --></a>
+		<h2 class="topictitle2">VirtualSize()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a></td><td>VirtualSize</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Determines the virtual size of the layout. The virtual size may be larger than the actual size. The virtual size is updated automatically when the layout's children are positioned.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>THuiPanic::ELayoutNotScrolling Scrolling is not enabled. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-F22022EB-B705-3A8C-A196-FC0920015844"><a name="GUID-F22022EB-B705-3A8C-A196-FC0920015844"><!-- --></a>
+		<h2 class="topictitle2">Visual(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html">CHuiVisual</a> &amp;</td><td>Visual</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex</td><td>)</td><td>const [virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-0C82A710-9E65-3BE1-A159-BAA50285D110.html#GUID-0C82A710-9E65-3BE1-A159-BAA50285D110">CHuiVisual</a>. Returns a child visual.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>Index of the child visual. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8B24AB14-A61E-37E7-8F89-41D95FA061D0"><a name="GUID-8B24AB14-A61E-37E7-8F89-41D95FA061D0"><!-- --></a>
+		<h2 class="topictitle2">VisualExtension(const TUid &amp;, TAny **)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>VisualExtension</td><td>(</td><td>const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;</td><td>aExtensionUid,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> **</td><td>aExtensionParams</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>! From HuiVisual </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp; aExtensionUid</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> ** aExtensionParams</td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Enumerations Documentation</h1><div class="nested1" id="GUID-0E91F7FD-03A2-3056-B897-C6B3E68DF0D8"><a name="GUID-0E91F7FD-03A2-3056-B897-C6B3E68DF0D8"><!-- --></a>
+		<h2 class="topictitle2">Enum EHuiLayoutChildRect</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">THuiLayoutChildRectNotImplemented = -1</td><td> </td></tr><tr class="bg"><td valign="top">THuiLayoutChildRectUpdateNotNeeded = 0</td><td> </td></tr><tr><td valign="top">THuiLayoutChildRectPosUpdateNeeded = 1</td><td> </td></tr><tr class="bg"><td valign="top">THuiLayoutChildRectSizeUpdateNeeded = 2</td><td> </td></tr><tr><td valign="top">THuiLayoutChildRectLayoutUpdateNeeded = THuiLayoutChildRectPosUpdateNeeded | THuiLayoutChildRectSizeUpdateNeeded</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-027332C8-7204-348C-BBED-DC1B7AF43EBE"><a name="GUID-027332C8-7204-348C-BBED-DC1B7AF43EBE"><!-- --></a>
+		<h2 class="topictitle2">Enum TExpansionFlags</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EExpandNone = 0</td><td>
+							<p>Not expanding in any direction. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EExpandHorizontally = 1</td><td>
+							<p>Expands horizontally. </p>
+
+						 </td></tr><tr><td valign="top">EExpandVertically = 2</td><td>
+							<p>Expands vertically. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-F34D5B84-EA77-34D6-ADD1-6D4F53AF103C"><a name="GUID-F34D5B84-EA77-34D6-ADD1-6D4F53AF103C"><!-- --></a>
+		<h2 class="topictitle2">
+					THuiLayoutPrivateData * iHuiLayoutPrivateData</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-982936AF-1D9F-3999-8753-62C7FCB7FA1E.html">THuiLayoutPrivateData</a> *</td><td>iHuiLayoutPrivateData</td><td>[protected]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

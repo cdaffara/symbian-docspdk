@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="RAM Zone Tutorial"/>
+<meta name="abstract" content="This topic describes how to design the use of RAM zones on a phone, and how to specify the RAM zones in the set up functions in the ASSP/Variant."/>
+<meta name="description" content="This topic describes how to design the use of RAM zones on a phone, and how to specify the RAM zones in the set up functions in the ASSP/Variant."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4.html#GUID-E0DCBDCF-C056-53E5-A375-778327F848E4/GUID-7F5D4AD6-0881-5942-9A86-A95C02125A28"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0C435514-EEC6-5660-BB5F-535790349632.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C13DFF33-7C54-5113-9277-CAD96215F075.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>RAM Zone Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; </div>
+<h1 class="topictitle1">RAM
+Zone Tutorial</h1>
+<div><p>This topic describes how to design the use of RAM zones on a phone,
+and how to specify the RAM zones in the set up functions in the ASSP/Variant. </p>
+
+<p>A base port can improve the power performance of a phone through the use
+of <a href="GUID-C13DFF33-7C54-5113-9277-CAD96215F075.html" title="A RAM zone is a physically contiguous section of RAM address space that has a preference value and a unique ID.">RAM Zones</a>. </p>
+
+<div class="section" id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-7A1812EA-F693-4521-A72D-A7AF95B61C66"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-7A1812EA-F693-4521-A72D-A7AF95B61C66"><!-- --></a><h2 class="sectiontitle"> Specifying RAM zones</h2> <p>RAM zones are specified only
+once during the boot process by the base port. This takes place within the
+overridden pure virtual method <a href="GUID-A83A7C3C-7DC0-3B9C-842F-70FCC751365D.html#GUID-A83A7C3C-7DC0-3B9C-842F-70FCC751365D__GUID-63F2135B-4264-3B3B-9B68-656A89BF7EE9"><span class="apiname">Asic::Init1()</span></a> by <a href="GUID-3DC7B5F2-512E-3FF3-BC08-945DDE2AE680.html#GUID-3DC7B5F2-512E-3FF3-BC08-945DDE2AE680__GUID-F4765A82-01D0-3F97-A216-99327F14D53A"><span class="apiname">Epoc::SetRamZoneConfig()</span></a>. <a href="GUID-3DC7B5F2-512E-3FF3-BC08-945DDE2AE680.html#GUID-3DC7B5F2-512E-3FF3-BC08-945DDE2AE680__GUID-F4765A82-01D0-3F97-A216-99327F14D53A"><span class="apiname">Epoc::SetRamZoneConfig()</span></a> takes an array of <a href="GUID-9C26C2ED-922E-3E61-9A7D-779165940BB9.html"><span class="apiname">SRamZone</span></a> objects and an optional pointer
+to the base port implementation of the <a href="GUID-ACA7BAC8-9DC3-356A-92C2-F33A99D8604B.html"><span class="apiname">TRamZoneCallback</span></a> function.
+This is described in detail in <a href="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD.html#GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-A0273264-8876-523D-B1F0-F6D430FFAECA">RAM
+zone call back function</a>. </p>
+ <p>Each <a href="GUID-9C26C2ED-922E-3E61-9A7D-779165940BB9.html"><span class="apiname">SRamZone</span></a> object
+contains the physical base address, size in bytes, unique ID, preference value
+and a set of flags for each RAM zone. </p>
+ <p><strong>Restrictions on RAM zone
+properties </strong> </p>
+ <p>There are some restrictions on how the base port can
+specify the RAM zones: </p>
+ <ul>
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-CD39AC9D-D625-548E-8AFC-DCF567AE5D90"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-CD39AC9D-D625-548E-8AFC-DCF567AE5D90"><!-- --></a><p>each RAM zone's address
+space must be distinct and not overlap with any other RAM zone's address space </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-9A43168A-D350-5A83-A201-683C0DEC5D51"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-9A43168A-D350-5A83-A201-683C0DEC5D51"><!-- --></a><p>the value of <a href="GUID-F17B80B9-82E2-32FB-8AE0-10FE8094910F.html"><span class="apiname">SRamZone.iBase</span></a> must
+be aligned to the ASIC's MMU small page size </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-D7F43ADD-22DC-504E-BAB1-BAFB5B10D59C"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-D7F43ADD-22DC-504E-BAB1-BAFB5B10D59C"><!-- --></a><p>the value of <a href="GUID-369C0E92-AE5D-3939-9D41-8269CA1842B0.html"><span class="apiname">SRamZone.iSize</span></a> must
+be a multiple of the ASIC's MMU small page size, usually 4KB on an ARM MMU </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-6CA82A2B-1812-5F01-8BDD-458EEF0012AE"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-6CA82A2B-1812-5F01-8BDD-458EEF0012AE"><!-- --></a><p>when added together
+all of the RAM zones must cover the whole of the physical RAM address space
+as specified by the bootstrap in the <a href="GUID-84750794-1480-349B-8E93-442A98FCA2E9.html"><span class="apiname">SuperPage</span></a> member <a href="GUID-0D646171-1989-39F0-A254-5B6D060D8C25.html#GUID-0D646171-1989-39F0-A254-5B6D060D8C25__GUID-10EBE3FB-68EE-3367-9244-65E555032F57"><span class="apiname">SSuperPageBase::iTotalRamSize</span></a>  </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-B8C7068C-33DC-5524-8A1D-CE36CF188487"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-B8C7068C-33DC-5524-8A1D-CE36CF188487"><!-- --></a><p>the value of each RAM
+zone’s <a href="GUID-5C496D97-236F-3EEA-850E-C34F8460CBE4.html"><span class="apiname">SRamZone.iId</span></a> must be unique for that RAM zone </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-C0840320-5F65-5D11-981F-04BED75E3E60"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-C0840320-5F65-5D11-981F-04BED75E3E60"><!-- --></a><p>there can be no more
+RAM zones than specified by <a href="GUID-F7BFCBAF-3E13-3F2F-B89F-F4F7DE40E204.html"><span class="apiname">KMaxRamZones</span></a>. </p>
+ </li>
+
+</ul>
+ <p><strong>Restriction on RAM zone preference ordering </strong> </p>
+ <p>The bootstrap
+always allocates the RAM it requires from the lowest RAM address upwards.
+This is during the system boot process and before the variant has specified
+the RAM zone properties. This means that the RAM zone(s) located at the lowest
+RAM addresses, used by the bootstrap, are never empty. Therefore, these RAM
+zone(s) should always be assigned to be the most preferable. A low preference
+value maps to a high logical preference, therefore the most preferable RAM
+zones have a preference value that is lower than the preference value of all
+the other RAM zones in the device. </p>
+ </div>
+
+<div class="section" id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-68EA70F2-91DD-5919-97D5-7A5678E16FC8"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-68EA70F2-91DD-5919-97D5-7A5678E16FC8"><!-- --></a><h2 class="sectiontitle">Designing RAM
+zones to reduce power consumption</h2> <p><strong>Partitioning RAM into zones </strong> </p>
+ <p>For
+power saving purposes, each RAM zone should represent the lowest division
+of the device’s RAM IC(s) that can be either powered down or refreshed independently
+of other divisions of the RAM IC(s). For example, it should not be possible
+for less than an entire RAM zone to be powered or refreshed. This allows the
+system to achieve lower power consumption when the level of RAM usage is reduced. </p>
+ <p>For
+example, if a device contains two RAM ICs and each IC is further divided into
+4 banks that can be refreshed independently, then the device’s RAM should
+be divided into 8 RAM zones with each zone being mapped to one of the 8 individually
+refreshable RAM IC banks. </p>
+ <p><strong>Assigning preferences to zones </strong> </p>
+ <p>To
+save power, the RAM zone preferences should be implemented in such a way that
+the minimum number of RAM ICs or RAM IC refresh banks are used. </p>
+ <p>For
+example, suppose a device has 2 RAM ICs, the RAM zones in the lowest addressed
+RAM IC (IC0) should be more preferable than the RAM zones located in the second
+RAM IC (IC1). For all RAM zones in IC0 the preference should be less than
+the preference of the RAM zones in IC1. A zone with a lower preference being
+the preferred RAM zone. This results in RAM IC1 only being powered on once
+RAM IC0 is too full. This is determined by the RAM zone thresholds. </p>
+ <p><strong>RAM
+zone power state on system boot </strong> </p>
+ <p>When the system boots, all the
+RAM specified by the bootstrap must be enabled and ready to use. Devices that
+wish to reduce power consumption must only adjust the power modes(s) of the
+RAM IC(s) after the RAM zone call back function has been invoked with aOp=<a href="GUID-1DB1634C-F3D6-382B-B742-CB61FD5383C6.html"><span class="apiname">ERamZoneOp_Init</span></a>. </p>
+ </div>
+
+<div class="section" id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-5EBF1D4D-A86C-5FBF-ADA8-8551284DF665"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-5EBF1D4D-A86C-5FBF-ADA8-8551284DF665"><!-- --></a><h2 class="sectiontitle">Designing RAM
+zones for physically contiguous allocation</h2> <p>Some devices have particular
+applications or hardware peripherals that require a block of physically contiguous
+RAM. In such cases, a RAM zone should be defined that is the size of the physically
+contiguous block required, aligned to the nearest ASIC’s MMU small page size.
+The device then attempts to use this RAM zone whenever the particular application
+or hardware peripheral is activated. </p>
+ <p>For example, a device may contain
+a camera that requires a buffer of 4MB of physically contiguous memory to
+operate. A RAM zone with a size of 4MB must be defined and this RAM zone should
+have a greater preference value than other RAM zones in the device. This results
+in the camera RAM zone: </p>
+ <ul>
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-F573D85A-0207-5BB4-8089-717A8B07AF2A"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-F573D85A-0207-5BB4-8089-717A8B07AF2A"><!-- --></a><p>only being used for
+non-camera purposes once all of the other RAM zones in the device become too
+full. </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-1EFFD42D-F1EF-5B7D-B34D-C5D185CDD23E"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-1EFFD42D-F1EF-5B7D-B34D-C5D185CDD23E"><!-- --></a><p>having a greater chance
+of being emptied of any pages allocated for non-camera purposes when required
+by the camera. </p>
+ </li>
+
+</ul>
+ <p><strong>KRamZoneDiscardOnly </strong> </p>
+ <p>On devices that use <a href="GUID-469EC7BB-8697-57FE-A487-016882A0BEA8.html">demand
+paging</a>, an additional way to increase the chances of a RAM zone being
+available is to set the <a href="GUID-A0A5E53C-C454-37C4-9314-941B8A9F64E5.html"><span class="apiname">KRamZoneDiscardOnly</span></a> bit of <a href="GUID-9C26C2ED-922E-3E61-9A7D-779165940BB9.html"><span class="apiname">SRamZone</span></a> s' <a href="GUID-61FE6994-3FBE-3512-A2C4-08AE33B3B41D.html"><span class="apiname">iFlags</span></a> member.
+This stops the system allocating pages that are not discardable in that zone.
+However, setting <a href="GUID-A0A5E53C-C454-37C4-9314-941B8A9F64E5.html"><span class="apiname">KRamZoneDiscardOnly</span></a> also has the effect
+of reducing the amount of RAM available to the device for general purpose
+(non-demand paging) use. </p>
+ <p> <a href="GUID-C926F405-1AC2-33E7-9031-A4A22F19D5F7.html"><span class="apiname">KRamZoneFlagDiscardOnly</span></a> only
+increases the chances of a RAM zone’s availability if the minimum buffer size
+used by demand paging and/or file caching, is small enough that the RAM zone
+may be cleared without reducing the paging or caching buffer beyond their
+specified minimum size. </p>
+ </div>
+
+<div class="section" id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-A0273264-8876-523D-B1F0-F6D430FFAECA"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-A0273264-8876-523D-B1F0-F6D430FFAECA"><!-- --></a><h2 class="sectiontitle">RAM zone call
+back function</h2> <p>If <a href="GUID-ACA7BAC8-9DC3-356A-92C2-F33A99D8604B.html"><span class="apiname">TRamZoneCallback</span></a> has been initialised
+by <a href="GUID-3DC7B5F2-512E-3FF3-BC08-945DDE2AE680.html#GUID-3DC7B5F2-512E-3FF3-BC08-945DDE2AE680__GUID-F4765A82-01D0-3F97-A216-99327F14D53A"><span class="apiname">Epoc::SetRamZoneConfig()</span></a>, then it is invoked each time
+the system requires the base port to perform an operation on a RAM zone. When
+the call back function is invoked the calling thread is: </p>
+ <ul>
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-46E21179-B438-5C2F-9CAD-E6388A1E08D8"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-46E21179-B438-5C2F-9CAD-E6388A1E08D8"><!-- --></a><p>in a critical section </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-6731F7EF-3407-5DEE-8886-B44B042570A1"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-6731F7EF-3407-5DEE-8886-B44B042570A1"><!-- --></a><p>holding the Symbian
+platform RAM allocator mutex </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-217193FE-008E-57BC-A9BC-B6D68C88F521"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-217193FE-008E-57BC-A9BC-B6D68C88F521"><!-- --></a><p>not holding any fast
+mutex </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-D193EE0B-7E8C-5E18-9998-735BE7E36BBD"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-D193EE0B-7E8C-5E18-9998-735BE7E36BBD"><!-- --></a><p>interrupt enabled and
+the kernel is unlocked. </p>
+ </li>
+
+</ul>
+ <p>This means that the base port’s implementation of the call back function
+is: </p>
+ <ul>
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-28CC9F46-A680-503C-B222-E857D9806818"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-28CC9F46-A680-503C-B222-E857D9806818"><!-- --></a><p>not able to be suspended
+or killed by another thread </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-210F0AA9-E1D4-5801-A4A9-8A901D213C00"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-210F0AA9-E1D4-5801-A4A9-8A901D213C00"><!-- --></a><p>not able to acquire
+a Symbian platform mutex of an order greater than or equal to the RAM allocator
+mutex this is all other Symbian platform mutexes. This is a deadlock prevention
+mechanism. </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-FCADE0F8-5B71-54C9-85B3-BA963B942572"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-FCADE0F8-5B71-54C9-85B3-BA963B942572"><!-- --></a><p>able to acquire a fast
+mutex. The call back must release it before returning. </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-4181E193-B030-55E0-AAD5-4687B6B9547D"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-4181E193-B030-55E0-AAD5-4687B6B9547D"><!-- --></a><p>able to be pre-empted
+by other threads/processes. </p>
+ </li>
+
+</ul>
+ <p><strong>Parameters </strong> </p>
+ <p>A choice of three RAM zone operations
+can be requested with <a href="GUID-ACA7BAC8-9DC3-356A-92C2-F33A99D8604B.html"><span class="apiname">TRamZoneCallback</span></a>, as defined by <a href="GUID-445BC66E-44AF-3F56-8E8B-CD3C22C0FF8B.html"><span class="apiname">TRamZoneOp</span></a>: </p>
+ <ul>
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-39D99FE2-CB23-5D41-A9DD-9353684C7B3F"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-39D99FE2-CB23-5D41-A9DD-9353684C7B3F"><!-- --></a><p> <a href="GUID-3B839FD3-BA8B-38A0-A850-62491C71D3E3.html"><span class="apiname">ERamZoneOp_PowerUp</span></a> is
+used each time a RAM zone transitions from being empty to having pages allocated
+into it. When this operation is invoked, all RAM zones that have their bit
+position set in the mask pointed to by <samp class="codeph">aParam2</samp>  <em>MUST</em> be
+fully enabled and ready for use before returning from the call back function.
+Failure to fully enable any of these RAM zones results in the device becoming
+unstable and its behaviour unpredictable. </p>
+ <p>For example, a device could
+have two RAM ICs, where IC1 is mapped to RAM zones 1 - 4 and IC2 is mapped
+to RAM zones 5 - 8. </p>
+ <p>If while the second RAM IC is powered down, RAM
+zone 5 is required, a <a href="GUID-3B839FD3-BA8B-38A0-A850-62491C71D3E3.html"><span class="apiname">ERamZoneOp_PowerUp</span></a> operation is requested.
+The IC2 must be fully enabled before returning from the call back function.
+On return from the call back function, the memory in IC2 is used by the system. </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-25B72080-8E39-5739-9545-8D17AE8EA669"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-25B72080-8E39-5739-9545-8D17AE8EA669"><!-- --></a><p> <a href="GUID-74DA7B02-CB90-325D-8A84-454004AEB5C8.html"><span class="apiname">ERamZoneOp_PowerDown</span></a> is
+used each time a RAM zone transitions from having pages allocated in it to
+being empty. Devices that wish to reduce power consumption can adjust a RAM
+IC’s partial array self refresh mode or power down a RAM IC if all of the
+other RAM zones in that RAM IC are also empty. </p>
+ <p>For example, an <a href="GUID-74DA7B02-CB90-325D-8A84-454004AEB5C8.html"><span class="apiname">ERamZoneOp_PowerDown</span></a> operation
+is requested when all the RAM zones mapped to the top half of the RAM IC Partial
+Array Self Refresh (PASR) regions are empty. The RAM IC can be set to use
+half array PASR when it next enters PASR mode, assuming the RAM IC has the
+option of using half array PASR mode. </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-FC3EBDE2-64E5-5AA1-938F-858C62D18A56"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-FC3EBDE2-64E5-5AA1-938F-858C62D18A56"><!-- --></a><p> <a href="GUID-2A00ADB4-778F-3981-A9DC-5C7E23F95CE6.html"><span class="apiname">ERAMZoneOp_Init</span></a> is
+used only once during the initial stages of the system boot process. When
+this operation is invoked all the RAM zones that have their bit positions
+cleared in the mask pointed to by <samp class="codeph">aParam2</samp> are not currently
+in use. The system assumes that during boot all of RAM is enabled and ready
+to use. Devices that wish to reduce power consumption can then adjust each
+of the RAM IC's partial array self refresh modes or power down modes, appropriately. </p>
+ <p>For
+example, if a device has two RAM IC's, IC1 is mapped to zones1-4 and IC2 is
+mapped to RAM zones 5-8. Then if the <a href="GUID-2A00ADB4-778F-3981-A9DC-5C7E23F95CE6.html"><span class="apiname">ERAMZoneOp_Init</span></a> operation
+is requested and all of the RAM zones in RAM IC2 are currently not in use,
+then IC2 could be placed into power down mode by the base port at the next
+appropriate moment. </p>
+ </li>
+
+</ul>
+ <p>The two parameters, <samp class="codeph">aParam1</samp> =TAny* and <samp class="codeph">aParam2</samp> =const
+TAny* allows the call back function to perform multiple operations with the
+same interface. When <a href="GUID-ACA7BAC8-9DC3-356A-92C2-F33A99D8604B.html"><span class="apiname">TRamZoneCallback</span></a> is called with <a href="GUID-445BC66E-44AF-3F56-8E8B-CD3C22C0FF8B.html"><span class="apiname">TRamZoneOp</span></a> defined
+as either <a href="GUID-74DA7B02-CB90-325D-8A84-454004AEB5C8.html"><span class="apiname">ERamZoneOp_PowerDown</span></a> or <a href="GUID-3B839FD3-BA8B-38A0-A850-62491C71D3E3.html"><span class="apiname">ERamZoneOp_PowerUp</span></a>,
+the last two parameters are defined as: </p>
+ <ul>
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-19A0CBAC-E630-50E3-9201-6599BAE047E8"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-19A0CBAC-E630-50E3-9201-6599BAE047E8"><!-- --></a><p> <a href="GUID-037E37E5-B5A1-35B4-B3A8-C36A7C017DE9.html"><span class="apiname">aParam1</span></a> is
+the ID of the RAM zone that changed state </p>
+ </li>
+
+<li id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-DA614AA8-5CCF-59D8-AF81-966FB465A4A3"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-DA614AA8-5CCF-59D8-AF81-966FB465A4A3"><!-- --></a><p> <a href="GUID-D07C02D2-C5B2-3D01-B3C5-F24B0D7A9298.html"><span class="apiname">aParam2</span></a> points
+to an array of bit masks that represent the new power state of the RAM zones.
+The bit mask is organised in ascending RAM zone address order with the LSB
+of the bit mask representing the power state of the lowest addressed zone.
+A zone’s bit is set if the RAM zone is in use and cleared if the RAM zone
+is not in use. The value of the bit mask <em>MUST</em> not be modified by the
+call back function. </p>
+ </li>
+
+</ul>
+ <p>See also: </p>
+ </div>
+
+<div class="section" id="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-4D506D2E-771F-573F-B5EB-8EA25FAC7C7B"><a name="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-4D506D2E-771F-573F-B5EB-8EA25FAC7C7B"><!-- --></a><h2 class="sectiontitle">When to reduce
+power consumption of the RAM</h2> <p>Depending on the RAM IC configuration
+for the device, entering and exiting Partial Array Self Refresh (PASR) or
+power down modes may introduce a decrease in a device’s overall performance.
+The overhead incurred when transitioning a RAM IC from power off to power
+on mode may have significant latency due to the amount of initialisation required.
+It is recommended that a delay is used between a <a href="GUID-74DA7B02-CB90-325D-8A84-454004AEB5C8.html"><span class="apiname">ERamZoneOp_PowerDown</span></a> operation
+being invoked and a RAM IC either entering PASR mode or being powered down.
+One approach to achieving this is to only enter PASR mode or power down a
+RAM IC in the device’s implementation of the <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-473874CA-FC35-3EB2-BC23-A97D7176B833"><span class="apiname">DPowerController::CpuIdle()</span></a> and <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html#GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366__GUID-8AE99718-6B82-3920-9029-28C2041A3B10"><span class="apiname">DPowerController::PowerDown()</span></a> methods.
+This way while the device is active its performance is not affected by the
+RAM zone operations. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-0C435514-EEC6-5660-BB5F-535790349632.html" title="The kernel provides a framework for managing power within the system, and the management of the transition between power states.">Power Management</a></div>
+<div><a href="GUID-C13DFF33-7C54-5113-9277-CAD96215F075.html" title="A RAM zone is a physically contiguous section of RAM address space that has a preference value and a unique ID.">RAM Zones</a></div>
+</div>
+<div class="relinfo"><strong>Related information</strong><br/>
+<div><a href="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4.html#GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-7F5D4AD6-0881-5942-9A86-A95C02125A28">Asic::Init1()</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

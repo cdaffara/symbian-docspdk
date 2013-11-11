@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to Commit and Revert"/>
+<meta name="abstract" content="Changes to a store are not made permanent until they are committed and until such changes are committed, they can be rolled back (i.e. reverted)"/>
+<meta name="description" content="Changes to a store are not made permanent until they are committed and until such changes are committed, they can be rolled back (i.e. reverted)"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6EE0CB66-A759-5E0C-884D-90895F35F267.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-FBCBF8A0-7922-5881-A1C5-5DB41630E75A.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F8824165-4B33-50D1-9706-BD2438B5A2EE.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3FAB9077-3EC3-5539-B391-D11456362513.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E9C608C0-AC22-5267-BEC4-207C9758F968.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6EE0CB66-A759-5E0C-884D-90895F35F267.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C9D8D913-C65F-5A69-A606-30F59BFB38E2.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-442F2E69-87B5-54E7-B62A-70B742432372"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to Commit and Revert</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-442F2E69-87B5-54E7-B62A-70B742432372"><a name="GUID-442F2E69-87B5-54E7-B62A-70B742432372"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2859821 id2860178 id2533897 id2533970 id2534077 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-FBCBF8A0-7922-5881-A1C5-5DB41630E75A.html" title="Provides services to enable and support persistence.">Persistent Data Services Guide</a> &gt; <a href="GUID-F8824165-4B33-50D1-9706-BD2438B5A2EE.html" title="The persistent storage collection.">Persistent Storage</a> &gt; <a href="GUID-3FAB9077-3EC3-5539-B391-D11456362513.html" title="Store provides structured data storage.">Store</a> &gt; <a href="GUID-E9C608C0-AC22-5267-BEC4-207C9758F968.html" title="Provides persistent, embedded, dictionary, and memory stores.">Stores Guide</a> &gt; <a href="GUID-6EE0CB66-A759-5E0C-884D-90895F35F267.html" title="Describes how to use transactions.">Transactions</a> &gt; </div>
+<h1 class="topictitle1">How
+to Commit and Revert </h1>
+<div><p>Changes to a store are not made permanent until they are committed
+and until such changes are committed, they can be rolled back (i.e. reverted)</p>
+
+<p>Transactions are supported by a commit and revert protocol.</p>
+
+<p>In the following code fragment, <samp class="codeph">store</samp> is a pointer to
+an opened permanent file store. The function <samp class="codeph">doUpdateStoreL()</samp> adds
+a number of streams to this store and, if successful, establishes a new commit
+point.</p>
+
+<p>If a failure occurs or the call to <samp class="codeph">CommitL()</samp> fails, then <samp class="codeph">doUpdateStoreL()</samp> leaves;
+the leave is trapped and any changes made to the store are rolled back, so
+that the store is in the same state as it was before the changes were started.
+The store, therefore, remains in a consistent state in the event of failure.</p>
+
+<p><samp class="codeph">CItemArray</samp> is a class that encapsulates an array of <samp class="codeph">TItem</samp> objects;
+the relevant part of the definition is:</p>
+
+<pre class="codeblock" id="GUID-442F2E69-87B5-54E7-B62A-70B742432372__GUID-0B5B04A7-AB4A-55CA-BCF0-9E19623F1554"><a name="GUID-442F2E69-87B5-54E7-B62A-70B742432372__GUID-0B5B04A7-AB4A-55CA-BCF0-9E19623F1554"><!-- --></a>typedef TBuf&lt;100&gt; TItem;</pre>
+
+<pre class="codeblock" id="GUID-442F2E69-87B5-54E7-B62A-70B742432372__GUID-52A3FAC2-4E23-5574-A21C-DE087ADDB911"><a name="GUID-442F2E69-87B5-54E7-B62A-70B742432372__GUID-52A3FAC2-4E23-5574-A21C-DE087ADDB911"><!-- --></a>class CItemArray : public CBase
+    {
+public:
+    ...
+    void AddItemL(const TItem&amp; anItem);
+    void StoreL() const;
+       void ExternalizeL(RWriteStream&amp; aStream) const;
+    ...
+private:
+    CStreamStore&amp; iStore;
+       ...
+    CArrayFixFlat&lt;TStreamId&gt;* iArray;
+    }</pre>
+
+<p>The example also assumes that the store is one that allows streams to be
+modified and replaced; for example, a permanent file store.</p>
+
+<pre class="codeblock" id="GUID-442F2E69-87B5-54E7-B62A-70B742432372__GUID-21AFD117-3D52-55BE-BEB7-430CF08D0429"><a name="GUID-442F2E69-87B5-54E7-B62A-70B742432372__GUID-21AFD117-3D52-55BE-BEB7-430CF08D0429"><!-- --></a>...
+TRAPD(error,doUpdateStoreL(*store));
+if (error!=KErrNone)
+    {
+    store-&gt;Revert();
+    ...
+    }
+...</pre>
+
+<pre class="codeblock" id="GUID-442F2E69-87B5-54E7-B62A-70B742432372__GUID-EB07D2AA-ECAA-5014-84F0-85767A60E366"><a name="GUID-442F2E69-87B5-54E7-B62A-70B742432372__GUID-EB07D2AA-ECAA-5014-84F0-85767A60E366"><!-- --></a>LOCAL_C void doUpdateStoreL(CPersistentStore&amp; aStore)
+    {
+    _LIT(KTxtHello,"hello");
+    _LIT(KtxtWorld," world!");
+              // get the root stream into memory
+    CItemArray* array=CItemArray::NewLC(aStore,aStore.Root());
+    
+              // Add some items
+    TItem item;
+    item = KTxtHello;
+    array-&gt;AddItemL(item);
+    item = KTxtWorld;
+    array-&gt;AddItemL(item);
+             // Re-write the root stream with new data
+    array-&gt;StoreL();
+            // commit all changes
+    aStore.CommitL();
+    ...
+    }</pre>
+
+<pre class="codeblock" id="GUID-442F2E69-87B5-54E7-B62A-70B742432372__GUID-3E2184DA-7C74-58F0-925E-6AE1317732C9"><a name="GUID-442F2E69-87B5-54E7-B62A-70B742432372__GUID-3E2184DA-7C74-58F0-925E-6AE1317732C9"><!-- --></a>void CItemArray::AddItemL(const TItem&amp; anItem)
+    {
+    RStoreWriteStream outstream;
+    TStreamId id=outstream.CreateLC(iStore);
+    outstream&lt;&lt;anItem;
+    outstream.CommitL();
+    CleanupStack::PopAndDestroy();
+    iArray-&gt;AppendL(id);
+    }
+</pre>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-6EE0CB66-A759-5E0C-884D-90895F35F267.html" title="Describes how to use transactions.">Transactions</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-C9D8D913-C65F-5A69-A606-30F59BFB38E2.html" title="Provides permanent, direct and dictionary file stores as well as file stream stores.">File Stores</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

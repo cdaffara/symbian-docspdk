@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Interrupts"/>
+<meta name="abstract" content="This document describes how device drivers use interrupts."/>
+<meta name="description" content="This document describes how device drivers use interrupts."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8FA1B2B0-5842-4D5D-BD61-C2D79B56ADC6.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F09740DA-015B-449D-A124-0BEABBDDCB52.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6E208C69-AC2C-4A7A-8203-2C4C3F2E54F5.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Interrupts</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442"><a name="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; </div>
+<h1 class="topictitle1">Interrupts</h1>
+<div><p>This document describes how device drivers use interrupts.</p>
+
+<div class="section" id="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442__GUID-7B450286-637E-4BAB-9D36-9228764CD0D4"><a name="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442__GUID-7B450286-637E-4BAB-9D36-9228764CD0D4"><!-- --></a>      
+      <p>Devices generate interrupts to indicate hardware events. Generally
+drivers provide an interrupt service routine (ISR) to handle the interrupts
+and perform the required responses to the events. Symbian provides an <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html"><span class="apiname">Interrupt</span></a> class
+(implemented by the ASSP) with an API to bind and unbind an interrupt source
+and an ISR. </p>
+ <pre class="codeblock" id="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442__GUID-9EB4BFFE-55A2-56D4-BCF3-6D278C3EC4F4"><a name="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442__GUID-9EB4BFFE-55A2-56D4-BCF3-6D278C3EC4F4"><!-- --></a>// Bind the interrupt source ID and interrupt service routine
+TInt Bind(TInt aId, TIsr aIsr, TAny* aPtr);
+// Unbind the interrupt
+TInt Unbind(TInt aId);
+// Enable interrupts on device interrupt source
+TInt Enable(TInt aId);
+// Disable interrupts on device interrupt source
+TInt Disable(TInt aId);
+// Clear the device interrupt
+TInt Clear(TInt aId);
+// Set the priority of the interrupt
+TInt SetPriority(TInt aId, TInt aPriority);</pre>
+ <p>Interrupt handling
+is typically done in a PDD, as device hardware access is done at that level.
+Interrupt handling is generally done in two stages in the driver. High priority
+and short time running tasks are done in the ISR, and the remaining processing
+is deferred for handling later. </p>
+ <p>Interrupt handling is a blocking high
+priority task and needs to take a minimal amount of time. The Kernel will
+be in an indeterminate state and puts restrictions on doing various operations. </p>
+ 
+   </div>
+
+</div>
+<div>
+<ul class="ullinks">
+<li class="ulchildlink"><strong><a href="GUID-8FA1B2B0-5842-4D5D-BD61-C2D79B56ADC6.html">Interrupt Service Routine (ISR)</a></strong><br/>
+This document describes interrupt service routines as used by device drivers.</li>
+<li class="ulchildlink"><strong><a href="GUID-F09740DA-015B-449D-A124-0BEABBDDCB52.html">Enabling and Disabling</a></strong><br/>
+This document describes how device drivers enable and disable interrupts.</li>
+<li class="ulchildlink"><strong><a href="GUID-6E208C69-AC2C-4A7A-8203-2C4C3F2E54F5.html">Binding and Unbinding</a></strong><br/>
+This document describes how device drivers bind and unbind interrupts.</li>
+</ul>
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="FEP References"/>
+<meta name="abstract" content="This topic introduces miscellaneous guidelines to write a FEP."/>
+<meta name="description" content="This topic introduces miscellaneous guidelines to write a FEP."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-68A55CD5-EF01-5DE2-8119-EFA39589960F.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E079315A-E5B6-4D33-B7E3-88697A3F11A4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0C6CCACF-84B2-5715-BCF3-12330E6F05D4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-68A55CD5-EF01-5DE2-8119-EFA39589960F.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-31A28040-6C8E-5C65-A697-04B30B441686"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>FEP References</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-31A28040-6C8E-5C65-A697-04B30B441686"><a name="GUID-31A28040-6C8E-5C65-A697-04B30B441686"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2561792 id2839629 id2839186 id2839196 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html">Classic UI Guide</a> &gt; <a href="GUID-E079315A-E5B6-4D33-B7E3-88697A3F11A4.html">Control and animation framework</a> &gt; <a href="GUID-0C6CCACF-84B2-5715-BCF3-12330E6F05D4.html" title="This section explains Front End Processor (FEP), and its implementations and events.">Using Front End Processor (FEPBASE)</a> &gt; <a href="GUID-68A55CD5-EF01-5DE2-8119-EFA39589960F.html">How to Write a FEP</a> &gt; </div>
+<h1 class="topictitle1">FEP
+References</h1>
+<div><p>This topic introduces miscellaneous guidelines to write a FEP.</p>
+
+<div class="section" id="GUID-31A28040-6C8E-5C65-A697-04B30B441686__GUID-7881D352-F261-4064-8684-6CA76A184257"><a name="GUID-31A28040-6C8E-5C65-A697-04B30B441686__GUID-7881D352-F261-4064-8684-6CA76A184257"><!-- --></a><h2 class="sectiontitle"> Handling the
+start of a transaction</h2><p>Although applications do not need to be FEP-aware
+in order to work with FEPs, a situation can occur in some applications in
+which the user interface can be improved by the application making use of
+a FEPBASE API to communicate with the FEP above it, if there is one. </p>
+ <p>If
+no FEP is present, the expected behaviour in some UIs when the user presses
+a key is for the application to do two things: firstly, it moves focus to
+a previously non-focused text editor control (possibly, although not necessarily,
+by launching a dialog), and secondly, it 'seeds' that text editor control
+with the character associated with that key. If there is a FEP, by default
+(in other words, without the application being FEP-aware) the focus change
+would only happen when the FEP outputs text to the application. However, if
+the FEP is designed to allow the user to compose a fairly large block of text
+to send to the application (as would be likely in a Japanese FEP), it would
+be better if the focus change occurred when the user starts composing their
+text in the FEP. In order for this to happen, the application needs to be
+FEP-aware, albeit in a fairly trivial way. The way the FEP notifies the application
+that it is starting a transaction is by calling <samp class="codeph">CCoeEnv</samp> ’s
+member function <samp class="codeph">ForEachFepObserverCall()</samp> (<samp class="codeph">CCoeEnv</samp> is
+defined in <span class="filepath">epoc32\include\COEMAIN.H</span>), passing in the
+address of the non-member function <samp class="codeph">FepObserverHandleStartOfTransactionL()</samp> (defined
+in <span class="filepath">epoc32\include\FEPBASE.H</span>). It is important to note
+that this function should only be called as the last C++ statement executed
+when handling an event. The reason for this that it may take a considerable
+amount of time to return (for example, it may launch a dialog and only return
+when the dialog has been exited). </p>
+ </div>
+
+<div class="section" id="GUID-31A28040-6C8E-5C65-A697-04B30B441686__GUID-C32902E0-39A8-493E-9E7F-D48DEE4717CA"><a name="GUID-31A28040-6C8E-5C65-A697-04B30B441686__GUID-C32902E0-39A8-493E-9E7F-D48DEE4717CA"><!-- --></a><h2 class="sectiontitle">Text cursors</h2><p>If
+a non-inline-editing FEP has a composition window into which the user types,
+that window should not use a 'real' text cursor (in other words, a cursor
+which is set and unset using <samp class="codeph">RWindowGroup</samp> ’s <samp class="codeph">SetTextCursor()</samp> and <samp class="codeph">CancelTextCursor()</samp> member
+functions). The reason is that the window server only allows a single text
+cursor for the whole system at any one time. If the FEP’s target control is
+a text editor, it should use the window server’s text cursor itself, so the
+FEP should not use it. To solve this problem, the text cursor in the FEP’s
+composition window can be simulated with a sprite. The class <samp class="codeph">CTstInsertionPoint</samp> in
+TFEP1 provides an example of this. </p>
+</div>
+
+<div class="section" id="GUID-31A28040-6C8E-5C65-A697-04B30B441686__GUID-5F7D9BFA-F74A-47FE-B589-A4EF49AFB901"><a name="GUID-31A28040-6C8E-5C65-A697-04B30B441686__GUID-5F7D9BFA-F74A-47FE-B589-A4EF49AFB901"><!-- --></a><h2 class="sectiontitle">Shortcut keys</h2><p>As
+FEPs get first refusal of all key events, there is a risk that FEPs can intercept
+shortcut keys (if the UI supports them) which are intended for the application
+to handle. To define a convention for FEP shortcut keys is non-trivial as
+different UIs use different modifier keys and have different policies on using
+them. Matters are simplified greatly if a product has a dedicated on/off key
+for FEPs as this may be used in combination with other keys to carry out different
+functions, as well as on its own to turn the FEP on and off. FEP authors should
+consult the documentation for their target UI. </p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-68A55CD5-EF01-5DE2-8119-EFA39589960F.html">How to Write a FEP</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Cleanup for heap arrays"/>
+<meta name="abstract" content="C++ arrays are allocated on the heap and require their own particular cleanup."/>
+<meta name="description" content="C++ arrays are allocated on the heap and require their own particular cleanup."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-7366AE99-DE25-5DE0-BF9A-58E7742DA952.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9636A30F-39EB-54E6-8125-4487D4002FE0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-61DEE78D-4E78-5367-BC8A-F99D3B4E9D5A.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-7366AE99-DE25-5DE0-BF9A-58E7742DA952.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-011D0974-CC37-5335-A8EB-7ECF4FC30F93"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Cleanup for heap arrays</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-011D0974-CC37-5335-A8EB-7ECF4FC30F93"><a name="GUID-011D0974-CC37-5335-A8EB-7ECF4FC30F93"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2393700 id2393796 id2393947 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-9636A30F-39EB-54E6-8125-4487D4002FE0.html" title="Memory is allocated to programs in chunks, the documentation in this set explains how to allocate, manage and release that memory.">Memory Management</a> &gt; <a href="GUID-61DEE78D-4E78-5367-BC8A-F99D3B4E9D5A.html" title="Provides an introduction to code construction and error management options.">More about Cleanup Support</a> &gt; <a href="GUID-7366AE99-DE25-5DE0-BF9A-58E7742DA952.html" title="Advanced cleanup covers areas such as cleanup of heap arrays, cleanup of non-CBase classes and use of TAutoClose.">Advanced Cleanup</a> &gt; </div>
+<h1 class="topictitle1">Cleanup
+for heap arrays</h1>
+<div><p>C++ arrays are allocated on the heap and require their own particular
+cleanup.</p>
+
+<p>C++ arrays are allocated on the heap using <samp class="codeph">operator new[]</samp>.
+The cleanup rules for such arrays are as follows:</p>
+
+<ul>
+<li id="GUID-011D0974-CC37-5335-A8EB-7ECF4FC30F93__GUID-41AA28AA-1D48-5B50-9065-A283CCAAD83F"><a name="GUID-011D0974-CC37-5335-A8EB-7ECF4FC30F93__GUID-41AA28AA-1D48-5B50-9065-A283CCAAD83F"><!-- --></a><p>if it is not necessary
+to protect against leaves, such as when the array is a class member, or no
+leaves can occur in the lifetime of the array, then always delete the array
+using <samp class="codeph">operator delete[]</samp> (not <samp class="codeph">operator delete</samp>).</p>
+ </li>
+
+<li id="GUID-011D0974-CC37-5335-A8EB-7ECF4FC30F93__GUID-B4EA79E7-EEDC-531D-90DB-7041F3650356"><a name="GUID-011D0974-CC37-5335-A8EB-7ECF4FC30F93__GUID-B4EA79E7-EEDC-531D-90DB-7041F3650356"><!-- --></a><p>if it is necessary to
+protect against leaves, push the array to the cleanup stack using the utility
+template function <samp class="codeph">CleanupArrayDeletePushL()</samp>. This ensures
+that if a leave occurs, the array is deleted correctly using <samp class="codeph">operator
+delete[]</samp>.</p>
+ <p>Arrays should <em>not</em> be pushed to the cleanup
+stack using the standard <samp class="codeph">CleanupStack::PushL()</samp>, as this will
+result in <samp class="codeph">operator delete</samp> rather than <samp class="codeph">operator delete[]</samp> being
+used for cleanup.</p>
+ </li>
+
+</ul>
+
+<p><strong>Note on compiler behaviour</strong> </p>
+
+<p>Of the compilers used with Symbian platform, Metrowerks CodeWarrior is
+the most sensitive to the rules for array deletion. If an array is deleted
+with a simple <samp class="codeph">delete</samp> rather than <samp class="codeph">delete[]</samp>,
+then a USER 42 panic (invalid heap cell) can occur. </p>
+
+<p>This panic in fact occurs for arrays in which the class has either a constructor
+or a destructor. For such arrays, CodeWarrior reserves space at the start
+of the array storage to hold the number of elements in the array: this means
+the first heap cell is not the start of a deletable object. GCC and MSVC C++
+only reserve such extra space if the class has a destructor.</p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-7366AE99-DE25-5DE0-BF9A-58E7742DA952.html" title="Advanced cleanup covers areas such as cleanup of heap arrays, cleanup of non-CBase classes and use of TAutoClose.">Advanced Cleanup</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

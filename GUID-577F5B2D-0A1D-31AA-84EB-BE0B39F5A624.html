@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="LManagedGuard"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624"/>
+
+<title>LManagedGuard</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624"><a name="GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2653464 id2544523 id2545139 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">LManagedGuard Class Reference</h1>
+	<table class="signature"><tr><td>class LManagedGuard</td></tr></table><div class="section"><div>
+			<p>A class that provides automatic cleanup using a TCleanupOperation on the destruction of the <a href="GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624.html#GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624">LManagedGuard</a> object.</p>
+
+			<div class="p">
+				<div class="note"><span class="notetitle">Note:</span> 
+					<p>This class can only be used to define object scoped cleanup to guard object destruction, never local stack scoped cleanup. See below for an explanation and links to management classes suitable for use in different contexts.</p>
+
+				</div>
+This class can be used to manage a TCleanupOperation in such a way that the specified cleanup operation is guaranteed to be called when the guarding object is destroyed; typically when the object containing it is deleted.</div>
+
+			<p>The constructors of this class never leave, so data members defined with this type may be initialized safely during any phase of construction of the owning class.</p>
+
+			<p>Automatic cleanup may be disabled at any time by calling <a href="GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624.html#GUID-ABF85694-5E5B-378F-BBE6-3A10047ADC3B">Dismiss()</a>, while cleanup may be forced at any time by calling <a href="GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624.html#GUID-D5DF5DF7-64CA-3132-81F6-82596213B856">Execute()</a>.</p>
+
+			<div class="p">
+				<pre class="codeblock">   class CComposite : public CBase
+	   {
+	 public:
+	   CONSTRUCTORS_MAY_LEAVE
+
+	   CComposite(RCleanable* aObj)
+		   : iObj(RCleanable::Cleanup, aObj)
+		   {
+		   }
+
+	   ~CComposite()
+		   {
+		   // RCleanable::Cleanup(iObj) is automatically invoked
+		   }
+
+	 private:
+	   LManagedGuard&lt;RCleanable&gt; iObj;
+	   };</pre>
+
+			</div>
+
+			<p>Behind the scenes, this class template simply relies on reliable execution of its destructor. If used for a local variable rather than a data member, cleanup will occur but out-of-order compared to objects protected using the LCleanupXxx variants or the <a href="GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA.html#GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA">CleanupStack</a> directly. Therefore it is not recommended for use in that context.</p>
+
+			<p>These management classes may be used as the basis for implementing leave-safe single-phase construction, since fully initialized data members protected in this way will get destroyed (so reliably triggering cleanup) if their containing classes leave during execution of their constructors. Note, however, that single-phase construction must be explicitly enabled in the containing class using the CONSTRUCTORS_MAY_LEAVE macro.</p>
+
+			<p>
+				<a href="GUID-E6D04730-8064-3846-99E4-FB638C5EAA65.html#GUID-E6D04730-8064-3846-99E4-FB638C5EAA65">LCleanedupGuard</a> which has the same interface, but uses the cleanup stack and is suitable for use as a local to guard local scope exit CONSTRUCTORS_MAY_LEAVE </p>
+
+		</div></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-E677AAA5-BDF6-34AB-870B-7A3E8B26653E">LManagedGuard</a>(<a href="GUID-B2E765E9-DE0C-3B6D-AF41-15518919D26D.html">TCleanupOperation</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *)</td></tr><tr class="bg"><td align="right" class="code"/><td><a href="#GUID-B0599C4A-3CCB-3D92-A886-972C6817D964">~LManagedGuard</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-ABF85694-5E5B-378F-BBE6-3A10047ADC3B">Dismiss</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-D5DF5DF7-64CA-3132-81F6-82596213B856">Execute</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-F865AD2D-E98D-3E9C-BB8E-7459E9434661">LManagedGuard</a>(const <a href="GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624.html">LManagedGuard</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624.html">LManagedGuard</a> &amp;</td><td><a href="#GUID-1E762CC6-48EE-3848-A939-3CA93A63E6CB">operator=</a>(const <a href="GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624.html">LManagedGuard</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-B2E765E9-DE0C-3B6D-AF41-15518919D26D.html">TCleanupOperation</a>
+				</td><td><a href="#GUID-67537C7E-BAD0-3E16-967B-05295F3859CA">iCleanupOperation</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td><a href="#GUID-A55002D8-084E-3AFF-9C66-8420AB6FBF9C">iData</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-E677AAA5-BDF6-34AB-870B-7A3E8B26653E"><a name="GUID-E677AAA5-BDF6-34AB-870B-7A3E8B26653E"><!-- --></a>
+		<h2 class="topictitle2">LManagedGuard(TCleanupOperation, TAny *)</h2>
+		<table class="signature"><tr><td>LManagedGuard</td><td>(</td><td><a href="GUID-B2E765E9-DE0C-3B6D-AF41-15518919D26D.html">TCleanupOperation</a></td><td>aCleanupOperation,</td></tr><tr><td colspan="2"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aData = 0</td></tr><tr><td colspan="1"> </td><td>)</td><td colspan="2">[inline]</td></tr></table><div class="section"><div>
+				<p>Constructor. Creates a <a href="GUID-E6D04730-8064-3846-99E4-FB638C5EAA65.html#GUID-E6D04730-8064-3846-99E4-FB638C5EAA65">LCleanedupGuard</a> object that, when enabled, automatically invokes upon destruction a cleanup operation specified by the aCleanupOperation parameter with the pointer to data specified by the aData parameter.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-B2E765E9-DE0C-3B6D-AF41-15518919D26D.html">TCleanupOperation</a> aCleanupOperation</td><td>A cleanup operation.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aData = 0</td><td>Pointer to data to be passed to the cleanup operation  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F865AD2D-E98D-3E9C-BB8E-7459E9434661"><a name="GUID-F865AD2D-E98D-3E9C-BB8E-7459E9434661"><!-- --></a>
+		<h2 class="topictitle2">LManagedGuard(const LManagedGuard &amp;)</h2>
+		<table class="signature"><tr><td>LManagedGuard</td><td>(</td><td>const <a href="GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624.html">LManagedGuard</a> &amp;</td><td/><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624.html">LManagedGuard</a> &amp; </td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B0599C4A-3CCB-3D92-A886-972C6817D964"><a name="GUID-B0599C4A-3CCB-3D92-A886-972C6817D964"><!-- --></a>
+		<h2 class="topictitle2">~LManagedGuard()</h2>
+		<table class="signature"><tr><td>~LManagedGuard</td><td>(</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Destructor. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-ABF85694-5E5B-378F-BBE6-3A10047ADC3B"><a name="GUID-ABF85694-5E5B-378F-BBE6-3A10047ADC3B"><!-- --></a>
+		<h2 class="topictitle2">Dismiss()</h2>
+		<table class="signature"><tr><td>void</td><td>Dismiss</td><td>(</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Disables the guard. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-D5DF5DF7-64CA-3132-81F6-82596213B856"><a name="GUID-D5DF5DF7-64CA-3132-81F6-82596213B856"><!-- --></a>
+		<h2 class="topictitle2">Execute()</h2>
+		<table class="signature"><tr><td>void</td><td>Execute</td><td>(</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Executes the guard cleanup operation. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-1E762CC6-48EE-3848-A939-3CA93A63E6CB"><a name="GUID-1E762CC6-48EE-3848-A939-3CA93A63E6CB"><!-- --></a>
+		<h2 class="topictitle2">operator=(const LManagedGuard &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624.html">LManagedGuard</a> &amp;</td><td>operator=</td><td>(</td><td>const <a href="GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624.html">LManagedGuard</a> &amp;</td><td/><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-577F5B2D-0A1D-31AA-84EB-BE0B39F5A624.html">LManagedGuard</a> &amp; </td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-67537C7E-BAD0-3E16-967B-05295F3859CA"><a name="GUID-67537C7E-BAD0-3E16-967B-05295F3859CA"><!-- --></a>
+		<h2 class="topictitle2">
+					TCleanupOperation
+				 iCleanupOperation</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-B2E765E9-DE0C-3B6D-AF41-15518919D26D.html">TCleanupOperation</a>
+				</td><td>iCleanupOperation</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-A55002D8-084E-3AFF-9C66-8420AB6FBF9C"><a name="GUID-A55002D8-084E-3AFF-9C66-8420AB6FBF9C"><!-- --></a>
+		<h2 class="topictitle2">
+					TAny * iData</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>iData</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

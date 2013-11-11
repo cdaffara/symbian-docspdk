@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Differences between OSS and Symbian GLib"/>
+<meta name="abstract" content=""/>
+<meta name="description" content=""/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-94D67092-5EB3-4D83-A164-CA628F2E2DB0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-4ADD8234-4AFD-4E80-94A4-AC018FE83276"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Differences between OSS and Symbian GLib</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-4ADD8234-4AFD-4E80-94A4-AC018FE83276"><a name="GUID-4ADD8234-4AFD-4E80-94A4-AC018FE83276"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2383355 id2383375 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-94D67092-5EB3-4D83-A164-CA628F2E2DB0.html" title="GLib is a general-purpose utility library, which provides many useful data types, macros, type conversions, string utilities, file utilities, a main loop abstraction, and so on. It works on many UNIX-like platforms, Windows, OS/2, and BeOS.">GLib</a> &gt; <a href="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html">GLib Concepts</a> &gt; </div>
+<h1 class="topictitle1">Differences
+between OSS and Symbian GLib</h1>
+<div><p/>
+
+<p>The three areas of difference between the way GLib is implemented in Symbian
+platform and in OSS are as follows: </p>
+
+<ul>
+<li><p>Memory allocation</p>
+</li>
+
+<li><p>Spawn APIs</p>
+</li>
+
+<li><p>Libgmodule APIs </p>
+</li>
+
+</ul>
+
+<div class="section" id="GUID-4ADD8234-4AFD-4E80-94A4-AC018FE83276__GUID-DFAD39D6-BA92-4293-B5EC-97077CE1FC1A-GENID-1-12-1-14-1-1-7-1-6-1-4-1-3-3"><a name="GUID-4ADD8234-4AFD-4E80-94A4-AC018FE83276__GUID-DFAD39D6-BA92-4293-B5EC-97077CE1FC1A-GENID-1-12-1-14-1-1-7-1-6-1-4-1-3-3"><!-- --></a><h2 class="sectiontitle">Memory
+allocation</h2>              <p>The Symbian GLib implementation does not follow
+the default OSS behavior. The default OSS behavior is such that in the event
+of a memory allocation failure the application, using <samp class="codeph">g_malloc()</samp> and
+not <samp class="codeph">g_try_malloc()</samp>, will call <samp class="codeph">abort()</samp> and
+thus terminate the application.  </p>
+<p>The Symbian implementation, on the
+other hand will return NULL and not terminate the application in the event
+of a memory allocation failure. Thus, it is the application’s responsibility
+to check if the memory allocation failed due to the needed tasks.</p>
+<p>Generally,
+all the application code written using GLib does not perform memory allocation
+failure checks. Hence, for Symbian GLib it is the application programmer's
+responsibility to check for memory allocation failures.  </p>
+     </div>
+
+<div class="section" id="GUID-4ADD8234-4AFD-4E80-94A4-AC018FE83276__GUID-DFAD39D6-BA92-4293-B5EC-97077CE1FC1A-GENID-1-12-1-14-1-1-7-1-6-1-4-1-3-4"><a name="GUID-4ADD8234-4AFD-4E80-94A4-AC018FE83276__GUID-DFAD39D6-BA92-4293-B5EC-97077CE1FC1A-GENID-1-12-1-14-1-1-7-1-6-1-4-1-3-4"><!-- --></a><h2 class="sectiontitle">Spawn
+APIs</h2>              <p>GLib has a set of APIs for process spawning. Since Symbian
+platform does not support the <samp class="codeph">fork()</samp> and <samp class="codeph">exec()</samp> APIs,
+the <samp class="codeph">g_spawn*</samp> APIs have limitations in their functionality.
+The limitations are explained per API in detail below.</p>
+<p><strong><samp class="codeph">g_spawn_async_with_pipes</samp></strong></p>
+<p>The
+signature of this API is:</p>
+<pre class="codeblock">gboolean g_spawn_async_with_pipes (
+    const gchar *working_directoy,
+    gchar **argv,
+    gchar **envp,
+    GSpawnFlags flags, 			
+    GSpawnChildSetupFunc child_setup, 			
+    gpointer user_data, 			
+    GPid *child_pid, 			
+    gint  *standard_input, 			
+    gint *standard_output, 			
+    gint *standard_error, 			
+    GError **error); </pre>
+<p>This API executes the program asynchronously:
+that is, the caller does not block for the spawned process to complete. The
+setting of the following parameters does not have any effect in Symbian GLib:</p>
+<ul>
+<li><p><samp class="codeph">working_directory</samp></p>
+</li>
+
+<li><p><samp class="codeph">envp</samp></p>
+</li>
+
+</ul>
+<p>If a value other than NULL is passed for <samp class="codeph">standard_input</samp>, <samp class="codeph">standard_ouput</samp>,
+or <samp class="codeph">standard_error</samp>, the value at the location is set to -1.</p>
+<p><strong><samp class="codeph">g_spawn_async</samp></strong></p>
+<p>The
+signature of the API is:</p>
+<pre class="codeblock">gboolean g_spawn_async (
+    const gchar *working_directory, 	 	  
+    gchar **argv, 		  
+    gchar **envp, 		  
+    GSpawnFlags flags, 		  
+    GSpawnChildSetupFunc child_setup, 		  
+    gpointer user_data, 		  
+    GPid *child_pid, 		  
+    GError **error); </pre>
+<p>This API calls <samp class="codeph">g_spawn_async_with_pipes</samp> without
+any pipes. The setting of the following parameters does not have any effect
+in Symbian GLib:</p>
+<ul>
+<li><p><samp class="codeph">working_directory</samp></p>
+</li>
+
+<li><p><samp class="codeph">envp</samp></p>
+</li>
+
+</ul>
+<p><strong><samp class="codeph">g_spawn_sync</samp></strong></p>
+<p>The signature of the API
+is:</p>
+<pre class="codeblock">gboolean g_spawn_sync(
+    const gchar *working_directory, 	 	
+    gchar **argv, 		
+    gchar **envp, 		
+    GSpawnFlags flags, 		
+    GSpawnChildSetupFunc child_setup, 		
+    gpointer user_data, 		
+    gchar **standard_output, 		
+    gchar **standard_error, 		
+    gint *exit_status, 		
+    GError **error); </pre>
+<p>This API executes the program synchronously:
+that is, the calling process waits for the spawned process to complete before
+returning. The setting of the following parameters does not have any effect
+on Symbian GLib:  </p>
+<ul>
+<li><p><samp class="codeph">working_directory</samp></p>
+</li>
+
+<li><p><samp class="codeph">envp</samp></p>
+</li>
+
+</ul>
+<p>If a value other than NULL is passed for<samp class="codeph"> standard_output</samp> or <samp class="codeph">standard_error</samp>,
+the value at the location is set to -1. </p>
+<p><strong><samp class="codeph">g_spawn_command_line_sync</samp></strong></p>
+<p>The
+signature of the API is:</p>
+<pre class="codeblock">gboolean g_spawn_command_line_sync(
+    const gchar *command_line, 
+    gchar **standard_output, 
+    gchar **standard_error, 
+    gint *exit_status, 
+    GError **error);  </pre>
+<p>This API is a simple version of <samp class="codeph">g_spawn_sync</samp> in
+which there are fewer number of parameters involved, and it takes a command
+line instead.</p>
+<p>If a value other than NULL is passed for <samp class="codeph">standard_output</samp> or <samp class="codeph">standard_error</samp>,
+the value at the location is set to -1.</p>
+<p>In many spawn APIs a variable
+of type <samp class="codeph">GSpawnFlags</samp> is passed. The following flags have no
+effect:</p>
+<ul>
+<li><p><samp class="codeph">G_SPAWN_LEAVE_DESCRIPTORS_OPEN</samp></p>
+</li>
+
+<li><p><samp class="codeph">G_SPAWN_STDOUT_TO_DEV_NULL</samp></p>
+</li>
+
+<li><p><samp class="codeph">G_SPAWN_STDERR_TO_DEV_NULL</samp></p>
+</li>
+
+<li><p><samp class="codeph">G_SPAWN_CHILD_INHERITS_STDIN</samp></p>
+</li>
+
+</ul>
+     </div>
+
+<div class="section" id="GUID-4ADD8234-4AFD-4E80-94A4-AC018FE83276__GUID-4B68F695-1BDB-4AA0-B77A-7F808A157E7A"><a name="GUID-4ADD8234-4AFD-4E80-94A4-AC018FE83276__GUID-4B68F695-1BDB-4AA0-B77A-7F808A157E7A"><!-- --></a><h2 class="sectiontitle">Libgmodule
+APIs</h2><p>Libgmodule has APIs that provide a portable method for dynamically
+loading 'plug-ins' or, in other words, DLLs. There are some deviations in
+the <samp class="codeph">libgmodule</samp> APIs on Symbian platform as compared to the
+OSS behavior. The APIs with their limitations are explained in detail below.</p>
+<ul>
+<li><p><strong><samp class="codeph">g_module_open</samp></strong>: The signature of the API is:</p>
+<pre class="codeblock">GModule *g_module_open (const gchar *file_name, GModuleFlags flags);</pre>
+<p>This API is used to open a module. The default OSS behavior when file_name
+is passed as NULL such that it obtains a <samp class="codeph">GModule</samp> representing
+the main program. In Symbian GLib, NULL is returned instead. Of all the <samp class="codeph">GModuleFlags</samp> only <samp class="codeph">G_MODULE_BIND_LOCAL</samp> is
+honored. If the user passes any other flags, the module is still opened using
+the flag <samp class="codeph">G_MODULE_BIND_LOCAL</samp>. </p>
+</li>
+
+<li><p><strong><samp class="codeph">g_module_symbol</samp></strong>: The signature of the API is:</p>
+<pre class="codeblock">gboolean g_module_symbol (GModule *module, const gchar *symbol_name, gpointer *symbol);</pre>
+<p>This API gets the symbol from the <samp class="codeph">GModule</samp> opened using <samp class="codeph">g_module_open</samp>.
+In OSS, <samp class="codeph">symbol_name</samp> is the name of the symbol that needs
+to be queried from the <samp class="codeph">GModule</samp>. In Symbian platform, the
+ordinal number (passed as a string) of the symbol name must be passed and
+not the symbol name.</p>
+</li>
+
+</ul>
+<p>See also <a href="GUID-01E7AE98-024C-4119-87D0-5BB9D53DA119.html" title="libgmodule has APIs that provide a portable method for dynamically loading 'plug-ins' or, in other words, DLLs. Any program that wants to dynamically load modules must be linked to libgmodule.">Introduction
+to libgmodule</a> for more details about <samp class="codeph">libgmodule</samp>. </p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html">GLib Concepts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

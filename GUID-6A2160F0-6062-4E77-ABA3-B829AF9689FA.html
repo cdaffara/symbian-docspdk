@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Contacts database events"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-6A2160F0-6062-4E77-ABA3-B829AF9689FA"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Contacts database events</title>
+
+     
+<?php     
+   include_once ($_SERVER["DOCUMENT_ROOT"]. '/includes/skin_constants.php');
+   include_once (CURRENT_SKIN_PATH.'/sdl_head.html');
+?>
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-6A2160F0-6062-4E77-ABA3-B829AF9689FA"><a name="GUID-6A2160F0-6062-4E77-ABA3-B829AF9689FA"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"/>
+<h1 class="topictitle1">Contacts
+database events</h1>
+<div>
+<p>A client application of the Contacts Server can be set to observe changes
+in the contacts database. When a change in the database occurs, the application
+gets an event. The event carries information about the type of the event,
+the contact ID, and the connection ID.</p>
+
+<pre class="codeblock" id="GUID-6A2160F0-6062-4E77-ABA3-B829AF9689FA__GUID-F552F563-6AA7-4E55-9E0E-F131E2B2C91B"><a name="GUID-6A2160F0-6062-4E77-ABA3-B829AF9689FA__GUID-F552F563-6AA7-4E55-9E0E-F131E2B2C91B"><!-- --></a>struct TContactDbObserverEvent
+    {
+    TContactDbObserverEventType iType;
+    TContactItemId iContactId;
+    TUint iConnectionId;
+    };
+</pre>
+
+<p>The following event types are defined in the <span class="parmname">cntdbobs.h</span>:</p>
+
+<pre class="codeblock" id="GUID-6A2160F0-6062-4E77-ABA3-B829AF9689FA__GUID-9022E0A5-8CF3-469E-B1D4-2B2CC607F852"><a name="GUID-6A2160F0-6062-4E77-ABA3-B829AF9689FA__GUID-9022E0A5-8CF3-469E-B1D4-2B2CC607F852"><!-- --></a>enum TContactDbObserverEventType
+    {
+    EContactDbObserverEventNull,
+    EContactDbObserverEventUnused,
+    EContactDbObserverEventContactChanged,
+    EContactDbObserverEventContactDeleted,
+    EContactDbObserverEventContactAdded,
+    EContactDbObserverEventUnknownChanges,
+    EContactDbObserverEventRecover,
+    EContactDbObserverEventRollback,
+    EContactDbObserverEventTablesClosed,
+    EContactDbObserverEventTablesOpened,
+    EContactDbObserverEventTemplateChanged,
+    EContactDbObserverEventTemplateDeleted,
+    EContactDbObserverEventTemplateAdded,
+    EContactDbObserverEventCurrentItemDeleted,
+    EContactDbObserverEventCurrentItemChanged,
+    EContactDbObserverEventOwnCardChanged,
+    EContactDbObserverEventPreferredTemplateChanged,
+    EContactDbObserverEventOwnCardDeleted,
+    EContactDbObserverEventGroupAdded,
+    EContactDbObserverEventGroupChanged,
+    EContactDbObserverEventGroupDeleted,
+    EContactDbObserverEventCurrentDatabaseChanged,
+    EContactDbObserverEventSpeedDialsChanged
+    EContactDbObserverEventSortOrderChanged,
+    EContactDbObserverEventBackupBeginning,
+    EContactDbObserverEventRestoreBeginning,
+    EContactDbObserverEventBackupRestoreCompleted,
+    EContactDbObserverEventRestoreBadDatabase,
+    };
+</pre>
+
+<p>To receive events on contact database changes, the application must
+derive <a href="GUID-4928B1DE-9800-3887-B456-2DDFE810AFD9.html"><span class="apiname">MContactDbObserver</span></a> base class and implement <a href="GUID-4928B1DE-9800-3887-B456-2DDFE810AFD9.html#GUID-4928B1DE-9800-3887-B456-2DDFE810AFD9__GUID-DECA9730-0504-3D4F-85D4-AFAC70B46580"><span class="apiname">MContactDbObserver::HandleDatabaseEventL()</span></a> virtual
+function. The function is called by the system when a contact database event
+occurs.</p>
+
+<pre class="codeblock" id="GUID-6A2160F0-6062-4E77-ABA3-B829AF9689FA__GUID-EEB33DFB-0009-4CE5-BC96-41B65519F8D1"><a name="GUID-6A2160F0-6062-4E77-ABA3-B829AF9689FA__GUID-EEB33DFB-0009-4CE5-BC96-41B65519F8D1"><!-- --></a>class CMyContactObserver : public CBase, public MContactDbObserver
+    {
+     public:
+         // any public data and functions
+         CMyContactObserver ();
+         // override the virtual function from the base class
+         virtual void HandleDatabaseEventL( TContactDbObserverEvent aEvent );
+         };
+     // handling contact database events
+     void CMyContactObserver::HandleDatabaseEventL( TContactDbObserverEvent aEvent )
+         {
+         // Event handling code
+         }
+</pre>
+
+<p>In addition, the application must create the <a href="GUID-140725B3-8D52-3D2B-9E72-CAF76962B95A.html"><span class="apiname">CContactChangeNotifier</span></a> object
+to register itself to receive events.</p>
+
+<pre class="codeblock" id="GUID-6A2160F0-6062-4E77-ABA3-B829AF9689FA__GUID-95A974D8-3D88-4E64-8A33-AF2366C34791"><a name="GUID-6A2160F0-6062-4E77-ABA3-B829AF9689FA__GUID-95A974D8-3D88-4E64-8A33-AF2366C34791"><!-- --></a>CContactDatabase* contactDb = CContactDatabase::OpenL();
+//iContactDbObserver is a CMyContactObserver pointer
+CContactChangeNotifier* notifier = CContactChangeNotifier::NewL( *contactDb, iContactDbObserver );
+</pre>
+
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Creating a Periodic Timer"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-66402932-5C44-556B-A7AC-1C2D245C8B05.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E21287EF-7211-590B-A1E3-E0B37069FCB2.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6565B222-4036-5C3D-8319-4CDDA3F2098D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-66402932-5C44-556B-A7AC-1C2D245C8B05.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-B4039418-6499-555D-AC24-9B49161299F2"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Creating a Periodic Timer</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-B4039418-6499-555D-AC24-9B49161299F2"><a name="GUID-B4039418-6499-555D-AC24-9B49161299F2"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381193 id2381739 id2381747 id2381791 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html">Generic Open Libraries</a> &gt; <a href="GUID-E21287EF-7211-590B-A1E3-E0B37069FCB2.html">POSIX Realtime Extensions</a> &gt; <a href="GUID-6565B222-4036-5C3D-8319-4CDDA3F2098D.html">Librt</a> &gt; <a href="GUID-66402932-5C44-556B-A7AC-1C2D245C8B05.html">Clocks and Timers Tutorial</a> &gt; </div>
+<h1 class="topictitle1">Creating
+a Periodic Timer</h1>
+<div>
+<p>You can use a periodic timer to provide repeated signals to your process. </p>
+
+<p>The following example illustrates a periodic timer with a delay of a second
+and a repeating interval of ten milliseconds. It also configures a thread
+function as the timer expiry notification using <samp class="codeph">SIGEV_THREAD</samp>. </p>
+
+<p>The following example code performs the following tasks: </p>
+
+<a name="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-B648631F-8CC2-5304-B2DC-6A9293385E3E"><!-- --></a><ol id="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-B648631F-8CC2-5304-B2DC-6A9293385E3E">
+<li id="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-228938F5-3F52-5853-96FC-2556650A617A"><a name="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-228938F5-3F52-5853-96FC-2556650A617A"><!-- --></a><p>Creates a notification
+function (thread function) that must be invoked after timer expiry. </p>
+ </li>
+
+<li id="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-7F02B8B1-7AE3-566A-A864-A64B45837C79"><a name="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-7F02B8B1-7AE3-566A-A864-A64B45837C79"><!-- --></a><p>Sets the thread priority
+to <strong>255</strong> using the thread scheduling parameters (<samp class="codeph">struct sched_param</samp>).
+This ensures that the thread function has the highest priority when it is
+invoked as a result of a timer expiry. </p>
+ </li>
+
+<li id="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-14F0D0AC-65EF-56B6-B82A-EC41C4DDA94F"><a name="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-14F0D0AC-65EF-56B6-B82A-EC41C4DDA94F"><!-- --></a><p>Creates a timer based
+on the current system time (<samp class="codeph">CLOCK_REALTIME</samp>) and a notification
+function (<samp class="codeph">struct              sigevent sig</samp>) that must be
+invoked when the timer expires. </p>
+ </li>
+
+<li id="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-0A915D17-5113-563B-9CE4-7A7B7B7D7B23"><a name="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-0A915D17-5113-563B-9CE4-7A7B7B7D7B23"><!-- --></a><p>Defines the input values
+for <a href="GUID-344F836B-FAC8-344A-B458-0CEFB714ADEB.html"><span class="apiname">timer_settime()</span></a>. The key input values are the timer
+value (<samp class="codeph">in.it_value.tv_sec = 1;</samp>) and the interval (<samp class="codeph">in.it_interval.tv_nsec
+= 100000000;</samp>). The periodic timer will expire after a second and
+then invoke the notification function every one-tenth of a second until it
+is destroyed. </p>
+ </li>
+
+<li id="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-126A5B20-133D-585A-9FF9-9CB5456D2D71"><a name="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-126A5B20-133D-585A-9FF9-9CB5456D2D71"><!-- --></a><p>Starts the periodic
+timer using <a href="GUID-344F836B-FAC8-344A-B458-0CEFB714ADEB.html"><span class="apiname">timer_settime()</span></a>. </p>
+ </li>
+
+<li id="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-FD1EEA8C-3215-5DBE-BB29-47576DED3955"><a name="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-FD1EEA8C-3215-5DBE-BB29-47576DED3955"><!-- --></a><p>Uses <samp class="codeph">sleep(2)</samp> to
+pause the program execution for two seconds before destroying the timer. </p>
+ </li>
+
+</ol>
+
+<pre class="codeblock" id="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-60B88762-E6C3-52F8-8DBC-E77D70B03FAE"><a name="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-60B88762-E6C3-52F8-8DBC-E77D70B03FAE"><!-- --></a>#include &lt;time.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;errno.h&gt;
+static int i = 0;
+
+//Thread function to be invoked when the periodic timer expires
+void sighler (union sigval val)
+    {
+    printf("Handler entered with value :%d for %d times\n", val.sival_int, ++i);
+    }
+int main()
+    {
+    int Ret;
+
+    pthread_attr_t attr;
+    pthread_attr_init( &amp;attr );
+
+    struct sched_param parm;
+    parm.sched_priority = 255;
+    pthread_attr_setschedparam(&amp;attr, &amp;parm);
+
+    struct sigevent sig;
+    sig.sigev_notify = SIGEV_THREAD;
+    sig.sigev_notify_function = sighler;
+    sig.sigev_value.sival_int =20;
+    sig.sigev_notify_attributes = &amp;attr;
+
+    //create a new timer.
+    timer_t timerid;
+    Ret = timer_create(CLOCK_REALTIME, &amp;sig, &amp;timerid);
+    if (Ret == 0)
+        {
+        struct itimerspec in, out;
+        in.it_value.tv_sec = 1;
+        in.it_value.tv_nsec = 0;
+        in.it_interval.tv_sec = 0;
+        in.it_interval.tv_nsec = 100000000;
+        //issue the periodic timer request here.
+        Ret = timer_settime(timerid, 0, &amp;in, &amp;out);
+        if(Ret == 0)
+            sleep(2);
+        else
+            printf("timer_settime() failed with %d\n", errno);
+        //delete the timer.
+        timer_delete(timerid);
+        }
+    else
+    printf("timer_create() failed with %d\n", errno);
+    return Ret;
+    }</pre>
+
+<p>The output of the above program is: </p>
+
+<pre class="codeblock" id="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-313450D1-6766-58C6-933C-49AD55A5D985"><a name="GUID-B4039418-6499-555D-AC24-9B49161299F2__GUID-313450D1-6766-58C6-933C-49AD55A5D985"><!-- --></a>Handler entered with value :20 for 1 times
+Handler entered with value :20 for 2 times
+Handler entered with value :20 for 3 times
+Handler entered with value :20 for 4 times
+Handler entered with value :20 for 5 times
+Handler entered with value :20 for 6 times
+Handler entered with value :20 for 7 times
+Handler entered with value :20 for 8 times</pre>
+
+<p> <strong>Note:</strong> Ideally, in the preceding output the handler must have entered <strong>10</strong> times.
+This is not the case on the Symbian platform as there is some
+latency due to the timer emulation solution and the underlying Symbian platform
+clock resolution. </p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-66402932-5C44-556B-A7AC-1C2D245C8B05.html">Clocks and Timers Tutorial</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

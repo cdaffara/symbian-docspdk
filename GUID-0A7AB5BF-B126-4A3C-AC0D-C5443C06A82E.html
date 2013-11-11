@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Thread Priority and Delayed Cancellation"/>
+<meta name="abstract" content="This document describes problems caused due to delayed cancellation of threads."/>
+<meta name="description" content="This document describes problems caused due to delayed cancellation of threads."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-629EAA30-ED77-4CA9-91ED-36C818D7B4F4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-0A7AB5BF-B126-4A3C-AC0D-C5443C06A82E"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Thread Priority and Delayed Cancellation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-0A7AB5BF-B126-4A3C-AC0D-C5443C06A82E"><a name="GUID-0A7AB5BF-B126-4A3C-AC0D-C5443C06A82E"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2561665 id2563724 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-629EAA30-ED77-4CA9-91ED-36C818D7B4F4.html" title="Provides summary of documents to make SMP-safe applications.">SMP</a> &gt; <a href="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html" title="This section describes how SMP works and provides you with information on how to troubleshoot some problems you may have. This includes problems with driver closure ordering and how memory is shared between threads in a process">SMP Developer Tips</a> &gt; </div>
+<h1 class="topictitle1">Thread
+Priority and Delayed Cancellation</h1>
+<div><p>This document describes problems caused due to delayed cancellation
+of threads.</p>
+
+<p>The basic problem is when Thread A has previously requested a Notification
+of some status change and now requests that the Notification be cancelled. </p>
+
+<p>Thread A starts Thread B to talk to the Server. Thread B sends the cancellation
+request to the Server and sends a completion message back to Thread A to say
+that the cancel request has been sent to the Server.</p>
+
+<p>In the past Thread B would not have returned until the Server cancellation
+had completed. But with SMP the cancellation request may be placed on a second
+CPU and delayed for various reasons, while Threads A and B continue. It is
+possible for a Notification event to occur at this point and a panic will
+occur when the Notification arrives without a process to handle it.</p>
+
+<p>The single core device had fewer problems with thread priority issues like
+delayed cancellation, because the Server ran with higher priority and completed
+the cancellation before returning control to Thread B. On a multiple core
+system, different threads run in parallel and this may lead to errors.</p>
+
+<p>You should be aware that deadlocks or panics can be caused due to delayed
+cancellation of threads and write your code to avoid it.</p>
+
+<div class="section" id="GUID-0A7AB5BF-B126-4A3C-AC0D-C5443C06A82E__GUID-B5C37041-10A9-4D29-A4DC-A4B884FD23AB"><a name="GUID-0A7AB5BF-B126-4A3C-AC0D-C5443C06A82E__GUID-B5C37041-10A9-4D29-A4DC-A4B884FD23AB"><!-- --></a><h2 class="sectiontitle">Example</h2><p>One
+possible solution is to send the cancel completion message from the <samp class="codeph">RunL()</samp> function
+call of the server.</p>
+<div class="fignone" id="GUID-0A7AB5BF-B126-4A3C-AC0D-C5443C06A82E__GUID-6792304C-AE6D-450A-B4BE-60B48F981CF5"><a name="GUID-0A7AB5BF-B126-4A3C-AC0D-C5443C06A82E__GUID-6792304C-AE6D-450A-B4BE-60B48F981CF5"><!-- --></a><span class="figcap">Figure 1. Error in cancellation sequence</span>
+
+<img src="GUID-F492978A-1732-4BCD-8D3C-D2F657BAB504_d0e20693_href.png"/>
+</div>
+</div>
+
+<div class="example"><h2 class="sectiontitle">Client code</h2><pre class="codeblock">// [...]
+//Whilst running
+  iNotifier.RequestNotification(iStatus);
+// [...]
+//Some part of the client is now waiting for 
+  notifications on iStatus
+
+
+// [...] at some point during exit
+  iNotifier.CancelNotification();
+  iNotifier.Close();  
+// Notifier session can be taken down now.
+</pre>
+</div>
+
+<div class="example"><h2 class="sectiontitle">Server code</h2><pre class="codeblock">void CCommsdatNotifierSessionHandler::RegisterNotifyL(
+	const RMessage2&amp; aMessage)
+    {
+…
+    iMessage = aMessage;
+…
+        iProperty.Subscribe(iStatus);
+        SetActive();
+ void CCommsdatNotifierSessionHandler::CancelNotify(
+		const RMessage2&amp; aMessage)
+    {
+    iProperty.Cancel();
+    …
+    aMessage.Complete(KErrCancel);
+    }
+
+void CCommsdatNotifierSessionHandler::RunL()
+    {
+…
+    iMessage.Complete(…);
+…
+    }
+</pre>
+</div>
+
+<div class="example"><h2 class="sectiontitle">Solution for server code</h2><pre class="codeblock">void CCommsdatNotifierSessionHandler::RegisterNotifyL(
+	const RMessage2&amp; aMessage)
+    {
+…
+    iMessage = aMessage;
+…
+        iProperty.Subscribe(iStatus);
+        SetActive();
+ Void CCommsdatNotifierSessionHandler::CancelNotify(const RMessage2 &amp;aMessage)
+{
+iProperty.Cancel();
+...
+iCancelMessage = aMessage;
+}
+
+Void CCOmmsdatNotifierSessionHandler::RunL()
+{
+...
+
+iMessage.Complete(...);
+iCancelMessage.Complete(KErrNone);
+
+...
+}</pre>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html" title="This section describes how SMP works and provides you with information on how to troubleshoot some problems you may have. This includes problems with driver closure ordering and how memory is shared between threads in a process">SMP Developer Tips</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html" title="This section describes how SMP works and provides you with information on how to troubleshoot some problems you may have. This includes problems with driver closure ordering and how memory is shared between threads in a process">SMP Developer
+Tips</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

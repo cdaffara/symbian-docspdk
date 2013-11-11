@@ -1,0 +1,2319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CPtiEngine"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315"/>
+
+<title>CPtiEngine</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315"><a name="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2511993 id2453937 id2453985 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CPtiEngine Class Reference</h1>
+	<table class="signature"><tr><td>class CPtiEngine : public CBase</td></tr></table><div class="section"><div>
+			<p>
+				<a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-A98A9789-DCA6-3809-9726-EE60AA45A315">CPtiEngine</a> class.</p>
+
+			<p>This is the main client side API for PtiEngine. The purpose of PtiEngine API is to provide a single calling point for low level (below UI) text input functionality. The API provides methods for querying and activating installed input languages, changing input modes and text cases and performing text input operations. The API contains set of methods for latin based, Chinese and Japanese text input. Some of the methods are common to all of those variants. PtiEngine also provides access to predictive text input functionality, in case there is need to use it directly without standard CEikEdwin / FEP chain (hence the name 'predictive text input engine') Predictive text engine integration is hidden behind PtiCore plugin API and is used through PtiEngine main API.</p>
+
+			<p>Usage: PtiEngine is created by calling <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-E3CE4281-71B6-3EA2-9F1B-ABC879131D7B">CPtiEngine::NewL</a> method. In typical use case there is no need to pass core uid parameter to NewL method. Constructor will load and set up available core objects.</p>
+
+			<p>Typical use cases:</p>
+
+			<p>Entering text in latin multitapping mode ----------------------------------------</p>
+
+			<p>CPtiEngine* aEngine = <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-E3CE4281-71B6-3EA2-9F1B-ABC879131D7B">CPtiEngine::NewL()</a>; aEngine-&gt;ActivateLanguageL(ELangEnglish, EPtiEngineMultitapping); aEngine-&gt;AppendKeyPress(EPtiKey3); aEngine-&gt;AppendKeyPress(EPtiKey6); aEngine-&gt;AppendKeyPress(EPtiKey6); aEngine-&gt;AppendKeyPress(EPtiKey6); aEngine-&gt;AppendKeyPress(EPtiKey4); TBuf&lt;100&gt; temp; temp.Copy(aEngine-&gt;<a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-975994AB-8A4F-3035-A90B-6A104DEA5E91">CurrentWord()</a>); // At this point temp would contain // word "dog".</p>
+
+			<p>Entering text in latin predictive mode --------------------------------------</p>
+
+			<p>CPtiEngine* aEngine = <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-E3CE4281-71B6-3EA2-9F1B-ABC879131D7B">CPtiEngine::NewL()</a>; aEngine-&gt;ActivateLanguageL(ELangEnglish, EPtiEnginePredicitve); aEngine-&gt;AppendKeyPress(EPtiKey8); aEngine-&gt;AppendKeyPress(EPtiKey4); aEngine-&gt;AppendKeyPress(EPtiKey4); aEngine-&gt;AppendKeyPress(EPtiKey7); TBuf&lt;100&gt; temp; temp.Copy(aEngine-&gt;<a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-975994AB-8A4F-3035-A90B-6A104DEA5E91">CurrentWord()</a>); // At this point temp would contain // (depending on the underlying engine) // word "this". temp.Copy(aEngine-&gt;<a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-E00232AC-E229-33CB-8C89-5CCC506100A9">NextCandidate()</a>); // Move on to next candidate. aEngine-&gt;<a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-76703C83-CB6A-3E59-9565-CB4A316576BC">CommitCurrentWord()</a>; // Tell engine that current word was accepted, // so that the underlyinbg engine keeps // frequency information up-to-date. Entering text in latin qwerty mode ----------------------------------</p>
+
+			<p>CPtiEngine* aEngine = <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-E3CE4281-71B6-3EA2-9F1B-ABC879131D7B">CPtiEngine::NewL()</a>; aEngine-&gt;ActivateLanguageL(ELangEnglish, EPtiEngineQwerty); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyQ); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyW); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyE); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyR); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyT); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyY); TBuf&lt;100&gt; temp; temp.Copy(aEngine-&gt;<a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-975994AB-8A4F-3035-A90B-6A104DEA5E91">CurrentWord()</a>); // At this point temp would contain // word "qwerty". // Next line requires that French key mappings are available in device. aEngine-&gt;ActivateLanguageL(ELangFrench, EPtiEngineQwerty); aEngine-&gt;SetCase(EPtiCaseUpper); aEngine-&gt;<a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-07B92AE6-489B-3EA7-B60F-608AF81A5212">ClearCurrentWord()</a>; aEngine-&gt;AppendKeyPress(EPtiKeyQwertyQ); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyW); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyE); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyR); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyT); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyY); temp.Copy(aEngine-&gt;<a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-975994AB-8A4F-3035-A90B-6A104DEA5E91">CurrentWord()</a>); // At this point temp would contain // word "AZERTY".</p>
+
+			<p>Entering text in preditcive latin qwerty mode --------------------------------------------- CPtiEngine* aEngine = <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-E3CE4281-71B6-3EA2-9F1B-ABC879131D7B">CPtiEngine::NewL()</a>; aEngine-&gt;ActivateLanguageL(ELangEnglish, EPtiEngineQwertyPredictive); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyE); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyN); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyT); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyE); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyR); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyT); aEngine-&gt;AppendKeyPress(EPtiKeyQwertyA); TBuf&lt;100&gt; temp; temp.Copy(aEngine-&gt;<a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-975994AB-8A4F-3035-A90B-6A104DEA5E91">CurrentWord()</a>); // At this point temp would contain // for example word "entertainment", assuming the. // underlying prediction engine supports word completion. </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CPtiEngine<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-8D99EAC4-9BB9-37F1-9669-943BF6659076">~CPtiEngine</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-9776AB9C-2A55-376A-AD94-C9BC1371C511">ActivateLanguageL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-907EB628-2702-39FF-AFF9-4DE4EB3628CE">AddAutoSubstitutionEntry</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-0501AC69-B86A-39AF-BC3D-043E5B8DBC35">AddCoreL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-F0517D20-2289-3C21-AD14-7BC53527A859">AddCoreL</a>(const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-98A9845B-8F02-3598-B6E2-BDAB60153504">AddPhrase</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-E2411A59-EF51-30B2-9F8B-FB355A7C8844">AddUserDictionaryEntry</a>(<a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-67E00732-7408-3CA5-8ADF-38553B8C7B0B">AddUserDictionaryEntry</a>(<a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td><a href="#GUID-A84B5741-8A6F-3878-99A2-6259B5F56087">AppendKeyPress</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-7E238E35-6777-3FA7-B063-CCBFD8C36DDD.html">MPtiUserDictionary</a> *</td><td><a href="#GUID-B70BC89B-DC57-3435-A54E-DA0D9FF87D0B">AttachDefaultUserDictionaryL</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-7E238E35-6777-3FA7-B063-CCBFD8C36DDD.html">MPtiUserDictionary</a> *</td><td><a href="#GUID-69CE1307-BA0A-3C00-AFB4-597FF06E2F7D">AttachUserDictionaryL</a>(<a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td><a href="#GUID-915B7D3E-2583-3A6F-B744-ED9AAC79587D">AvailableCharConversions</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-94C618BB-1809-3166-8BBA-45E6FC86281B">CancelTimerActivity</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td><a href="#GUID-DB3577FF-6204-3A9D-8F62-25A352C28DC5">CandidatePage</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiTextCase</a></td><td><a href="#GUID-028DE615-719E-316B-BD09-4800CB0C639B">Case</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a></td><td><a href="#GUID-2885A727-CF16-3219-9BF9-1E331677E472">CaseSequence</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-F8E6E4A6-D7B0-324F-B9BA-A67C6961F0F9">CharConversion</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiCharConversion</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a></td><td><a href="#GUID-90576347-B771-3202-AE1B-B870C1CC5262">CharacterToKey</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint16</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-07B92AE6-489B-3EA7-B60F-608AF81A5212">ClearCurrentWord</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-019C817A-B832-34FF-AE8E-11686E8BBCDC">CloseCurrentLanguageL</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-76703C83-CB6A-3E59-9565-CB4A316576BC">CommitCurrentWord</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C MPtiEngineCompositionDataInterface *</td><td><a href="#GUID-208FA9AA-A830-3FC4-BFDC-11C92D09EF29">CompositionData</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-A622F704-FFEE-368A-B935-B9D3A87A2AC8.html">MPtiCoreInfo</a> *</td><td><a href="#GUID-AF782CC7-D693-384C-A58B-DD3D96647B16">CoreInfo</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-CAD41526-6818-3E20-AE6A-8995A0393831">CreateDefaultUserDictionaryFileL</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-40658769-A4C0-30D3-9463-6BE656F960C1">CreateUserDictionaryL</a>(<a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-0DF28074-4B76-3767-9FD8-EADF36E3EA14.html">CDesCArrayFlat</a> *, <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a></td><td><a href="#GUID-8F8099FE-5D49-3E75-8AFC-397D72D2EDAD">CurrentInputSequence</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-60200989-8366-3119-9151-F5817994B2C3.html">MPtiLanguage</a> *</td><td><a href="#GUID-5FFB9EDC-A8A0-39F6-8C42-487287C9576B">CurrentLanguage</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td><a href="#GUID-975994AB-8A4F-3035-A90B-6A104DEA5E91">CurrentWord</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-7E238E35-6777-3FA7-B063-CCBFD8C36DDD.html">MPtiUserDictionary</a> *</td><td><a href="#GUID-098CB746-E684-3DA9-859B-1C169D3F03F2">DefaultUserDictionary</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-87E8ED99-84BA-3468-9F71-9EF94C795813">DeleteAutoSubstitutionEntry</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td><a href="#GUID-A2870121-7310-3062-BB1C-2B448BA1CD14">DeleteKeyPress</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-6D552B0C-9F87-3B7E-AAFB-FA82EDCEF242">DetachUserDictionary</a>(<a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-DA7A2C7D-58E9-37DB-9A88-1ECCC25C3F74">DetachUserDictionary</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-AEB088D2-4DE6-37CB-A1F4-AA71599B242E">EnableToneMarks</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">IMPORT_C const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-3A8E8369-B408-3941-A5ED-6E0702F12DA6.html">TPtiNumericKeyBinding</a> &gt; &amp;</td><td><a href="#GUID-BB3D6EAC-BCE3-3867-AB4E-0881B6E52E91">ExtendedNumericModeKeysForQwertyL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-3A8E8369-B408-3941-A5ED-6E0702F12DA6.html">TPtiNumericKeyBinding</a> &gt; &amp;</td><td><a href="#GUID-EEE658D6-0D87-3DDD-A739-EAA76BE39A55">ExtendedNumericModeKeysForQwertyL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td><a href="#GUID-461D2183-6A64-361D-B657-B0020113A061">FirstCandidate</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-5DC541C5-719F-3B27-B7C8-30037D1192D9">GetAutoSubstitutionEntry</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;, <a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-69B4B58D-2E84-37FD-BD72-ABA715604E39">GetAvailableLanguagesL</a>(<a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-8999E9D6-F866-3B1A-A06A-7C933815B89B">GetAvailableLanguagesL</a>(<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-5894EDC1-B57C-3E1C-8870-72653C449FFC">GetCandidateListL</a>(<a href="GUID-9EC9CD13-91FB-38F7-9E55-F41C584AC5A6.html">CDesCArray</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-65830418-E190-3D6A-9743-36331AFA4703">GetCandidatesByInputString</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> &gt; &amp;, const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-8CE2382B-E9DE-379F-A3C7-091DDE7C679C">GetChinesePhraseCandidatesL</a>(<a href="GUID-9EC9CD13-91FB-38F7-9E55-F41C584AC5A6.html">CDesCArray</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-9D9F01A7-CEB3-3DDC-AC80-86636903ED95">GetHwrAvailableLanguagesL</a>(<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-48114335-2260-3559-A0BB-C00B230C7DE0.html">MPtiHwrRecognizer</a> *</td><td><a href="#GUID-1D018B39-5D27-3257-9132-F47A51B8B5CC">GetHwrRecognizerL</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TLanguage</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-48114335-2260-3559-A0BB-C00B230C7DE0.html">MPtiHwrRecognizer</a> *</td><td><a href="#GUID-8CF27141-1BF4-3033-89D5-7FB4E1C067E7">GetHwrRecognizerL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-60200989-8366-3119-9151-F5817994B2C3.html">MPtiLanguage</a> *</td><td><a href="#GUID-3BC69D7E-D28E-38E6-BD68-AAA5209C2219">GetLanguage</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-5D711659-DC15-359E-B49C-539AAC86EE6B">GetLocalizedLanguageName</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-4AB0A95B-2FCF-3EBE-A9A5-AD3C3A97CC3F">GetModeNameIndexL</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiChineseVariant</a>, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-3CD7BF49-5AB1-3EDA-B81C-BFFE8CAFA23F">GetNextWordCandidateListL</a>(<a href="GUID-9EC9CD13-91FB-38F7-9E55-F41C584AC5A6.html">CDesCArray</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-0E9759A1-3847-3F8C-AC39-EC162D39F751">GetNumericModeKeysForQwertyL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-3A8E8369-B408-3941-A5ED-6E0702F12DA6.html">TPtiNumericKeyBinding</a> &gt; &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-CCC9C337-56F3-3C40-8F3D-156D7AEC0B89">GetNumericModeKeysForQwertyL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-3A8E8369-B408-3941-A5ED-6E0702F12DA6.html">TPtiNumericKeyBinding</a> &gt; &amp;, <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td><a href="#GUID-38285624-63B0-3D5E-8B88-4AB5310585FC">GetPhoneticSpelling</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-B09D4A79-E4C8-302D-9AC7-07D01C6F61BE">GetPhoneticSpellingsL</a>(<a href="GUID-9EC9CD13-91FB-38F7-9E55-F41C584AC5A6.html">CDesCArray</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-A0FDD005-9C6F-35A8-9AF0-F1042F8C9F7F">GetSpelling</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint16</a>, <a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;, <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiSpelling</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-3977B42F-F82C-3538-9C90-A7A215BB2558">GetUserDictionaryEntry</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-924D181D-BD2B-3F50-A32E-88073EF72B69">HandleCommandL</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineCommand</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-B8A181D9-6C91-3459-915A-0EF1E9E454FD">IncrementToneMark</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a></td><td><a href="#GUID-1788D215-9B1B-31BF-A62A-C8EF91CCCE32">InputMode</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-041A5FAE-A5FF-34D3-AB66-CF8A0E2349FE">IsQwertyBasedMode</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-A98C1947-E9E1-333B-BD86-E46645732418">IsToneMarkValidForSpelling</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-7ADF1B6C-EAC3-358B-B30B-50385057CBF7">IsValidKey</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a></td><td><a href="#GUID-92C30DCB-434C-3D98-9171-0F95B9512301">KeyboardType</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F3873513-5361-3C5C-8CBD-6773143FE3F0">KeyboardTypesSupportedByLanguageL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a> &gt; &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a></td><td><a href="#GUID-8A52B2AB-39D8-3447-A40F-6B02659D295B">LastEnteredKey</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-101440D0-D9E8-3039-A75A-BC26908A1800">ListAvailablePhysicalKeyboardsL</a>(<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a> &gt; &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &gt; &amp;</td><td><a href="#GUID-CD991BB5-54D1-34B7-B39D-957CD6D286D2">ListHwrRecognizerL</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TLanguage</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F1343947-7107-3585-A2D6-9529654BBF0B">MappingDataForKey</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a>, <a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;, <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiTextCase</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-E0CA0197-8E66-30F3-B862-E63D99121758">MarkAutoCapitalized</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-D16C30E5-4355-37F2-B518-389735B1657F">MoreCandidatePages</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html">CPtiEngine</a> *</td><td><a href="#GUID-E3CE4281-71B6-3EA2-9F1B-ABC879131D7B">NewL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html">CPtiEngine</a> *</td><td><a href="#GUID-111B6F0B-BA09-3027-AACD-BE9F2F9F6362">NewL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html">CPtiEngine</a> *</td><td><a href="#GUID-215A936A-3473-3339-9E16-FC6FAA8A1F4A">NewL</a>(const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td><a href="#GUID-E00232AC-E229-33CB-8C89-5CCC506100A9">NextCandidate</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-AC850749-EA1F-3567-A2D4-5E6F1F2D41E7">NextCandidatePage</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-7FF6D6AD-5248-3272-AD42-6B56706A8C93">NumberOfAutoSubstitutionEntries</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-8CCD22A0-27B6-3C11-B0CF-BEDA05DC52A7">NumberOfCandidates</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-46BF99D6-D6F8-329F-BDF5-B4F451D499B9">NumberOfEntriesInUserDictionary</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-757A9DE5-EDED-3C86-81CF-256F7B43BC46">NumberOfLanguages</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-203EB63F-4E37-3B46-A507-EF97FB6B51FE.html">MPtiObserver</a> *</td><td><a href="#GUID-56EB8703-8F21-3907-8008-1CEB5353EE27">Observer</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-02991539-4BDB-312A-B829-99F0FACACFF8">PhoneticSpellingCount</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td><a href="#GUID-A3B8DF53-BE69-3481-981C-FEDFA282EB21">PreviousCandidate</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-BCD21661-CE03-396F-BD17-D2A5BC940D9E">PreviousCandidatePage</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td><a href="#GUID-69F71267-5092-3909-AD89-3E61F532A688">ReadSecondaryDataFileL</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td><a href="#GUID-F82B067C-2414-39C1-BEE1-50BA039C616A">ReadingTextL</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-91F97058-564E-3A9E-8467-0EB92BA3D8C0">RemoveEntryFromUserDictionary</a>(<a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-07A09BFD-1E8E-3E4B-97EA-1DDBA50F7016">RemoveEntryFromUserDictionary</a>(<a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-A88F76C5-B400-3047-92E1-5E827E65B160">ResetToneMark</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-66ADDE20-21AC-33FB-AE50-0E8FC810C661">SelectPhoneticSpelling</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-F340ED2E-6B2F-3AE9-BAAC-45FE0038331C">SelectedPhoneticSpelling</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-487CE1CB-7100-3A6E-AD83-48A34AFE02D2">SetAutoSubstitution</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-5912DE24-9306-3004-813B-858B78200691">SetCandidatePageLength</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-76A20D7F-6D5F-3AE8-B439-6B5171483FBA">SetCase</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiTextCase</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-7446D130-3EC6-36CE-A0FA-7BA4CF081743">SetCurrentWord</a>(<a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-A891C4A8-3156-31D0-AA99-73C29699CE27">SetExternalKeyMapL</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a>, <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a>, <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiTextCase</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-8E264B51-4994-34FB-A611-E530B579D21A">SetInputMode</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-721EB0F2-11B9-3B92-A1C7-95D05CBD873B">SetKeyboardType</a>(<a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-D461ABA5-B66D-3135-B6DD-8BAE8B108172">SetMaxLengthForAutoCompletedCandidates</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-EC6532C7-2936-3204-8A46-A70E12C3ECC2">SetNumberCandidateStatus</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-CE482792-A59A-3E9D-8703-E027A6915309">SetObserver</a>(<a href="GUID-203EB63F-4E37-3B46-A507-EF97FB6B51FE.html">MPtiObserver</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-54A44C09-D1E1-35E7-A30A-AC9472AB2949">SetPredictiveChineseChar</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-A48FA50E-C386-3DC0-9C10-7DE56CA1900F">SetReordering</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-76B394F9-E90A-3023-A8FA-6F3075BA59EF">SetToneMark</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-54D76C26-7950-3A70-83E2-AEFD1425A0CB">ToneMark</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TText</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F6F53FCB-0718-3E15-98DD-D860D3DE6C44">WriteSecondaryDataFileL</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-1E1F1645-7E17-3E88-84D6-8137501648F1">CPtiEngine</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-398786A6-C367-3BC5-93AB-179146490183">ConstructL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-38FBECA2-D98F-3C5B-BF73-C53A95C9083B">ConstructL</a>(const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-0ADD42D7-5C1F-3947-8678-A76052985201.html">CPtiEngineImpl</a> *</td><td><a href="#GUID-164FE46E-1164-3738-BE51-AD320DFAFD3B">iImpl</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-1E1F1645-7E17-3E88-84D6-8137501648F1"><a name="GUID-1E1F1645-7E17-3E88-84D6-8137501648F1"><!-- --></a>
+		<h2 class="topictitle2">CPtiEngine()</h2>
+		<table class="signature"><tr><td>CPtiEngine</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-8D99EAC4-9BB9-37F1-9669-943BF6659076"><a name="GUID-8D99EAC4-9BB9-37F1-9669-943BF6659076"><!-- --></a>
+		<h2 class="topictitle2">~CPtiEngine()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CPtiEngine</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Destructor. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-9776AB9C-2A55-376A-AD94-C9BC1371C511"><a name="GUID-9776AB9C-2A55-376A-AD94-C9BC1371C511"><!-- --></a>
+		<h2 class="topictitle2">ActivateLanguageL(TInt, TPtiEngineInputMode)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ActivateLanguageL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aEpocLanguageID,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a></td><td>aMode = EPtiEngineInputModeNone</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Activates language in requested input mode. After calling this method language is ready to be used with all input modes it supports.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aEpocLanguageID</td><td>Language to be activated.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a> aMode = EPtiEngineInputModeNone</td><td>Input mode after activation. If thise is left to default value, then default input mode is activated.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-907EB628-2702-39FF-AFF9-4DE4EB3628CE"><a name="GUID-907EB628-2702-39FF-AFF9-4DE4EB3628CE"><!-- --></a>
+		<h2 class="topictitle2">AddAutoSubstitutionEntry(const TDesC &amp;, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>AddAutoSubstitutionEntry</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aShortcut,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSubstituition</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Adds new auto substitution entry to database. If entry for given shorcut already exists, then the old entry will be automatically deleted.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aShortcut</td><td>Shortcut part for new entry.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSubstituition</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0501AC69-B86A-39AF-BC3D-043E5B8DBC35"><a name="GUID-0501AC69-B86A-39AF-BC3D-043E5B8DBC35"><!-- --></a>
+		<h2 class="topictitle2">AddCoreL(const TDesC &amp;, TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>AddCoreL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aFileName,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aUseDefaultUserDictionary = EFalse</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>DEPRECATED (will leave if called). </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aFileName</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aUseDefaultUserDictionary = EFalse</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F0517D20-2289-3C21-AD14-7BC53527A859"><a name="GUID-F0517D20-2289-3C21-AD14-7BC53527A859"><!-- --></a>
+		<h2 class="topictitle2">AddCoreL(const TUid, TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>AddCoreL</td><td>(</td><td>const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aCoreUid,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aUseDefaultUserDictionary = EFalse</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Loads and constructs new core object. Core object is added to the list of available cores and is ready to be used after that.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aCoreUid</td><td>Uid for core plugin.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aUseDefaultUserDictionary = EFalse</td><td>....  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-98A9845B-8F02-3598-B6E2-BDAB60153504"><a name="GUID-98A9845B-8F02-3598-B6E2-BDAB60153504"><!-- --></a>
+		<h2 class="topictitle2">AddPhrase(const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>AddPhrase</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aNewPhrase</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Some prediction engines support next word prediction feature but require database to be pre-filled with suitable phrase data. This method adds one new phrase or sentence to phrase dictionary. Active core object needs to support phrase based next word prediction, otherwise an error code is returned.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aNewPhrase</td><td>New phrase to be added to phrase dictionary.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E2411A59-EF51-30B2-9F8B-FB355A7C8844"><a name="GUID-E2411A59-EF51-30B2-9F8B-FB355A7C8844"><!-- --></a>
+		<h2 class="topictitle2">AddUserDictionaryEntry(MPtiUserDictionaryEntry &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>AddUserDictionaryEntry</td><td>(</td><td><a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp;</td><td>aEntry</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Adds new entry (in most cases a word) to default user dictionary of currently active core object.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp; aEntry</td><td>An entry to be added to dictionary.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-67E00732-7408-3CA5-8ADF-38553B8C7B0B"><a name="GUID-67E00732-7408-3CA5-8ADF-38553B8C7B0B"><!-- --></a>
+		<h2 class="topictitle2">AddUserDictionaryEntry(MPtiUserDictionaryEntry &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>AddUserDictionaryEntry</td><td>(</td><td><a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp;</td><td>aEntry,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aId</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Adds entry to specific user dictionary.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp; aEntry</td><td>An entry to be added to dictionary.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aId</td><td>User dictionary id.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A84B5741-8A6F-3878-99A2-6259B5F56087"><a name="GUID-A84B5741-8A6F-3878-99A2-6259B5F56087"><!-- --></a>
+		<h2 class="topictitle2">AppendKeyPress(TPtiKey)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td>AppendKeyPress</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a></td><td>aKey</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This method handles key press and forwards it to correct core object depending on active language and input mode. The current word buffer is updated accordingly. If input sequence buffer has reached its maximum length then nothing will be done.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a> aKey</td><td>Key code.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B70BC89B-DC57-3435-A54E-DA0D9FF87D0B"><a name="GUID-B70BC89B-DC57-3435-A54E-DA0D9FF87D0B"><!-- --></a>
+		<h2 class="topictitle2">AttachDefaultUserDictionaryL(TUid, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-7E238E35-6777-3FA7-B063-CCBFD8C36DDD.html">MPtiUserDictionary</a> *</td><td>AttachDefaultUserDictionaryL</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aCoreUid,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aSymbolClass</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Attach default user dictionary.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aCoreUid</td><td>Uid for owner core object.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aSymbolClass</td><td>Symbol class for udb data.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-69CE1307-BA0A-3C00-AFB4-597FF06E2F7D"><a name="GUID-69CE1307-BA0A-3C00-AFB4-597FF06E2F7D"><!-- --></a>
+		<h2 class="topictitle2">AttachUserDictionaryL(TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-7E238E35-6777-3FA7-B063-CCBFD8C36DDD.html">MPtiUserDictionary</a> *</td><td>AttachUserDictionaryL</td><td>(</td><td><a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aFileName</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Attach user dictionary in given file to core for requested input mode.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aFileName</td><td>User dictionary file name.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-915B7D3E-2583-3A6F-B744-ED9AAC79587D"><a name="GUID-915B7D3E-2583-3A6F-B744-ED9AAC79587D"><!-- --></a>
+		<h2 class="topictitle2">AvailableCharConversions()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>AvailableCharConversions</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns value indicating currently available character conversions.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-94C618BB-1809-3166-8BBA-45E6FC86281B"><a name="GUID-94C618BB-1809-3166-8BBA-45E6FC86281B"><!-- --></a>
+		<h2 class="topictitle2">CancelTimerActivity()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>CancelTimerActivity</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Front end processeor uses this method for indicating PtiEngine that all key press related timers should be canceled.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-DB3577FF-6204-3A9D-8F62-25A352C28DC5"><a name="GUID-DB3577FF-6204-3A9D-8F62-25A352C28DC5"><!-- --></a>
+		<h2 class="topictitle2">CandidatePage()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td>CandidatePage</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns pointer to current Chinese candidate page.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-028DE615-719E-316B-BD09-4800CB0C639B"><a name="GUID-028DE615-719E-316B-BD09-4800CB0C639B"><!-- --></a>
+		<h2 class="topictitle2">Case()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiTextCase</a></td><td>Case</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns active text case.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-2885A727-CF16-3219-9BF9-1E331677E472"><a name="GUID-2885A727-CF16-3219-9BF9-1E331677E472"><!-- --></a>
+		<h2 class="topictitle2">CaseSequence()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a></td><td>CaseSequence</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns text case buffer. Case buffer contains shift state for each key press used for producing active word, ie. it remembers case values for each AppendKeyPress call. Case buffer is cleared when active word is commited or cleared. Return value is <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html#GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC">TPtrC8</a> containing string of EPtiTextCase values.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-F8E6E4A6-D7B0-324F-B9BA-A67C6961F0F9"><a name="GUID-F8E6E4A6-D7B0-324F-B9BA-A67C6961F0F9"><!-- --></a>
+		<h2 class="topictitle2">CharConversion(TPtiCharConversion, TAny *, TInt, TAny *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>CharConversion</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiCharConversion</a></td><td>aType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aInput,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aInputLength,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aOutput</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Converts given string of characters to one coding system to another. See definition of TPtiCharConversion for list of supported conversion types. It is possible that only a small subset of supported conversion types is actually available at run time (that depends on available core objects). <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-915B7D3E-2583-3A6F-B744-ED9AAC79587D">AvailableCharConversions()</a> method can be used for querying available conversion types before using this method.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiCharConversion</a> aType</td><td>Requested conversion type.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aInput</td><td>Input string. This parameter may point to either 8-bit or 16-bit data depending on conversion type.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aInputLength</td><td>Number of characters in input string.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aOutput</td><td>Output string. This parameter may pint to either 8-bit or 16-bit data depending on conversion type.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-90576347-B771-3202-AE1B-B870C1CC5262"><a name="GUID-90576347-B771-3202-AE1B-B870C1CC5262"><!-- --></a>
+		<h2 class="topictitle2">CharacterToKey(TUint16)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a></td><td>CharacterToKey</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint16</a></td><td>aChar</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns key for given character. Returned key depends on current language and input mode.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint16</a> aChar</td><td>Requested character.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-07B92AE6-489B-3EA7-B60F-608AF81A5212"><a name="GUID-07B92AE6-489B-3EA7-B60F-608AF81A5212"><!-- --></a>
+		<h2 class="topictitle2">ClearCurrentWord()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ClearCurrentWord</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Clears current word buffer. Calling this method means that current word was reject and will not be part of edited text. Either this method or <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-76703C83-CB6A-3E59-9565-CB4A316576BC">CommitCurrentWord()</a> must be called before starting a new word.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-019C817A-B832-34FF-AE8E-11686E8BBCDC"><a name="GUID-019C817A-B832-34FF-AE8E-11686E8BBCDC"><!-- --></a>
+		<h2 class="topictitle2">CloseCurrentLanguageL()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>CloseCurrentLanguageL</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Closes active language. After calling this method there won't be active language and most PtiEngine API methods will return error until ActivateLanguageL is called again. Core objects for active language are asked to release related resources.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-76703C83-CB6A-3E59-9565-CB4A316576BC"><a name="GUID-76703C83-CB6A-3E59-9565-CB4A316576BC"><!-- --></a>
+		<h2 class="topictitle2">CommitCurrentWord()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>CommitCurrentWord</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Commits current word. Commiting means that core object is isntructed to end inline editing operation and accepted active word as part of edited text. Core object may then update frequency information, add unrecognized word to user dictioary or perform any other operation related to commiting a word. Word buffer is cleared. Either this method or <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-07B92AE6-489B-3EA7-B60F-608AF81A5212">ClearCurrentWord()</a> must be called before starting a new word.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-208FA9AA-A830-3FC4-BFDC-11C92D09EF29"><a name="GUID-208FA9AA-A830-3FC4-BFDC-11C92D09EF29"><!-- --></a>
+		<h2 class="topictitle2">CompositionData()</h2>
+		<table class="signature"><tr><td>IMPORT_C MPtiEngineCompositionDataInterface *</td><td>CompositionData</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns pointer to composition data interface (used with Japanese input).</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-398786A6-C367-3BC5-93AB-179146490183"><a name="GUID-398786A6-C367-3BC5-93AB-179146490183"><!-- --></a>
+		<h2 class="topictitle2">ConstructL(TBool)</h2>
+		<table class="signature"><tr><td>void</td><td>ConstructL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aUseDefaultUserDictionary</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aUseDefaultUserDictionary</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-38FBECA2-D98F-3C5B-BF73-C53A95C9083B"><a name="GUID-38FBECA2-D98F-3C5B-BF73-C53A95C9083B"><!-- --></a>
+		<h2 class="topictitle2">ConstructL(const TUid, TBool)</h2>
+		<table class="signature"><tr><td>void</td><td>ConstructL</td><td>(</td><td>const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aCoreUid,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aUseDefaultUserDictionary</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aCoreUid</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aUseDefaultUserDictionary</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AF782CC7-D693-384C-A58B-DD3D96647B16"><a name="GUID-AF782CC7-D693-384C-A58B-DD3D96647B16"><!-- --></a>
+		<h2 class="topictitle2">CoreInfo(TPtiEngineInputMode)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-A622F704-FFEE-368A-B935-B9D3A87A2AC8.html">MPtiCoreInfo</a> *</td><td>CoreInfo</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a></td><td>aMode</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns core info structure for given input mode.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a> aMode</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CAD41526-6818-3E20-AE6A-8995A0393831"><a name="GUID-CAD41526-6818-3E20-AE6A-8995A0393831"><!-- --></a>
+		<h2 class="topictitle2">CreateDefaultUserDictionaryFileL(TUid, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>CreateDefaultUserDictionaryFileL</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aCoreUid,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aSymbolClass</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Creates empty user default dictionary file for given core object and initializes it to PtiEngine user dictionary format. If file already exists, then this method does nothing. Normally this method is only used by core objects.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V3.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aCoreUid</td><td>Uid for requesting core object.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aSymbolClass</td><td>Symbol class for udb data.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-40658769-A4C0-30D3-9463-6BE656F960C1"><a name="GUID-40658769-A4C0-30D3-9463-6BE656F960C1"><!-- --></a>
+		<h2 class="topictitle2">CreateUserDictionaryL(TDesC &amp;, CDesCArrayFlat *, TPtiEngineInputMode)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>CreateUserDictionaryL</td><td>(</td><td><a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aFileName,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-0DF28074-4B76-3767-9FD8-EADF36E3EA14.html">CDesCArrayFlat</a> *</td><td>aWords,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a></td><td>aMode</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Creates new user dictionary file, inserts given list of words into it and attaches it to active core object for requested input mode. Active language must support requested input mode.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aFileName</td><td>File name for new user dictionary.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-0DF28074-4B76-3767-9FD8-EADF36E3EA14.html">CDesCArrayFlat</a> * aWords</td><td>A list of words to be inserted to new user dictionary.  </td></tr><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a> aMode</td><td>Input mode for core object.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8F8099FE-5D49-3E75-8AFC-397D72D2EDAD"><a name="GUID-8F8099FE-5D49-3E75-8AFC-397D72D2EDAD"><!-- --></a>
+		<h2 class="topictitle2">CurrentInputSequence()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a></td><td>CurrentInputSequence</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns current input sequence (a list of key presses). Bytes in returned descriptor are TPtiKey enum values.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-5FFB9EDC-A8A0-39F6-8C42-487287C9576B"><a name="GUID-5FFB9EDC-A8A0-39F6-8C42-487287C9576B"><!-- --></a>
+		<h2 class="topictitle2">CurrentLanguage()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-60200989-8366-3119-9151-F5817994B2C3.html">MPtiLanguage</a> *</td><td>CurrentLanguage</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns pointer to currently active language.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-975994AB-8A4F-3035-A90B-6A104DEA5E91"><a name="GUID-975994AB-8A4F-3035-A90B-6A104DEA5E91"><!-- --></a>
+		<h2 class="topictitle2">CurrentWord()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td>CurrentWord</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns pointer to current word buffer.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-098CB746-E684-3DA9-859B-1C169D3F03F2"><a name="GUID-098CB746-E684-3DA9-859B-1C169D3F03F2"><!-- --></a>
+		<h2 class="topictitle2">DefaultUserDictionary(TPtiEngineInputMode)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-7E238E35-6777-3FA7-B063-CCBFD8C36DDD.html">MPtiUserDictionary</a> *</td><td>DefaultUserDictionary</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a></td><td>aMode</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns default user dictionary for given input mode.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a> aMode</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-87E8ED99-84BA-3468-9F71-9EF94C795813"><a name="GUID-87E8ED99-84BA-3468-9F71-9EF94C795813"><!-- --></a>
+		<h2 class="topictitle2">DeleteAutoSubstitutionEntry(const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>DeleteAutoSubstitutionEntry</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aShortcut</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Remove auto substitution entry.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aShortcut</td><td>Shortcut for auto substitution entry to be removed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A2870121-7310-3062-BB1C-2B448BA1CD14"><a name="GUID-A2870121-7310-3062-BB1C-2B448BA1CD14"><!-- --></a>
+		<h2 class="topictitle2">DeleteKeyPress()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td>DeleteKeyPress</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Deletes last character in current word buffer and updates candidate list accordingly.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-6D552B0C-9F87-3B7E-AAFB-FA82EDCEF242"><a name="GUID-6D552B0C-9F87-3B7E-AAFB-FA82EDCEF242"><!-- --></a>
+		<h2 class="topictitle2">DetachUserDictionary(TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>DetachUserDictionary</td><td>(</td><td><a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aFileName</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Detaches currently attached user dictionary.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aFileName</td><td>User dictionary file name.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DA7A2C7D-58E9-37DB-9A88-1ECCC25C3F74"><a name="GUID-DA7A2C7D-58E9-37DB-9A88-1ECCC25C3F74"><!-- --></a>
+		<h2 class="topictitle2">DetachUserDictionary(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>DetachUserDictionary</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aId</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Detaches currently attached user dictionary.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aId</td><td>User dictionary id.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AEB088D2-4DE6-37CB-A1F4-AA71599B242E"><a name="GUID-AEB088D2-4DE6-37CB-A1F4-AA71599B242E"><!-- --></a>
+		<h2 class="topictitle2">EnableToneMarks(TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>EnableToneMarks</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aValue</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Enables or disables tone marks.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aValue</td><td>A boolean value specifying whether tone marks will be on or off.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BB3D6EAC-BCE3-3867-AB4E-0881B6E52E91"><a name="GUID-BB3D6EAC-BCE3-3867-AB4E-0881B6E52E91"><!-- --></a>
+		<h2 class="topictitle2">ExtendedNumericModeKeysForQwertyL(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-3A8E8369-B408-3941-A5ED-6E0702F12DA6.html">TPtiNumericKeyBinding</a> &gt; &amp;</td><td>ExtendedNumericModeKeysForQwertyL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLanguage</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This method is same as GetNumericModeKeysForQwertyL, expect that instead of returning strict list of key bindings used in phone number editor, it returns list of all possible characters used in any of the "number only" editor variations. Returned list includes key bindings for characters: "*+pw#1234567890;.,-E?/" (Not necessarily in this order). See also GetNumericModeKeysForQwertyL.</p>
+
+				<p>This version first tries to return mappings according to currently active physical keyboard. It current keyboard is not qwerty based, it searches data for the first qwerty based keyboard type it can find. That is done in same order as keyboard types are defined in PtiDefs.h. There is also another version this method, which gets keyboard type as a parameter.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V3.2 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLanguage</td><td>Language id for requested mappings.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EEE658D6-0D87-3DDD-A739-EAA76BE39A55"><a name="GUID-EEE658D6-0D87-3DDD-A739-EAA76BE39A55"><!-- --></a>
+		<h2 class="topictitle2">ExtendedNumericModeKeysForQwertyL(TInt, TPtiKeyboardType)</h2>
+		<table class="signature"><tr><td>IMPORT_C const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-3A8E8369-B408-3941-A5ED-6E0702F12DA6.html">TPtiNumericKeyBinding</a> &gt; &amp;</td><td>ExtendedNumericModeKeysForQwertyL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLanguage,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a></td><td>aKeyboardType</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Same as previous version of ExtendedNumericModeKeysForQwertyL (see description above), but keyboard type is given as a parameter and mappings are return only for given keyboard type.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLanguage</td><td>Language id for requested mappings.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a> aKeyboardType</td><td>keyboard type.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-461D2183-6A64-361D-B657-B0020113A061"><a name="GUID-461D2183-6A64-361D-B657-B0020113A061"><!-- --></a>
+		<h2 class="topictitle2">FirstCandidate()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td>FirstCandidate</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns pointer to first word in candidate list. If there isn't any candidate words the returned pointer will point to empty descriptor.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-5DC541C5-719F-3B27-B7C8-30037D1192D9"><a name="GUID-5DC541C5-719F-3B27-B7C8-30037D1192D9"><!-- --></a>
+		<h2 class="topictitle2">GetAutoSubstitutionEntry(TInt, TDes &amp;, TDes &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>GetAutoSubstitutionEntry</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aShortcut,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aSubstitution</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Return auto substitution entry for given index.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>Index for entry to be returned.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aShortcut</td><td>Shortcut part of the result entry will be stored here.  </td></tr><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aSubstitution</td><td>Substitution part of result entry will be stored here.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-69B4B58D-2E84-37FD-BD72-ABA715604E39"><a name="GUID-69B4B58D-2E84-37FD-BD72-ABA715604E39"><!-- --></a>
+		<h2 class="topictitle2">GetAvailableLanguagesL(CArrayFix&lt; TInt &gt; *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetAvailableLanguagesL</td><td>(</td><td><a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; *</td><td>aResult</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns list of available input languages.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; * aResult</td><td>List to be filled with language codes.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8999E9D6-F866-3B1A-A06A-7C933815B89B"><a name="GUID-8999E9D6-F866-3B1A-A06A-7C933815B89B"><!-- --></a>
+		<h2 class="topictitle2">GetAvailableLanguagesL(RArray&lt; TInt &gt; &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetAvailableLanguagesL</td><td>(</td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;</td><td>aResult</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns list of available input languages.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp; aResult</td><td>List to be filled with language codes.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5894EDC1-B57C-3E1C-8870-72653C449FFC"><a name="GUID-5894EDC1-B57C-3E1C-8870-72653C449FFC"><!-- --></a>
+		<h2 class="topictitle2">GetCandidateListL(CDesCArray &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>GetCandidateListL</td><td>(</td><td><a href="GUID-9EC9CD13-91FB-38F7-9E55-F41C584AC5A6.html">CDesCArray</a> &amp;</td><td>aList</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns list of candidate words for current input sequence. If word completion feature is on, then words accepted to result list may contain more letters than the number of key presses in current input sequence.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-9EC9CD13-91FB-38F7-9E55-F41C584AC5A6.html">CDesCArray</a> &amp; aList</td><td>a list to be filled with candidate words.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-65830418-E190-3D6A-9743-36331AFA4703"><a name="GUID-65830418-E190-3D6A-9743-36331AFA4703"><!-- --></a>
+		<h2 class="topictitle2">GetCandidatesByInputString(const TDesC &amp;, RPointerArray&lt; HBufC &gt; &amp;, const TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>GetCandidatesByInputString</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aInputString,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> &gt; &amp;</td><td>aList,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aIsPredictive</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aInputString</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> &gt; &amp; aList</td><td> </td></tr><tr><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aIsPredictive</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8CE2382B-E9DE-379F-A3C7-091DDE7C679C"><a name="GUID-8CE2382B-E9DE-379F-A3C7-091DDE7C679C"><!-- --></a>
+		<h2 class="topictitle2">GetChinesePhraseCandidatesL(CDesCArray &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>GetChinesePhraseCandidatesL</td><td>(</td><td><a href="GUID-9EC9CD13-91FB-38F7-9E55-F41C584AC5A6.html">CDesCArray</a> &amp;</td><td>aList</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Fills list with phrase candidates for currently selected phonetic spelling.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-9EC9CD13-91FB-38F7-9E55-F41C584AC5A6.html">CDesCArray</a> &amp; aList</td><td>A descriptor list to be filled with phrase candidates. Any previous items in aList are cleared.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9D9F01A7-CEB3-3DDC-AC80-86636903ED95"><a name="GUID-9D9F01A7-CEB3-3DDC-AC80-86636903ED95"><!-- --></a>
+		<h2 class="topictitle2">GetHwrAvailableLanguagesL(RArray&lt; TInt &gt; &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetHwrAvailableLanguagesL</td><td>(</td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;</td><td>aResult</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Get hwr available languages list</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V4.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp; aResult</td><td>Carry the hwr available languages list on return  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1D018B39-5D27-3257-9132-F47A51B8B5CC"><a name="GUID-1D018B39-5D27-3257-9132-F47A51B8B5CC"><!-- --></a>
+		<h2 class="topictitle2">GetHwrRecognizerL(TLanguage)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-48114335-2260-3559-A0BB-C00B230C7DE0.html">MPtiHwrRecognizer</a> *</td><td>GetHwrRecognizerL</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TLanguage</a></td><td>aLanguage</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Get first hwr implementation support the specified language</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V4.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TLanguage</a> aLanguage</td><td>The language that hwr implementation supported  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8CF27141-1BF4-3033-89D5-7FB4E1C067E7"><a name="GUID-8CF27141-1BF4-3033-89D5-7FB4E1C067E7"><!-- --></a>
+		<h2 class="topictitle2">GetHwrRecognizerL(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-48114335-2260-3559-A0BB-C00B230C7DE0.html">MPtiHwrRecognizer</a> *</td><td>GetHwrRecognizerL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aImpId</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Get hwr implementation by give implementation uid</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V4.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aImpId</td><td>Given specific implementation uid  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3BC69D7E-D28E-38E6-BD68-AAA5209C2219"><a name="GUID-3BC69D7E-D28E-38E6-BD68-AAA5209C2219"><!-- --></a>
+		<h2 class="topictitle2">GetLanguage(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-60200989-8366-3119-9151-F5817994B2C3.html">MPtiLanguage</a> *</td><td>GetLanguage</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aCode</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns pointer to requested language.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aCode</td><td>Language code for requested language.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5D711659-DC15-359E-B49C-539AAC86EE6B"><a name="GUID-5D711659-DC15-359E-B49C-539AAC86EE6B"><!-- --></a>
+		<h2 class="topictitle2">GetLocalizedLanguageName(TInt, TDes &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetLocalizedLanguageName</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLangCode,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aResult</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Returns localized language name for given language. This method is quite inefficient (always reads name table from resource file), when possible use Getlanguage()-&gt;LocalizedName() instead. This method can be used also when requested language is not among available input languages.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLangCode</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aResult</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4AB0A95B-2FCF-3EBE-A9A5-AD3C3A97CC3F"><a name="GUID-4AB0A95B-2FCF-3EBE-A9A5-AD3C3A97CC3F"><!-- --></a>
+		<h2 class="topictitle2">GetModeNameIndexL(TPtiChineseVariant, RArray&lt; TInt &gt; &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetModeNameIndexL</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiChineseVariant</a></td><td>aVariant,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;</td><td>aResult</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Returns mode name index table for given Chinese variant.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiChineseVariant</a> aVariant</td><td>Chinese variant to be queried.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp; aResult</td><td>Resulting index table.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3CD7BF49-5AB1-3EDA-B81C-BFFE8CAFA23F"><a name="GUID-3CD7BF49-5AB1-3EDA-B81C-BFFE8CAFA23F"><!-- --></a>
+		<h2 class="topictitle2">GetNextWordCandidateListL(CDesCArray &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>GetNextWordCandidateListL</td><td>(</td><td><a href="GUID-9EC9CD13-91FB-38F7-9E55-F41C584AC5A6.html">CDesCArray</a> &amp;</td><td>aList</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns next word candidate list. This method requires that current core object supports next word prediction feature and it is turned on.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-9EC9CD13-91FB-38F7-9E55-F41C584AC5A6.html">CDesCArray</a> &amp; aList</td><td>A List to be filled with next word cadidates.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0E9759A1-3847-3F8C-AC39-EC162D39F751"><a name="GUID-0E9759A1-3847-3F8C-AC39-EC162D39F751"><!-- --></a>
+		<h2 class="topictitle2">GetNumericModeKeysForQwertyL(TInt, RArray&lt; TPtiNumericKeyBinding &gt; &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetNumericModeKeysForQwertyL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLanguage,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-3A8E8369-B408-3941-A5ED-6E0702F12DA6.html">TPtiNumericKeyBinding</a> &gt; &amp;</td><td>aResult</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Qwerty input mode has different keymapping layout for each language. Therefore the characters for numeric input mode may be mapped to different keys depending on language. There are several situations where client application needs to know which key and case combination produce numeric characters for given language. This convinience method can be used for extracting that information easily (it is also possible to achieve same result directly via <a href="GUID-936E4197-2EFA-3DE0-9554-9481D4911101.html#GUID-936E4197-2EFA-3DE0-9554-9481D4911101">CPtiCoreLanguage</a> object). Result array will be left empty if requested language is not available or it doesn't support qwerty input mode. Returned list includes key bindings for characters: "0123456789pw+#*" (Not necessarily in this order). See also ExtendedNumericModeKeysForQwertyL.</p>
+
+				<p>This version first tries to return mappings according to currently active physical keyboard. It current keyboard is not qwerty based, it searches data for the first qwerty based keyboard type it can find. That is done in same order as keyboard types are defined in PtiDefs.h. There is also another version this method, which gets keyboard type as a parameter.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V3.1 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLanguage</td><td>Language id for requested mappings.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-3A8E8369-B408-3941-A5ED-6E0702F12DA6.html">TPtiNumericKeyBinding</a> &gt; &amp; aResult</td><td>Array for storing resulting mappings.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CCC9C337-56F3-3C40-8F3D-156D7AEC0B89"><a name="GUID-CCC9C337-56F3-3C40-8F3D-156D7AEC0B89"><!-- --></a>
+		<h2 class="topictitle2">GetNumericModeKeysForQwertyL(TInt, RArray&lt; TPtiNumericKeyBinding &gt; &amp;, TPtiKeyboardType)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetNumericModeKeysForQwertyL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLanguage,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-3A8E8369-B408-3941-A5ED-6E0702F12DA6.html">TPtiNumericKeyBinding</a> &gt; &amp;</td><td>aResult,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a></td><td>aKeyboardType</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Same as previous version of GetNumericModeKeysForQwertyL (see description above) but keyboard type is given as a parameter and mappings are return only for given keyboard type.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLanguage</td><td>Language id for requested mappings.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-3A8E8369-B408-3941-A5ED-6E0702F12DA6.html">TPtiNumericKeyBinding</a> &gt; &amp; aResult</td><td>Array for storing resulting mappings.  </td></tr><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a> aKeyboardType</td><td>keyboard type.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-38285624-63B0-3D5E-8B88-4AB5310585FC"><a name="GUID-38285624-63B0-3D5E-8B88-4AB5310585FC"><!-- --></a>
+		<h2 class="topictitle2">GetPhoneticSpelling(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td>GetPhoneticSpelling</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns phonetic spelling for current input.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>Index of requested phonetic spelling.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B09D4A79-E4C8-302D-9AC7-07D01C6F61BE"><a name="GUID-B09D4A79-E4C8-302D-9AC7-07D01C6F61BE"><!-- --></a>
+		<h2 class="topictitle2">GetPhoneticSpellingsL(CDesCArray &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>GetPhoneticSpellingsL</td><td>(</td><td><a href="GUID-9EC9CD13-91FB-38F7-9E55-F41C584AC5A6.html">CDesCArray</a> &amp;</td><td>aList</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Fills list with all the phonetic spellings for current input sequence.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-9EC9CD13-91FB-38F7-9E55-F41C584AC5A6.html">CDesCArray</a> &amp; aList</td><td>A descriptor list to be filled with phonetic spellings. Any previous items in aList are cleared.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A0FDD005-9C6F-35A8-9AF0-F1042F8C9F7F"><a name="GUID-A0FDD005-9C6F-35A8-9AF0-F1042F8C9F7F"><!-- --></a>
+		<h2 class="topictitle2">GetSpelling(TUint16, TDes &amp;, TPtiSpelling)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>GetSpelling</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint16</a></td><td>aInput,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aOutput,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiSpelling</a></td><td>aType</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Returns alternate spelling for given character.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint16</a> aInput</td><td>a character to be converted to requested spelling.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aOutput</td><td>output will be stored to this descriptor.  </td></tr><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiSpelling</a> aType</td><td>spelling type  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3977B42F-F82C-3538-9C90-A7A215BB2558"><a name="GUID-3977B42F-F82C-3538-9C90-A7A215BB2558"><!-- --></a>
+		<h2 class="topictitle2">GetUserDictionaryEntry(TInt, MPtiUserDictionaryEntry &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>GetUserDictionaryEntry</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp;</td><td>aResult</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Returns entry for given index in default user dictionary.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>An index for requested entry.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp; aResult</td><td>Result will be stored here.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-924D181D-BD2B-3F50-A32E-88073EF72B69"><a name="GUID-924D181D-BD2B-3F50-A32E-88073EF72B69"><!-- --></a>
+		<h2 class="topictitle2">HandleCommandL(TPtiEngineCommand, TAny *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>HandleCommandL</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineCommand</a></td><td>aCommand,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aParams = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>General command handling method. This method can be used for controlling core objects that require more information than just sequence of key presses.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineCommand</a> aCommand</td><td>A command to be handled.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aParams = NULL</td><td>Possible input data or parameters for command.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B8A181D9-6C91-3459-915A-0EF1E9E454FD"><a name="GUID-B8A181D9-6C91-3459-915A-0EF1E9E454FD"><!-- --></a>
+		<h2 class="topictitle2">IncrementToneMark(TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>IncrementToneMark</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aOverrideInvalid</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Cycles to next tone mark in core related tone mark list.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aOverrideInvalid</td><td>Indicates whether invalid tone marks should be skipped.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1788D215-9B1B-31BF-A62A-C8EF91CCCE32"><a name="GUID-1788D215-9B1B-31BF-A62A-C8EF91CCCE32"><!-- --></a>
+		<h2 class="topictitle2">InputMode()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a></td><td>InputMode</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns active input mode.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-041A5FAE-A5FF-34D3-AB66-CF8A0E2349FE"><a name="GUID-041A5FAE-A5FF-34D3-AB66-CF8A0E2349FE"><!-- --></a>
+		<h2 class="topictitle2">IsQwertyBasedMode(TPtiEngineInputMode)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>IsQwertyBasedMode</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a></td><td>aMode</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>A convinience method for cheking qwerty based input mode.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V3.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a> aMode</td><td>Input mode to be checked.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A98C1947-E9E1-333B-BD86-E46645732418"><a name="GUID-A98C1947-E9E1-333B-BD86-E46645732418"><!-- --></a>
+		<h2 class="topictitle2">IsToneMarkValidForSpelling()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>IsToneMarkValidForSpelling</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns boolean value indicating whether current tone mark is valid for spelling.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-7ADF1B6C-EAC3-358B-B30B-50385057CBF7"><a name="GUID-7ADF1B6C-EAC3-358B-B30B-50385057CBF7"><!-- --></a>
+		<h2 class="topictitle2">IsValidKey(TPtiKey)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>IsValidKey</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a></td><td>aKey</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns a boolean value indicating whether given scan code is allowed for current input mode.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a> aKey</td><td>A key to be queried.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-92C30DCB-434C-3D98-9171-0F95B9512301"><a name="GUID-92C30DCB-434C-3D98-9171-0F95B9512301"><!-- --></a>
+		<h2 class="topictitle2">KeyboardType()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a></td><td>KeyboardType</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns currently selected qwerty keyboard type.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-F3873513-5361-3C5C-8CBD-6773143FE3F0"><a name="GUID-F3873513-5361-3C5C-8CBD-6773143FE3F0"><!-- --></a>
+		<h2 class="topictitle2">KeyboardTypesSupportedByLanguageL(TInt, RArray&lt; TPtiKeyboardType &gt; &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>KeyboardTypesSupportedByLanguageL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLanguage,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a> &gt; &amp;</td><td>aResult</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Lists keyboard blocks available in keymapping data for given language.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLanguage</td><td>A language to be queried.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a> &gt; &amp; aResult</td><td>Resulting list of keyboard types will we stored here.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8A52B2AB-39D8-3447-A40F-6B02659D295B"><a name="GUID-8A52B2AB-39D8-3447-A40F-6B02659D295B"><!-- --></a>
+		<h2 class="topictitle2">LastEnteredKey()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a></td><td>LastEnteredKey</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns last entered key press.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-101440D0-D9E8-3039-A75A-BC26908A1800"><a name="GUID-101440D0-D9E8-3039-A75A-BC26908A1800"><!-- --></a>
+		<h2 class="topictitle2">ListAvailablePhysicalKeyboardsL(RArray&lt; TPtiKeyboardType &gt; &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ListAvailablePhysicalKeyboardsL</td><td>(</td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a> &gt; &amp;</td><td>aResult</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Returns a list containing keyboard type values for all available physical keyboards connected to the device. Keyboard doesn't have to be active at calling time to be included in the output list.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a> &gt; &amp; aResult</td><td>An array to be filled with available keyboard types.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CD991BB5-54D1-34B7-B39D-957CD6D286D2"><a name="GUID-CD991BB5-54D1-34B7-B39D-957CD6D286D2"><!-- --></a>
+		<h2 class="topictitle2">ListHwrRecognizerL(TLanguage)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &gt; &amp;</td><td>ListHwrRecognizerL</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TLanguage</a></td><td>aLanguage</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Get hwr implementation uid list which support given language</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V4.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TLanguage</a> aLanguage</td><td>The language that hwr implementation supported  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F1343947-7107-3585-A2D6-9529654BBF0B"><a name="GUID-F1343947-7107-3585-A2D6-9529654BBF0B"><!-- --></a>
+		<h2 class="topictitle2">MappingDataForKey(TPtiKey, TDes &amp;, TPtiTextCase)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>MappingDataForKey</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a></td><td>aKey,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aResult,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiTextCase</a></td><td>aCase</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Returns keymapping data for given key. Returned data depends on active language and input mode. Result string will be empty if there isn't key mapping adta available.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V3.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a> aKey</td><td>A key to be queried.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aResult</td><td>Resulting mapping data.  </td></tr><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiTextCase</a> aCase</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E0CA0197-8E66-30F3-B862-E63D99121758"><a name="GUID-E0CA0197-8E66-30F3-B862-E63D99121758"><!-- --></a>
+		<h2 class="topictitle2">MarkAutoCapitalized()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>MarkAutoCapitalized</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Some core objects may provide different set of results depending on whether the auto captitalization feature was used for entering the word or not. There is now way to tell on core level whether the word was auto-capitalizedby FEP or capitalized normally by the user. This method can be used to incicate core object that auto-capitalization was used for current input sequence. Clearing or commiting the word will cancel the effect of this method.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-D16C30E5-4355-37F2-B518-389735B1657F"><a name="GUID-D16C30E5-4355-37F2-B518-389735B1657F"><!-- --></a>
+		<h2 class="topictitle2">MoreCandidatePages()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>MoreCandidatePages</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns a boolean value indicating whether there are more candidate pages available.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-E3CE4281-71B6-3EA2-9F1B-ABC879131D7B"><a name="GUID-E3CE4281-71B6-3EA2-9F1B-ABC879131D7B"><!-- --></a>
+		<h2 class="topictitle2">NewL(TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html">CPtiEngine</a> *</td><td>NewL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aUseDefaultUserDictionary = EFalse</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Two phase constructor.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aUseDefaultUserDictionary = EFalse</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-111B6F0B-BA09-3027-AACD-BE9F2F9F6362"><a name="GUID-111B6F0B-BA09-3027-AACD-BE9F2F9F6362"><!-- --></a>
+		<h2 class="topictitle2">NewL(const TDesC &amp;, TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html">CPtiEngine</a> *</td><td>NewL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aCoreName,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aUseDefaultUserDictionary = EFalse</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Two phase constructor.</p>
+
+				<p>NOTE: THIS METHOD IS DEPRECATED AND WILL LEAVE WHEN CALLED. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aCoreName</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aUseDefaultUserDictionary = EFalse</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-215A936A-3473-3339-9E16-FC6FAA8A1F4A"><a name="GUID-215A936A-3473-3339-9E16-FC6FAA8A1F4A"><!-- --></a>
+		<h2 class="topictitle2">NewL(const TUid, TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html">CPtiEngine</a> *</td><td>NewL</td><td>(</td><td>const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aCoreUid,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aUseDefaultUserDictionary = EFalse</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Two phase constructor.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aCoreUid</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aUseDefaultUserDictionary = EFalse</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E00232AC-E229-33CB-8C89-5CCC506100A9"><a name="GUID-E00232AC-E229-33CB-8C89-5CCC506100A9"><!-- --></a>
+		<h2 class="topictitle2">NextCandidate()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td>NextCandidate</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns pointer to next word in candidate list. <a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-461D2183-6A64-361D-B657-B0020113A061">FirstCandidate()</a> must be called before calling this method. Returns pointer to empty descriptor if there isn't more candidates available.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-AC850749-EA1F-3567-A2D4-5E6F1F2D41E7"><a name="GUID-AC850749-EA1F-3567-A2D4-5E6F1F2D41E7"><!-- --></a>
+		<h2 class="topictitle2">NextCandidatePage()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>NextCandidatePage</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Changes to next Chinese candidate page.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-7FF6D6AD-5248-3272-AD42-6B56706A8C93"><a name="GUID-7FF6D6AD-5248-3272-AD42-6B56706A8C93"><!-- --></a>
+		<h2 class="topictitle2">NumberOfAutoSubstitutionEntries()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>NumberOfAutoSubstitutionEntries</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the number of auto substitution entries in auto subst db.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-8CCD22A0-27B6-3C11-B0CF-BEDA05DC52A7"><a name="GUID-8CCD22A0-27B6-3C11-B0CF-BEDA05DC52A7"><!-- --></a>
+		<h2 class="topictitle2">NumberOfCandidates()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>NumberOfCandidates</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns number of candidate words for current input sequence.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-46BF99D6-D6F8-329F-BDF5-B4F451D499B9"><a name="GUID-46BF99D6-D6F8-329F-BDF5-B4F451D499B9"><!-- --></a>
+		<h2 class="topictitle2">NumberOfEntriesInUserDictionary()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>NumberOfEntriesInUserDictionary</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns number of entries in default user dictionary.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-757A9DE5-EDED-3C86-81CF-256F7B43BC46"><a name="GUID-757A9DE5-EDED-3C86-81CF-256F7B43BC46"><!-- --></a>
+		<h2 class="topictitle2">NumberOfLanguages()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>NumberOfLanguages</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns number of available input languages.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-56EB8703-8F21-3907-8008-1CEB5353EE27"><a name="GUID-56EB8703-8F21-3907-8008-1CEB5353EE27"><!-- --></a>
+		<h2 class="topictitle2">Observer()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-203EB63F-4E37-3B46-A507-EF97FB6B51FE.html">MPtiObserver</a> *</td><td>Observer</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns current observer.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-02991539-4BDB-312A-B829-99F0FACACFF8"><a name="GUID-02991539-4BDB-312A-B829-99F0FACACFF8"><!-- --></a>
+		<h2 class="topictitle2">PhoneticSpellingCount()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>PhoneticSpellingCount</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns a value specifying how many phonetic spellings there is available for current input.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-A3B8DF53-BE69-3481-981C-FEDFA282EB21"><a name="GUID-A3B8DF53-BE69-3481-981C-FEDFA282EB21"><!-- --></a>
+		<h2 class="topictitle2">PreviousCandidate()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td>PreviousCandidate</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns pointer to previous word in candidate list. If there isn't previous candidate available (<a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-E00232AC-E229-33CB-8C89-5CCC506100A9">NextCandidate()</a> wasn't succesfully called) then the return value will point to an empty string.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-BCD21661-CE03-396F-BD17-D2A5BC940D9E"><a name="GUID-BCD21661-CE03-396F-BD17-D2A5BC940D9E"><!-- --></a>
+		<h2 class="topictitle2">PreviousCandidatePage()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>PreviousCandidatePage</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Changes to previous Chinese candidate page.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-69F71267-5092-3909-AD89-3E61F532A688"><a name="GUID-69F71267-5092-3909-AD89-3E61F532A688"><!-- --></a>
+		<h2 class="topictitle2">ReadSecondaryDataFileL(TUid, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td>ReadSecondaryDataFileL</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aCoreUid,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndexNumber</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Returns a heap buffer containing data from given secondary data file. Returns null if file is not found.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V3.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aCoreUid</td><td>Uid number for requesting core object.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndexNumber</td><td>Index number (see CreateDefaultUserDictionaryFileL).  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F82B067C-2414-39C1-BEE1-50BA039C616A"><a name="GUID-F82B067C-2414-39C1-BEE1-50BA039C616A"><!-- --></a>
+		<h2 class="topictitle2">ReadingTextL()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td>ReadingTextL</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns reading text for Japanese input.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-91F97058-564E-3A9E-8467-0EB92BA3D8C0"><a name="GUID-91F97058-564E-3A9E-8467-0EB92BA3D8C0"><!-- --></a>
+		<h2 class="topictitle2">RemoveEntryFromUserDictionary(MPtiUserDictionaryEntry &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>RemoveEntryFromUserDictionary</td><td>(</td><td><a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp;</td><td>aEntry</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Removes entry from default user dictionary of currently active core object.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp; aEntry</td><td>an entry to be removed from default dictionary.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-07A09BFD-1E8E-3E4B-97EA-1DDBA50F7016"><a name="GUID-07A09BFD-1E8E-3E4B-97EA-1DDBA50F7016"><!-- --></a>
+		<h2 class="topictitle2">RemoveEntryFromUserDictionary(MPtiUserDictionaryEntry &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>RemoveEntryFromUserDictionary</td><td>(</td><td><a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp;</td><td>aEntry,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aId</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Removes word from specific user dictionary.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-4FE172FC-BA5C-3722-BF44-4598F6D0123C.html">MPtiUserDictionaryEntry</a> &amp; aEntry</td><td>an entry to be removed from default dictionary.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aId</td><td>User dictionary id.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A88F76C5-B400-3047-92E1-5E827E65B160"><a name="GUID-A88F76C5-B400-3047-92E1-5E827E65B160"><!-- --></a>
+		<h2 class="topictitle2">ResetToneMark()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ResetToneMark</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Resets tone mark.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-66ADDE20-21AC-33FB-AE50-0E8FC810C661"><a name="GUID-66ADDE20-21AC-33FB-AE50-0E8FC810C661"><!-- --></a>
+		<h2 class="topictitle2">SelectPhoneticSpelling(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>SelectPhoneticSpelling</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Selects given phonetic spelling for current input.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>Index of requested phonetic spelling.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F340ED2E-6B2F-3AE9-BAAC-45FE0038331C"><a name="GUID-F340ED2E-6B2F-3AE9-BAAC-45FE0038331C"><!-- --></a>
+		<h2 class="topictitle2">SelectedPhoneticSpelling()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SelectedPhoneticSpelling</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the index of currently selected phonetic spelling.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-487CE1CB-7100-3A6E-AD83-48A34AFE02D2"><a name="GUID-487CE1CB-7100-3A6E-AD83-48A34AFE02D2"><!-- --></a>
+		<h2 class="topictitle2">SetAutoSubstitution(TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SetAutoSubstitution</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aStatus</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Turns auto substitution feature on or off. Auto substitution feature replaces predefined strings with other strings. For example, if user types xmas, it could be auto substituted with Christmas.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aStatus</td><td>New status for auto substituiton feature  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5912DE24-9306-3004-813B-858B78200691"><a name="GUID-5912DE24-9306-3004-813B-858B78200691"><!-- --></a>
+		<h2 class="topictitle2">SetCandidatePageLength(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetCandidatePageLength</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLength</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets length of Chinese candidate page.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLength</td><td>Length of Chinese candidate page.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-76A20D7F-6D5F-3AE8-B439-6B5171483FBA"><a name="GUID-76A20D7F-6D5F-3AE8-B439-6B5171483FBA"><!-- --></a>
+		<h2 class="topictitle2">SetCase(TPtiTextCase)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetCase</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiTextCase</a></td><td>aCase</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets text case.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+EPtiCaseLower Normal lower text case EPtiCaseUpper Normal capitalized text case EPtiCaseChrLower Lower text case when Chr key is being held EPtiCaseChrUpper Upper text case when Chr key is being held EPtiCaseFnLower Lower text case when Fn key is being held EPtiCaseFnUpper Upper text case when Fn key is being held </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiTextCase</a> aCase</td><td>Text case to be set. Possible values are: </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7446D130-3EC6-36CE-A0FA-7BA4CF081743"><a name="GUID-7446D130-3EC6-36CE-A0FA-7BA4CF081743"><!-- --></a>
+		<h2 class="topictitle2">SetCurrentWord(TPtrC)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SetCurrentWord</td><td>(</td><td><a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td>aWord</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Fills text buffer with given word, refreshes current input sequence and asks current core object to update candidate list accordingly.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a> aWord</td><td>a word to be set as current word.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A891C4A8-3156-31D0-AA99-73C29699CE27"><a name="GUID-A891C4A8-3156-31D0-AA99-73C29699CE27"><!-- --></a>
+		<h2 class="topictitle2">SetExternalKeyMapL(TPtiEngineInputMode, TPtiKey, TDesC &amp;, TPtiTextCase)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SetExternalKeyMapL</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a></td><td>aMode,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a></td><td>aKey,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aKeyMap,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiTextCase</a></td><td>aCase</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Replaces key map for single key.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a> aMode</td><td>Input mode of key map.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKey</a> aKey</td><td>Key to be replaced.  </td></tr><tr><td class="parameter"><a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aKeyMap</td><td>New key sequence for aKey.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiTextCase</a> aCase</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8E264B51-4994-34FB-A611-E530B579D21A"><a name="GUID-8E264B51-4994-34FB-A611-E530B579D21A"><!-- --></a>
+		<h2 class="topictitle2">SetInputMode(TPtiEngineInputMode)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SetInputMode</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a></td><td>aMode</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Activates requested input mode for active language.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiEngineInputMode</a> aMode</td><td>requested input mode.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-721EB0F2-11B9-3B92-A1C7-95D05CBD873B"><a name="GUID-721EB0F2-11B9-3B92-A1C7-95D05CBD873B"><!-- --></a>
+		<h2 class="topictitle2">SetKeyboardType(TPtiKeyboardType)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SetKeyboardType</td><td>(</td><td><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a></td><td>aType</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets keyboard type for non-virtual keyboard. Keyboard type specifies which set of key mapping data is used.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F23355A9-D7AB-3653-BBBE-1D1EF2A7CF5E.html">TPtiKeyboardType</a> aType</td><td>New keyboard type.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D461ABA5-B66D-3135-B6DD-8BAE8B108172"><a name="GUID-D461ABA5-B66D-3135-B6DD-8BAE8B108172"><!-- --></a>
+		<h2 class="topictitle2">SetMaxLengthForAutoCompletedCandidates(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SetMaxLengthForAutoCompletedCandidates</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aMaxLength</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the maximum length for auto completed words. This method can be used when the client needs to be sure that all provided word completions will fit into remaining editor buffer. When the number of key presses in an input sequence exceeds the value given in aMaxLength, core will automatically reset this value to "no limit".</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aMaxLength</td><td>The maximum length fo auto completed candinates. Value 0 means no limit.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EC6532C7-2936-3204-8A46-A70E12C3ECC2"><a name="GUID-EC6532C7-2936-3204-8A46-A70E12C3ECC2"><!-- --></a>
+		<h2 class="topictitle2">SetNumberCandidateStatus(TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SetNumberCandidateStatus</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aStatus</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets a boolean value indicating whether number candidates are included to predictive candidate list. Number candidates are strings containing only digits. Number candidate feature must be supported by active prediction engine, otherwise this setting will be ignored.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aStatus</td><td>A boolean value indicating whether number candidates are included to cadidate list.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CE482792-A59A-3E9D-8703-E027A6915309"><a name="GUID-CE482792-A59A-3E9D-8703-E027A6915309"><!-- --></a>
+		<h2 class="topictitle2">SetObserver(MPtiObserver *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetObserver</td><td>(</td><td><a href="GUID-203EB63F-4E37-3B46-A507-EF97FB6B51FE.html">MPtiObserver</a> *</td><td>aObserver</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets observer. See PtiObserver.h for observer API details.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-203EB63F-4E37-3B46-A507-EF97FB6B51FE.html">MPtiObserver</a> * aObserver</td><td>A observer to be set.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-54A44C09-D1E1-35E7-A30A-AC9472AB2949"><a name="GUID-54A44C09-D1E1-35E7-A30A-AC9472AB2949"><!-- --></a>
+		<h2 class="topictitle2">SetPredictiveChineseChar(const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>SetPredictiveChineseChar</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aChar</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Selects Chinese character (meaning that user has accepted character to be inserted into editor). Predictive candidate lists will be updated with Chinese characters associated to selected character. Associated charcaters can be accessed via ...<a href="GUID-A98A9789-DCA6-3809-9726-EE60AA45A315.html#GUID-DB3577FF-6204-3A9D-8F62-25A352C28DC5">CandidatePage()</a> -methods. Return value can be ignored in current implementation.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aChar</td><td>A character to be selected.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A48FA50E-C386-3DC0-9C10-7DE56CA1900F"><a name="GUID-A48FA50E-C386-3DC0-9C10-7DE56CA1900F"><!-- --></a>
+		<h2 class="topictitle2">SetReordering(TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SetReordering</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aStatus</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Turns reordering feature on or off. This method can be used only if active core object supports reordering feature. It is also possible that core object supports reordering feature, but it can't be turned off. Reordeing feature keeps track of usage frequency for entered words and promotes most frequently used words in the candidate list. Details depend on underlying prediction engine.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aStatus</td><td>New status for reordering feature.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-76B394F9-E90A-3023-A8FA-6F3075BA59EF"><a name="GUID-76B394F9-E90A-3023-A8FA-6F3075BA59EF"><!-- --></a>
+		<h2 class="topictitle2">SetToneMark(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>SetToneMark</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aToneMark</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets tone mark directly. This method is used if client wants to override default core dependant tone mark set or traditional cycle-through tone mark system doesn't suit its porposes.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.8 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aToneMark</td><td>Tone mark to be set.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-54D76C26-7950-3A70-83E2-AEFD1425A0CB"><a name="GUID-54D76C26-7950-3A70-83E2-AEFD1425A0CB"><!-- --></a>
+		<h2 class="topictitle2">ToneMark(TText &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>ToneMark</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TText</a> &amp;</td><td>aToneMark</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns unicode value for current tone mark.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V2.6 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TText</a> &amp; aToneMark</td><td>resulting tone mark is store here.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F6F53FCB-0718-3E15-98DD-D860D3DE6C44"><a name="GUID-F6F53FCB-0718-3E15-98DD-D860D3DE6C44"><!-- --></a>
+		<h2 class="topictitle2">WriteSecondaryDataFileL(TUid, TInt, HBufC8 *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>WriteSecondaryDataFileL</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aCoreUid,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndexNumber,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td>aData</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Creates secondary data file for given core object. Existing file will be overwritten. This data file may contain any additional data that the core object needs to store between sessions (for example used word dictionary, if the engine keeps reordering data in separate memory area).</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 V3.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aCoreUid</td><td>Uid number for requesting core object.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndexNumber</td><td>Index number. Core object may use this parameter for numerating data files if it needs more than one of then. Otherwise zero.  </td></tr><tr><td class="parameter"><a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> * aData</td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-164FE46E-1164-3738-BE51-AD320DFAFD3B"><a name="GUID-164FE46E-1164-3738-BE51-AD320DFAFD3B"><!-- --></a>
+		<h2 class="topictitle2">
+					CPtiEngineImpl * iImpl</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-0ADD42D7-5C1F-3947-8678-A76052985201.html">CPtiEngineImpl</a> *</td><td>iImpl</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

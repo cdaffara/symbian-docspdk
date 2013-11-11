@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Factory Implementation"/>
+<meta name="abstract" content="Describes how to implement a factory."/>
+<meta name="description" content="Describes how to implement a factory."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0C8C41EC-A8ED-5916-B944-DDDF20FADAF4.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-52371DAB-A231-558C-B3E6-220DAAEE566B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A04F46F8-1BA9-5A77-B455-59C67DD4AA36.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0C8C41EC-A8ED-5916-B944-DDDF20FADAF4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3C34724F-B476-5329-B0B1-6D5A34294979.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Factory Implementation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2400778 id2402110 id2402125 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-52371DAB-A231-558C-B3E6-220DAAEE566B.html" title="Provides software components that implement the interface between Symbian platform and peripherals.">Logical Device Drivers</a> &gt; <a href="GUID-A04F46F8-1BA9-5A77-B455-59C67DD4AA36.html" title="The Serial Port Driver is a device driver that handles serial port hardware (create the physical channel). This section describes how to create a port of it for your phone hardware.">Serial Port Driver</a> &gt; <a href="GUID-0C8C41EC-A8ED-5916-B944-DDDF20FADAF4.html" title="Steps required to implement a port of the Serial Port Driver.">Port Implementation Tutorial</a> &gt; </div>
+<h1 class="topictitle1">Factory
+Implementation</h1>
+<div><p>Describes how to implement a factory.</p>
+
+<p>The Serial Port Driver PDD must provide a factory class to create channels.
+The purpose of the PDD factory is to create the physical channel. For the
+Uart, this is defined by the <samp class="codeph">DDriverComm</samp> class, which is
+derived from <a href="GUID-A5484A7F-94B9-34C7-9F88-82B1BF516930.html"><span class="apiname">DPhysicalDevice</span></a>. The class is defined in the
+Uart source code: </p>
+
+<pre class="codeblock" id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-15ED5794-BC8A-5CF0-BE5D-8620AFDEDEEA"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-15ED5794-BC8A-5CF0-BE5D-8620AFDEDEEA"><!-- --></a>class DDriverComm : public DPhysicalDevice
+    {
+public:
+    DDriverComm();
+    virtual TInt Install();
+    virtual void GetCaps(TDes8 &amp;aDes) const;
+    virtual TInt Create(DBase*&amp; aChannel, TInt aUnit, const TDesC8* anInfo, const TVersion &amp;aVer);
+    virtual TInt Validate(TInt aUnit, const TDesC8* anInfo, const TVersion &amp;aVer);
+    };
+</pre>
+
+<p>This implements the four virtual functions that the base class defines,
+as well as a default constructor. </p>
+
+<div class="section" id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-5A36A559-CBB6-4495-A1ED-0C4F9289F9B0"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-5A36A559-CBB6-4495-A1ED-0C4F9289F9B0"><!-- --></a><h2 class="sectiontitle">Install()</h2> <p> <samp class="codeph">Install()</samp> sets
+the driver name. The name is the way that the physical device is identified.
+The name is the same as the LDD name, but followed by a dot and a short string
+to represent the physical device. If you have similar existing source, just
+copy from there. The function is implemented as: </p>
+ <pre class="codeblock" id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-6988B583-5060-5CE7-9404-C631C40B188A"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-6988B583-5060-5CE7-9404-C631C40B188A"><!-- --></a>TInt DDriverComm::Install()
+    {
+    return SetName(&amp;KPddName);
+    }
+</pre>
+ <p>In the template port, the name is the string <samp class="codeph">Comm.Template</samp>. </p>
+ <p>See
+also <a href="GUID-A5484A7F-94B9-34C7-9F88-82B1BF516930.html#GUID-A5484A7F-94B9-34C7-9F88-82B1BF516930__GUID-0065FAAF-D734-3ED2-816A-CCE9BF607BAB"><span class="apiname">DPhysicalDevice::Install()</span></a>  </p>
+ </div>
+
+<div class="section" id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-CBFB3280-3C16-4F15-A7DB-EDCA278562F6"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-CBFB3280-3C16-4F15-A7DB-EDCA278562F6"><!-- --></a><h2 class="sectiontitle">GetCaps()</h2> <p> <samp class="codeph">GetCaps()</samp> returns
+the capabilities of the physical driver <em>factory</em> (not the driver object).
+Since driver factories all produce polymorphic objects there is no point in
+differentiating between them so the function should ignore the passed in descriptor
+reference. The driver object’s capabilities are returned by the <samp class="codeph">DComm</samp> derived <samp class="codeph">Caps()</samp> function. </p>
+ <p>GetCaps()
+can be implemented as a stub function, i.e.: </p>
+ <pre class="codeblock" id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-338ECD13-DD25-55E0-812F-3ED3A49826CD"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-338ECD13-DD25-55E0-812F-3ED3A49826CD"><!-- --></a>Void DDriverComm::GetCaps(TDes8&amp;  /* aDes */)
+    {
+    }</pre>
+ <p>See also <a href="GUID-A5484A7F-94B9-34C7-9F88-82B1BF516930.html#GUID-A5484A7F-94B9-34C7-9F88-82B1BF516930__GUID-CA336905-B068-3CFB-80D7-4DF29B92BF4F"><span class="apiname">DPhysicalDevice::GetCaps()</span></a>  </p>
+ </div>
+
+<div class="section" id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-70BBF195-3943-4ABE-9EFB-FCC2BDAC52DD"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-70BBF195-3943-4ABE-9EFB-FCC2BDAC52DD"><!-- --></a><h2 class="sectiontitle">Validate()</h2> <p> <samp class="codeph"> Validate()</samp> verifies
+that the physical driver version is compatible with the caller’s version.
+This function can be copied in its entirety from any current driver source.
+It also checks that the unit number used to create a physical channel object
+is valid, typically checking that the number lies within a valid range. </p>
+ <pre class="codeblock" id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-03DC2E07-FEBF-5F52-B3A5-7F52C855FC06"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-03DC2E07-FEBF-5F52-B3A5-7F52C855FC06"><!-- --></a>TInt DDriverComm::Validate(TInt aUnit, const TDesC8* /*anInfo*/, const TVersion&amp; aVer)
+    {
+    if (
+        (!Kern::QueryVersionSupported(iVersion,aVer)) || 
+        (!Kern::QueryVersionSupported(aVer,TVersion(KMinimumLddMajorVersion,KMinimumLddMinorVersion,KMinimumLddBuild)))
+       )
+    return KErrNotSupported;
+    if (aUnit&lt;UART_UNIT_OFFSET || aUnit&gt;=(UART_TOTAL_NUMBER_UNITS+UART_UNIT_OFFSET))
+        return KErrNotSupported;
+    return KErrNone;
+    }
+</pre>
+ <p>Note that <samp class="codeph">iVersion</samp> is a data member in the
+base class <a href="GUID-A5484A7F-94B9-34C7-9F88-82B1BF516930.html"><span class="apiname">DPhysicalDevice</span></a>. </p>
+ <p>See also: </p>
+ <ul>
+<li id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-0EF9F2F1-EC2A-50E3-9E1B-2D6112FE8623"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-0EF9F2F1-EC2A-50E3-9E1B-2D6112FE8623"><!-- --></a><p> <a href="GUID-A5484A7F-94B9-34C7-9F88-82B1BF516930.html#GUID-A5484A7F-94B9-34C7-9F88-82B1BF516930__GUID-70B6293C-9000-31D9-AE9E-441C9760B92E"><span class="apiname">DPhysicalDevice::Validate()</span></a>  </p>
+ </li>
+
+<li id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-4ED7473E-D789-5813-9404-0F6BDCB83D3F"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-4ED7473E-D789-5813-9404-0F6BDCB83D3F"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-A28757CC-B89B-3F63-AD39-9955FBE7533B"><span class="apiname">Kern::QueryVersionSupported()</span></a>  </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-48EF94F9-ACBC-58DA-9F0E-4034E56C6C74"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-48EF94F9-ACBC-58DA-9F0E-4034E56C6C74"><!-- --></a><h2 class="sectiontitle">Create()</h2> <p> <samp class="codeph">Create()</samp> creates
+and returns a pointer to the physical channel object through the <a href="GUID-4FCB6127-84F3-38F6-8AD2-FC3B94D67DA3.html"><span class="apiname">DBase</span></a> *&amp;
+type argument. In the case of serial device drivers, a physical channel is
+an instance of a class derived from <samp class="codeph">DComm</samp>, which is itself
+derived from <a href="GUID-4FCB6127-84F3-38F6-8AD2-FC3B94D67DA3.html"><span class="apiname">DBase</span></a>. </p>
+ <p>Implementing this function
+may involve: </p>
+ <ul>
+<li id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-D6D5111E-22E1-5EA2-B217-EAC3BA5B9599"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-D6D5111E-22E1-5EA2-B217-EAC3BA5B9599"><!-- --></a><p>setting up any port
+related hardware; for example, defining GPIO pins as UART port I/O </p>
+ </li>
+
+<li id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-6769D49B-478C-5282-A918-6D659F823B95"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-6769D49B-478C-5282-A918-6D659F823B95"><!-- --></a><p>initialising the UART
+device itself; for example, enabling UART clock sources </p>
+ </li>
+
+<li id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-BFEC3036-6F9C-5499-81AF-7A5D01BDD890"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-BFEC3036-6F9C-5499-81AF-7A5D01BDD890"><!-- --></a><p>binding any interrupt
+resources to the UART Interrupt Service Routine (ISR). </p>
+ </li>
+
+</ul>
+ <p>The function sets a reference argument to point to the newly instantiated
+physical channel object, but returns an error code if object allocation or
+initialisation fails, i.e. the call to the physical channel object’s <samp class="codeph">DoCreate()</samp> function
+fails. Error codes are returned to the caller. </p>
+ <p>This code is typical,
+and can be copied from any current source. </p>
+ <pre class="codeblock" id="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-E93C6DEA-852D-5B5F-8531-CA4B76B91879"><a name="GUID-6DE69F29-45B0-5E62-AA13-DA4041B1BC46__GUID-E93C6DEA-852D-5B5F-8531-CA4B76B91879"><!-- --></a>TInt DDriverComm::Create(DBase*&amp; aChannel, TInt aUnit, const TDesC8* anInfo, const TVersion&amp; aVer)
+    {
+    DCommXXX* pD=new DCommXXX;
+    aChannel=pD;
+    TInt r=KErrNoMemory;
+    if (pD)
+        r=pD-&gt;DoCreate(aUnit,anInfo);
+    return r;
+    }
+</pre>
+ <p>where <samp class="codeph">DCommXXX</samp> is a <samp class="codeph">DComm</samp> derived
+class. </p>
+ <p>Customisation depends on the functions in the <samp class="codeph">DCommXXX::DoCreate()</samp> function. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-0C8C41EC-A8ED-5916-B944-DDDF20FADAF4.html" title="Steps required to implement a port of the Serial Port Driver.">Port Implementation Tutorial</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-3C34724F-B476-5329-B0B1-6D5A34294979.html" title="Describes how to implement the Interrupt Dispatcher part of the ASSP/Variant.">Interrupt
+Dispatcher Tutorial</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

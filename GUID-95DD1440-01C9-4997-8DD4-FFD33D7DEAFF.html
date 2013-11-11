@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Application-specific events"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-95DD1440-01C9-4997-8DD4-FFD33D7DEAFF"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Application-specific events</title>
+
+     
+<?php     
+   include_once ($_SERVER["DOCUMENT_ROOT"]. '/includes/skin_constants.php');
+   include_once (CURRENT_SKIN_PATH.'/sdl_head.html');
+?>
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-95DD1440-01C9-4997-8DD4-FFD33D7DEAFF"><a name="GUID-95DD1440-01C9-4997-8DD4-FFD33D7DEAFF"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"/>
+<h1 class="topictitle1">Application-specific
+events</h1>
+<div>
+<p><a href="GUID-97BBFFE1-C6C6-3C58-834E-0FF79199F587.html"><span class="apiname">CCoeAppUi:HandleApplicationSpecificEventL()</span></a> is called
+for application-specific events where event codes are from <a href="GUID-946FF333-2651-35ED-A2D4-CC417DB32F2A.html"><span class="apiname">EEventUser</span></a> upwards
+in <span class="parmname">TEventCode</span>. You can define a data structure to be
+delivered in the window server event. The data can be accessed through a pointer,
+which can be obtained by calling <a href="GUID-5D0B1595-1AC7-3C44-AC6B-0EFB5EABCF31.html#GUID-5D0B1595-1AC7-3C44-AC6B-0EFB5EABCF31__GUID-13CA6935-906D-368D-8AEA-C91722FD4484"><span class="apiname">TWsEvent::EventData()</span></a>.
+The maximum event data size is defined as <a href="GUID-8BBA005B-EB14-34BA-B965-17F6A2B36D74.html"><span class="apiname">EWsEventDataSize</span></a>. </p>
+
+<pre class="codeblock" id="GUID-95DD1440-01C9-4997-8DD4-FFD33D7DEAFF__GUID-80335267-13AB-49C8-8895-B6598F5D59A4"><a name="GUID-95DD1440-01C9-4997-8DD4-FFD33D7DEAFF__GUID-80335267-13AB-49C8-8895-B6598F5D59A4"><!-- --></a>void HandleApplicationSpecificEventL(TInt aType,const TWsEvent&amp; aEvent)
+</pre>
+
+<p>Code example: </p>
+
+<p>First define a data structure for the event data:</p>
+
+<pre class="codeblock" id="GUID-95DD1440-01C9-4997-8DD4-FFD33D7DEAFF__GUID-BBC9DCFA-F46C-4AC9-BC7F-B1A2DB39963A"><a name="GUID-95DD1440-01C9-4997-8DD4-FFD33D7DEAFF__GUID-BBC9DCFA-F46C-4AC9-BC7F-B1A2DB39963A"><!-- --></a>class TEventsEventType
+    {
+    public:
+        // Event iData
+        TBufC&lt; TWsEvent::EWsEventDataSize&gt; data;
+        };
+</pre>
+
+<p>Then create an event and send it to all window groups:</p>
+
+<pre class="codeblock" id="GUID-95DD1440-01C9-4997-8DD4-FFD33D7DEAFF__GUID-0E8CE3D4-19F2-46D6-9A22-9A7EBC73F5C5"><a name="GUID-95DD1440-01C9-4997-8DD4-FFD33D7DEAFF__GUID-0E8CE3D4-19F2-46D6-9A22-9A7EBC73F5C5"><!-- --></a>// Create a window server event
+TWsEvent event;
+TEventsEventType eventType;
+// Set event data. eventType.data = KData;
+event.SetType( ETestEvent1 ); // set event type
+event.SetTimeNow(); // set the event time
+event.SetHandle( iWsSession.WsHandle() ); // set window server handle
+*( TEventsEventType* )( event.EventData() ) = eventType; // set event data
+// Send the created event
+User::LeaveIfError( iWsSession.SendEventToAllWindowGroups( event ) );
+</pre>
+
+<p>Catch the event using the following method:</p>
+
+<pre class="codeblock" id="GUID-95DD1440-01C9-4997-8DD4-FFD33D7DEAFF__GUID-1BF859E7-EC92-4BDA-AFCE-DEB82854C8D7"><a name="GUID-95DD1440-01C9-4997-8DD4-FFD33D7DEAFF__GUID-1BF859E7-EC92-4BDA-AFCE-DEB82854C8D7"><!-- --></a>void CEventsAppUi::HandleApplicationSpecificEventL(TInt aType,const TWsEvent&amp; aEvent)
+    {
+    // Check the event type
+    if( aType == ETestEvent1 )
+        {
+        // Cast to TEventsEventType
+        TEventsEventType event;
+        event = *( TEventsEventType* )aEvent.EventData();
+        // Print the data
+        iEikonEnv-&gt;InfoMsg( event.data );
+        }
+        // Call the base class implementation
+        CEikAppUi::HandleApplicationSpecificEventL( aType, aEvent );
+    }
+</pre>
+
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

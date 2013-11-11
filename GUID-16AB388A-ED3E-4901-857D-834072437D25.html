@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Spin Locks"/>
+<meta name="abstract" content="Spin locks allow resource execution control through fast lock context switching."/>
+<meta name="description" content="Spin locks allow resource execution control through fast lock context switching."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CE72E71B-6ED3-4961-B4C5-C43D823ACA9D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-629EAA30-ED77-4CA9-91ED-36C818D7B4F4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CE72E71B-6ED3-4961-B4C5-C43D823ACA9D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CE72E71B-6ED3-4961-B4C5-C43D823ACA9D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-16AB388A-ED3E-4901-857D-834072437D25"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Spin Locks</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-16AB388A-ED3E-4901-857D-834072437D25"><a name="GUID-16AB388A-ED3E-4901-857D-834072437D25"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2561665 id2561671 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-629EAA30-ED77-4CA9-91ED-36C818D7B4F4.html" title="Provides summary of documents to make SMP-safe applications.">SMP</a> &gt; <a href="GUID-CE72E71B-6ED3-4961-B4C5-C43D823ACA9D.html" title="Symmetric Multiprocessing (SMP) applies to a multiprocessor computer architecture where 2 or more identical processes can connect to a single shared main memory. SMP allows simultaneous execution of threads. This means that overall performance is improved and ultimately battery life is extended. This section introduces the main concepts applied to SMP including Threading Models, Interrupt Handling, Locking and Memory Barriers.">SMP Concepts</a> &gt; </div>
+<h1 class="topictitle1">Spin
+Locks</h1>
+<div><p>Spin locks allow resource execution control through fast lock context
+switching. </p>
+
+<div class="section" id="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-9AE2107C-CEA2-453E-9E89-5F1075370F86"><a name="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-9AE2107C-CEA2-453E-9E89-5F1075370F86"><!-- --></a><h2 class="sectiontitle">Introduction</h2><p>Spin
+locks are a type of lock mechanism. In a spin lock, the thread will simply
+wait in a loop checking for the resource to become available. It is the execution
+of the thread waiting in a loop ("spins"), that gives this lock mechanism
+its name. The thread will only come out of the loop once the resource is available.</p>
+<p>When
+using a spin lock, the following should be noted :</p>
+<ul>
+<li><p>Spin locks should only be used in environments where the waiting period
+will be short</p>
+</li>
+
+<li><p>Spin locks are very wasteful, since the thread in question is always
+in the active state</p>
+</li>
+
+<li><p>Spin locks can lock/unlock very quickly, since the thread never changes
+state</p>
+</li>
+
+<li><p>For spin locks to work on the Symbian platform, the interrupts have
+to be disabled before use. This is due to the fact that spin locks do not
+protect against interrupts from occurring on the same CPU.</p>
+</li>
+
+</ul>
+<p>Because of these properties, spin locks are used in environments where
+the operation has to be fast and where the waiting times have to be short.
+For this reason, on the Symbian platform they are only used in kernel code.
+If a more efficient use of thread processing time is required, then a mutex
+should be used.</p>
+<p>There are two types of spin lock:</p>
+<ul>
+<li><p>spin locks and</p>
+</li>
+
+<li><p>read write spin locks.</p>
+</li>
+
+</ul>
+<p>The difference between the two types of spin locks is that the read
+write spin locks have been optimised to allow multiple reading threads to
+acquire the lock simultaneously.</p>
+     </div>
+
+<div class="section" id="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-B99EB4FC-3845-4B04-928F-914EFCB879F5"><a name="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-B99EB4FC-3845-4B04-928F-914EFCB879F5"><!-- --></a><h2 class="sectiontitle">Required interrupt
+behaviour</h2><p>When using spin locks, the following steps have to be
+carried out:</p>
+<ol>
+<li id="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-B1271135-AC0F-4E19-9077-915B71E8618E"><a name="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-B1271135-AC0F-4E19-9077-915B71E8618E"><!-- --></a><p>disable the interrupts</p>
+</li>
+
+<li id="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-0422F03D-D250-47C9-9255-49BEA54B9D54"><a name="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-0422F03D-D250-47C9-9255-49BEA54B9D54"><!-- --></a><p>acquire the lock</p>
+</li>
+
+<li id="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-593FDE3C-8509-4329-B258-009139095785"><a name="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-593FDE3C-8509-4329-B258-009139095785"><!-- --></a><p>enable the interrupts
+after the lock is released.</p>
+</li>
+
+</ol>
+<p>If the above steps have not been carried out, then a dead lock condition
+could occur.</p>
+</div>
+
+<div class="section" id="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-5DBAD802-F902-4B5E-A190-40BC05313FEA"><a name="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-5DBAD802-F902-4B5E-A190-40BC05313FEA"><!-- --></a><h2 class="sectiontitle">The types of
+spin locks available</h2><p>There are two types of spin locks on the Symbian
+platform. These are spin locks and read write spin locks. Read write spin
+locks are described in the next section.</p>
+<p>There are two ways of implementing
+spin locks on the Symbian platform:</p>
+<ul>
+<li><p>A Spin lock API and</p>
+</li>
+
+<li><p>the use of spin lock macros.</p>
+</li>
+
+</ul>
+<p>The spin lock API should never be used directly, instead the macros
+should be used. This is due to:</p>
+<ul>
+<li><p>The spin lock macros carry out the required interrupt enable/disable
+operations</p>
+</li>
+
+<li><p>The spin lock macros provide compatibility between SMP and non-SMP
+builds.</p>
+</li>
+
+</ul>
+<p>The spin lock API is only for internal use and should never be used.
+For spin locks it is provided by the <a href="GUID-FB1605A8-9946-364C-A649-DEF60E1F761B.html"><span class="apiname">TSpinLock</span></a> class and
+is defined in <span class="filepath">nkern.h</span>. It will not be discussed any further.</p>
+<p>The
+spin lock macros available are :</p>
+
+<div class="tablenoborder"><a name="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-CF9670A1-AB07-4451-AB4F-20F44D8FC5F9"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-CF9670A1-AB07-4451-AB4F-20F44D8FC5F9" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p><strong>Macro</strong></p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p><strong>Parameter 1</strong></p>
+<p><strong>Purpose and Data Type</strong></p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p><strong>Parameter 2</strong></p>
+<p><strong>Purpose and Data Type</strong></p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p><strong>Return Value</strong></p>
+<p><strong>Purpose and Data Type</strong></p>
+</td>
+
+<td class="cellrowborder" valign="top" width="22.954091816367264%"><p><strong>Operation</strong></p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>__SPIN_LOCK_IRQSAVE(lock)</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>The spin lock order.</p>
+<a href="GUID-FB1605A8-9946-364C-A649-DEF60E1F761B.html"><span class="apiname">TSpinLock</span></a></td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>N/A</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>The original interrupt state.</p>
+<a href="GUID-7A2A43EC-6125-3BFE-834B-23C37F7B40D5.html"><span class="apiname">TInt</span></a></td>
+
+<td class="cellrowborder" valign="top" width="22.954091816367264%"><p>Disable interrupts and acquire the lock.</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>__SPIN_UNLOCK_IRQRESTORE(lock,irq)</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>The spin lock order.</p>
+<a href="GUID-FB1605A8-9946-364C-A649-DEF60E1F761B.html"><span class="apiname">TSpinLock</span></a></td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>The interrupt state</p>
+<a href="GUID-7A2A43EC-6125-3BFE-834B-23C37F7B40D5.html"><span class="apiname">TInt</span></a></td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>N/A</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="22.954091816367264%"><p>Release the lock, then restore the interrupt state.</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>__SPIN_FLASH_IRQRESTORE(lock,irq)</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>The spin lock order.</p>
+<a href="GUID-FB1605A8-9946-364C-A649-DEF60E1F761B.html"><span class="apiname">TSpinLock</span></a></td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>The interrupt state.</p>
+<a href="GUID-7A2A43EC-6125-3BFE-834B-23C37F7B40D5.html"><span class="apiname">TInt</span></a></td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>ETrue if the lock/unlock operation has occurred, otherwise EFalse.</p>
+<a href="GUID-4B942C06-1BAC-3A21-B3B1-89FB5C51ADA0.html"><span class="apiname">TBool</span></a></td>
+
+<td class="cellrowborder" valign="top" width="22.954091816367264%"><p>If another thread is waiting for the spin lock or there is an interrupt
+pending, then execute the __SPIN_UNLOCK_IRQRESTORE macro and then execute
+the __SPIN_LOCK_IRQ macro.</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>__SPIN_LOCK(lock)</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>The spin lock order.</p>
+<a href="GUID-FB1605A8-9946-364C-A649-DEF60E1F761B.html"><span class="apiname">TSpinLock</span></a></td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>N/A</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>N/A</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="22.954091816367264%"><p>Acquire the lock, assuming the interrupts and preemption have been
+disabled.</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>__SPIN_UNLOCK(lock)</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>The spin lock order.</p>
+<a href="GUID-FB1605A8-9946-364C-A649-DEF60E1F761B.html"><span class="apiname">TSpinLock</span></a></td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>N/A</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>N/A</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="22.954091816367264%"><p>Release the lock without changing the interrupt and preemption states.</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>__SPIN_FLASH_PREEMPT(lock)</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>The spin lock order.</p>
+<a href="GUID-FB1605A8-9946-364C-A649-DEF60E1F761B.html"><span class="apiname">TSpinLock</span></a></td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>N/A</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>ETrue if the lock/unlock operation has occurred, otherwise EFalse.</p>
+<a href="GUID-4B942C06-1BAC-3A21-B3B1-89FB5C51ADA0.html"><span class="apiname">TBool</span></a></td>
+
+<td class="cellrowborder" valign="top" width="22.954091816367264%"><p>If another thread is waiting for the lock, then execute (after the
+unlock <a href="GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02.html#GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02__GUID-C9314237-B43B-34E0-9108-E8861196022E"><span class="apiname">NKern::PreemptionPoint</span></a> has been called) the __SPIN_UNLOCK
+macro and then the __SPIN_LOCK macro.</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>__SPIN_LOCK_IRQ(lock)</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>The spin lock order.</p>
+<a href="GUID-FB1605A8-9946-364C-A649-DEF60E1F761B.html"><span class="apiname">TSpinLock</span></a></td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>N/A</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>N/A</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="22.954091816367264%"><p>Disable interrupts and acquire the lock.</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>__SPIN_UNLOCK_IRQ(lock)</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>The spin lock order.</p>
+<a href="GUID-FB1605A8-9946-364C-A649-DEF60E1F761B.html"><span class="apiname">TSpinLock</span></a></td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>N/A</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>N/A</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="22.954091816367264%"><p>Release the lock, then enable the interrupts.</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>__SPIN_FLASH_IRQ(lock)</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.16167664670659%"><p>The spin lock order.</p>
+<a href="GUID-FB1605A8-9946-364C-A649-DEF60E1F761B.html"><span class="apiname">TSpinLock</span></a></td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>N/A</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="19.36127744510978%"><p>ETrue if the lock/unlock operation has occurred, otherwise EFalse.</p>
+<a href="GUID-4B942C06-1BAC-3A21-B3B1-89FB5C51ADA0.html"><span class="apiname">TBool</span></a></td>
+
+<td class="cellrowborder" valign="top" width="22.954091816367264%"><p>If another thread is waiting for the spin lock or if there is an
+interrupt pending, then execute the __SPIN_UNLOCK_IRQ macro and then execute
+the __SPIN_LOCK_IRQ macro.</p>
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+<p>The spin lock order parameter is used to provide a priority of
+the spin lock. The spin lock order parameter allows spin locks to be nested
+and to guard against deadlocks.</p>
+<p>The list of acceptable spin lock order
+values are defined in <span class="filepath">nkern.h</span>.</p>
+<p>Which spin lock
+macro should be used is shown in the following table :</p>
+
+<div class="tablenoborder"><a name="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-FD737DFA-85A9-4C8F-BE02-2CCB08096E65"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-FD737DFA-85A9-4C8F-BE02-2CCB08096E65" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top" width="14.499999999999998%"><p><strong>Is the spin lock to be used within an ISR ?</strong></p>
+</td>
+
+<td class="cellrowborder" valign="top" width="21%"><p><strong>The ISR State</strong></p>
+</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p><strong>Other Circumstances to Consider</strong></p>
+</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p><strong>The Spin Lock Macros to Use</strong></p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="14.499999999999998%"><p>Yes</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="21%"><p>Unknown</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>None</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>__SPIN_LOCK_IRQSAVE(lock)</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="14.499999999999998%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="21%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>__SPIN_UNLOCK_IRQRESTORE(lock,irq)</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="14.499999999999998%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="21%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>__SPIN_FLASH_IRQRESTORE(lock,irq)</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="14.499999999999998%"><p>N/A</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="21%"><p>The interrupts have already been disabled.</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>None</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>__SPIN_LOCK(lock)</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="14.499999999999998%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="21%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>__SPIN_UNLOCK(lock)</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="14.499999999999998%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="21%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>__SPIN_FLASH_IRQRESTORE(lock,irq)</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="14.499999999999998%"><p>No</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="21%"><p>N/A</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>Code is within a pair of <a href="GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02.html#GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02__GUID-61C8A02A-B7F9-3BF9-B677-6BF83C6972B0"><span class="apiname">NKern::Lock</span></a>/<a href="GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02.html#GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02__GUID-A1DA547A-B5C2-3951-9613-DC1D6A313C70"><span class="apiname">NKern::Unlock</span></a> statements.</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>__SPIN_LOCK(lock)</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="14.499999999999998%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="21%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>__SPIN_UNLOCK(lock)</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="14.499999999999998%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="21%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>__SPIN_FLASH_PREEMPT(lock)</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="14.499999999999998%"><p>Yes</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="21%"><p>Known</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>The interrupts must already be disabled.</p>
+</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>__SPIN_LOCK_IRQ(lock)</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="14.499999999999998%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="21%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>__SPIN_UNLOCK_IRQ(lock)</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" width="14.499999999999998%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="21%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%">&#xA0;</td>
+
+<td class="cellrowborder" valign="top" width="32.25%"><p>__SPIN_FLASH_IRQ(lock)</p>
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+<div class="note"><span class="notetitle">Note:</span> </div>
+<p>Only the above combinations of interrupt states and
+spin lock macros are allowed.</p>
+<p>The spin lock macros __SPIN_LOCK_IRQSAVE
+and __SPIN_UNLOCK_IRQRESTORE would be used in almost all cases.</p>
+</div>
+
+<div class="section" id="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-85F32921-FE0C-48EE-9B88-C45A76DC8481"><a name="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-85F32921-FE0C-48EE-9B88-C45A76DC8481"><!-- --></a><h2 class="sectiontitle">How to Use
+Spin Locks</h2><p>An example of how to use the spin lock macros is :</p>
+<pre class="codeblock">TInt irq = __SPIN_LOCK_IRQSAVE(EOrderThread);
+// some code...
+__SPIN_UNLOCK_IRQSTORE(EOrderThread,irq);</pre>
+<p>The first line calls
+the macro to disable the interrupts and acquire the spin lock. This line returns
+the original interrupt state (stored in the variable irq).</p>
+<p>The last
+line calls the macro to release the spin lock and then restore the IRQ to
+its original state.</p>
+</div>
+
+<div class="section" id="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-66A13635-5DDD-40D3-B113-234D811ACBF2"><a name="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-66A13635-5DDD-40D3-B113-234D811ACBF2"><!-- --></a><h2 class="sectiontitle">Read Write
+Spin Locks</h2><p>This sub set of spin locks allows for the multiple reading
+threads to acquire the lock simultaneously. The operation of read write spin
+locks is :</p>
+
+<div class="tablenoborder"><a name="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-FB47DAFD-955C-4E3B-93B3-293CC54910FD"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-FB47DAFD-955C-4E3B-93B3-293CC54910FD" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p><strong>Behaviour</strong></p>
+</td>
+
+<td class="cellrowborder" valign="top"><p><strong>Required Conditions</strong></p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>Acquire the lock for a read operation</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>The lock is either free or is being held for reading</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>Blocked for a read operation</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>The lock is held for a write operation</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>Acquire the lock for a write operation</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>The lock is free</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>Blocked for a write operation</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>The lock is held for a read or a write operation</p>
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+<p>The macros are the same name as for the spin locks, except :</p>
+
+<div class="tablenoborder"><a name="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-7FB86C27-DDC5-4AC3-982F-2736FBA9BAA8"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-16AB388A-ED3E-4901-857D-834072437D25__GUID-7FB86C27-DDC5-4AC3-982F-2736FBA9BAA8" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p><strong>Operation</strong></p>
+</td>
+
+<td class="cellrowborder" valign="top"><p><strong>Postfix</strong></p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>read access</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>_R</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>write access</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>_W</p>
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+<p>An example of the use of read write spin lock macros are __SPIN_LOCK_IRQ_R(lock)
+and __SPIN_UNLOCK_IRQ_W(lock).</p>
+<p>Read write spin locks are implemented
+by the <a href="GUID-F8145088-041C-35E3-9AB2-AF151832ECC8.html"><span class="apiname">TRWSpinLock</span></a> class. As with the <a href="GUID-FB1605A8-9946-364C-A649-DEF60E1F761B.html"><span class="apiname">TSpinLock</span></a> class,
+this class is for internal use only and will not be discussed any further.</p>
+<p>An
+example of the use of read write spin locks is :</p>
+<pre class="codeblock">
+__SPIN_LOCK_IRQ_R(EOrderThread);
+// some code...
+__SPIN_UNLOCK_IRQ_R(EOrderThread);</pre>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-CE72E71B-6ED3-4961-B4C5-C43D823ACA9D.html" title="Symmetric Multiprocessing (SMP) applies to a multiprocessor computer architecture where 2 or more identical processes can connect to a single shared main memory. SMP allows simultaneous execution of threads. This means that overall performance is improved and ultimately battery life is extended. This section introduces the main concepts applied to SMP including Threading Models, Interrupt Handling, Locking and Memory Barriers.">SMP Concepts</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-CE72E71B-6ED3-4961-B4C5-C43D823ACA9D.html" title="Symmetric Multiprocessing (SMP) applies to a multiprocessor computer architecture where 2 or more identical processes can connect to a single shared main memory. SMP allows simultaneous execution of threads. This means that overall performance is improved and ultimately battery life is extended. This section introduces the main concepts applied to SMP including Threading Models, Interrupt Handling, Locking and Memory Barriers.">SMP Overview</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

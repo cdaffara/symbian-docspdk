@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Adding Effects And Filters Guide"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AD6CF225-CFF9-5F76-AA00-3535EA7D6FF1.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1DE5CDAD-8D71-5384-9E98-5665D5A4C792.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3E341F9F-2635-589B-A59A-B999FE7DF9BE.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-7DB86BF1-0485-5CBA-9554-4C474B0EC1FB.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-042868E6-88BF-5797-BB53-8E34283DCF16.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AD6CF225-CFF9-5F76-AA00-3535EA7D6FF1.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Adding Effects And Filters Guide</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2405098 id2405245 id2405618 id2405797 id2405812 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-1DE5CDAD-8D71-5384-9E98-5665D5A4C792.html">Multimedia Guide</a> &gt; <a href="GUID-3E341F9F-2635-589B-A59A-B999FE7DF9BE.html">Multimedia APIs and Frameworks Collection</a> &gt; <a href="GUID-7DB86BF1-0485-5CBA-9554-4C474B0EC1FB.html">Imaging Frameworks Component</a> &gt; <a href="GUID-042868E6-88BF-5797-BB53-8E34283DCF16.html">Image Processor Library</a> &gt; <a href="GUID-AD6CF225-CFF9-5F76-AA00-3535EA7D6FF1.html">Image Processor Library Concept</a> &gt; </div>
+<h1 class="topictitle1">Adding
+Effects And Filters Guide</h1>
+<div>
+<p>This document gives you more information about the image effects and filters. </p>
+
+<div class="section"><h2 class="sectiontitle">Purpose</h2> <p>The purpose of this guide is to show you
+how to implement different image effects and filters using Image Processor. </p>
+ <p><strong>Introduction</strong> </p>
+ <p>Adding effects to an image with Image Processor
+is very simple. </p>
+ <p>Effects are applied in the order they are inserted
+in a image. <strong>Note:</strong> The result from rendering an image can be different
+depending on the order the effects are applied to an image. </p>
+ <p>The code
+example below shows an implementation in the order: crop, mirror, and 90 degree
+rotation. </p>
+ <pre class="codeblock" id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-041412C5-BD03-56C2-A5A8-162C5058A243"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-041412C5-BD03-56C2-A5A8-162C5058A243"><!-- --></a>
+
+// Get TInputInfo interface
+TInputInfo* inputInfo = imageProcessor-&gt;InputInfoL();
+// Get the input image size
+TSize inputSize = inputInfo-&gt;SizeL();
+
+// Define crop region
+TRect cropRegion(inputSize.iWidth / 4, inputSize.iHeight / 4, inputSize.iWidth / 2, inputSize.iHeight /2);
+
+// Apply crop
+imageProcessor-&gt;SetInputRectL(cropRegion);
+
+// Get TEffect interface for Mirror Left To Right effect. 
+// Note. All effects can be handled via generic TEffect interface. For more advanced functionality
+// the interface pointer must be cast to a derived effect interfece.
+TEffect* effect = imageProcessor-&gt;EffectL(KEffectMirrorLeftToRightUid);
+
+// Standard sequence of function calls to apply any effect. 
+// The effect must be started with BeginL() and finished with EndL() functions calls.
+effect-&gt;BeginL();
+effect-&gt;EndL();
+
+// As non-standard effect geometrical operation can be used via derived interface only.
+TGeometricalOperation* operation = static_cast&lt;TGeometricalOperation*&gt;(imageProcessor-&gt;EffectL(KGeometricalOperationUid));
+operation-&gt;BeginL();
+operation-&gt;SetOperationL(ImageProcessor::CImgProcessor::EOperationRotate270);
+operation-&gt;EndL();
+
+</pre>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Undo</h2> <p>Image Processor has a built-in undo mechanism,
+which removes the last added effect or operation on the undo stack. Parameter
+changes are not added to the undo stack. There is an unlimited number of undo
+steps and you can check if an undo operation is possible. </p>
+ <p>The code
+example below shows the implementation the <samp class="codeph">ImageProcessor::CImageProcessor::UndoL()</samp> function: </p>
+ <pre class="codeblock" id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-80FD0739-851C-57F8-AEF0-4BB6B8634355"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-80FD0739-851C-57F8-AEF0-4BB6B8634355"><!-- --></a>
+
+TEffectRotation* rotationEffect = static_cast&lt;TEffectRotation*&gt;(imageProcessor-&gt;EffectL(KEffectRotationUid));
+rotationEffect-&gt;BeginL();
+rotationEffect-&gt;SetRotationL(ImageProcessor::TEffectRotation::ERotationScaleModeFitInside, 45.0f);
+rotationEffect-&gt;EndL();
+
+// Check if we can undo last applied effect
+if (imageProcessor-&gt;CanUndoL()) 
+{
+    // Undo the effect
+    imageProcessor-&gt;UndoL();
+}
+
+</pre>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Adjustable generic effects </h2> <p>Those imaging effects
+that have variable strengths or settings to choose from are called adjustable
+generic effects. These effects each have three related functions: </p>
+ <ul>
+<li id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-51F7D507-5788-5120-AC0B-9E599FEE66A2"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-51F7D507-5788-5120-AC0B-9E599FEE66A2"><!-- --></a><p>The <a href="GUID-5DD1A7CA-B0F8-3769-9D53-4541BDC2C3FB.html#GUID-5DD1A7CA-B0F8-3769-9D53-4541BDC2C3FB__GUID-406C6996-EEA8-3404-B0EF-3FC2EDC021D2"><span class="apiname">ImageProcessor::TEffect::BeginL()</span></a> function
+is used to initiate the adjustable generic effect. </p>
+ <p>Any function calls
+from Image Processor operations are disabled until the <samp class="codeph">EndL()</samp> function
+is called. For example when you try to apply another effect, this cause a
+leave <samp class="codeph">KErrNotReady</samp>. </p>
+ <p>For example, if you want to invoke
+an <samp class="codeph">UndoL()</samp> call, Image Processor operations are blocked between <samp class="codeph">BeginL()</samp> and
+thecorresponding <samp class="codeph">EndL()</samp> call. An UndoL() call can be invoked
+after an <samp class="codeph">EndL()</samp> call. This will cancel the effects applied
+between the last <samp class="codeph">BeginL()</samp> and <samp class="codeph">EndL()</samp> calls. </p>
+ </li>
+
+<li id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-A194B271-CE29-54F1-BFD6-134CE9CC8923"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-A194B271-CE29-54F1-BFD6-134CE9CC8923"><!-- --></a><p>The <a href="GUID-5DD1A7CA-B0F8-3769-9D53-4541BDC2C3FB.html#GUID-5DD1A7CA-B0F8-3769-9D53-4541BDC2C3FB__GUID-1588C652-4105-366D-82EF-74EB582D2339"><span class="apiname">ImageProcessor::TEffect::SetLevelL()</span></a> function
+is used to set the parameters of the current adjustable effect. </p>
+ <p>For
+example, when you want to change the parameters of the effect, you must call
+the <samp class="codeph">ImageProcessor::TEffect::SetLevelL()</samp> function to set
+the parameters of the current adjustable effect. </p>
+ </li>
+
+<li id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-AB2A6C70-8AAA-5916-BEE2-682EBC260E49"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-AB2A6C70-8AAA-5916-BEE2-682EBC260E49"><!-- --></a><p>The <a href="GUID-5DD1A7CA-B0F8-3769-9D53-4541BDC2C3FB.html#GUID-5DD1A7CA-B0F8-3769-9D53-4541BDC2C3FB__GUID-C0A7EEA7-A5B3-3441-8148-29B2B306CB81"><span class="apiname">ImageProcessor::TEffect::EndL()</span></a> function
+is used to end the current adjustable effect. </p>
+ <p>For example, when you
+are satisfied with the result of the effect, you must call <samp class="codeph">ImageProcessor::TEffect::EndL()</samp> to
+complete the current adjustable effect. </p>
+ <p> <strong>Note:</strong> If you are not
+satisfied with the result of the effect, you must call the <samp class="codeph">EndL()</samp> function
+of the current generic effect followed by a call to the <samp class="codeph">UndoL()</samp> function. </p>
+ </li>
+
+</ul>
+ <p>The code example below shows how to use an adjustable begin-end effect: </p>
+ <pre class="codeblock" id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-7B09C5D7-D48D-550E-8116-5CB6811BF1A6"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-7B09C5D7-D48D-550E-8116-5CB6811BF1A6"><!-- --></a>
+
+// Get sharpness effect
+TEffect* effect=imageProcessor-&gt;EffectL(KEffectSharpnessUid);
+
+// Apply default level of Sharpness
+effect-&gt;BeginL();
+effect-&gt;EndL();
+
+</pre>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Working with preview </h2> <p>Most mobile imaging applications
+render full-resolution images twice: </p>
+ <a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-61808DC4-7C6F-5371-BFD2-AB7275EF9717"><!-- --></a><ol id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-61808DC4-7C6F-5371-BFD2-AB7275EF9717">
+<li id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-F11B0934-3D84-5F3A-88C7-C38A25CDA2F4"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-F11B0934-3D84-5F3A-88C7-C38A25CDA2F4"><!-- --></a><p>for a preview on the
+screen </p>
+ </li>
+
+<li id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-23DA4BE1-B256-5B39-BE6C-E97232EF8BA0"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-23DA4BE1-B256-5B39-BE6C-E97232EF8BA0"><!-- --></a><p>for the rendering of
+the output image. </p>
+ </li>
+
+</ol>
+ <p>To make the render operation into a simple function, you must call
+the <a href="GUID-9E5136D1-B8BE-3CE4-9A20-39D672E31EC7.html#GUID-9E5136D1-B8BE-3CE4-9A20-39D672E31EC7__GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495"><span class="apiname">ImageProcessor::TPreview</span></a> function. </p>
+ <p>The <a href="GUID-9E5136D1-B8BE-3CE4-9A20-39D672E31EC7.html#GUID-9E5136D1-B8BE-3CE4-9A20-39D672E31EC7__GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495"><span class="apiname">ImageProcessor::TPreview</span></a> function
+is an interface that describes the preview identified by the preview ID. The
+interface is initialized by specifying an output Symbian bitmap or pixel buffer
+(image frame) by calling <a href="GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495.html#GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495__GUID-38670F92-962C-31D5-9642-9F3F9BE42B30"><span class="apiname">ImageProcessor::TPreview::SetOutput()</span></a>. </p>
+ <p>You
+can use the preview for the zoom and pan effects: </p>
+ <pre class="codeblock" id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-862C5EB5-4E2C-51E2-AF8E-65F6C5785B3B"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-862C5EB5-4E2C-51E2-AF8E-65F6C5785B3B"><!-- --></a>
+
+void TPreview::SetZoomL(TReal32 aZoom);
+void TPreview::SetPanL(TReal32 aPanX, TReal32 aPanY);
+TReal32 TPreview::ZoomL() const;
+void TPreview::PanL(TReal32&amp; aPanX, TReal32&amp; aPanY) const;
+
+</pre>
+ <p>The <samp class="codeph">TReal32</samp> of pan effect ranges from -1.0
+to 1.0 and the <samp class="codeph">TReal32</samp> of zoom effect ranges from 1.0x to <samp class="codeph">TReal32</samp> maximum
+value. </p>
+ <p> <strong>Note:</strong> The zoom and pan effects only affect the preview.
+When rendering the original image, these changes are ignored. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Changing the input </h2> <p>The source image can be changed
+by calling the <a href="GUID-13E30312-DD05-3581-9A59-C3569A981657.html#GUID-13E30312-DD05-3581-9A59-C3569A981657__GUID-0448A658-7DD6-3767-82FC-1EE64B1CBEE3"><span class="apiname">ImageProcessor::CImgProcessor::SetInputL()</span></a> function
+without creating a new Image Processor instance. <samp class="codeph">ImageProcessor::CImgProcessor::SetInputL()</samp> can
+be used when displaying thumbnails or when choosing between different overlay
+graphics. The image source can freely be switched between file, buffer, bitmap
+and a background colour. </p>
+ <p>The code example below illustrates the chain
+of effects applied to a number of images and rendered to screen. </p>
+ <pre class="codeblock" id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-2D54E9BB-20FE-5F02-A00E-71AAD089FBF0"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-2D54E9BB-20FE-5F02-A00E-71AAD089FBF0"><!-- --></a>
+
+    // Get white balance effect
+    effect = imageProcessor-&gt;EffectL(KEffectWhiteBalanceUid);
+    
+    // Apply default white balance 
+    effect-&gt;BeginL();
+    effect-&gt;EndL();
+
+    // Go through the images and render the preview for each of them
+    for (TInt i = 0; i &lt; 4; i++) 
+        {
+        imageProcessor-&gt;SetInputL(*filenames[i]);
+        preview-&gt;RenderL();
+  }
+
+</pre>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Image information </h2> <p>Image Processor has functionality
+to get information about the source image. This information can be used for
+display in a file browser or to verify the correct capabilities that are available
+for a specific processing task. </p>
+ <p>First, a pointer to <a href="GUID-9E5136D1-B8BE-3CE4-9A20-39D672E31EC7.html#GUID-9E5136D1-B8BE-3CE4-9A20-39D672E31EC7__GUID-E1B6400E-1A36-368A-AAC7-CDDE3ED656A2"><span class="apiname">ImageProcessor::TInputInfo()</span></a> interface
+must be obtained from the active Image Processor instance. To extract the
+information, the following functions are called: </p>
+ <pre class="codeblock" id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-C940E27B-4FCE-5C9A-B39A-4C04C9BD6591"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-C940E27B-4FCE-5C9A-B39A-4C04C9BD6591"><!-- --></a>
+
+TSize TInputInfo::SizeL() const; 
+void TInputInfo::FormatL(TUid&amp; aFormat, TUid&amp; aSubFormat) const;
+TDisplayMode TInputInfo::DisplayModeL() const; 
+TUid TInputInfo::ImageFrameFormatL() const; 
+TUid TInputInfo::SamplingL() const; 
+TUint32 TInputInfo::BitsPerPixelL() const; 
+TBool TInputInfo::IsProgressiveL() const; 
+TBool TInputInfo::IsInterlacedL() const; 
+TBool TInputInfo::HasAlphaL() const;
+
+</pre>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Coordinates and areas </h2> <p>Image Processor uses a number
+of different coordinate systems to cope with the translation from the preview
+image to the input image. </p>
+ <p>In this section the following concepts are
+introduced: </p>
+ <ul>
+<li id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-B9B0ED22-9EAC-50B3-9987-6BDE1C2D5513"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-B9B0ED22-9EAC-50B3-9987-6BDE1C2D5513"><!-- --></a><p><a href="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF.html#GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-4CB4BD23-85CD-5239-96C4-936BC46EE745"> Input images</a>  </p>
+ </li>
+
+<li id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-4E83AAF6-9820-5D28-9B7B-38E8F4F709DD"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-4E83AAF6-9820-5D28-9B7B-38E8F4F709DD"><!-- --></a><p><a href="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF.html#GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-F956698F-28B3-5CFB-9ABC-E4C69688B284"> Geometry and orientation effects</a>  </p>
+ </li>
+
+<li id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-07F10586-079D-58BA-9B6D-B9A00372BAF2"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-07F10586-079D-58BA-9B6D-B9A00372BAF2"><!-- --></a><p><a href="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF.html#GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-43A6D850-367B-5A57-8CAA-03113298ED07"> Previews</a>  </p>
+ </li>
+
+<li id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-367CA050-A363-5D93-B99E-711B180EAA7C"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-367CA050-A363-5D93-B99E-711B180EAA7C"><!-- --></a><p><a href="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF.html#GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-BB35B339-CFB6-54CB-9D20-308EEB82225F">Preview canvases</a>  </p>
+ </li>
+
+<li id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-F59E4119-8111-51BF-98EA-799E52DC870E"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-F59E4119-8111-51BF-98EA-799E52DC870E"><!-- --></a><p><a href="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF.html#GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-1187E33F-1EA4-57A0-BC12-1810A48CF61B">Zoom and pan settings</a>  </p>
+ </li>
+
+<li id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-C14A7AFA-6F20-5313-99CA-7887D5A3895F"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-C14A7AFA-6F20-5313-99CA-7887D5A3895F"><!-- --></a><p><a href="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF.html#GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-7DA27E76-C144-5784-9748-2839766B9A52">Overlay images</a>  </p>
+ </li>
+
+</ul>
+ <p id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-4CB4BD23-85CD-5239-96C4-936BC46EE745"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-4CB4BD23-85CD-5239-96C4-936BC46EE745"><!-- --></a><strong>Input images</strong> </p>
+ <p>A
+coordinate system is the region within which a given set of coordinates are
+relevant. In many scenarios, you will need to provide coordinate information
+to Image Processor. This information is ambiguous without additional handling
+to make the coordinates apply to a specific coordinate system. </p>
+ <p>An
+area defines the dimensions of a region. Image data can change form and scale
+during the editing session, which means that a set of areas with different
+dimensions can exist throughout the chain of operations. </p>
+ <p>All imaging
+sessions use a source image as a base. The source image represents the source
+coordinate system and the source area. The source coordinate system is not
+public since it has no relevance to the user. The source coordinate system
+starts at the top left corner of the source image and expands downwards along
+the y-axis and to the right along the x-axis. The source area size is public,
+however, and can be queried through the <a href="GUID-13E30312-DD05-3581-9A59-C3569A981657.html#GUID-13E30312-DD05-3581-9A59-C3569A981657__GUID-1D0573C2-611F-3527-9C0B-8E668A208133"><span class="apiname">ImageProcessor::CImgProcessor::CurrentSizeL() </span></a> function. </p>
+ <p id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-F956698F-28B3-5CFB-9ABC-E4C69688B284"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-F956698F-28B3-5CFB-9ABC-E4C69688B284"><!-- --></a><strong>Geometry and orientation
+effects</strong> </p>
+ <p>Applying geometry effects and orientation effects to an
+input image is usually a chain process. When all effects have been applied,
+the resulting image may differ in geometry from the original source image.
+Hence, the resulting image defines a new area called the current area and
+a new coordinate system called the current coordinate system. Both of these
+are public and can be queried through the Image Processor. The current coordinate
+system starts at the top left corner of the image and expands downwards along
+the y-axis and to the right along the x-axis. </p>
+ <p id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-43A6D850-367B-5A57-8CAA-03113298ED07"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-43A6D850-367B-5A57-8CAA-03113298ED07"><!-- --></a><strong>Previews</strong> </p>
+ <p>You
+can make use of one or more previews when processing an image. A preview defines
+the region on which the image is shown. A preview introduces the preview area
+and the preview coordinate system, both of which are public. The preview coordinate
+system starts at the top left corner of the screen and expands downwards along
+y-axis and to the right along x-axis. </p>
+ <p>Use <a href="GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495.html#GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495__GUID-AF30A4A2-736E-3256-8C14-31368F0A24E3"><span class="apiname">ImageProcessor::TPreview::PreviewToCurrentCoordL()</span></a> to
+perform coordinate conversion and <a href="GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495.html#GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495__GUID-CB6994A3-4355-3D67-85BB-8690F37EE0DD"><span class="apiname">ImageProcessor::TPreview::SizeL()</span></a> to
+get the size of the preview area. </p>
+ <p>To convert between preview coordinates
+and current coordinates use the <a href="GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495.html#GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495__GUID-C38A0CD8-061F-383F-9C0F-06E153FAD477"><span class="apiname">ImageProcessor::TPreview::PreviewToCurrentCoordL(const
+             TPoint&amp;)</span></a> function. To convert between canvas coordinates
+to current coordinates use the <a href="GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495.html#GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495__GUID-481BCBAC-20B9-3134-A20B-EEEFE92C1C22"><span class="apiname">ImageProcessor::TPreview::CanvasToCurrentCoordL()</span></a> function. </p>
+ <p>It
+can be useful to know the current size of the session image, that is, the
+size of the image after any effects and cropping have been applied, by using
+the <a href="GUID-13E30312-DD05-3581-9A59-C3569A981657.html#GUID-13E30312-DD05-3581-9A59-C3569A981657__GUID-1D0573C2-611F-3527-9C0B-8E668A208133"><span class="apiname">ImageProcessor::CImgProcessor::CurrentSizeL()</span></a> function. </p>
+ <p id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-BB35B339-CFB6-54CB-9D20-308EEB82225F"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-BB35B339-CFB6-54CB-9D20-308EEB82225F"><!-- --></a><strong>Preview canvases</strong> </p>
+ <p>Each
+preview contains a sub-region called the canvas. When the resulting image
+is scaled to fit the preview area, while preserving aspect ratio, the actual
+image data will not cover the entire screen and the areas outside the image
+are filled with a background colour. The area containing the image data is
+always referred to as the canvas. A canvas introduces the canvas area and
+the canvas coordinate system, both of which are public. The canvas coordinate
+system starts at the top left corner of the canvas and expands downwards along
+the y-axis and to the right along the x-axis. </p>
+ <p>Use the <a href="GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495.html#GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495__GUID-481BCBAC-20B9-3134-A20B-EEEFE92C1C22"><span class="apiname">ImageProcessor::TPreview::CanvasToCurrentCoordL()</span></a> to
+perform coordinate conversion and<a href="GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495.html#GUID-9CBD93A5-1916-31C4-A974-213FCD7A5495__GUID-A69588CB-8BF2-3FA9-806A-216CA460E912"><span class="apiname">ImageProcessor::TPreview::CanvasAreaL()</span></a> function
+to return the size and location of the canvas area. </p>
+ <p id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-1187E33F-1EA4-57A0-BC12-1810A48CF61B"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-1187E33F-1EA4-57A0-BC12-1810A48CF61B"><!-- --></a><strong> Zoom and Pan settings</strong> </p>
+ <p>Zoom
+and Pan settings do not introduce their own areas or coordinate systems. In
+this regard, Zoom and pan are equivalent to a preview. </p>
+ <p id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-7DA27E76-C144-5784-9748-2839766B9A52"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-7DA27E76-C144-5784-9748-2839766B9A52"><!-- --></a><strong>Overlay images</strong> </p>
+ <p>Overlay
+images define their own overlay coordinate system and overlay area. The coordinate
+system of an overlay image is public. The overlay coordinate system and overlay
+are rarely used since they are not treated as separate objects once they are
+applied to the source image. The overlay is treated as part of the original
+image data after insertion. </p>
+ <p>However, the coordinate system of an overlay
+image is relevant for defining its anchor point to the source image. The overlay
+area can be queried from Image Processor instances that expose overlay operations.
+The overlay coordinate system starts at the centre of the overlay image and
+expands to the left along the negative side of the y-axis, upwards along the
+negative side of the x-axis, to the right along the x-axis and downwards along
+the y-axis. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Applying overlay and border effects</h2> <p>It is possible
+to add borders (frames) and overlays to your input image. For example, you
+might want to add a logo to an image or add a pair of sunglasses to a picture.
+To use a border effect, call <a href="GUID-13E30312-DD05-3581-9A59-C3569A981657.html#GUID-13E30312-DD05-3581-9A59-C3569A981657__GUID-EF0B943B-C58D-39AD-AAA3-ABEE11033A8C"><span class="apiname">ImageProcessor::CImgProcessor::EffectL(KEffectBorderUid)</span></a>. </p>
+ <p>Border
+images are images with alpha channels. The border is automatically stretched
+to fit the input image. </p>
+ <p>To use overlay effect, call <a href="GUID-13E30312-DD05-3581-9A59-C3569A981657.html#GUID-13E30312-DD05-3581-9A59-C3569A981657__GUID-08855134-3A4C-3BE5-B817-73342FFD5CCE"><span class="apiname">ImageProcessor::CImgProcessor::OverlayL()</span></a>. </p>
+ <p>There
+are two ways to insert an overlay to an image, either from a file or from
+memory. If you load the overlay from a file, both PNG and JPEG are accepted,
+but you will only have the transparency option if you use a PNG image. The
+overlay is managed through the interface <a href="GUID-9E5136D1-B8BE-3CE4-9A20-39D672E31EC7.html#GUID-9E5136D1-B8BE-3CE4-9A20-39D672E31EC7__GUID-95D515E0-F751-3703-8FD1-80F9B8870E16"><span class="apiname">ImageProcessor::TOverlay</span></a>. </p>
+ <p>You
+can specify the position, the scale, and the angle of the overlay. The position
+must be given in current coordinates. The scale ranges from 0.0 to infinity,
+where 1.0 represent no scaling. The angle ranges from 0.0 degrees to 360.0
+degrees. To begin inserting the overlay the <a href="GUID-95D515E0-F751-3703-8FD1-80F9B8870E16.html#GUID-95D515E0-F751-3703-8FD1-80F9B8870E16__GUID-E1255D4A-714D-31A8-9E5E-CCBFF477E2F4"><span class="apiname">ImageProcessor::TOverlay::BeginL()</span></a> function
+must be called. The code example below illustrates the scale effect and the
+angle of the overlay effect. </p>
+ <p>When the overlay is in place you must
+call <a href="GUID-95D515E0-F751-3703-8FD1-80F9B8870E16.html#GUID-95D515E0-F751-3703-8FD1-80F9B8870E16__GUID-B3250D2E-CBCB-357C-82CA-7A7B35045CAE"><span class="apiname">ImageProcessor::TOverlay::EndL()</span></a> to conclude the overlay. </p>
+ <p>The
+code examples below describe some common scenarios: </p>
+ <ul>
+<li id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-A2AA2186-067D-571C-AC58-14E97050ED49"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-A2AA2186-067D-571C-AC58-14E97050ED49"><!-- --></a><p>You want to insert an
+overlay image in the centre of the image you see on the screen. The scale
+is set to 1.0 and the angle is set to 0 degrees. It is crucial to distinguish
+between canvas coordinates and current coordinates. </p>
+ </li>
+
+<li id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-24318F41-42F7-5297-B022-6914FB78B381"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-24318F41-42F7-5297-B022-6914FB78B381"><!-- --></a><p>After the overlay is
+started you want to double its size, rotate it 45 degrees clockwise, and move
+it down ten screen pixels. </p>
+ </li>
+
+</ul>
+ <pre class="codeblock" id="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-A558142D-8C96-5DB8-B2AF-277C645BE47D"><a name="GUID-F221B15F-B5DE-516F-8FB0-75C1971DB3AF__GUID-A558142D-8C96-5DB8-B2AF-277C645BE47D"><!-- --></a>
+
+    TPoint overlayPosition(0,0);
+
+    // Get preview canvas rectangle 
+    TRect canvasArea = preview-&gt;CanvasAreaL();
+        
+    // Set overlay position to the center of the preview canvas area     
+    overlayPosition.iX = (canvasArea.iBr.iX - canvasArea.iTl.iX) / 2;
+    overlayPosition.iY = (canvasArea.iBr.iY - canvasArea.iTl.iY) / 2;
+    
+    // Convert the preview canvas coordinates to the input current coordinates  
+    TPoint tmp(0, 0);
+    preview-&gt;CanvasToCurrentCoordL(overlayPosition, tmp);
+    overlayPosition = tmp;
+     
+    // Get TOverlay interface
+    TOverlay* overlay = imageProcessor-&gt;OverlayL();
+    
+    // Begin the overlay with a overlay file
+    overlay-&gt;SetInputL(KInputOverlayFileName, KImageTypePNGUid);
+    overlay-&gt;BeginL();
+
+    // Set overlay with 1.0 x/y scale (un-scaled), position at the center of the preview canvas, 0.0 angle (no rotation)
+    overlay-&gt;SetL(1.0f, 1.0f, overlayPosition, 0.0f);
+
+    // we can check what this looks like by rendering to the preview
+    preview-&gt;RenderL();
+
+    // We can then double the size of the overlaid, rotate it 45 degrees clockwise 
+    // and move it down ten screen pixels.
+    TReal32 overlayScaleX = 0.0f;
+    TReal32 overlayScaleY = 0.0f;
+    overlay-&gt;GetScaleL(overlayScaleX, overlayScaleY);
+
+    overlayScaleX *= 2.0f;
+    overlayScaleY *= 2.0f;
+
+    TReal32 overlayAngle = overlay-&gt;AngleL();
+
+    // Rotate the overlay 45 degrees 
+    overlayAngle += 45.0f;
+    if (overlayAngle &gt;= 360.0f)
+        {
+        overlayAngle = overlayAngle - 360.0f;
+        }
+
+    // Move down the position of the overlay 10 screen pixels
+    overlayPosition = overlay-&gt;PositionL();
+    overlayPosition.iY += 10;
+
+    // Set overlay with new parameters
+    overlay-&gt;SetL(overlayScaleX, overlayScaleY, overlayPosition, overlayAngle);
+
+    // Apply overlay parameters and finish with overlay
+    overlay-&gt;EndL();
+
+    preview-&gt;RenderL();
+
+</pre>
+ </div>
+
+
+<div class="example"><p/>
+</div>
+
+<div class="section"><h2 class="sectiontitle">See also</h2> <p><a href="GUID-8E794D5A-9C83-54EB-AD5A-6A74BB155223.html">JPEG
+Image Transform Extension Guide</a>  </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-AD6CF225-CFF9-5F76-AA00-3535EA7D6FF1.html">Image Processor Library Concept</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="Create the client class"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5862F14F-5BB7-584B-A8B1-447975C42D49.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-58035B49-2EAE-5144-B226-28AF2EDD62E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-58CA15F8-D984-5D07-8C00-161FA16A8FD3.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1578590A-FC00-5C3B-8BF9-F6E43CA9D9A0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D2E19490-4179-548F-9DA8-9AE637FAC9E2.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BBD0778E-DE9E-5A68-8750-70E6DDD85ECA.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5862F14F-5BB7-584B-A8B1-447975C42D49.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-DCB8CA27-F64F-4B78-831D-F88B1AD7E38B"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Create the client class</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-DCB8CA27-F64F-4B78-831D-F88B1AD7E38B"><a name="GUID-DCB8CA27-F64F-4B78-831D-F88B1AD7E38B"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2520040 id2520048 id2520063 id2520123 id2520131 id2520140 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-58035B49-2EAE-5144-B226-28AF2EDD62E7.html">Generic Application Support Guide</a> &gt; <a href="GUID-58CA15F8-D984-5D07-8C00-161FA16A8FD3.html">Application Framework</a> &gt; <a href="GUID-1578590A-FC00-5C3B-8BF9-F6E43CA9D9A0.html">Application Architecture</a> &gt; <a href="GUID-D2E19490-4179-548F-9DA8-9AE637FAC9E2.html">Application Architecture Tutorials</a> &gt; <a href="GUID-BBD0778E-DE9E-5A68-8750-70E6DDD85ECA.html">Application Service Tutorial</a> &gt; <a href="GUID-5862F14F-5BB7-584B-A8B1-447975C42D49.html">Creating a New Service</a> &gt; </div>
+<h1 class="topictitle1">Create
+the client class</h1>
+<div>
+<div class="section">       <p>Create the client-side service support class, derived from <samp class="codeph">REikAppServiceBase</samp>, <samp class="codeph">RApaAppServiceBase</samp>, or a suitable System-GUI specialization of this class. This will have the
+following responsibilities:</p>
+ <ul>
+<li><p>Implementing the client API </p>
+</li>
+
+<li><p>Organizing calls to and from the server over IPC</p>
+</li>
+
+<li><p>Any necessary security checks on the server. For example, restricting
+the data sent to a server having particular capabilities.</p>
+</li>
+
+<li><p>Parameter checking from the server. Parameters returned from the server
+application must be checked to ensure that they are valid.</p>
+</li>
+
+<li><p>Time-out support for IPC calls to the server.</p>
+</li>
+
+</ul>
+<p>The reason for these checks is that the client cannot be sure that
+the server application is using the appropriate server-side service support
+classes and may instead be trying to weaken the system by implementing the
+IPC handling itself.</p>
+<p>This example shows the client interface for a chat
+service implemented in two parts. The active object class <samp class="codeph">CChatter</samp> is
+the main client interface. It uses a class <samp class="codeph">RInterAppChat</samp>,
+derived from <samp class="codeph">REikAppServiceBase</samp>, which handles the client-side
+IPC for the chat service. </p>
+<pre class="codeblock">class RInterAppChat : public REikAppServiceBase
+    {
+    public:
+        TInt Send(const TDesC&amp; aMessage);
+        void Receive(TRequestStatus&amp; aStatus, TDes&amp; aMessage);
+        void CancelReceive();
+    private:
+        TUid ServiceUid() const;
+    };
+class MChatterReceiver
+    {
+    public:
+        virtual void Receive(const TDesC&amp;) = 0;
+    };
+class CChatter : public CActive
+    {
+    public:
+        CChatter(MChatterReceiver&amp; aReceiver);
+        ~CChatter();
+        void ConstructL(TUid aAppUid);
+        void SendL(const TDesC&amp; aMsg);
+    private:
+        void Queue();
+        void RunL();
+        void DoCancel();
+    public:
+        RInterAppChat iSub;
+        TBuf&lt;KMaxMyMessage&gt; iBuf;
+        MChatterReceiver&amp; iReceiver;
+    };</pre>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-5862F14F-5BB7-584B-A8B1-447975C42D49.html">Creating a New Service</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

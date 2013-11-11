@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Application Start-Up Time Optimization"/>
+<meta name="abstract" content="It is important that phone users do not have to wait long for applications to start. This document summarizes the techniques for optimizing application start-up time."/>
+<meta name="description" content="It is important that phone users do not have to wait long for applications to start. This document summarizes the techniques for optimizing application start-up time."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-16A1C613-288D-471C-8551-51B61290E28F"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Application Start-Up Time Optimization</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-16A1C613-288D-471C-8551-51B61290E28F"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id1198324 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a> &gt; </div>
+<h1 class="topictitle1">Application Start-Up Time Optimization</h1>
+<div><p>It is important that phone users do not have to wait long
+for applications to start. This document summarizes the techniques
+for optimizing application start-up time.</p>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-4585EAA0-4169-4C5C-A7AD-AAA7FDA529C6"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-4585EAA0-4169-4C5C-A7AD-AAA7FDA529C6"><!-- --></a><h2 class="sectiontitle">Introduction</h2>              <p>The techniques discussed in this document
+are limited in scope to application programming. In other words, they
+do not require modification of any core OS components or servers.
+Some of the techniques are general good practice and are useful to
+developers at all levels. </p>
+     <p>The techniques can be summarized
+as follows:</p>
+<ul>
+<li><p>Avoid causing unnecessary code to be executed as an effect
+of your code.</p>
+</li>
+
+<li><p>Defer construction of objects, loading of dynamic libraries
+(for example, the application model), and starting servers until you
+need to use them.</p>
+</li>
+
+<li><p>Write efficient code!</p>
+</li>
+
+</ul>
+<div class="note"><span class="notetitle">Note:</span> There is an inevitable trade-off between shortening the
+start-up time and introducing latency elsewhere in the application.
+For example, if you don’t connect to a server at start-up, you will
+have to do it later on, when the application needs to use the server.
+This may be overcome by a central component that coordinates background
+connections, or construction, such as the view server.</div>
+</div>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-818EB735-F408-47D9-9759-A180766996B4"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-818EB735-F408-47D9-9759-A180766996B4"><!-- --></a><h2 class="sectiontitle">Measure
+start-up time before you start optimizing</h2><p>Do not assume
+you know which methods take the most time. Pay close attention to
+iterative and recursive operations. Many useful tools and techniques
+are available to help identify poorly performing code:</p>
+<ul>
+<li><p>Software analysis tools, for instance <a href="http://www.glowcode.com" target="_blank">GlowCode</a> and
+MetroWerks <a href="http://www.metrowerks.com/MW/Develop/AMC/CodeTEST/default.htm" target="_blank">CodeTEST</a></p>
+</li>
+
+<li><p>The Symbian profiling tool, profiler.exe, which is supplied
+on DevKits </p>
+</li>
+
+<li><p>The RDebug class provides some profiling functions </p>
+</li>
+
+<li><p>The TTime class can be used to time blocks of code, but beware
+of context switches, otherwise you may end up timing other threads!</p>
+</li>
+
+<li><p>Deliberately slowing down suspect blocks of code can reveal
+whether or not optimizing it would bring a significant performance
+improvement. </p>
+</li>
+
+</ul>
+</div>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-594EC7CB-3477-4D0F-B489-8C1A42ED0789"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-594EC7CB-3477-4D0F-B489-8C1A42ED0789"><!-- --></a><h2 class="sectiontitle">Defer
+construction of the application model and other data members</h2><p>Many applications instantiate their components, for instance error
+handlers, dialogs and menus, during start-up. In turn, each of these
+components may instantiate other components, for instance menu resources
+and icons. This can bring some benefits, for instance reducing application
+complexity, revealing memory allocation problems at start-up rather
+than after the application has been running for some time and improving
+the runtime performance of the application. However, to minimize application
+start-up time, it is recommended to avoid this behavior. Your goal
+should be to only do what is immediately necessary during start-up. </p>
+</div>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-F7BE9B30-1993-4736-9E88-F0E065BE1A3C"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-F7BE9B30-1993-4736-9E88-F0E065BE1A3C"><!-- --></a><h2 class="sectiontitle">Draw
+the application as quickly as possible</h2><p>During application
+start-up, only construct UI components that appear in the application’s
+initial view. This applies especially to the application's implementations
+of <samp class="codeph">CXxxApplication::CreateDocumentL()</samp>, <samp class="codeph">CXxxDocument::ConstructL()</samp> and <samp class="codeph">CXxxDocument::CreateAppUiL()</samp>, all of which
+are called before <samp class="codeph">CXxxAppUi::ConstructL()</samp>. Do not
+read bitmaps, resources, or any other data associated with the UI
+from files unless it is necessary.</p>
+<p>In <samp class="codeph">CXxxAppUi::ConstructL()</samp>, make sure <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-C79D0B6F-C2D7-3F22-A62B-88762092E869"><span class="apiname">CCoeControl::ActivateL()</span></a> and <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-D5458F8C-E199-37DD-B821-050B749122C6"><span class="apiname">CCoeControl::DrawNow()</span></a> are called on all controls that
+must be drawn when the application is launched. Also ensure that the
+client-side window server command buffer is flushed by calling <samp class="codeph">Flush()</samp> on the application's window server session. This
+ensures that there aren't any drawing commands left in the client-side
+buffer, after <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-D5458F8C-E199-37DD-B821-050B749122C6"><span class="apiname">CCoeControl::DrawNow()</span></a> has completed. </p>
+</div>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-B320F7A3-C0E3-4A3D-8B45-AEFEDFBAAD2E"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-B320F7A3-C0E3-4A3D-8B45-AEFEDFBAAD2E"><!-- --></a><h2 class="sectiontitle">Minimize
+the number of bitmaps used by GUI components</h2><p>Often, when
+a large number of small images are required by an application, the
+overhead associated with loading each bitmap outweighs any benefit
+associated with their size. Some possible ways to avoid this are: </p>
+<ul>
+<li><p>use text instead, </p>
+</li>
+
+<li><p>for very simple graphics, draw directly using drawing primitives
+rather than loading a bitmap,  </p>
+</li>
+
+<li><p>concatenate many small bitmaps into one large bitmap file to
+reduce the need to search for and load multiple files.</p>
+</li>
+
+</ul>
+</div>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-F00BA3FF-D9BD-44DF-A284-BAF5701179D8"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-F00BA3FF-D9BD-44DF-A284-BAF5701179D8"><!-- --></a><h2 class="sectiontitle">Reduce
+the number of redraws</h2><p>Some GUI components redraw themselves
+every time their data changes. This may not always be necessary. Complicated
+GUI components should implement their<samp class="codeph">Draw()</samp> method
+to only update the area of the screen that has changed. For example,
+there is no point in redrawing a whole list box every time a new item
+is appended to it. In such cases, a GUI API should allow you to switch
+off redrawing. Beware of GUI methods that cause the object they are
+called upon to redraw itself.</p>
+<p>Use <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-9FB682AC-0209-302A-83F3-7BCB1162B998"><span class="apiname">CCoeControl::DrawDeferred()</span></a> in preference to <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-D5458F8C-E199-37DD-B821-050B749122C6"><span class="apiname">CCoeControl::DrawNow()</span></a> if possible,
+because excessive use of <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-D5458F8C-E199-37DD-B821-050B749122C6"><span class="apiname">CCoeControl::DrawNow()</span></a> can cause GUI flicker. For an explanation, see the documentation
+for <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html#GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160__GUID-9FB682AC-0209-302A-83F3-7BCB1162B998"><span class="apiname">CCoeControl::DrawDeferred()</span></a>. </p>
+</div>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-71443827-BF8D-4BD8-8136-5023B6D65204"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-71443827-BF8D-4BD8-8136-5023B6D65204"><!-- --></a><h2 class="sectiontitle">Use
+ROM-based bitmaps rather than filestore bitmaps</h2><p>Uncompressed
+ROM-based bitmaps that can be used in place from ROM are approximately
+three times faster to use than filestore bitmaps. Using them can bring
+a significant reduction in application start-up time.</p>
+<p>Specifying
+bitmap= instead of file= in the .OBY and .IBY files when building
+the ROM causes bitmaps to be uncompressed before inclusion in the
+ROM. Other bitmaps need to be uncompressed at runtime, which impacts
+performance.   </p>
+<p>The drawback of such bitmaps is that they are
+large (up to 3 times larger than file based) and cannot be compressed,
+although decompressing bitmaps should probably be avoided during start-up
+anyway due to the extra processing required.   </p>
+<p>If ROM space
+is limited, consider using such ROM-based bitmaps only if they are
+displayed during application start-up. </p>
+</div>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-5FFD3311-DF8D-4EB1-9C76-EB9F3D306655"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-5FFD3311-DF8D-4EB1-9C76-EB9F3D306655"><!-- --></a><h2 class="sectiontitle">Color
+depth matching</h2><p>When bitmaps are drawn to the screen, optimum
+performance is achieved by ensuring that:</p>
+<samp class="codeph">Bitmap color
+depth = Window color depth = Screen device color depth </samp><p>If this is the case, no palette mapping between the different color
+depths is needed. On real hardware, this optimization has been found
+to improve drawing speed by up to ten times. However, in order to
+match the screen and window color depth, bitmaps may need to increase
+in size and so this optimization is only possible if the increase
+in ROM or RAM usage is acceptable. </p>
+</div>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-5E89E812-4B22-4B5C-A5E4-5FBE6619DC25"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-5E89E812-4B22-4B5C-A5E4-5FBE6619DC25"><!-- --></a><h2 class="sectiontitle">Minimize
+access to the file system</h2><p>The file server can be a major
+bottleneck during start-up when virtually all threads are searching
+for and loading data, libraries and plug-ins. Therefore reducing file
+access is one of the most effective ways to improve performance. </p>
+</div>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-9218ABF0-4062-439A-A5E9-273D76D4B711"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-9218ABF0-4062-439A-A5E9-273D76D4B711"><!-- --></a><h2 class="sectiontitle">Minimize
+the use of resource files</h2><p>Resource files are used for localization
+and allow modifications to be made to an application without the need
+to rebuild it, but they are expensive to use because they require
+access to the file system. </p>
+</div>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-C1CCFD4F-5C63-47C4-A312-38ACB5C16676"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-C1CCFD4F-5C63-47C4-A312-38ACB5C16676"><!-- --></a><h2 class="sectiontitle">Do
+not specify a default document filename for non document-based applications</h2><p>Many applications on a smartphone do not need to use documents,
+for example Telephony, Contacts (this uses the contacts database),
+Browser and Messaging.   </p>
+<p>By not specifying a default document
+filename, hundreds of milliseconds can potentially be saved from such
+applications' start-up time.   </p>
+<p>If an application uses a document
+file, application start-up may involve the following steps: </p>
+<ul>
+<li><p>reading the name of the last used document file from the application’s
+.ini file,</p>
+</li>
+
+<li><p>opening the document file, or if one doesn't exist, creating
+a default document file, after reading its name from the application's
+resource file, </p>
+</li>
+
+<li><p>writing the name of the last used file to the application’s
+.ini file (which is created if it doesn’t exist),  </p>
+</li>
+
+<li><p>writing an entry to the most recently used file list (mru.dat), </p>
+</li>
+
+<li><p>additional document-related processing within <a href="GUID-96CA3B4B-993F-36C0-9A5B-DF5CC74EE20E.html#GUID-96CA3B4B-993F-36C0-9A5B-DF5CC74EE20E__GUID-E2A40307-6EB6-3ABC-B97A-63B77F565CCF"><span class="apiname">CEikonEnv::ConstructAppFromCommandLineL()</span></a>. </p>
+</li>
+
+</ul>
+<p>The default document's name is read from the application's
+resource file by <a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html#GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E__GUID-5D851D0B-6399-3BD8-ADB5-63AD48494D47"><span class="apiname">CEikAppUi::ProcessCommandParametersL()</span></a>. There are two ways of preventing the application from using a default
+document file: </p>
+<ul>
+<li><p>Give the default document a NULL name in the resource file:</p>
+<samp class="codeph">RESOURCE TBUF { buf=""; }</samp></li>
+
+<li><p>Override <a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html#GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E__GUID-5D851D0B-6399-3BD8-ADB5-63AD48494D47"><span class="apiname">CEikAppUi::ProcessCommandParametersL()</span></a> to zero the document name and return EFalse. This method is slightly
+more efficient because it avoids reading the default document name
+from the resource file altogether: </p>
+<pre class="codeblock">TBool CMyAppUi::ProcessCommandParametersL(TApaCommand /*aCommand*/, TFileName&amp; aDocumentName, const TDesC8&amp; /*aTail*/){aDocumentName.Zero();return EFalse;}</pre>
+</li>
+
+</ul>
+</div>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-2DF939E2-C30C-4A84-90DC-92234BEB6AA0"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-2DF939E2-C30C-4A84-90DC-92234BEB6AA0"><!-- --></a><h2 class="sectiontitle">Drive
+scanning</h2><p>This can be a cause of unnecessary file server
+use.   </p>
+<p>To prevent excessive drive access and scanning, always
+specify a drive letter in file paths, if known. The omission of a
+drive letter will cause all available drives to be searched in the
+standard Symbian platform order, in which Z: is always searched last. </p>
+</div>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-C555545B-977F-490D-A7A7-5B6D0D0AD889"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-C555545B-977F-490D-A7A7-5B6D0D0AD889"><!-- --></a><h2 class="sectiontitle">Only
+make server requests if you need to</h2><p> Server requests involve
+context switching and may cause the server to run instead of the application.
+In the worse case if you make a request to a server that has not yet
+been started you may cause the server to start. This will involve
+creating a new thread (and possibly process) and running any server
+initialization code.</p>
+</div>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-1E571A30-5D8A-4647-939E-EF79B033B88E"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-1E571A30-5D8A-4647-939E-EF79B033B88E"><!-- --></a><h2 class="sectiontitle">Use
+asynchronous server requests instead of synchronous server requests</h2><p> Synchronous operations or methods (particularly for server requests)
+can cause general application slowness, and in particular, a significant
+reduction in responsiveness. Synchronous requests to servers mean
+your thread is waiting, so that no start-up progress is being made.
+  </p>
+<p>No 'Golden Rule' exists about when to avoid synchronous requests.
+However, if an asynchronous version of a method exists, it is a good
+indication that the synchronous method could potentially take some
+time. Whilst it may take a little extra effort to handle asynchronous
+versions of method calls, you should consider very carefully any decision
+to use the synchronous version. It’s often easier to change from using
+an asynchronous version to synchronous than vice versa.   </p>
+<p>Note
+that in some situations, you might know that the server is implementing
+your asynchronous request synchronously. If this is the case, and
+the server runs with a higher priority than your application, then
+both versions of the API may have the same performance. However, using
+the synchronous version in this case has the drawback that it relies
+upon knowledge of the server's implementation, which could potentially
+change. </p>
+</div>
+
+<div class="section" id="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-4C7697BD-2898-4E1E-AA88-41E9F3CE2603"><a name="GUID-16A1C613-288D-471C-8551-51B61290E28F__GUID-4C7697BD-2898-4E1E-AA88-41E9F3CE2603"><!-- --></a><h2 class="sectiontitle">Do
+not repeatedly open and close connections to the same server</h2><p> Opening a connection to a server is an expensive operation. If
+an application uses a server frequently then it should create one
+connection and leave it open until the application is destroyed. R
+classes declared as temporaries (on the stack, in other words) within
+a method may be a sign of this behavior. </p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

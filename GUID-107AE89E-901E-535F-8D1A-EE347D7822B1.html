@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Architecture"/>
+<meta name="abstract" content="This topic describes the architecture of the Serial Communications Server."/>
+<meta name="description" content="This topic describes the architecture of the Serial Communications Server."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6C7B7778-9B2E-5D8C-B2D8-74AC1DEEDF61.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9B83CDD4-FC94-51A0-AC67-CD04BCAFEF08.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6C7B7778-9B2E-5D8C-B2D8-74AC1DEEDF61.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D0D27AEA-FDDB-5F6F-94F6-ADDF5910DC47.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Architecture</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1"><a name="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2682451 id2518666 id2518674 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html" title="The Communications Framework is the base for all communications, network and telephony services that Symbian platform provides. The Communications Framework manages the communications threads and the flow of information between those threads. The Framework also manages and stores the communications related settings.">Communications Framework Guide</a> &gt; <a href="GUID-9B83CDD4-FC94-51A0-AC67-CD04BCAFEF08.html">Serial Communications Server</a> &gt; <a href="GUID-6C7B7778-9B2E-5D8C-B2D8-74AC1DEEDF61.html">Concepts</a> &gt; </div>
+<h1 class="topictitle1">Architecture</h1>
+<div><p>This topic describes the architecture of the Serial Communications
+Server. </p>
+
+<p>The Serial Communications Server uses the Symbian platform client/server
+framework. Clients use <samp class="codeph">R</samp> classes that send requests to the
+Serial Communications Server. The server in turn passes requests to an appropriate
+plug-in module that handles the particular communication protocol. These plug-in
+modules are known as <em>Serial Protocol Modules</em> or <em>CSYs</em>. The Serial
+Protocol Modules are loaded by the Serial Communications server, and are not
+directly accessed by client applications. A Symbian platform phone may include
+a number of Serial Protocol Modules as standard, such as for handling RS232
+and infra-red serial communications. The Serial Protocol Module API allows
+new Serial Protocol Modules modules to be developed. </p>
+
+<p>The Serial Communications Server provides a publishedAll API to access
+the serial ports of the device. The Serial Communications Server provides
+functionality such as timeouts and port sharing for all Serial Protocol Modules.
+The Serial Protocol Modules provide the specific protocol and communicate
+with the serial device driver. To communicate with the serial device driver,
+the Serial Protocol Modules use publishedPartner APIs such as <a href="GUID-3B4E8ED5-72F7-3E51-B188-3C1045526DDF.html"><span class="apiname">RBusDevComm</span></a>.
+The <samp class="codeph">RBusDevComm</samp> API provides a handle to a channel to the
+serial device driver. This device driver only implements the basic data transfer
+and break operations, and is not intended for use directly by client applications.
+The device driver is implemented using a Physical Device Driver (PDD) and
+a Logical Device Driver (LDD). The PDD and LDD must be loaded before a Serial
+Protocol Module can be used. For a device being tested, the application client
+may need to load the PDD and LDD. For a device that is shipped, the boot sequence
+normally loads the LDDs and PDDs. Figure 1 below shows the architecture and
+the appropriate APIs at each level. Figure 2 below shows the architecture
+with three Serial Protocol Modules loaded. </p>
+
+<div class="fignone" id="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-4F316E33-41C6-5BF4-AAE1-2750C58CC1AA"><a name="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-4F316E33-41C6-5BF4-AAE1-2750C58CC1AA"><!-- --></a><span class="figcap">Figure 1.            Figure 1 - The architecture and the appropriate APIs at
+each level         </span>
+
+<img src="GUID-44ADB485-69C2-5557-AB95-3B6D20870F73_d0e146144_href.png"/>
+</div>
+
+<div class="fignone" id="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-5B17051E-C4E7-5657-BB62-26072FB13D83"><a name="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-5B17051E-C4E7-5657-BB62-26072FB13D83"><!-- --></a><span class="figcap">Figure 2.            Figure 2 - The architecture with three CSYs loaded     
+   </span>
+
+<img src="GUID-45DD08DB-FCB3-5546-91B4-25868C8ABAE4_d0e146152_href.png"/>
+</div>
+
+<p>Each serial port has a limited availability when multiple clients attempt
+to use the port. The Serial Communications Server provides some functionality
+to mediate between competing clients. This mediation is provided by the <a href="GUID-3B4E8ED5-72F7-3E51-B188-3C1045526DDF.html"><span class="apiname">RComm::Open()</span></a> and <a href="GUID-3B4E8ED5-72F7-3E51-B188-3C1045526DDF.html"><span class="apiname">RComm::OpenWithAvailable()</span></a> APIs.
+However, the first client to access a port has control. If a client must get
+access to a serial port, then that client must ensure it connects to the serial
+port before other clients. The reliable method of ensuring access to a serial
+port is for a client to connect as part of the device boot procedure. If a
+client must have access to a serial port, then the device manufacturer should
+specify which clients access ports during device boot. </p>
+
+<div class="section" id="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-39D0A44F-3E6D-486F-BC72-A4260374419C"><a name="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-39D0A44F-3E6D-486F-BC72-A4260374419C"><!-- --></a><h2 class="sectiontitle">Historical Notes</h2> <a name="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-920828D6-9304-5E44-B82D-671097029B21"><!-- --></a><ol id="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-920828D6-9304-5E44-B82D-671097029B21">
+<li id="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-EE61E2E6-EABB-58D1-AE5A-E452589F5D3C"><a name="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-EE61E2E6-EABB-58D1-AE5A-E452589F5D3C"><!-- --></a><p>The framework supplied
+by the Serial Communications Server for Serial Protocol Modules has a narrower
+set of capabilities compared to the Socket Server for protocol developers. </p>
+ </li>
+
+<li id="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-DB979584-6BBE-56AA-8068-FC5650D40A46"><a name="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-DB979584-6BBE-56AA-8068-FC5650D40A46"><!-- --></a><p>In Symbian platform,
+the Serial Communications Server was converted into a multi-threaded server.
+The Serial Protocol Modules can be run in separate threads. This change did
+not change the behaviour of the Serial Communications Server except for three
+changes: </p>
+ <a name="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-0BCD64C0-448E-5ACA-9928-AC30E42A59CF"><!-- --></a><ol type="a" id="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-0BCD64C0-448E-5ACA-9928-AC30E42A59CF">
+<li id="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-5EFB6685-D6E8-53D9-B3B6-5E1A944F4247"><a name="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-5EFB6685-D6E8-53D9-B3B6-5E1A944F4247"><!-- --></a><p>A serial protocol module
+which blocks does not stop other Serial Protocol Modules from running </p>
+ </li>
+
+<li id="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-71E76203-BA35-5854-AC89-E105BEBDB6B3"><a name="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-71E76203-BA35-5854-AC89-E105BEBDB6B3"><!-- --></a><p>A serial protocol module
+can run faster than other modules by changing the configured thread priority </p>
+ </li>
+
+<li id="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-B844EEB9-B241-553B-8631-622BDA0B7A84"><a name="GUID-107AE89E-901E-535F-8D1A-EE347D7822B1__GUID-B844EEB9-B241-553B-8631-622BDA0B7A84"><!-- --></a><p>A serial protocol module
+can use the Serial Communications Server API and request services of another
+serial protocol module </p>
+ </li>
+
+</ol>
+ </li>
+
+</ol>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-6C7B7778-9B2E-5D8C-B2D8-74AC1DEEDF61.html">Concepts</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-D0D27AEA-FDDB-5F6F-94F6-ADDF5910DC47.html">        
+        Client/Server Overview</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,878 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CCFClient"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-A7116025-0508-392B-970D-16353FF2FB72"/>
+
+<title>CCFClient</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-A7116025-0508-392B-970D-16353FF2FB72"><a name="GUID-A7116025-0508-392B-970D-16353FF2FB72"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2483429 id2486128 id2486166 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CCFClient Class Reference</h1>
+	<table class="signature"><tr><td>class CCFClient : public CBase</td></tr></table><div class="section"><div>
+			<p>Client side API of Context Framework.</p>
+
+			<div class="p">Context Framework Client provides following functionality:<ul><li><p>Define contexts</p>
+</li>
+<li><p>Publish contexts</p>
+</li>
+<li><p>Subscribe contexts</p>
+</li>
+<li><p>Define actions</p>
+</li>
+<li><p>Subscribe actions</p>
+</li>
+<li><p>Register new scripts</p>
+</li>
+<li><p>Deregister scripts</p>
+</li>
+</ul>
+</div>
+
+			<p>Before contexts can be published or subscribed it first needs to be defined. Otherwise error code will be returned to client side.</p>
+
+			<p>Before actions can be subscribed they must be defined. Every action must be secured with a security policy. If your action does not need any security, NONE capabilities can be defined.</p>
+
+			<p>Client application can request contexts that have been published in Context Framework. Contexts will be delivered in an array. Array will contain all the context objects where the client has sufficient capabilities.</p>
+
+			<p>This class is not intended for user derivation.</p>
+
+			<p>Below is described is described examples how to utilze Context Framework Client.</p>
+
+			<div class="p">Initialize: When <a href="GUID-A7116025-0508-392B-970D-16353FF2FB72.html#GUID-A7116025-0508-392B-970D-16353FF2FB72">CCFClient</a> instance is created a connection to Context Framework Server is also created. Creator of the instance must implement MCFListener interface and pass it as a parameter. <pre class="codeblock">  CCFClient* client = CCFClient::NewLC( *this );
+  CleanupStack::PopAndDestroy( client );</pre>
+</div>
+
+			<div class="p">Define context: If the context is already been defined it cannot be redfined. KErrAlreadyExists is returned to the client if the context has already been defined. You can use a security policy that is suitable for your own context. Remember not to set bigger capabilities than your process has. <pre class="codeblock">  _LIT( KContextSource, "Source" );
+  _LIT( KContextType, "Type" );
+  _LIT_SECURITY_POLICY_PASS( KContextSec );
+  CCFClient* client = CCFClient::NewLC( *this );
+  TInt err = client-&gt;DefineContext( KContextSource, KContextType, KContextSec );
+  if( err != KErrNone )
+  {
+      // handle error
+  }
+  CleanupStack::PopAndDestroy( client );</pre>
+</div>
+
+			<div class="p">Publish context: Before context can bee published it must have been defined. KErrNotFound is returned to the client if the published context cannot be found. KErrAccessDenied is returned if the client process does not have sufficient capabilities. <pre class="codeblock">  _LIT( KContextSource, "Source" );
+  _LIT( KContextType, "Type" );
+  _LIT( KContextValue, "Value" );
+  CCFContextObject* co = CCFContextObject::NewLC();
+  co-&gt;SetSourceL( KContextSource );
+  co-&gt;SetTypeL( KContextType );
+  co-&gt;SetValueL( KContextValue );
+  CCFClient* client = CCFClient::NewLC( *this );
+  TInt err = client-&gt;PublishContext( *co );
+  if( err != KErrNone )
+  {
+      // handle error
+  }
+  CleanupStack::PopAndDestroy( client );
+  CleanupStack::PopAndDestroy( co );</pre>
+</div>
+
+			<div class="p">Subscribe context: Context can be subscribed without it being defined. When the client subscribes for a context which has not been defined the context subscription is treated as "unsecure". When the specified context is defined a capability check is done. If the client process does not have sufficient capabilities, an error is notified through MCFListener interface. When the subscribed context changes context indication is notified through MCFListener interface. <pre class="codeblock">  _LIT( KContextSource, "Source" );
+  _LIT( KContextType, "Type" );
+  _LIT( KContextValue, "Value" );
+  CCFClient* client = CCFClient::NewLC( *this );
+  CCFContextSubscription* subscription = CCFContextSubscription::NewLC();
+  subscription-&gt;SetSourceL( KContextSource );
+  subscription-&gt;SetTypeL( KContextType );
+  TInt err = client-&gt;SubscribeContext( *subscription );
+  if( err != KErrNone )
+  {
+      // handle error
+  }
+  CleanupStack::PopAndDestroy( subscription );
+  CleanupStack::PopAndDestroy( client );</pre>
+</div>
+
+			<div class="p">Request context: Only contexts that have been defined can be requested. Since contexts has a certain security a security check is done. If client process does not have sufficient capabilities for the requested context it will not be returned. The request can also contain a set of queries. <pre class="codeblock">  _LIT( KContextSource, "Source" );
+  _LIT( KContextType, "Type" );
+  CCFContextQuery* query = CCFContextQuery::NewLC();
+  query-&gt;SetSourceL( KContextSource );
+  query-&gt;SetTypeL( KContextType );
+  CCFClient* client = CCFClient::NewLC( *this );
+  RContextObjectArray result;
+  TInt err = client-&gt;RequestContext( query, result );
+  if( err != KErrNone )
+  {
+      // handle error
+  }
+  else if( result.Count() )
+  {
+      // handle result
+  }
+  result.ResetAndDestroy();
+  CleanupStack::PopAndDestroy( client );
+  CleanupStack::PopAndDestroy( query );</pre>
+</div>
+
+			<div class="p">Define action: Defines an action in Context Framework Server. Only one action with the same identifier can be defined. KErrAlreadyExists is returned if the action is already defined. Action needs a certain security level. A specific security level can be defined for every action that is defined. <pre class="codeblock">  _LIT( KAction, "ActionId" );
+  _LIT_SECURITY_POLICY_PASS( KActionSec );
+  CCFClient* client = CCFClient::NewLC( *this );
+  TInt err = client-&gt;DefineAction( KAction, KActionSec );
+  if( err != KErrNone )
+  {
+      // handle error
+  }
+  CleanupStack::PopAndDestroy( client );</pre>
+</div>
+
+			<div class="p">Subscribe action: Actions must be defined before they can be subscribed. KErrNotFound is returned if an action is tried to be subscribed without being defined. Client process must have the needed security level for the action. If client process fail security check KErrAccessDenied is returned. When a certain rule is evaluated to true where the subscribed action is executed action indication is notified through MCFListener interface. <pre class="codeblock">  _LIT( KAction, "ActionId" );
+  CCFClient* client = CCFClient::NewLC( *this );
+  CCFActionSubscription* subscription = CCFActionSubscription::NewLC();
+  subscription-&gt;SetActionIdentifierL( KAction );
+  TInt err = client-&gt;SubscribeAction( *subscription );
+  if( err != KErrNone )
+  {
+      // handle error
+  }
+  CleanupStack::PopAndDestroy( subscription );
+  CleanupStack::PopAndDestroy( client );</pre>
+</div>
+
+			<div class="p">Register script: Client can register own scripts to Context Framework. When the script is registered all the context objects and actions related to the script is evaluated and security check is made. Client process must have sufficient security for the context objects and actions used in the script. The new script is not permanently registered and stored. When the device is rebooted client needs to re-register the script. Notice that the script file must be in public location so that Context Framework server can access to it. <pre class="codeblock">  _LIT( KScriptPath, "c:\\data\\myscripts\\script.rul" );
+  CCFClient* client = CCFClient::NewLC( *this );
+  TInt ruleId = 0;
+  TInt err = client-&gt;RegisterScript( KScriptPath, ruleId );
+  if( err != KErrNone )
+  {
+      // handle error
+  }
+  CleanupStack::PopAndDestroy( client );</pre>
+</div>
+
+			<div class="p">Deregister script: Before a script can be deregistered it must have been first registered. <pre class="codeblock">  _LIT( KScriptPath, "c:\\data\\myscripts\\script.rul" );
+  CCFClient* client = CCFClient::NewLC( *this );
+  TInt ruleId = 0;
+  TInt err = client-&gt;RegisterScript( KScriptPath, ruleId );
+  if( err != KErrNone )
+  {
+      // handle error
+  }
+  err = client-&gt;DeregisterScript( ruleId );
+  if( err != KErrNone )
+  {
+      // handle error
+  }
+  CleanupStack::PopAndDestroy( client );</pre>
+</div>
+
+			<div class="p">CFClient.lib <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CCFClient<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-8135CE37-901B-31BC-8621-9567C3AE0ADF">DefineAction</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-7CE21CF6-0F63-3164-B7F1-EF13BDBAD793">DefineContext</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-65D07CC4-DA6D-3BE9-B859-68B1DFF2FCBA">DefineContext</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;, const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-D64E4781-DFB8-3E33-83E6-A1DCBD16FA06">DeleteContextSourceSetting</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-BF38DD55-BD19-3003-AD46-6C4ED3BC4EDC">DeleteContextSourceSettings</a>(const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-81371A85-3BB5-353F-A765-491378625875">DeleteScript</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-E97F0806-21F6-3933-850C-A46FA4500D41">DeleteScripts</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-D36B6AC3-271A-36FB-A6DB-D462AA3797C7">DeregisterScript</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-A7116025-0508-392B-970D-16353FF2FB72.html">CCFClient</a> *</td><td><a href="#GUID-5C4F39D8-25C8-3BE0-9270-ADF8E5D8E595">NewL</a>(MCFListener &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-A7116025-0508-392B-970D-16353FF2FB72.html">CCFClient</a> *</td><td><a href="#GUID-112E7F92-3C75-389A-A461-9DD605B291E6">NewLC</a>(MCFListener &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-37E06BDC-5A81-3745-B860-CEC49E6AEF4F">PublishContext</a>(<a href="GUID-21F88695-699A-3D25-A82B-60A0736C52E1.html">CCFContextObject</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-9ECE7B32-C0E1-3CF0-ABC4-65511939BB65">PublishContext</a>(<a href="GUID-21F88695-699A-3D25-A82B-60A0736C52E1.html">CCFContextObject</a> &amp;, CCFContextDataObject &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-84751A13-9DE8-30EE-A048-12AC50FF5340">RegisterScript</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-6A60DE3C-29E1-3A93-8A7F-6D5A26360D8D">RegisterScript</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-C9739A6D-FB1F-3990-B0AD-FB6AACB19EC6">RequestContext</a>(<a href="GUID-8D4A895A-5AA8-3841-BADD-359F08A02EBD.html">CCFContextQuery</a> &amp;, <a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RContextObjectArray</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-8BDFCBB7-3254-3280-B46B-F85252C5E0F2">RequestContextSet</a>(<a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RContextQueryArray</a> &amp;, <a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RContextObjectArray</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-71DCE9F9-4FBD-34D9-AA51-015FBA784318">RestoreRomScript</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-114D259E-AF21-3A51-A403-F2FD4D7C4BA9">SaveContextSourceSetting</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-C6EFD227-8AAB-38E9-8754-8097E4B6858C">SaveScript</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-A8EB55E8-F44F-3F2B-8131-1FC439FE5D12">SaveScript</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-CE79AF1A-E59A-3342-97FF-47AE87C9B490">SubscribeAction</a>(CCFActionSubscription &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-32E7360C-3C2C-3409-87F1-4D6052A30A53">SubscribeContext</a>(CCFContextSubscription &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-2F94405E-056B-3B24-87D4-59992E7A63FF">UnsubscribeAction</a>(CCFActionSubscription &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-19F55C9F-10AE-38B3-B83C-195F1C200458">UnsubscribeContext</a>(CCFContextSubscription &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-997495F2-1CE0-33EF-93FA-120045BF7486">UpgradeRomScript</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-7A038F25-628F-3564-B4EC-CFD5FDEC1DE1">UpgradeRomScript</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-8135CE37-901B-31BC-8621-9567C3AE0ADF"><a name="GUID-8135CE37-901B-31BC-8621-9567C3AE0ADF"><!-- --></a>
+		<h2 class="topictitle2">DefineAction(const TDesC &amp;, const TSecurityPolicy &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>DefineAction</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aActionIdentifier,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;</td><td>aSecurityPolicy</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Defines an action in Context Framework. When action is defined in Context Framework it can be subscribed. When the action is needed to be executed action indication is received through MCFListener interface. Notice that actions can be defined also from action plug-ins. If some action plug-in has already defined the action in hand action definition will fail.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aActionIdentifier</td><td>Action identifier.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp; aSecurityPolicy</td><td>Security policy for the action.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7CE21CF6-0F63-3164-B7F1-EF13BDBAD793"><a name="GUID-7CE21CF6-0F63-3164-B7F1-EF13BDBAD793"><!-- --></a>
+		<h2 class="topictitle2">DefineContext(const TDesC &amp;, const TDesC &amp;, const TSecurityPolicy &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>DefineContext</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aContextSource,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aContextType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;</td><td>aReadWritePolicy</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Defines a new context in Context Framework. Every context needs to be defined before it can be published, subscribed or requested.</p>
+
+				<p>Security policy for reading and writing is the same.</p>
+
+				<p>If some client subscribes for this context, the contex owner will be notified through <a href="GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20.html#GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20">MCFContextSource</a> interface. <a href="GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20.html#GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20">MCFContextSource</a> interface will be enquired through MCFListener interface extension.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aContextSource</td><td>Source of the context.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aContextType</td><td>Type of the context.  </td></tr><tr><td class="parameter">const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp; aReadWritePolicy</td><td>Needed capabilities for the context.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-65D07CC4-DA6D-3BE9-B859-68B1DFF2FCBA"><a name="GUID-65D07CC4-DA6D-3BE9-B859-68B1DFF2FCBA"><!-- --></a>
+		<h2 class="topictitle2">DefineContext(const TDesC &amp;, const TDesC &amp;, const TSecurityPolicy &amp;, const TSecurityPolicy &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>DefineContext</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aContextSource,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aContextType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;</td><td>aReadPolicy,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;</td><td>aWritePolicy</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Defines a new context in Context Framework. Every context needs to be defined before it can be published, subscribed or requested.</p>
+
+				<p>Security policy for reading and writing are different.</p>
+
+				<p>If some client subscribes for this context, the contex owner will be notified through <a href="GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20.html#GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20">MCFContextSource</a> interface. <a href="GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20.html#GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20">MCFContextSource</a> interface will be enquired through MCFListener interface extension.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aContextSource</td><td>Source of the context.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aContextType</td><td>Type of the context.  </td></tr><tr><td class="parameter">const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp; aReadPolicy</td><td>Needed capabilities for reading context value.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp; aWritePolicy</td><td>Needed capabilities for writing context value.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D64E4781-DFB8-3E33-83E6-A1DCBD16FA06"><a name="GUID-D64E4781-DFB8-3E33-83E6-A1DCBD16FA06"><!-- --></a>
+		<h2 class="topictitle2">DeleteContextSourceSetting(const TDesC &amp;, const TUid &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>DeleteContextSourceSetting</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSettingFilename,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;</td><td>aContextSourceUid</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Deletes a context source setting in Context Framework. Setting is removed if uninstall succeeds.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSettingFilename</td><td>Filename (without path) that was used to install the setting.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp; aContextSourceUid</td><td>Implementation UID of the context source.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BF38DD55-BD19-3003-AD46-6C4ED3BC4EDC"><a name="GUID-BF38DD55-BD19-3003-AD46-6C4ED3BC4EDC"><!-- --></a>
+		<h2 class="topictitle2">DeleteContextSourceSettings(const TUid &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>DeleteContextSourceSettings</td><td>(</td><td>const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;</td><td>aContextSourceUid</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Uninstalls context source settings registered by a client in Context Framework. Uninstalls all settings ever registered by the client for the context source. Settings are removed if uninstall succeeds.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp; aContextSourceUid</td><td>Implementation UID of the context source.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-81371A85-3BB5-353F-A765-491378625875"><a name="GUID-81371A85-3BB5-353F-A765-491378625875"><!-- --></a>
+		<h2 class="topictitle2">DeleteScript(const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>DeleteScript</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aScriptFileName</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Delete a script from Context Framework private folder. The script will be automatically deregistered.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aScriptFileName</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E97F0806-21F6-3933-850C-A46FA4500D41"><a name="GUID-E97F0806-21F6-3933-850C-A46FA4500D41"><!-- --></a>
+		<h2 class="topictitle2">DeleteScripts()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>DeleteScripts</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Delete all scripts from Context Framework private folder added by the particular process. All the scripts are automatically deregistered.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-D36B6AC3-271A-36FB-A6DB-D462AA3797C7"><a name="GUID-D36B6AC3-271A-36FB-A6DB-D462AA3797C7"><!-- --></a>
+		<h2 class="topictitle2">DeregisterScript(TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>DeregisterScript</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aScriptId</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Deregisters a script in Context Framework.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aScriptId</td><td>Script obtained from RegisterScript -method.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5C4F39D8-25C8-3BE0-9270-ADF8E5D8E595"><a name="GUID-5C4F39D8-25C8-3BE0-9270-ADF8E5D8E595"><!-- --></a>
+		<h2 class="topictitle2">NewL(MCFListener &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-A7116025-0508-392B-970D-16353FF2FB72.html">CCFClient</a> *</td><td>NewL</td><td>(</td><td>MCFListener &amp;</td><td>aListener</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<div class="p">Symbian two phased constructors. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">MCFListener &amp; aListener</td><td>Context Framework listener interface.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-112E7F92-3C75-389A-A461-9DD605B291E6"><a name="GUID-112E7F92-3C75-389A-A461-9DD605B291E6"><!-- --></a>
+		<h2 class="topictitle2">NewLC(MCFListener &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-A7116025-0508-392B-970D-16353FF2FB72.html">CCFClient</a> *</td><td>NewLC</td><td>(</td><td>MCFListener &amp;</td><td>aListener</td><td>)</td><td>[static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">MCFListener &amp; aListener</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-37E06BDC-5A81-3745-B860-CEC49E6AEF4F"><a name="GUID-37E06BDC-5A81-3745-B860-CEC49E6AEF4F"><!-- --></a>
+		<h2 class="topictitle2">PublishContext(CCFContextObject &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>PublishContext</td><td>(</td><td><a href="GUID-21F88695-699A-3D25-A82B-60A0736C52E1.html">CCFContextObject</a> &amp;</td><td>aContext</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Publishes a new value of a context into Context Framework. Subscribed clients will be notified of the change. Context must have been defined before it can be published.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-21F88695-699A-3D25-A82B-60A0736C52E1.html">CCFContextObject</a> &amp; aContext</td><td>Context object to be added.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9ECE7B32-C0E1-3CF0-ABC4-65511939BB65"><a name="GUID-9ECE7B32-C0E1-3CF0-ABC4-65511939BB65"><!-- --></a>
+		<h2 class="topictitle2">PublishContext(CCFContextObject &amp;, CCFContextDataObject &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>PublishContext</td><td>(</td><td><a href="GUID-21F88695-699A-3D25-A82B-60A0736C52E1.html">CCFContextObject</a> &amp;</td><td>aContext,</td></tr><tr><td colspan="3"> </td><td>CCFContextDataObject &amp;</td><td>aData</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Publishes a new value of a context into Context Framework. Subscribed clients will be notified of the change. Context can be associated with a specific data object. If a subscriber has requested to receive also data objects the data object is associated in the context indication. Context must have been defined before it can be published.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-21F88695-699A-3D25-A82B-60A0736C52E1.html">CCFContextObject</a> &amp; aContext</td><td>Context object to be added.  </td></tr><tr class="bg"><td class="parameter">CCFContextDataObject &amp; aData</td><td>Data object associated the context.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-84751A13-9DE8-30EE-A048-12AC50FF5340"><a name="GUID-84751A13-9DE8-30EE-A048-12AC50FF5340"><!-- --></a>
+		<h2 class="topictitle2">RegisterScript(const TDesC &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>RegisterScript</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aScriptFileName,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aScriptId</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Registers a new script in Context Framework. If the client process wants to provide the actions defined in the script it is necessary first to subscribe the actions needed and then register the script. If a script with the same name is found, it will be automatically replaced and the script id remains the same.</p>
+
+				<p>Notice that the script is valid until the device is rebooted. After reboot, the script is needed to be registered again.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aScriptFileName</td><td>File path to the script.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aScriptId</td><td>Script ID return value.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6A60DE3C-29E1-3A93-8A7F-6D5A26360D8D"><a name="GUID-6A60DE3C-29E1-3A93-8A7F-6D5A26360D8D"><!-- --></a>
+		<h2 class="topictitle2">RegisterScript(const TDesC &amp;, const TDesC8 &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>RegisterScript</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aScriptFileName,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aScript,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aScriptId</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Registers a new script in Context Framework. If the client process wants to provide the actions defined in the script it is necessary first to subscribe the actions needed and then register the script. If a script with the same name is found, it will be automatically replaced and the script id remains the same.</p>
+
+				<p>Notice that the script is valid until the device is rebooted. After reboot, the script is needed to be registered again.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aScriptFileName</td><td>Name of the script.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aScript</td><td>Descriptor containing the script.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aScriptId</td><td>Script ID return value.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C9739A6D-FB1F-3990-B0AD-FB6AACB19EC6"><a name="GUID-C9739A6D-FB1F-3990-B0AD-FB6AACB19EC6"><!-- --></a>
+		<h2 class="topictitle2">RequestContext(CCFContextQuery &amp;, RContextObjectArray &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>RequestContext</td><td>(</td><td><a href="GUID-8D4A895A-5AA8-3841-BADD-359F08A02EBD.html">CCFContextQuery</a> &amp;</td><td>aContextQuery,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RContextObjectArray</a> &amp;</td><td>aRequestResults</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Requests the latest context of the specified type, source, or type &amp; source from the Context Framework. All the contexts where client has enough capabilities will be returned in aRequestResult array.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-8D4A895A-5AA8-3841-BADD-359F08A02EBD.html">CCFContextQuery</a> &amp; aContextQuery</td><td>Requirements for context type and source. If the given type is a partial ontology path, all contexts beginning with that will be returned. Accordingly, if the given source is a partial source name, all contexts from a source having that beginning will be returned.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RContextObjectArray</a> &amp; aRequestResults</td><td>Storage for the requested contexts.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8BDFCBB7-3254-3280-B46B-F85252C5E0F2"><a name="GUID-8BDFCBB7-3254-3280-B46B-F85252C5E0F2"><!-- --></a>
+		<h2 class="topictitle2">RequestContextSet(RContextQueryArray &amp;, RContextObjectArray &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>RequestContextSet</td><td>(</td><td><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RContextQueryArray</a> &amp;</td><td>aContextQuerySet,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RContextObjectArray</a> &amp;</td><td>aRequestResults</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Requests the latest context of the specified types, sources, or types &amp; sources from the Context Framework. All the contexts where client has enough capabilities will be returned in aRequestResult array.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>Using partial ontology paths in types or partial source names may result in repeated occurrence of the same contexts (redundancy), as is also the case with repeating exactly the same definition in the query set.</p>
+
+					</div>
+
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RContextQueryArray</a> &amp; aContextQuerySet</td><td>An array of query definitions containing type and source requirement pairs. If the given type is a partial ontology path, all contexts beginning with that will be stored into the provided storage array. Accordingly,if the given source is a partial source name, all contexts from a source having that beginning will also be stored. The given query set does not have to be analogous. One element may define only the type, another only the source, and finally, some other might define both type and source.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RContextObjectArray</a> &amp; aRequestResults</td><td>Storage for the requested contexts. The call just returns and leaves this set untouchable, if the given query set is empty.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-71DCE9F9-4FBD-34D9-AA51-015FBA784318"><a name="GUID-71DCE9F9-4FBD-34D9-AA51-015FBA784318"><!-- --></a>
+		<h2 class="topictitle2">RestoreRomScript(const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>RestoreRomScript</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aScriptFileName</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Restores the script located in ROM. The script upgrade is deregistered and deleted from file system. The original script located in ROM is registered in to use again.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aScriptFileName</td><td>Script which to replace (full path).  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-114D259E-AF21-3A51-A403-F2FD4D7C4BA9"><a name="GUID-114D259E-AF21-3A51-A403-F2FD4D7C4BA9"><!-- --></a>
+		<h2 class="topictitle2">SaveContextSourceSetting(const TDesC &amp;, const TUid &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SaveContextSourceSetting</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSettingFilename,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;</td><td>aContextSourceUid</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Saves a context source setting in Context Framework. Setting is stored if install succeeds.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSettingFilename</td><td>Filename with full path to the setting.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp; aContextSourceUid</td><td>Implementation UID of the context source to receive setting.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C6EFD227-8AAB-38E9-8754-8097E4B6858C"><a name="GUID-C6EFD227-8AAB-38E9-8754-8097E4B6858C"><!-- --></a>
+		<h2 class="topictitle2">SaveScript(const TDesC &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SaveScript</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aScriptFileName,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aScriptId</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Saves a new script in Context Framework private folder. The script will be registered and updated when necessary. The script will be automatically loaded on next device boot up. If a script with the same name already exists, it will be automatically replaced.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aScriptFileName</td><td>The full path to a script file.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aScriptId</td><td>Script ID return value.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A8EB55E8-F44F-3F2B-8131-1FC439FE5D12"><a name="GUID-A8EB55E8-F44F-3F2B-8131-1FC439FE5D12"><!-- --></a>
+		<h2 class="topictitle2">SaveScript(const TDesC &amp;, const TDesC8 &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SaveScript</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aScriptFileName,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aScript,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aScriptId</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Saves a new script in Context Framework private folder. The script will be registered and updated when necessary. The script will be automatically loaded on next device boot up. If a script with the same name already exists, it will be automatically replaced.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aScriptFileName</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aScript</td><td>Descriptor containing the script.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aScriptId</td><td>Script ID return value.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CE79AF1A-E59A-3342-97FF-47AE87C9B490"><a name="GUID-CE79AF1A-E59A-3342-97FF-47AE87C9B490"><!-- --></a>
+		<h2 class="topictitle2">SubscribeAction(CCFActionSubscription &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SubscribeAction</td><td>(</td><td>CCFActionSubscription &amp;</td><td>aSubscription</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Subscribes for action. When certain action is needed to be performed action indication is informed through MCFListener API. Every action is needed to be defined before they can be subscribed.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CCFActionSubscription &amp; aSubscription</td><td>Action subscription  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-32E7360C-3C2C-3409-87F1-4D6052A30A53"><a name="GUID-32E7360C-3C2C-3409-87F1-4D6052A30A53"><!-- --></a>
+		<h2 class="topictitle2">SubscribeContext(CCFContextSubscription &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SubscribeContext</td><td>(</td><td>CCFContextSubscription &amp;</td><td>aSubscription</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Add subscription to Context Framework to get indications about context changes of certain type. If client does not have suffcient capabilities error will be informed through MCFListener interface. This can happen if client subscribes in a context that has not yet been defined. When the context is later on defined a check is made against clients process capabilities. If client lacks capabilities error will be notifed.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CCFContextSubscription &amp; aSubscription</td><td>Information about which kind of context changes are sent to object implementing MCFListener.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2F94405E-056B-3B24-87D4-59992E7A63FF"><a name="GUID-2F94405E-056B-3B24-87D4-59992E7A63FF"><!-- --></a>
+		<h2 class="topictitle2">UnsubscribeAction(CCFActionSubscription &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>UnsubscribeAction</td><td>(</td><td>CCFActionSubscription &amp;</td><td>aSubscription</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Unsubscribes for action.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CCFActionSubscription &amp; aSubscription</td><td>Action subscription  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-19F55C9F-10AE-38B3-B83C-195F1C200458"><a name="GUID-19F55C9F-10AE-38B3-B83C-195F1C200458"><!-- --></a>
+		<h2 class="topictitle2">UnsubscribeContext(CCFContextSubscription &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>UnsubscribeContext</td><td>(</td><td>CCFContextSubscription &amp;</td><td>aSubscription</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Remove subscription from context manager. If subscription is not found on the server this method leaves with <tt>KErrNotFound</tt>.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CCFContextSubscription &amp; aSubscription</td><td>Subscription to be removed. This must be the same object that is used in SubscribeL() method.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-997495F2-1CE0-33EF-93FA-120045BF7486"><a name="GUID-997495F2-1CE0-33EF-93FA-120045BF7486"><!-- --></a>
+		<h2 class="topictitle2">UpgradeRomScript(const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>UpgradeRomScript</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aScriptFileName</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Upgrade existing script in ROM. The new script is saved in C-drive and registered automatically. The script located in ROM is inactive untill the upgrade will be deleted. If a script with the same name is found, it will be automatically replaced.</p>
+
+				<p>The client must have the needed capabilities to be able to upgrade rom script. The script which acts as an upgrade must also have at least the same upgrade security level than the original script located in rom.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aScriptFileName</td><td>Script which to replace (full path).  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7A038F25-628F-3564-B4EC-CFD5FDEC1DE1"><a name="GUID-7A038F25-628F-3564-B4EC-CFD5FDEC1DE1"><!-- --></a>
+		<h2 class="topictitle2">UpgradeRomScript(const TDesC &amp;, const TDesC8 &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>UpgradeRomScript</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aScriptFileName,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aScript</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Upgrade existing script in ROM. The currently registered ROM based script will be deregistered and the new script will be stored in RAM. The script located in ROM is inactive untill the upgrade will be deleted. If a script with the same name is found, it will be automatically replaced.</p>
+
+				<p>The client must have the needed capabilities to be able to upgrade rom script. The script which acts as an upgrade must also have at least the same upgrade security level than the original script located in rom.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aScriptFileName</td><td>Script which to replace (only filename).  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aScript</td><td>Descriptor containing the script.  </td></tr></table></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

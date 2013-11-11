@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Example Code"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-17721C5E-A2ED-5430-9025-523B94D70FBB.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E6C91CF2-A616-5E52-8BB2-630C42C8D540.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-7EE46FD9-DC9E-5C1F-9AC5-48F5212AF0CA.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-17721C5E-A2ED-5430-9025-523B94D70FBB.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Example Code</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9"><a name="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2858558 id2858692 id2858712 id2858871 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html">OS Security Guide</a> &gt; <a href="GUID-E6C91CF2-A616-5E52-8BB2-630C42C8D540.html">Content Management</a> &gt; <a href="GUID-7EE46FD9-DC9E-5C1F-9AC5-48F5212AF0CA.html">Content Access Framework</a> &gt; <a href="GUID-17721C5E-A2ED-5430-9025-523B94D70FBB.html">Content Access Framework References</a> &gt; </div>
+<h1 class="topictitle1">Example Code</h1>
+<div><p>The example code demonstrates how to implement the CAF functions. Some of these examples listed here do not include complete error checking. The examples are written this way to simplify the understanding of the basic steps involved. All errors must be handled appropriately in production code. </p>
+ <div class="section"><h2 class="sectiontitle">Reading from a file without checking errors </h2> <p>This example function takes the URI of a file and displays the plaintext version of that content on screen. If anything goes wrong, for instance the file does not exist or there are no valid rights that allows the file to be displayed, the function leaves. </p>
+ <p>It is important to notice the call to <a href="GUID-B54C8391-FE69-324C-AC0A-1E88C2555F00.html#GUID-B54C8391-FE69-324C-AC0A-1E88C2555F00__GUID-3E5B2A86-A06B-3710-99C9-FA205E99088F"><span class="apiname">ContentAccess::CData::ExecuteIntent()</span></a>. This must always be called, even if you think it is unlikely to open DRM content. </p>
+ <pre class="codeblock" id="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9__GUID-5BC1FDCA-0E8A-5118-AE09-19B9896C2C3E"><a name="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9__GUID-5BC1FDCA-0E8A-5118-AE09-19B9896C2C3E"><!-- --></a>class CContentViewer : public CBase
+        {
+public:
+        static CContentViewer* NewL();
+        static CContentViewer* NewLC();
+        
+        // Display given content.
+        void DisplayContent(const TDesC&amp; aUri, TRequestStatus&amp; aStatus)
+                {
+                TRAPD(err, DisplayContentL(aUri));
+                User::RequestComplete(aStatus, err);
+                }
+                
+private:
+        CContentViewer() : CBase() {}
+        ~CContentViewer() {} 
+
+        void DisplayContentL(const TDesC&amp; aUri)
+                {
+                TInt size = 0;
+                TInt I = 0;
+        
+                // Create a CContent object
+                // CAF figures out the appropriate agent
+                CContent *content = CContent::NewLC(aUri);
+        
+                // Create a CData object to read the content
+                // Tell the agent we are planning to display the content
+                CData *data = content-&gt;OpenContentLC(EDisplay);
+        
+                // Don't need content object any more
+                CleanupStack::PopAndDestroy(content);
+        
+                // get the size of the plaintext content
+                data-&gt;DataSizeL(size);
+        
+                // Execute the intent, tell the agent that we plan to display the content
+                // It is at this point that any stateful rights is decremented
+                data-&gt;ExecuteIntentL(EDisplay);
+        
+                // read and display the file until we reach the end of the file
+                TBuf &lt;128&gt; buffer;              
+                while(I &lt; size)
+                        {
+                        // read from the file
+                        User::LeaveIfError(data-&gt;Read(buffer));
+                        I += buffer.Length();
+        
+                        // display on screen
+                        printf(buffer);
+                        }
+        
+                // finished with Data object
+                CleanupStack::PopAndDestroy(data);
+                }
+        };
+
+</pre>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Reading from a file, with error checking</h2> <p>This example is the same as before except it attempts to obtain or wait for rights to become available rather than just leaving if access to the content is restricted. </p>
+ <pre class="codeblock" id="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9__GUID-C197103B-57E1-506D-9E63-F37A8CAB31E7"><a name="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9__GUID-C197103B-57E1-506D-9E63-F37A8CAB31E7"><!-- --></a>class CContentViewer : public CActive
+        {
+public:
+        static CContentViewer* NewL();
+        static CContentViewer* NewLC();
+        
+        // Display given content.
+        void DisplayContent(const TDesC&amp; aUri, TRequestStatus&amp; aStatus)
+                {
+                iUri = aUri;
+                iClientStatus = &amp;aStatus;
+                *iClientStatus = KRequestPending;
+                iCurrentState = EOpenFile;
+                // trigger our RunL
+                iStatus = KRequestPending;
+                SetActive();
+                User::RequestComplete(iStatus, KErrNone);
+                }
+        
+        void RunL()
+                {
+                TInt err = iStatus.Int();
+                
+                switch (iCurrentState)
+                        {
+                        case EOpenFile:
+                                iContent = CContent::NewL(aUri);
+                                TRAP(err, iData = iContent-&gt;OpenContentL(EDisplay));
+                                iCurrentState = EReadAndDisplay;        // follow through...
+                        case EReadAndDisplay:
+                                if(err == KErrNone)
+                                        {
+                                        TRAP(err, DisplayFile());
+                                        iCurrentState = EFinished;
+                                        // tell client iStatus that we have finished
+                                        User::RequestComplete(*iClientStatus, err);
+                                        return;
+                                        }       
+                                else if(err == KErrCANoRights)
+                                        {
+                                        // we don't have rights so we need to wait for them
+                                        iCurrentState = EWaitingForRights;
+                                        // ask CAF to initiate download of rights
+                                        iContent-&gt;RequestRights(iStatus);
+                                        }
+                                else if(err == KErrCAPendingRights)
+                                        {
+                                        // waiting for rights to arrive, expected any minute now
+                                        iCurrentState = EWaitingForRights;
+                                        // ask CAF to notify us when they arrive
+                                        iContent-&gt;NotifyStatusChange(ERightsAvailable , iStatus);
+                                        }
+                                // wait for CAF to complete our request 
+                                iLastError = err;
+                                iStatus = KRequestPending;
+                                SetActive();
+                                break;
+                        case EWaitingForRights:
+                                if(ret == KErrNone)
+                                        {
+                                        // change the state to try and display content again
+                                        iCurrentState = EReadAndDisplay;
+                                        // trigger our RunL
+                                        iLastError = err;
+                                        iStatus = KRequestPending;
+                                        SetActive();
+                                        User::RequestComplete(iStatus, KErrNone);
+                                        }
+                                else
+                                        {
+                                        // couldn't get rights, tell parent active object we're finished
+                                        User::RequestComplete(iClientStatus, err);
+                                        return;
+                                        }
+                                break;
+                        }
+                }
+                
+protected:              
+        void DoCancel()
+                {
+                if (iLastError == KErrCAPendingRights)
+                        iContent-&gt;CancelNotifyStatusChange(iStatus);
+                else if (iLastError == KErrCANoRights)
+                        iContent-&gt;CancelRequestRights(iStatus);
+                }
+
+private:
+        CContentViewer() : CActive(EPriorityStandard)
+                { 
+                CActiveScheduler::Add(this); 
+                }
+        ~CContentViewer() 
+                { 
+                Cancel();
+                if (iData) delete iData; 
+                if (iContent) delete iContent;
+                }       
+
+        // Display the content, if any error occurs then leave
+        void DisplayContentL();
+                {
+                TInt size = 0;
+                TInt I = 0;
+                TBuf &lt;128&gt; buffer;
+        
+                // Execute the intent, tell the agent that we plan to display the content
+                // It is at this point that any stateful rights is decremented
+                iData-&gt;ExecuteIntentL(EDisplay);
+        
+                // get the size of the plaintext content
+                iData-&gt;DataSizeL(size);
+        
+                // read and display the file until we reach the end of the file
+                while(I &lt; size)
+                        {
+                        // read from the file
+                        User::LeaveIfError(iData-&gt;Read(buffer));
+                        I += buffer.Length();
+                
+                        // Display on screen
+                        printf(buffer);
+                        }
+                }
+
+private:
+        enum TState
+                {
+                EOpenFile = 0,
+                EReadAndDisplay,
+                EWaitingForRights,
+                EFinished
+                };
+
+        CContent*       iContent;
+        CData*          iData;
+        TDesC           iUri;
+
+        TState                  iCurrentState;
+        TInt                    iLastError;
+        TRequestStatus*         iClientStatus;
+        }; </pre>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Preventing access to DRM content</h2> <p>Some servers may wish to prevent access to DRM content by untrusted clients, even if the server itself has DRM capability. </p>
+ <p>To achieve this, the server must use the <a href="GUID-EC31A59B-B7BB-3064-B327-4FAE7E702E6C.html#GUID-EC31A59B-B7BB-3064-B327-4FAE7E702E6C__GUID-828A8D23-ADF3-333E-B8F0-C62519D3A511"><span class="apiname">ContentAccess::TIntent::EUnknown</span></a> intent when accessing content. Content files that are not DRM protected still work normally, but access to DRM protected content is blocked. </p>
+ <pre class="codeblock" id="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9__GUID-9A600CE9-BFEF-5474-9977-CBFAEA77979C"><a name="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9__GUID-9A600CE9-BFEF-5474-9977-CBFAEA77979C"><!-- --></a>// Tell the agent we have no idea what the application plans to do 
+CData *data = content-&gt;OpenContentL(EUnknown); 
+
+// Execute the intent, tell the agent that we have no idea what the content is used for 
+data-&gt;ExecuteIntentL(EUnknown);</pre>
+ </div>
+ <div class="section"><h2 class="sectiontitle">File containing several content objects</h2> <p>When reading from a particular content object within a file, the application must supply the <samp class="codeph">UniqueId</samp> of the object when calling <a href="GUID-FC40011B-32D3-328B-BB59-35BEF46A215A.html#GUID-FC40011B-32D3-328B-BB59-35BEF46A215A__GUID-32BA0116-1D7F-31B1-B80E-32E1F55803C3"><span class="apiname">ContentAccess::CContent::OpenContentL()</span></a>. </p>
+ <pre class="codeblock" id="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9__GUID-65AF3C9B-23DE-547B-BADA-553161E69564"><a name="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9__GUID-65AF3C9B-23DE-547B-BADA-553161E69564"><!-- --></a>void DisplayTextFileL(const TDesC&amp; aUri)
+        {
+        TInt size = 0;
+        TInt I = 0;
+
+        TBuf &lt;128&gt; buffer;
+
+        // Create a CContent object
+        // CAF figures out the appropriate agent
+        CContent *content = CContent::NewLC(aUri);
+
+        // Find the objects in the file with MIME type image/jpeg
+        RStreamablePtrArray&lt;CEmbeddedObject&gt; myArray;
+        CleanupClosePushL(myArray);
+
+        User::LeaveIfError(content-&gt;Search(myArray, _L("image/jpeg"), EFalse));
+
+        // Get the virtual path of the first image/jpeg we find
+        TVirtualPathPtr picture = *myArray[0];
+
+        // Tell the agent to open the object with the given UniqueId
+        CData *data = content-&gt;OpenContentLC(EDisplay, picture.UniqueId());
+        
+        // Don't need content object or array any more
+        CleanupStack::PopAndDestroy(2); // content, myArray
+
+        // get the size of the plaintext content
+        data-&gt;DataSizeL(size);
+
+        // Execute the intent, tell the agent that we plan to display the content
+        // It is at this point that any stateful rights is decremented
+        data-&gt;ExecuteIntentL(EDisplay);
+
+        // read and display the file until we reach the end of the file
+        while(I &lt; size)
+                {
+                // read from the file
+                User::LeaveIfError(data-&gt;Read(buffer));
+                I += buffer.Length();
+
+                // display on screen
+                printf(buffer);
+                }
+
+        // finished with Data object
+        CleanupStack::PopAndDestroy(data);
+        }
+
+</pre>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Importing a content file, agent provides output files</h2> <p>This example shows how a messaging application that has just received a message attachment from a mail server can offer the attachment to CAF for processing. The output files is saved in <span class="filepath">C:\files\</span>. </p>
+ <pre class="codeblock" id="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9__GUID-EA47147D-FF97-5C4B-A75F-1E86CFB5E210"><a name="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9__GUID-EA47147D-FF97-5C4B-A75F-1E86CFB5E210"><!-- --></a>void CMyApp::ReceiveMessageAttachment(const TDesC8&amp; aContentType, const TDesC8&amp; aMessageAttachment)
+        {
+        // Create supplier object
+        CSupplier* supplier = CSupplier::NewLC();
+
+        // Tell the agent where we would like the output files to be written
+        supplier-&gt;SetOutputDirectoryL(_L("C:\\files"));
+
+        // Check if CAF can import this attachment we just received
+        if(supplier-&gt;IsImportSupported(aContentType))
+                {
+                ProcessAttachmentL(supplier, aContentType, aMessageAttachment); 
+                }
+        else
+                {
+                // just save the message to a file in its current form
+                RFile theFile;
+                theFile.Open(iFs, "myFile");
+                theFile.Write(aMessageAttachment);
+                theFile.Close();
+                
+                // Add the file to the list of attachments
+                AddAttachment("myFile");
+                }
+        }
+
+
+void CMyApp::ProcessAttachmentL(CSupplier* aSupplier, const TDesC8&amp; aContentType, const TDesC8&amp; aMessageAttachment)
+        {
+        TInt err = KErrNone;
+        TBuf &lt;128&gt; buf;
+
+        // Create meta-data array
+        CMetaDataArray* metaDataArray = new (ELeave) CMetaDataArray();
+        CleanupStack::PushL(metaDataArray);
+
+        // Add any useful information we can think of....
+        // Obviously these would not be hardcoded this way in a real import
+        metaDataArray-&gt;AddL(_L("Content Type"), _L("application/vnd.oma.drm.dm"));
+        metaDataArray-&gt;AddL(_L("Content Length"), _L("1201"));
+        metaDataArray-&gt;AddL(_L("X-Oma-Drm-Separate-Delivery"), _L("6"));
+
+        // Create the import object
+        CImportFile* import = aSupplier-&gt;ImportFileL(aContentType, *metaDataArray, _L("myfile"));
+        CleanupStack::PushL(import);
+
+        // import the attachment
+        err = import-&gt;WriteData(aMessageText);
+
+        // tell CAF (and hence the agent) it's now got the entire file
+        if (err == KErrNone)
+                {
+                err = import-&gt;WriteDataComplete();
+                if (err == KErrNone)
+                        {
+                        // Look at the output of the import operation
+                        for(TInt I = 0; I &lt; import-&gt;OutputFileCountL(); I++)
+                                {
+                                // for this example only add content output files
+                                // (absorb any rights in the original attachment 'silently')
+                                if(import-&gt;OutputFilesL(I).OutputType == EContent)
+                                        {
+                                        // Add file to list of attachments for this message
+                                        AddAttachment(import-&gt;OutputFilesL(I).FileName());
+                                        }               
+                                }
+                        }
+                }
+
+        // Error handling
+        if (err != KErrNone)
+                {
+                if (err == KErrNotReady)        
+                        {
+                        DisplayErrorMsg("Agent not ready for import");
+                        }
+                else if (err == KErrCACorruptContent)
+                        {
+                        DisplayErrorMsg("Content data is corrupt");
+                        }
+                else
+                        {       
+                        DisplayErrorMsg("Unexpected error: %d", err);
+                        }
+                }
+
+        // Finished
+        CleanupStack::PopAndDestroy(2);         // metaDataArray, import
+        }</pre>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Importing a content file (application provides output files)</h2> <p>This example shows how a messaging application that has just received a message attachment from a mail server can offer the attachment to CAF for processing and store the file in its own private directory. </p>
+ <pre class="codeblock" id="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9__GUID-D7E16FC9-B524-5C09-B575-3A09B87004B9"><a name="GUID-AC2903B2-0C3A-5104-B2A2-866DDAAAE2A9__GUID-D7E16FC9-B524-5C09-B575-3A09B87004B9"><!-- --></a>void CMyApp::ReceiveMessageAttachment(const TDesC8&amp; aContentType, const TDesC8&amp; aMessageAttachment)
+        {
+        // Create supplier object
+        CSupplier* supplier = CSupplier::NewLC();
+
+        // Check if CAF can import this attachment we just received
+        if(supplier-&gt;IsImportSupported(aContentType))
+                {
+                ProcessAttachmentL(supplier, aContentType, aMessageAttachment); 
+                }
+        else
+                {
+                // just save the message to a file in its current form
+                RFile theFile;
+                theFile.Open(iFs, "myFile");
+                theFile.Write(aMessageAttachment);
+                theFile.Close();
+                
+                // Add the file to the list of attachments
+                AddAttachment("myFile");
+                }
+        }
+
+
+void CMyApp::ProcessAttachmentL(CSupplier* aSupplier, const TDesC8&amp; aContentType, const TDesC8&amp; aMessageAttachment)
+        {
+        TInt err = KErrNone;
+        TBuf &lt;128&gt; buf;
+        TBuf &lt;4&gt; fileExtension;
+
+        _LIT(KOutputFileName, "\\private\\12345678\\outputfile.");
+        TFileName fileName(KOutputFileExtension);
+
+        RFile file;
+        
+        // Create meta-data array
+        CMetaDataArray* metaDataArray = CMetaDataArray::NewLC();
+
+        // Add any useful information we can think of....
+        // Obviously these would not be hardcoded this way in a real import
+        metaDataArray-&gt;AddL(_L("Content Type"), _L("application/vnd.oma.drm.dm"));
+        metaDataArray-&gt;AddL(_L("Content Length"), _L("1201"));
+        metaDataArray-&gt;AddL(_L("X-Oma-Drm-Separate-Delivery"), _L("6"));
+
+        // Create the import object, no suggested file name implies the application supplies output files
+        CImportFile* import = aSupplier-&gt;ImportFileL(aContentType, *metaDataArray);
+        CleanupStack::PushL(import);
+
+        // Start importing the attachment
+        // (if the agent needs one or more output files, continue looping until 
+        // the agent finishes the previous)
+        TInt err = import-&gt;WriteData(aMessageText);
+        while(err == KErrCANewFileHandleRequired)
+                {
+                import-&gt;GetSuggestedOutputFileExtension(fileExtension);
+                filName.Append(fileExtension);
+
+                User::LeaveIfError(file.Open(iFs, fileName));
+                err = import-&gt;ContinueWithNewOutputFile(file);
+                file.Close();
+                }
+        
+        if (err == KErrNone)
+                {
+                // Complete the import process
+                err = import-&gt;WriteDataComplete();
+                while(err == KErrCANewFileHandleRequired)
+                        {
+                        import-&gt;GetSuggestedOutputFileExtension(fileExtension);
+                        filName.Append(fileExtension);
+        
+                        User::LeaveIfError(file.Open(iFs, fileName));
+                        err = import-&gt;ContinueWithNewOutputFile(file);
+                        file.Close();
+                        }
+                
+                if (err == KErrNone)
+                        {
+                        // Look at the output of the import operation
+                        for(TInt I = 0; I &lt; import-&gt;OutputFileCountL(); I++)
+                                {
+                                // for this example only add content output files
+                                // (absorb any rights in the original attachment 'silently')
+                                if(import-&gt;OutputFilesL(I).OutputType == EContent)
+                                        {
+                                        // Add file to list of attachments for this message
+                                        AddAttachment(import-&gt;OutputFilesL(I).FileName());
+                                        }               
+                                }
+                        }
+                }
+                
+        // Error handling
+        if (err != KErrNone)
+                {
+                if (err == KErrNotReady)        
+                        {
+                        DisplayErrorMsg("Agent not ready for import");
+                        }
+                else if (err == KErrCACorruptContent)
+                        {
+                        DisplayErrorMsg("Content data is corrupt");
+                        }
+                else
+                        {       
+                        DisplayErrorMsg("Unexpected error: %d", err);
+                        }
+                }
+
+        // Finshed
+        CleanupStack::PopAndDestroy(2);         // metaDataArray, import
+        }</pre>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-17721C5E-A2ED-5430-9025-523B94D70FBB.html">Content Access Framework References</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

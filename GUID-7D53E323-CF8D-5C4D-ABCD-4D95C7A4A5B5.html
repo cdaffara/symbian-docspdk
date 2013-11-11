@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Secure store encryption example support code"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-18358882-A4DD-5010-BED7-4ACAE021495D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5B112A34-1CBA-5B28-A941-27847FC1D30A.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-18358882-A4DD-5010-BED7-4ACAE021495D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Secure store encryption example support code</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5"><a name="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2858558 id2859177 id2859334 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html">OS Security Guide</a> &gt; <a href="GUID-5B112A34-1CBA-5B28-A941-27847FC1D30A.html">Cryptography overview</a> &gt; <a href="GUID-18358882-A4DD-5010-BED7-4ACAE021495D.html">Example code</a> &gt; </div>
+<h1 class="topictitle1">Secure store encryption example support code</h1>
+<div><p>Below is the supporting code for the <a href="GUID-36BCDD1F-3713-5DF0-8D8A-CF093694B636.html">secure store example code</a>. </p>
+ <div class="section" id="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5__GUID-5DE9A95D-C755-429A-A3E3-7A8FF06008B9"><a name="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5__GUID-5DE9A95D-C755-429A-A3E3-7A8FF06008B9"><!-- --></a><pre class="codeblock" id="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5__GUID-36F57493-4F6E-559A-B51B-7261F57AF1B1"><a name="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5__GUID-36F57493-4F6E-559A-B51B-7261F57AF1B1"><!-- --></a>
+#include "e32std.h"
+#include "f32file.h"
+#include "s32file.h"
+#include "pbe.h"
+#include "pbedata.h"
+#include "s32crypt.h"
+            </pre>
+ <pre class="codeblock" id="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5__GUID-EE52D935-4E72-5D4A-809C-BA0FEE19C90F"><a name="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5__GUID-EE52D935-4E72-5D4A-809C-BA0FEE19C90F"><!-- --></a>
+/*
+ * Class to demonstrate the use of secure store APIs.
+ */
+class CSecureStoreExample : public CBase
+         {
+public:
+         static CSecureStoreExample* NewLC(const TDesC&amp; aFilename);
+         virtual ~CSecureStoreExample();
+
+         void CreateNewStoreL(const TDesC&amp; aPassword);
+         TStreamId WriteEncryptedDataL(const TDesC8&amp; aInput);
+         void OpenExistingStoreL(const TDesC&amp; aPassword);
+         HBufC8* ReadEncryptedDataLC(TStreamId aStreamId);
+         void CloseStore();
+         void ChangePasswordL(const TDesC&amp; aNewPassword);
+private:
+         CSecureStoreExample(const TDesC&amp; aFilename);
+         void ConstructL();
+private:
+         RFs iFs;
+         const TDesC&amp; iFilename;
+         CPermanentFileStore* iFileStore;
+         CPBEncryptSet* iEncryptSet;
+         CSecureStore* iSecureStore;
+         };
+            </pre>
+ <pre class="codeblock" id="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5__GUID-DB3DBE48-DCEC-5CDD-9066-246AD37A5C12"><a name="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5__GUID-DB3DBE48-DCEC-5CDD-9066-246AD37A5C12"><!-- --></a>
+CSecureStoreExample* CSecureStoreExample::NewLC(const TDesC&amp; aFilename)
+         {
+         CSecureStoreExample* self = new (ELeave) CSecureStoreExample(aFilename);
+         CleanupStack::PushL(self);
+         self-&gt;ConstructL();
+         return self;
+         }
+
+CSecureStoreExample::CSecureStoreExample(const TDesC&amp; aFilename)
+         : iFilename(aFilename)
+         {
+         }
+
+void CSecureStoreExample::ConstructL()
+         {
+         User::LeaveIfError(iFs.Connect());
+         }
+
+CSecureStoreExample::~CSecureStoreExample()
+         {
+         CloseStore();
+         iFs.Close();
+         }
+            </pre>
+ <pre class="codeblock" id="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5__GUID-4485993E-0561-5688-85FA-3914AECDF12B"><a name="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5__GUID-4485993E-0561-5688-85FA-3914AECDF12B"><!-- --></a>
+LOCAL_D void RunPBEExampleL()
+         {
+         _LIT(KFilename, "c:\\pbe_example_data.dat");
+         _LIT8(KInputData, "This is the data to be encrypted.");
+         _LIT(KPassword, "pa55w0rd");
+         _LIT(KNewPassword, "chang3m3");
+
+         CSecureStoreExample* main = CSecureStoreExample::NewLC(KFilename);
+
+         // Create a secure store and write some data to it
+         main-&gt;CreateNewStoreL(KPassword);
+         TStreamId streamId = main-&gt;WriteEncryptedDataL(KInputData);
+         main-&gt;CloseStore();
+
+         // Open it again, and read the data back out
+         main-&gt;OpenExistingStoreL(KPassword);
+         HBufC8* outputData = main-&gt;ReadEncryptedDataLC(streamId);
+         ASSERT(*outputData == KInputData);
+         CleanupStack::PopAndDestroy(outputData);
+
+         // Change the password
+         main-&gt;ChangePasswordL(KNewPassword);
+
+         // Check we can still read the data
+         outputData = main-&gt;ReadEncryptedDataLC(streamId);
+         ASSERT(*outputData == KInputData);         
+         main-&gt;CloseStore();
+
+         CleanupStack::PopAndDestroy(2, main);
+         }
+            </pre>
+ <pre class="codeblock" id="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5__GUID-7FF91AD3-106A-56EA-9199-0E261B8D044C"><a name="GUID-7D53E323-CF8D-5C4D-ABCD-4D95C7A4A5B5__GUID-7FF91AD3-106A-56EA-9199-0E261B8D044C"><!-- --></a>
+GLDEF_C TInt E32Main() // main function called by E32
+    {
+         __UHEAP_MARK;
+         CTrapCleanup* cleanup = CTrapCleanup::New(); // get clean-up stack
+         TRAPD(error, RunPBEExampleL());
+         __ASSERT_ALWAYS(!error,User::Panic(_L("pbe_example_code"),error));
+         delete cleanup; // destroy clean-up stack
+         __UHEAP_MARKEND;
+         return 0;
+    }
+            </pre>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-18358882-A4DD-5010-BED7-4ACAE021495D.html">Example code</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

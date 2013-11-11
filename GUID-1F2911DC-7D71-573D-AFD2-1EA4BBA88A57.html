@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Guidelines to adapt the existing GSA components to SSMA"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DF3E24A4-8E97-5E26-8C24-5033A0716B5A.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F8C8CE42-E7C9-5AFC-86BC-B78F677F1B05.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DF3E24A4-8E97-5E26-8C24-5033A0716B5A.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Guidelines to adapt the existing GSA components to SSMA</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2519078 id2519546 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-F8C8CE42-E7C9-5AFC-86BC-B78F677F1B05.html" title="Device Services provides device specific services to control phone resources and establish remote controlled connection with the external devices. It also monitors the phone resources and provides stage shutdown mechanism.">Device Services Guide</a> &gt; <a href="GUID-DF3E24A4-8E97-5E26-8C24-5033A0716B5A.html" title="The startup of the Symbian platform is modularised, so that different classes of servers or applications can be launched by different components. The System State Manager (SSM) extends the existing Generic Start-up Architecure (GSA) to include system state management and shutdown. The expanded GSA is called the System State Management Architecture (SSMA). The SSMA handles system state manager and shutdown and system state plug-in.">System State Management Architecture</a> &gt; </div>
+<h1 class="topictitle1">Guidelines
+to adapt the existing GSA components to SSMA</h1>
+<div>
+<p>The existing components of GSA are EStart, AMA Starter, and System Monitor.
+The following sections explain how each of these components adapt to the SSMA. </p>
+
+<div class="section"><h2 class="sectiontitle">EStart</h2> <p>This component is launched by the File Server.
+It is responsible for completing the initialization of the File Server and
+co-ordinating the launch of some base-related components (example the Domain
+Manager). Then, it initiates the start up of the remaining system (example
+starting the window server). </p>
+ <p>SSM is a new process in the chain of
+processes, which is responsible for starting all the major Symbian platform
+services. After the migration from GSA to SSMA EStart creates SSM component
+(<span class="filepath">SysStateMgr</span>) instead of SysStart. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">System Monitor</h2> <p>The System Monitor (SysMon) checks
+applications and processes using SSM startup properties. An application or
+process can add itself to the System Monitor's list. </p>
+ <p><strong>Adaptations
+to the System Monitor</strong> </p>
+ <p>The System Health Management (SHM) manages
+the system health, including the monitoring of critical processes and their
+re-launch if they fail. System Monitor introduces a method for controlling
+re-launch and a new value for the retry_failure_recovery_method. The following
+sections explain how to monitor critical processes. </p>
+ <p><strong>Current re-launch
+policy </strong> </p>
+ <p>A component is re-launched after a monitored component
+has failed to re-launch the component 'n' times (where n = 1 or 2). If all
+the re-launch attempts fail, then SysMon either ignores the failure of the
+component, or the device is restarted (a critical component). </p>
+ <div class="note"><span class="notetitle">Note:</span> An
+unsuccessful re-launch attempt consists of a component’s failure to meet with
+SysMon, within a finite period of time. If a monitored component is successfully
+(re-)launched, and then subsequently fails, the next re-launch attempt occurs
+only after atleast <samp class="codeph">KWaitTime</samp> seconds has elapsed (since the
+last re-launch attempt). This mechanism is referred to as ‘Re-launch throttling’.</div>
+ <p><strong>Critical
+component functionality in SysMon</strong> </p>
+ <p>A new value for the retry_failure_recovery_method
+(that is <samp class="codeph">ECriticalNoRetries</samp>) is introduced, which instructs
+SysMon to restart the Symbian platform when failure of a monitored component
+is detected. In this situation, any value set for 'no_of_retries_on_failure'
+is ignored by SysMon. </p>
+ <p>The PlatSec capabilities required by a SysMon
+client to set this value is the same as for <samp class="codeph">retry_failure_recovery_method
+=                 ERestartOS</samp>. If this new value (<samp class="codeph">ECriticalNoRetries</samp>)
+is set as the <samp class="codeph">retry_failure_recovery_method</samp> in a Static Command
+List (that is for launching a process/application), SysCLE treats this as <samp class="codeph">retry_failure_recovery_method
+= ERestartOS</samp>, and performs (if needed) the number of retries indicated
+in no_of_retries_on_failure. </p>
+ </div>
+
+<div class="section" id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-E2D75D7D-98A5-5419-8B0E-0A995D3EFEC9"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-E2D75D7D-98A5-5419-8B0E-0A995D3EFEC9"><!-- --></a><h2 class="sectiontitle">System Command
+List Executer</h2> <p>SCLs contain a list of commands that are run by the
+SSM. The SysCLE runs these commands as per the policy. The policy for deciding
+which commandLists are run by the SysCLE is included within the system state
+Manager component (<span class="filepath">SysStateMgr.exe</span>). When there is a
+system state/property transition, SysState goes through a series of policy
+steps to find which commandList must be run by SysCLE. SysCLE responds with
+a result code which is passed back to the state policy plug-in. The next action
+returned by the state policy plug-in depends on this result code. </p>
+ <p>SCLs
+contains a list of commands that are run by the SSM and SysCLe runs the commands
+as per the policy. </p>
+ <p>SysCLE is based on SysStart, but it is converted
+into a DLL. After GSA is migrated to SSMA, the current Static Startup Configuration
+(SSC) commands are maintained. The following table lists the new commands
+and functions that are introduced into SysCLE. </p>
+ 
+<div class="tablenoborder"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-80C526A2-BD7A-5E0D-A1FE-C0C5181F88ED"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-80C526A2-BD7A-5E0D-A1FE-C0C5181F88ED" frame="border" border="1" rules="all">
+<thead align="left">
+<tr>
+
+<th class="cellrowborder" valign="top" id="d310300e111"><p><strong>New commands</strong></p>
+</th>
+
+<th class="cellrowborder" valign="top" id="d310300e116"><p><strong>Description</strong></p>
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top" headers="d310300e111 "><p>Change Domain Manager State </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d310300e116 "><p>It changes the state in the Domain Manager. This ‘Change State’
+command is used only when a valid Domain Hierarchy is loaded (although this
+is not checked programmatically). This command allows SysCLE to run some commands
+before the state is changed. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d310300e111 "><p>Change system-wide property </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d310300e116 "><p>Changes the value of a system-wide property (P&amp;S property). </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d310300e111 "><p>Call asynchronous Custom Commands </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d310300e116 "><p>It is a new method of calling asynchronous functionality in DLLs
+and is required in the SCLs (allowing asynchronous ‘Custom Commands’). To
+ease the creation of custom commands, the API allows setup and teardown methods
+to manage the common handles for many custom commands. It is also necessary
+to provide each custom command with an environment. This environment provides
+common handles, such as RFs, to the custom command and information from <span class="filepath">SysStateMgr</span>,
+such as start-up mode and reason. This prevents the need for the custom commands
+to connect back to SysState to query state about the system. </p>
+ <p> <strong>Note:</strong> Custom
+commands allow licensees and partners to provide commands that can be run
+by the SysCLE with those provided by Symbian. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d310300e111 "><p>Use the switch off and restart functionally provided by the kernel
+power API </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d310300e116 "><p>It provides the ability to restart or shutdown the device. </p>
+ <p> <strong>Note:</strong> It
+is expected that these commands are used as the last commands in the commandList
+for the shutdown state. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d310300e111 "><p>Sending save events to all clients registered to receive them through <samp class="codeph">CSaveNotifier </samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d310300e116 "><p>It notifies all clients that have requested notification through
+the existing <samp class="codeph">CSaveNotifier</samp> interface of a save notification
+event. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d310300e111 "><p>Finalise the drives on the system using <samp class="codeph">RFs::FinaliseDrives() </samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d310300e116 "><p>It calls the <samp class="codeph">RFs::FinaliseDrives()</samp> API to finalise
+the drives on the device. </p>
+ <p> <strong>Note:</strong> This is intended for use in
+the shutdown commandList. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d310300e111 "><p>Request for BAFL to persist the HAL attributes </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d310300e116 "><p>It calls the <samp class="codeph">BAFL::PersistHAL()</samp> API to persist
+the persistent HAL values to disk. </p>
+ <p> <strong>Note:</strong> This is intended
+for use in the shutdown commandList. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d310300e111 "><p>Request a state transition to occur </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d310300e116 "><p>It calls the request system state transition that is provided by
+SSM. This request is treated like any other requested system state transition
+with the policy plug-in being able to accept, fail, or queue the transition.
+This command handles the automatic transition from the final commandList of
+the start-up state to the normal state. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d310300e111 "><p>Command severity information </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d310300e116 "><p>When a command fails SSMA performs the following actions: Ignore,
+Low, Medium, High, and Severity. For more information on command severity,
+see <a href="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57.html#GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-AA207E56-2F87-54E5-B19D-5246C5526827">Command
+severity information</a>. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-AA207E56-2F87-54E5-B19D-5246C5526827"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-AA207E56-2F87-54E5-B19D-5246C5526827"><!-- --></a><strong>Command severity
+information</strong> </p>
+ <p>Each command supports a Severity level, to determine
+the response during a command failure. In SysStart two actions take place
+when a command fails that is panic and ignore. </p>
+ <ul>
+<li id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-2D276EEA-C5F2-5F0A-AF42-50B869963D6D"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-2D276EEA-C5F2-5F0A-AF42-50B869963D6D"><!-- --></a><p> <samp class="codeph">EPanicOnCommandFailure</samp> -
+Panic the system starter if command fails. This causes the device to restart. </p>
+ </li>
+
+<li id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-3FD86DCE-FC7A-53A0-801E-8CDF9A6D8597"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-3FD86DCE-FC7A-53A0-801E-8CDF9A6D8597"><!-- --></a><p> <samp class="codeph">EIgnoreCommandFailure</samp> -
+Ignore the command failure </p>
+ </li>
+
+</ul>
+ <p>In a similar way, in SSMA, the following actions takes place when
+a command fails: Ignore, Low, Medium, High, and Severity. </p>
+ <p>The following
+example code shows an identifier for the level of severity to be associated
+with a command failure: </p>
+ <pre class="codeblock" id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-9990B545-1B5C-5E93-A7A0-D37D7F7EF6FE"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-9990B545-1B5C-5E93-A7A0-D37D7F7EF6FE"><!-- --></a>/** @publishedPartner
+@prototype */
+enum TCmdErrorSeverity
+    {
+    /** Ignore the command failure.    */
+    ECmdIgnoreFailure = 0,
+    ECmdLowSeverity = 25,
+    ECmdMediumSeverity = 50,
+    ECmdHighSeverity = 75,
+ ECmdCriticalSeverity = 100
+    };</pre>
+ <p>The following list shows how the new command severity
+is mapped to the existing ones: </p>
+ <ul>
+<li id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-F863355B-0A8B-5FED-A840-D3D60CB2703A"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-F863355B-0A8B-5FED-A840-D3D60CB2703A"><!-- --></a><p> <samp class="codeph">EIgnoreCommandFailure
+-&gt; ECmdIgnoreFailure</samp>  </p>
+ </li>
+
+<li id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-18F6DB1E-A126-5F3F-9421-5BA5EB5C179B"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-18F6DB1E-A126-5F3F-9421-5BA5EB5C179B"><!-- --></a><p> <samp class="codeph">EPanicOnCommandFailure
+-&gt; ECmdCriticalSeverity</samp>  </p>
+ </li>
+
+</ul>
+ <p><strong>Adaptations to convert SysStart into SysCLE</strong> </p>
+ <p>The general
+adaptations made to convert SysStart into SysCLE are: </p>
+ <ul>
+<li id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-7AE47B3F-B8C9-531E-A0D1-F95F23E4B39E"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-7AE47B3F-B8C9-531E-A0D1-F95F23E4B39E"><!-- --></a><p>The process starting
+code is removed. </p>
+ </li>
+
+<li id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-9412EC1A-896B-5A4A-92C2-B251D3525F6F"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-9412EC1A-896B-5A4A-92C2-B251D3525F6F"><!-- --></a><p>The existing implementation
+to read the Start-up mode and convert this into an SSC filename is removed
+(and re-used by policy plug-in). </p>
+ </li>
+
+<li id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-9BE3D557-F031-52D6-B599-4564B804FA84"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-9BE3D557-F031-52D6-B599-4564B804FA84"><!-- --></a><p>The resource file reader
+code is removed (and re-used by policy plug-ins). </p>
+ </li>
+
+<li id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-32E427E3-59FF-5C54-8FB4-1F90D6A4A436"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-32E427E3-59FF-5C54-8FB4-1F90D6A4A436"><!-- --></a><p>The SysCLE client (internal)
+API is implemented to: </p>
+ <ul>
+<li id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-D719DD35-9F5E-50F3-95ED-06C9E31AB145"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-D719DD35-9F5E-50F3-95ED-06C9E31AB145"><!-- --></a><p>Handle the commandList
+object being received, and run the commandList. </p>
+ </li>
+
+<li id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-81B84D78-9ED8-5B88-9AAA-B07AB4B3C9DA"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-81B84D78-9ED8-5B88-9AAA-B07AB4B3C9DA"><!-- --></a><p>Handle a request, to
+immediately stop a commandList that is running. </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-92282F21-D127-5BDA-9848-A86873D506E6"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-92282F21-D127-5BDA-9848-A86873D506E6"><!-- --></a><p>The existing implementation
+to Add (load) the Startup Domain Hierarchy is removed. </p>
+ </li>
+
+<li id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-0577911A-F289-5B28-A796-CA4FF000C6EF"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-0577911A-F289-5B28-A796-CA4FF000C6EF"><!-- --></a><p>The SysCLE implementation
+expects system state change to occur at any time in a commandList. </p>
+ </li>
+
+<li id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-1EE3E9B5-5430-5548-BDD5-4C789BF77D95"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-1EE3E9B5-5430-5548-BDD5-4C789BF77D95"><!-- --></a><p>The handling of the
+retry_failure_recovery_method must be adapted. The SysStart decides on the
+recovery policy when a commandList fails to run. When a critical retry failure
+occurs (that is <samp class="codeph">ERestartOS</samp>) this is returned to SysStart
+(with any indicated Start-up mode). If a non-critical retry failure occurs
+(that is <samp class="codeph">EIgnoreFailure</samp>), this is also returned to SysStart. </p>
+ </li>
+
+<li id="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-A4DC8B53-095B-599D-A582-60EBF7B46222"><a name="GUID-1F2911DC-7D71-573D-AFD2-1EA4BBA88A57__GUID-A4DC8B53-095B-599D-A582-60EBF7B46222"><!-- --></a><p>The ability for SysState
+to query if any non-critical commands failed to run successfully in the commandList.
+This API also provides further information about the failed command and not
+just returns a Boolean value describing if a command failed or not. Allowing
+SysState to store or act on this information provides information as to what
+state the system is when debugging. </p>
+ </li>
+
+</ul>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-DF3E24A4-8E97-5E26-8C24-5033A0716B5A.html" title="The startup of the Symbian platform is modularised, so that different classes of servers or applications can be launched by different components. The System State Manager (SSM) extends the existing Generic Start-up Architecure (GSA) to include system state management and shutdown. The expanded GSA is called the System State Management Architecture (SSMA). The SSMA handles system state manager and shutdown and system state plug-in.">System State Management Architecture</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

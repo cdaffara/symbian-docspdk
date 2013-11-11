@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Parent and Child IPC Using a Single Pipe"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ADB9AD91-37A2-4FE6-B378-C43CD0A7B513.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AF07AD54-86F1-5DB7-80FF-633A559DA4BD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ADB9AD91-37A2-4FE6-B378-C43CD0A7B513.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-AA49FB68-22A1-417F-AB57-9C22CE016B21"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Parent and Child IPC Using a Single Pipe</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-AA49FB68-22A1-417F-AB57-9C22CE016B21"><a name="GUID-AA49FB68-22A1-417F-AB57-9C22CE016B21"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381193 id2381201 id2381344 id2381410 id2381418 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html">Generic Open Libraries</a> &gt; <a href="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html">Open Environment Core (P.I.P.S.)</a> &gt; <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a> &gt; <a href="GUID-AF07AD54-86F1-5DB7-80FF-633A559DA4BD.html">Creating Processes and Threads</a> &gt; <a href="GUID-ADB9AD91-37A2-4FE6-B378-C43CD0A7B513.html" title="P.I.P.S. supports some industry standard alternatives for fork() and exec() while creating child processes. The scenarios are discussed in the following sections:">Alternatives to fork() and exec() for creating child processes</a> &gt; </div>
+<h1 class="topictitle1">Parent
+and Child IPC Using a Single Pipe</h1>
+<div>
+<div class="p">In this scenario, the parent and child processes communicate using a single
+pipe. The following pseudo code details the mechanism used by code in the
+parent process in a Unix-like system. <pre class="codeblock">//Call pipe() to create the pipe.
+//Call Fork().
+if (child process)
+{
+   //Child Process.
+   //duplicate (via a dup2() call) the read/write end of the pipe using  
+   //prior agreed file descriptor numbers which will subsequently be used by the   //child process following the exec() call.
+   //Close the original file descriptors.
+   //Call exec() to replace the code image in the child process.
+}
+else
+{
+   //Parent process
+   //Do Whatever
+}
+</pre>
+</div>
+
+<p>Instead of using the <samp class="codeph">fork()</samp>/<samp class="codeph">exec()</samp> as
+described above, POSIX libraries including P.I.P.S. provide the <a href="GUID-A9DB6E7C-B8D6-377A-BBE6-39E0A7A09E5D.html"><span class="apiname">popen()</span></a> function
+as defined in <span class="filepath">stdio.h</span>. Rather than using a pipe for the
+IPC mechanism the parent process communicates with the child using the stream
+returned by the <a href="GUID-A9DB6E7C-B8D6-377A-BBE6-39E0A7A09E5D.html"><span class="apiname">popen()</span></a> call, while the child process input
+or output is using the <a href="GUID-C0C1D22B-298F-3E8D-A1E9-6F5EFA81F9E8.html"><span class="apiname">stdin()</span></a>/<a href="GUID-85797574-E2A2-3C0C-9670-C178078DE199.html"><span class="apiname">stdout()</span></a> streams. </p>
+
+<p>However if the parent process requires a file descriptor it can be obtained
+by using the <a href="GUID-7A399B7D-553D-345E-92BD-43A8A8224D39.html"><span class="apiname">fileno()</span></a> API call. For more information about
+the <a href="GUID-A9DB6E7C-B8D6-377A-BBE6-39E0A7A09E5D.html"><span class="apiname">popen()</span></a> function, see <a href="http://www.opengroup.org" target="_blank">http:\\www.opengroup.org</a>. </p>
+
+<p><strong>Parent process <samp class="codeph">fork()</samp> and <samp class="codeph">exec()</samp> functions</strong></p>
+
+<p>The following code shows the use of a pipe and subsequent <samp class="codeph">fork()</samp>/<samp class="codeph">exec()</samp> calls
+to create a Pipe for IPC. The example shown is the child process writing data
+to the pipe, and the parent process receiving the data.</p>
+
+<pre class="codeblock">//Child Process File Descriptors for the pipe. These should be defined in a common header 
+//file used to compile both the parent and child process's executable.
+//However #define is here for clarity.
+#define WRITE_FD  104
+int main(int argc, char *argv[])
+{
+  int pipeEnds[2]; //Pipe file descriptors [0] is for read [1] is for write
+  
+  //create the pipe
+  if(pipe(pipeEnds) != 0)
+  {
+     //Pipe creation error
+     return EXIT_FAILURE;
+  }
+  else
+  {
+     pid_t Childpid = fork();
+     
+     if(Childpid == 0)
+     {
+         //close the redundant read FD obtained from the parent process
+         (void)close(pipeEnds[0]);
+    
+         //duplicate the file descriptor for use following exec().
+         if(dup2(pipeEnds[1], WRITE_FD) == -1)
+         {
+            printf("dup2 error\n");
+            return EXIT_FAILURE;
+         }
+         //close the redundant write FD obtained from the parent process
+         (void)close(pipeEnds[1]);
+    
+         //exec() to replace the child process executable
+         char execFileName[] = "/root/PortDoc/Example1_c/Posix/Child/ChildProg";
+         execl(execFileName,NULL);
+      }
+      else
+      {
+         //Parent process. This reads from the pipe. Therefore close the write end of the
+         //pipe.
+         close(pipeEnds[1]);
+    
+         //declare receive buffer, and clear its contents
+         char RxBuffer[100];
+         memset(RxBuffer,0,sizeof(RxBuffer));
+    
+         //Wait for data from the child process. Child sends a string.
+         read(pipeEnds[0],RxBuffer,sizeof(RxBuffer));
+    
+         printf(RxBuffer);
+
+         //close the Read end of the pipe
+         close(pipeEnds[0]);
+    
+         //Wait for the child process to terminate
+         waitpid(Childpid,NULL,0);
+      }
+   }
+   return EXIT_SUCCESS;
+}
+</pre>
+
+<p><strong>Child process created using <samp class="codeph">fork()</samp> or <samp class="codeph">exec()</samp> functions</strong></p>
+
+<p>The following code shows an example of the child process source which will
+be executed following the <samp class="codeph">exec()</samp>. </p>
+
+<pre class="codeblock">//Child Process File Descriptors for the pipe. These should be defined in a common header 
+//file used to compile both the parent and child process's executable. Shown here for
+//clarity.
+#define WRITE_FD  104
+
+int main(void)
+{
+   char TxMsg[] = "Hello Parent\n";
+    
+   //Send the message to the parent
+   write(WRITE_FD,TxMsg,sizeof(TxMsg));
+    
+   //close the File Descriptor
+   close(WRITE_FD);
+   return EXIT_SUCCESS;
+}
+</pre>
+
+<p><strong>Parent process P.I.P.S. example for <a href="GUID-A9DB6E7C-B8D6-377A-BBE6-39E0A7A09E5D.html"><span class="apiname">popen()</span></a> function</strong></p>
+
+<p>The following code shows how the above code can be modified to use <samp class="codeph">popen()</samp>,
+rather than the <samp class="codeph">fork()</samp>/<samp class="codeph">exec()</samp> combination. </p>
+
+<pre class="codeblock">int main(int argc, char *argv[])
+{
+   //Create child process using popen(). Child process writes to the Parent therefore "r" 
+   //parameter.
+   FILE* ChildProcessStream = popen("/root/PortDoc/Example1_c/Symbian/Child/ChildProg","r");
+          
+   if(ChildProcessStream == NULL)
+   {
+      printf("\n Failure to create child process with popen()\n");
+      return EXIT_FAILURE;
+   }
+   else
+   {
+      //Use a file descriptor rather than a stream
+      int ChildProcessFD = fileno(ChildProcessStream);
+
+      //Create a receive buffer, and zero contents before receiving.
+      char RxBuffer[100];
+      memset(RxBuffer,0,sizeof(RxBuffer));
+      
+      //Wait for data from the child process. Child sends a string.
+      int nbytes = read(ChildProcessFD,RxBuffer,sizeof(RxBuffer));
+
+      //printf is slightly different from the POSIX example to verify that the data output to the 
+      //screen is done by the parent process.
+      printf("\n Message Received by Parent=%s",RxBuffer);
+      
+      //Wait for Child Process to complete
+      pclose(ChildProcessStream);
+   }
+   return EXIT_SUCCESS;
+}
+</pre>
+
+<p><strong>Child process P.I.P.S. example for <a href="GUID-A9DB6E7C-B8D6-377A-BBE6-39E0A7A09E5D.html"><span class="apiname">popen()</span></a> function</strong></p>
+
+<p>The following code shows how the child process source can be modified when
+it is executed using <a href="GUID-A9DB6E7C-B8D6-377A-BBE6-39E0A7A09E5D.html"><span class="apiname">popen()</span></a>. Note that rather
+than using a file descriptor for the communication via the pipe the <a href="GUID-C0C1D22B-298F-3E8D-A1E9-6F5EFA81F9E8.html"><span class="apiname">stdin()</span></a> or
+the <samp class="codeph">stdout</samp> streams are directed to the parent process, as
+defined in the usage of the <a href="GUID-A9DB6E7C-B8D6-377A-BBE6-39E0A7A09E5D.html"><span class="apiname">popen()</span></a> call. </p>
+
+<pre class="codeblock">int main(void)
+{
+    //Child process created by popen() so that its stdout is streamed to the parent process
+    char TxMsg[] = "Hello Parent\n";
+    
+    //Send the message to the parent
+    printf(TxMsg);
+    
+    return EXIT_SUCCESS;
+}
+</pre>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-ADB9AD91-37A2-4FE6-B378-C43CD0A7B513.html" title="P.I.P.S. supports some industry standard alternatives for fork() and exec() while creating child processes. The scenarios are discussed in the following sections:">Alternatives to fork() and exec() for creating child processes</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

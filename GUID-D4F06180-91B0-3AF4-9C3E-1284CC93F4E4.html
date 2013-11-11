@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="MCFContextInterface"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-D4F06180-91B0-3AF4-9C3E-1284CC93F4E4"/>
+
+<title>MCFContextInterface</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-D4F06180-91B0-3AF4-9C3E-1284CC93F4E4"><a name="GUID-D4F06180-91B0-3AF4-9C3E-1284CC93F4E4"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2483429 id2486128 id2486152 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">MCFContextInterface Class Reference</h1>
+	<table class="signature"><tr><td>class MCFContextInterface</td></tr></table><div class="section"><div>
+			<div class="p">
+				<a href="GUID-D4F06180-91B0-3AF4-9C3E-1284CC93F4E4.html#GUID-D4F06180-91B0-3AF4-9C3E-1284CC93F4E4">MCFContextInterface</a> provides possibility to use CF services related to context manipulation:<ul><li><p>Define contexts</p>
+</li>
+<li><p>Publish contexts</p>
+</li>
+<li><p>Subscribe contexts</p>
+</li>
+<li><p>Unsubscribe contexts</p>
+</li>
+<li><p>Request contexts Every context source plug-in has a reference to <a href="GUID-D4F06180-91B0-3AF4-9C3E-1284CC93F4E4.html#GUID-D4F06180-91B0-3AF4-9C3E-1284CC93F4E4">MCFContextInterface</a> by default.</p>
+</li>
+</ul>
+</div>
+
+			<div class="p">Define context: Before any context can be used in any way it must be defined. Context is defined by a source, type and security policy: <pre class="codeblock">  _LIT( KSource, "Source" );
+  _LIT( KType, "Type" );
+  _LIT_SECURITY_POLICY_PASS( KPassSec );
+  TInt err = iCF.DefineContext( KSource, KType, KPassSec );
+  if( err != KErrNone )
+    {
+    // Handle error...
+    }</pre>
+</div>
+
+			<div class="p">Publish context: To publish a context the context being publish needs to be defined. To publish a context a new context object must be configured. Context object is configured by setting a source, type and a new value for the context: <pre class="codeblock">  _LIT( KSource, "Source" );
+  _LIT( KType, "Type" );
+  _LIT( KValue, "NewValue" );
+  CCFContextObject* context = CCFContextObject::NewLC();
+  context-&gt;SetSourceL( KSource );
+  context-&gt;SetTypeL( KType );
+  context-&gt;SetValueL( KValue );
+  RThread thread;
+  CleanupClosePushL( thread );
+  TInt err = iCF.PublishContext( *context, thread );
+  if( err != KErrNone )
+    {
+    // Handle error...
+    }
+  CleanupStack::PopAndDestroy( &amp;thread );
+  CleanupStack::PopAndDestroy( context );</pre>
+ It is suggested that only one CCFContextObject* instance is kept as a member variable to save memory.</div>
+
+			<div class="p">Subscribe context: To subscribe a context the context being subscribed needs to be defined. A context subscription will not lead to an error even a context which has not been defined is subscribed. Context indications will be received only after the context subscribed is defined. To subscribe a context a new context subscription is made and passed it to Context Framework: <pre class="codeblock">  _LIT( KSource, "Source" );
+  _LIT( KType, "Type" );
+  CCFContextSubscription* subscription = CCFContextSubscription::NewLC();
+  subscription-&gt;SetContextSourceL( KSource );
+  subscription-&gt;SetContextTypeL( KType );
+  RThread thread;
+  CleanupClosePushL( thread );
+  TInt err = iCF.SubscribeContext( *subscription, this, thread );
+  if( err != KErrNone )
+    {
+    // Handle error...
+    }
+  CleanupStack::PopAndDestroy( &amp;thread );
+  CleanupStack::PopAndDestroy( subscription );</pre>
+ It is assumed that 'this' is derived directly from <a href="GUID-0786EF0D-42DE-3160-B72B-432501868C52.html#GUID-0786EF0D-42DE-3160-B72B-432501868C52">MCFContextSubscriptionListener</a> interface. Context subscription can also be configured more to give more precise indications.</div>
+
+			<div class="p">Request context: To request a context the context being requested needs to be defined. Context is requested by defining a context query and passing it to Context Framework: <pre class="codeblock">  _LIT( KSource, "Source" );
+  _LIT( KType, "Type" );
+  CCFContextQuery* query = CCFContextQuery::NewLC( KSource, KType );
+  RThread thread;
+  CleanupClosePushL( thread );
+  RContextObjectArray results;
+  TInt err = iCF.RequestContext( results, *query, thread );
+  if( err == KErrNone &amp;&amp; results.Count() )
+    {
+    // Handle request results...
+    }
+  else
+    {
+    // Handle error...
+    }
+  results.ResetAndDestroy();
+  CleanupStack::PopAndDestroy( &amp;thread );
+  CleanupStack::PopAndDestroy( query );</pre>
+</div>
+
+			<div class="p">Remove subscriptions: If a context source plug-in has subscribed contexts it is necessary that also all the contexts will be unsubscribed. Unsubscription can be done by defining a single subscription or to remove all the subscriptions from the particular subscriber: <pre class="codeblock">  _LIT( KSource, "Source" );
+  _LIT( KType, "Type" );
+  CCFContextSubscription* subscription = CCFContextSubscription::NewLC();
+  subscription-&gt;SetContextSourceL( KSource );
+  subscription-&gt;SetContextTypeL( KType );
+  iCF.UnsubscribeContext( *subscription, *this );
+  CleanupStack::PopAndDestroy( subscription );</pre>
+ <pre class="codeblock"> iCF.UnsubscribeContexts( *this );</pre>
+ It is assumed that 'this' is derived directly from <a href="GUID-0786EF0D-42DE-3160-B72B-432501868C52.html#GUID-0786EF0D-42DE-3160-B72B-432501868C52">MCFContextSubscriptionListener</a> interface.</div>
+
+			<div class="p">
+				<dl class="since">
+					
+						<dt class="dlterm">Since</dt>
+
+						<dd>S60 5.0  - </dd>
+
+					
+				</dl>
+
+			</div>
+
+		</div></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-934FEA11-5355-33CF-8098-862C0352909C">DefineContext</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-15F91AAC-B094-3CBC-913E-D536395C7DE2">DefineContext</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;, <a href="GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20.html">MCFContextSource</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-1DB66CF3-3ED8-3E8E-B74B-3A195528EA57">DefineContext</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;, const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;, <a href="GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20.html">MCFContextSource</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-8454846C-E51E-311C-856D-B88E88D8B850">GetSecurityPolicy</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-D87C07CC-BD9B-3EAA-90B7-D005D34F0066">PublishContext</a>(<a href="GUID-21F88695-699A-3D25-A82B-60A0736C52E1.html">CCFContextObject</a> &amp;, <a href="GUID-B0E661BC-4058-3256-B9C3-5A4FD52F6DE5.html">RThread</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-72920E3E-3140-3C06-9211-0A1273730D5F">PublishContext</a>(<a href="GUID-21F88695-699A-3D25-A82B-60A0736C52E1.html">CCFContextObject</a> &amp;, CCFContextDataObject &amp;, <a href="GUID-B0E661BC-4058-3256-B9C3-5A4FD52F6DE5.html">RThread</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-EA8F10C4-D0FF-3BC1-98B4-A99881A23D6A">RequestContext</a>(<a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RContextObjectArray</a> &amp;, <a href="GUID-8D4A895A-5AA8-3841-BADD-359F08A02EBD.html">CCFContextQuery</a> &amp;, <a href="GUID-B0E661BC-4058-3256-B9C3-5A4FD52F6DE5.html">RThread</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-F2A108C9-C4FF-31B7-B43C-EBF76FF5A8FF">SubscribeContext</a>(CCFContextSubscription *, <a href="GUID-0786EF0D-42DE-3160-B72B-432501868C52.html">MCFContextSubscriptionListener</a> *, <a href="GUID-B0E661BC-4058-3256-B9C3-5A4FD52F6DE5.html">RThread</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-8BCE5DA8-5A03-37FC-BA8F-DBF81882C644">UnsubscribeContext</a>(CCFContextSubscription &amp;, <a href="GUID-0786EF0D-42DE-3160-B72B-432501868C52.html">MCFContextSubscriptionListener</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-AC6C83F8-638F-3C66-9A72-B358403BCBB2">UnsubscribeContexts</a>(<a href="GUID-0786EF0D-42DE-3160-B72B-432501868C52.html">MCFContextSubscriptionListener</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-4868F206-35E0-394B-B7BC-1291269AC806">~MCFContextInterface</a>()</td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-4868F206-35E0-394B-B7BC-1291269AC806"><a name="GUID-4868F206-35E0-394B-B7BC-1291269AC806"><!-- --></a>
+		<h2 class="topictitle2">~MCFContextInterface()</h2>
+		<table class="signature"><tr><td>~MCFContextInterface</td><td>(</td><td>)</td><td>[protected, inline, virtual]</td></tr></table><div class="section"></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-934FEA11-5355-33CF-8098-862C0352909C"><a name="GUID-934FEA11-5355-33CF-8098-862C0352909C"><!-- --></a>
+		<h2 class="topictitle2">DefineContext(const TDesC &amp;, const TDesC &amp;, const TSecurityPolicy &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>DefineContext</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aContextSource,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aContextType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;</td><td>aReadWritePolicy</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Defines a new context in Context Framework. Every context needs to be defined before it can be published, subscribed or requested.</p>
+
+				<p>Security policy for reading and writing is the same.</p>
+
+				<p>If some client subscribes for this context, the contex owner will not be notified. Use one of the followinf DefineContext methods to receive context susbsription notifications.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aContextSource</td><td>Source of the context.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aContextType</td><td>Type of the context.  </td></tr><tr><td class="parameter">const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp; aReadWritePolicy</td><td>Needed capabilities for reading and writing of the context.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-15F91AAC-B094-3CBC-913E-D536395C7DE2"><a name="GUID-15F91AAC-B094-3CBC-913E-D536395C7DE2"><!-- --></a>
+		<h2 class="topictitle2">DefineContext(const TDesC &amp;, const TDesC &amp;, const TSecurityPolicy &amp;, MCFContextSource &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>DefineContext</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aContextSource,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aContextType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;</td><td>aReadWritePolicy,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20.html">MCFContextSource</a> &amp;</td><td>aOwner</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Defines a new context in Context Framework. Every context needs to be defined before it can be published, subscribed or requested.</p>
+
+				<p>Security policy for reading and writing is the same.</p>
+
+				<p>If some client subscribes for this context, the contex owner will be notified through <a href="GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20.html#GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20">MCFContextSource</a> interface.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aContextSource</td><td>Source of the context.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aContextType</td><td>Type of the context.  </td></tr><tr><td class="parameter">const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp; aReadWritePolicy</td><td>Needed capabilities for reading and writing of the context.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20.html">MCFContextSource</a> &amp; aOwner</td><td>Owner of the context.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1DB66CF3-3ED8-3E8E-B74B-3A195528EA57"><a name="GUID-1DB66CF3-3ED8-3E8E-B74B-3A195528EA57"><!-- --></a>
+		<h2 class="topictitle2">DefineContext(const TDesC &amp;, const TDesC &amp;, const TSecurityPolicy &amp;, const TSecurityPolicy &amp;, MCFContextSource &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>DefineContext</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aContextSource,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aContextType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;</td><td>aReadPolicy,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;</td><td>aWritePolicy,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20.html">MCFContextSource</a> &amp;</td><td>aOwner</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Defines a new context in Context Framework. Every context needs to be defined before it can be published, subscribed or requested.</p>
+
+				<p>Security policy for reading and writing are different.</p>
+
+				<p>If some client subscribes for this context, the contex owner will be notified through <a href="GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20.html#GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20">MCFContextSource</a> interface.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aContextSource</td><td>Source of the context.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aContextType</td><td>Type of the context.  </td></tr><tr><td class="parameter">const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp; aReadPolicy</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp; aWritePolicy</td><td> </td></tr><tr><td class="parameter"><a href="GUID-0318397E-4931-3B3F-A4D8-DB43001D6C20.html">MCFContextSource</a> &amp; aOwner</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8454846C-E51E-311C-856D-B88E88D8B850"><a name="GUID-8454846C-E51E-311C-856D-B88E88D8B850"><!-- --></a>
+		<h2 class="topictitle2">GetSecurityPolicy(const TDesC &amp;, const TDesC &amp;, TSecurityPolicy &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>GetSecurityPolicy</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aContextSource,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aContextType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp;</td><td>aPolicy</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Gets the security policy of particular action.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aContextSource</td><td>Context Source.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aContextType</td><td>Context Type.  </td></tr><tr><td class="parameter"><a href="GUID-81A285F6-3F87-3E77-9426-61BB16BC7109.html">TSecurityPolicy</a> &amp; aPolicy</td><td>security policy which will be set by this method.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D87C07CC-BD9B-3EAA-90B7-D005D34F0066"><a name="GUID-D87C07CC-BD9B-3EAA-90B7-D005D34F0066"><!-- --></a>
+		<h2 class="topictitle2">PublishContext(CCFContextObject &amp;, RThread &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>PublishContext</td><td>(</td><td><a href="GUID-21F88695-699A-3D25-A82B-60A0736C52E1.html">CCFContextObject</a> &amp;</td><td>aContext,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-B0E661BC-4058-3256-B9C3-5A4FD52F6DE5.html">RThread</a> &amp;</td><td>aClientThread</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Publishes a new value of a context into Context Framework. Subscribed clients will be notified of the change. Context must have been defined before it can be published.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-21F88695-699A-3D25-A82B-60A0736C52E1.html">CCFContextObject</a> &amp; aContext</td><td>Context object to be added.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-B0E661BC-4058-3256-B9C3-5A4FD52F6DE5.html">RThread</a> &amp; aClientThread</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-72920E3E-3140-3C06-9211-0A1273730D5F"><a name="GUID-72920E3E-3140-3C06-9211-0A1273730D5F"><!-- --></a>
+		<h2 class="topictitle2">PublishContext(CCFContextObject &amp;, CCFContextDataObject &amp;, RThread &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>PublishContext</td><td>(</td><td><a href="GUID-21F88695-699A-3D25-A82B-60A0736C52E1.html">CCFContextObject</a> &amp;</td><td>aContext,</td></tr><tr><td colspan="3"> </td><td>CCFContextDataObject &amp;</td><td>aData,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-B0E661BC-4058-3256-B9C3-5A4FD52F6DE5.html">RThread</a> &amp;</td><td>aClientThread</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Publishes a new value of a context into Context Framework. Subscribed clients will be notified of the change. Context can be associated with a specific data object. If a subscriber has requested to receive also data objects the data object is associated in the context indication. Context must have been defined before it can be published.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-21F88695-699A-3D25-A82B-60A0736C52E1.html">CCFContextObject</a> &amp; aContext</td><td>Context object to be added.  </td></tr><tr class="bg"><td class="parameter">CCFContextDataObject &amp; aData</td><td>Data object associated the context.  </td></tr><tr><td class="parameter"><a href="GUID-B0E661BC-4058-3256-B9C3-5A4FD52F6DE5.html">RThread</a> &amp; aClientThread</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EA8F10C4-D0FF-3BC1-98B4-A99881A23D6A"><a name="GUID-EA8F10C4-D0FF-3BC1-98B4-A99881A23D6A"><!-- --></a>
+		<h2 class="topictitle2">RequestContext(RContextObjectArray &amp;, CCFContextQuery &amp;, RThread &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>RequestContext</td><td>(</td><td><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RContextObjectArray</a> &amp;</td><td>aResultBuffer,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-8D4A895A-5AA8-3841-BADD-359F08A02EBD.html">CCFContextQuery</a> &amp;</td><td>aContextQuery,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-B0E661BC-4058-3256-B9C3-5A4FD52F6DE5.html">RThread</a> &amp;</td><td>aClientThread</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<div class="p">Requests latest context.<ul><li><p>KErrNotFound: Requested context not defined</p>
+</li>
+<li><p>KErrAccessDenied: Insufficient capabilities for the context</p>
+</li>
+</ul>
+</div>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RContextObjectArray</a> &amp; aResultBuffer</td><td>Context objects.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-8D4A895A-5AA8-3841-BADD-359F08A02EBD.html">CCFContextQuery</a> &amp; aContextQuery</td><td>Context query.  </td></tr><tr><td class="parameter"><a href="GUID-B0E661BC-4058-3256-B9C3-5A4FD52F6DE5.html">RThread</a> &amp; aClientThread</td><td>Client thread where function is called.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F2A108C9-C4FF-31B7-B43C-EBF76FF5A8FF"><a name="GUID-F2A108C9-C4FF-31B7-B43C-EBF76FF5A8FF"><!-- --></a>
+		<h2 class="topictitle2">SubscribeContext(CCFContextSubscription *, MCFContextSubscriptionListener *, RThread &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SubscribeContext</td><td>(</td><td>CCFContextSubscription *</td><td>aSubscription,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-0786EF0D-42DE-3160-B72B-432501868C52.html">MCFContextSubscriptionListener</a> *</td><td>aListener,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-B0E661BC-4058-3256-B9C3-5A4FD52F6DE5.html">RThread</a> &amp;</td><td>aClientThread</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<div class="p">Adds new context subscription in Context Framework. Context Framework takes ownership from aSubscription. Possible error codes:<ul><li><p>KErrNotFound: Published context not defined</p>
+</li>
+<li><p>KErrAccessDenied: Insufficient capabilities for the context</p>
+</li>
+</ul>
+</div>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CCFContextSubscription * aSubscription</td><td>New subscription.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-0786EF0D-42DE-3160-B72B-432501868C52.html">MCFContextSubscriptionListener</a> * aListener</td><td>Subscription listener.  </td></tr><tr><td class="parameter"><a href="GUID-B0E661BC-4058-3256-B9C3-5A4FD52F6DE5.html">RThread</a> &amp; aClientThread</td><td>Client thread where function is called.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8BCE5DA8-5A03-37FC-BA8F-DBF81882C644"><a name="GUID-8BCE5DA8-5A03-37FC-BA8F-DBF81882C644"><!-- --></a>
+		<h2 class="topictitle2">UnsubscribeContext(CCFContextSubscription &amp;, MCFContextSubscriptionListener &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>UnsubscribeContext</td><td>(</td><td>CCFContextSubscription &amp;</td><td>aSubscription,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-0786EF0D-42DE-3160-B72B-432501868C52.html">MCFContextSubscriptionListener</a> &amp;</td><td>aListener</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Remove a context subscription from Context Framework.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CCFContextSubscription &amp; aSubscription</td><td>New subscription.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-0786EF0D-42DE-3160-B72B-432501868C52.html">MCFContextSubscriptionListener</a> &amp; aListener</td><td>Subscription listener.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AC6C83F8-638F-3C66-9A72-B358403BCBB2"><a name="GUID-AC6C83F8-638F-3C66-9A72-B358403BCBB2"><!-- --></a>
+		<h2 class="topictitle2">UnsubscribeContexts(MCFContextSubscriptionListener &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>UnsubscribeContexts</td><td>(</td><td><a href="GUID-0786EF0D-42DE-3160-B72B-432501868C52.html">MCFContextSubscriptionListener</a> &amp;</td><td>aObserver</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Remove all subscriptions for the particular listener.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0786EF0D-42DE-3160-B72B-432501868C52.html">MCFContextSubscriptionListener</a> &amp; aObserver</td><td>Listener whose subscriptions will be removed.  </td></tr></table></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Writable Data Paging Overview"/>
+<meta name="abstract" content="Overview of data paging, the next phase in Symbian's implementation of demand paging."/>
+<meta name="description" content="Overview of data paging, the next phase in Symbian's implementation of demand paging."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2B7D04D9-98DE-5284-836D-01DB4FA8949D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2B7D04D9-98DE-5284-836D-01DB4FA8949D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9D66A168-AF11-51D9-903C-4A6C6D31DA3D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Writable Data Paging Overview</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388574 id2388657 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html">Demand Paging</a> &gt; <a href="GUID-2B7D04D9-98DE-5284-836D-01DB4FA8949D.html">Writable Data Paging</a> &gt; </div>
+<h1 class="topictitle1">Writable
+Data Paging Overview</h1>
+<div><p>Overview of data paging, the next phase in Symbian's implementation
+of demand paging. </p>
+
+<div class="section" id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-B1D8D3AD-4438-4C51-B900-1DD2B55202BC"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-B1D8D3AD-4438-4C51-B900-1DD2B55202BC"><!-- --></a><h2 class="sectiontitle">Purpose</h2> <p>Writable
+data paging allows the demand paging of any user-side data (for example thread
+stacks and heaps). Writable data paging makes use of a fixed size backing
+store to page out data. The backing store may use a NAND flash partition or
+an embedded MMC (eMMC). </p>
+ <p>The aim of data paging is to enable more memory-hungry
+use cases without increasing the amount of physical RAM present in the device. </p>
+ <p>For
+example, data paging enables: </p>
+ <ul>
+<li id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-F3B36258-F661-5562-A641-1875D33600B7"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-F3B36258-F661-5562-A641-1875D33600B7"><!-- --></a><p>running applications
+that are not designed with the memory constraints of embedded devices in mind,
+for example applications ported from other environments with writable data
+paging (such as a PC). </p>
+ </li>
+
+<li id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-7BB35E5C-6E38-50E6-B27E-094948F0F6A8"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-7BB35E5C-6E38-50E6-B27E-094948F0F6A8"><!-- --></a><p>running multiple applications
+at the same time where previously there would not have been enough memory. </p>
+ </li>
+
+</ul>
+ <div class="p"> <div class="note"><span class="notetitle">Note:</span>  Data paging offers no performance increase, unlike code paging
+which can speed up application loading by reading only the necessary pages
+into RAM. </div>
+</div>
+ <p> </p>
+ <p>However, writable data paging does have
+the following limitations: </p>
+ <ul>
+<li id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-EB2514D7-CE57-52F2-91D5-E790A41D12B2"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-EB2514D7-CE57-52F2-91D5-E790A41D12B2"><!-- --></a><p>It is only possible
+to page the following types of memory: </p>
+ <ul>
+<li id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-9C9002DF-BF9B-5656-A57F-84C442E855B7"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-9C9002DF-BF9B-5656-A57F-84C442E855B7"><!-- --></a><p>user heaps, </p>
+ </li>
+
+<li id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-8F6AC93B-F1BE-5CA6-899E-8433E2055013"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-8F6AC93B-F1BE-5CA6-899E-8433E2055013"><!-- --></a><p>user thread stacks, </p>
+ </li>
+
+<li id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-0EC7E799-24CC-590E-A67D-DAA014825A1E"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-0EC7E799-24CC-590E-A67D-DAA014825A1E"><!-- --></a><p>private chunks, </p>
+ </li>
+
+<li id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-9789A61F-CB01-5AD8-8886-41CA74EA564F"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-9789A61F-CB01-5AD8-8886-41CA74EA564F"><!-- --></a><p>global chunks, </p>
+ </li>
+
+<li id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-1C8479BE-B4E6-5E6D-83C0-D23E8DC6F9CF"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-1C8479BE-B4E6-5E6D-83C0-D23E8DC6F9CF"><!-- --></a><p>static data. </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-E11A66FB-C2DF-5DE7-B074-0CBDFC7EBE6D"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-E11A66FB-C2DF-5DE7-B074-0CBDFC7EBE6D"><!-- --></a><p>A single memory object
+(e.g. a heap, stack, DLL or chunk) is the smallest granularity at which paging
+can be configured </p>
+ </li>
+
+<li id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-06F9012E-85CE-587C-B0E9-6BF7EE37A39F"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-06F9012E-85CE-587C-B0E9-6BF7EE37A39F"><!-- --></a><p>No attempt will be made
+to page kernel-side data </p>
+ </li>
+
+<li id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-88EE2287-EF50-5B7C-B63E-C2D172A1EA80"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-88EE2287-EF50-5B7C-B63E-C2D172A1EA80"><!-- --></a><p>No attempt will be made
+to implement memory mapped files (e.g. posix's mmap) </p>
+ </li>
+
+<li id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-C79316F5-BFF4-569E-8D44-AF5BDCBD0811"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-C79316F5-BFF4-569E-8D44-AF5BDCBD0811"><!-- --></a><p>No attempt will be made
+to implement any kind of paging on the emulator. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-9E27B27E-898B-43DA-8614-4AAEEE0A294E"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-9E27B27E-898B-43DA-8614-4AAEEE0A294E"><!-- --></a><h2 class="sectiontitle">Required background</h2> <p>This
+document assumes that the reader is familiar with the concept of <a href="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html">Demand
+Paging</a>, and the existing implementation of ROM and code paging in Symbian
+platform. </p>
+ </div>
+
+<div class="section" id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-1028A9E3-C9D7-4A4B-9DD4-B719475D09E5"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-1028A9E3-C9D7-4A4B-9DD4-B719475D09E5"><!-- --></a><h2 class="sectiontitle">Key concepts
+and terms</h2> <dl>
+
+<dt class="dlterm">Page</dt>
+
+<dd><p>Memory is managed in fixed size units called pages. The size of a page
+is usually determined by the hardware, and for ARM architectures this is 4K. </p>
+ </dd>
+
+
+
+<dt class="dlterm">Paged in or Paged out</dt>
+
+<dd><p>If a given page of memory is present in RAM it is said to be <em>paged
+in</em> (or just 'present'), as opposed to <em>paged out</em>. </p>
+ </dd>
+
+
+
+<dt class="dlterm">Paging in</dt>
+
+<dd><p>The process of moving a page of memory from being paged out to being
+paged in. </p>
+ </dd>
+
+
+
+<dt class="dlterm">Paging out</dt>
+
+<dd><p>The process of moving a page of memory from being paged in to being
+paged out. </p>
+ </dd>
+
+
+
+<dt class="dlterm">backing store</dt>
+
+<dd><p>The external media used to hold <em>paged out</em> pages is referred
+to as the <em>swap area</em>. This area may be much larger than physical RAM,
+although a factor of around twice as large is considered normal in existing
+systems. </p>
+ </dd>
+
+
+
+<dt class="dlterm">Working set</dt>
+
+<dd><p>The term <em>working set</em> is defined as the memory accessed during
+a given time period. </p>
+ </dd>
+
+
+
+<dt class="dlterm">Pinning</dt>
+
+<dd><p> <em>Pinning</em> pages refers to paging in demand-paged memory and forcing
+it to remain in RAM until it is <em>unpinned</em> at a later time. </p>
+ </dd>
+
+
+</dl>
+ </div>
+
+<div class="section" id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-AED67EBB-6176-4357-BC22-4A0B4E518265"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-AED67EBB-6176-4357-BC22-4A0B4E518265"><!-- --></a><h2 class="sectiontitle">Classes</h2> <p>The
+following classes are affected by the use of writable data demand paging: </p>
+ <p>The
+following classes are involved in the use of threads and processes: </p>
+ 
+<div class="tablenoborder"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-24779260-DE34-5184-9A58-560F06F0DE9D"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-24779260-DE34-5184-9A58-560F06F0DE9D" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p>Class </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Description </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-B0E661BC-4058-3256-B9C3-5A4FD52F6DE5.html"><span class="apiname">RThread</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>This class is used to handle threads. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-9DD1EA2B-DC59-315C-8E9C-CE6D9461B695.html"><span class="apiname">RProcess</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>This class is used to handle processes. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-1D0D14AD-43CF-3B52-AD8D-641F75B8098C.html"><span class="apiname">TThreadCreateInfo</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Used to specify the attributes of a new thread. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p>These classes are used in handling memory: </p>
+ 
+<div class="tablenoborder"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-ACCA6C7E-92B5-51BE-B86E-D94E9FB0FF9F"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-ACCA6C7E-92B5-51BE-B86E-D94E9FB0FF9F" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p>Class </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Description </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-326A2F4D-0E99-31C0-A35D-E8BF45913F07.html"><span class="apiname">RChunk</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Handle a chunk. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4.html"><span class="apiname">TChunkCreateInfo</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>A structure that specifies the type and properties of the chunk
+that is to be created. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-3DCB92FB-9C74-3B73-B229-BF7944087EE9.html"><span class="apiname">TChunkHeapCreateInfo</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>A structure that specifies the type and properties of a chunk with
+a heap within it. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-C5D0C7E7-061F-3BA5-AE24-B83237684B01.html"><span class="apiname">UserHeap</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>A set of functions that are used to create heaps. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p>The following classes are used in client/server communication: </p>
+ 
+<div class="tablenoborder"><a name="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-E823BA5C-620C-5B58-9945-8135EF7D39D1"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-592B6D20-4ABA-5C79-9734-D18E2CE4A86C__GUID-E823BA5C-620C-5B58-9945-8135EF7D39D1" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p>Class </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Description </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html"><span class="apiname">CServer2</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>The abstract base class for servers. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-4AD02F14-1142-372F-9D11-224595932034.html"><span class="apiname">TIpcArgs</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>A client/server class that clients use to package arguments that
+are to be sent to a sever. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-2B7D04D9-98DE-5284-836D-01DB4FA8949D.html">Writable Data Paging</a></div>
+</div>
+<div class="relinfo"><strong>Related information</strong><br/>
+<div><a href="GUID-9D66A168-AF11-51D9-903C-4A6C6D31DA3D.html">Flexible
+Memory Model Overview</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

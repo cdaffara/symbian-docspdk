@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="The polymorphic interface DLL"/>
+<meta name="abstract" content="A polymorphic interface DLL is one which is written to implement a programming interface defined elsewhere; for example, a device driver, an application or an OPL extension."/>
+<meta name="description" content="A polymorphic interface DLL is one which is written to implement a programming interface defined elsewhere; for example, a device driver, an application or an OPL extension."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4A56B285-790E-5171-88F3-8C40B2AA9699.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4A56B285-790E-5171-88F3-8C40B2AA9699.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-38CF8A8E-4778-5374-8AC6-5F9486A2B7FB"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>The polymorphic interface DLL</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-38CF8A8E-4778-5374-8AC6-5F9486A2B7FB"><a name="GUID-38CF8A8E-4778-5374-8AC6-5F9486A2B7FB"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2393100 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-4A56B285-790E-5171-88F3-8C40B2AA9699.html" title="Topics related to Dynamically loading link libraries.">Dynamically loading link libraries</a> &gt; </div>
+<h1 class="topictitle1">The polymorphic
+interface DLL</h1>
+<div><p>A polymorphic interface DLL is one which is written to implement
+a programming interface defined elsewhere; for example, a device driver, an
+application or an OPL extension.</p>
+
+<p>The API is defined in terms of a single abstract class whose functions
+are declared as pure virtual. The DLL <em>implements</em> the API by defining
+and implementing a concrete class derived from that abstract class. The DLL
+exports a single function whose sole purpose is to create an object of the
+derived class type; this is always the function at ordinal 1 within the DLL.
+All other functions in the DLL are called through the virtual table mechanism
+(the pointer to the vtable is set up by the constructor in the normal C++
+way).</p>
+
+<p>At compilation time, application code includes the header file(s) which
+define(s) the API. At link time, the application includes the DLL's module
+definition file, which allows the address of the DLL function to be accessed
+by specifying its ordinal.</p>
+
+<p>When the application's executable runs, it loads the DLL at the time it
+is required. The address of the single function exported by the DLL is accessed
+indirectly by specifying its ordinal.</p>
+
+<p>For a given interface, there may be many DLLs which obey the protocol imposed
+by that interface each of which provides a different implementation.</p>
+
+<p>A DLL of this type is often referred to as a dynamically loaded DLL.</p>
+
+<p>The user of a dynamically loaded DLL uses an <samp class="codeph">RLibrary</samp> type
+object to load the DLL. The <samp class="codeph">RLibrary</samp> object encapsulates
+a handle to the DLL and must remain in existence while the DLL is in use;
+typically this is for the life of the object provided by the DLL.</p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-4A56B285-790E-5171-88F3-8C40B2AA9699.html" title="Topics related to Dynamically loading link libraries.">Dynamically loading link libraries</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

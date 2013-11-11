@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Creating the MMP File"/>
+<meta name="abstract" content=""/>
+<meta name="description" content=""/>
+<meta name="DC.Relation" scheme="URI" content="GUID-85372267-C352-4389-8FC9-32B8E1622BC9.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-85372267-C352-4389-8FC9-32B8E1622BC9.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-C8674786-6C09-45C2-BA5D-4F69EBD8E42F"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Creating the MMP File</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-C8674786-6C09-45C2-BA5D-4F69EBD8E42F"><a name="GUID-C8674786-6C09-45C2-BA5D-4F69EBD8E42F"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381193 id2381201 id2381221 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html">Generic Open Libraries</a> &gt; <a href="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html">Open Environment Core (P.I.P.S.)</a> &gt; <a href="GUID-85372267-C352-4389-8FC9-32B8E1622BC9.html">Getting Started</a> &gt; </div>
+<h1 class="topictitle1">Creating
+the MMP File</h1>
+<div><p/>
+
+<p><strong>Add needed libraries used by the MMP file structure:</strong></p>
+
+<p>If developers want to use any of the P.I.P.S. libraries, they need to link
+to the corresponding library in the MMP file using the <samp class="codeph">LIBRARY</samp> keyword.</p>
+
+<p>If the application has <samp class="codeph">main()</samp> as the entry point, the
+library <span class="filepath">libcrt0.lib</span> must be specified as the first library
+otherwise, it will result in linker errors. The user must link to the Symbian
+platform <span class="filepath">euser.dll</span>. This is required since the static
+library uses some of the services of the Symbian platform such as creating
+cleanup stack, and having a top level TRAP. All these details are hidden from
+the developer. The developer will write the application as if it were for
+the UNIX environment.</p>
+
+<pre class="codeblock">STATICLIBRARY  libcrt0.lib
+LIBRARY        libc.lib 
+LIBRARY        euser.lib  // Needed in order to use Symbian services
+// and whatever Open C libraries are needed…
+</pre>
+
+<p>The <span class="filepath">libcrt0.lib</span> library is required if the user is
+not going to write <samp class="codeph">E32Main</samp> within the application (EXE).
+This static library has an implementation of <samp class="codeph">E32Main</samp> within
+which it calls the library initialization method followed by calling main
+written by the developer. This static library also gets command-line arguments
+and passes the same to main. </p>
+
+<p>If the application has <samp class="codeph">E32Main()</samp> as an entry point, there
+is no need to link to <span class="filepath">libcrt0.lib</span> like in the example
+below.  </p>
+
+<pre class="codeblock">LIBRARY         libc.lib 
+LIBRARY         libm.lib libpthread.lib 
+LIBRARY         euser.lib</pre>
+
+<p><strong>Add needed include paths</strong></p>
+
+<pre class="codeblock">SYSTEMINCLUDE   \epoc32\include\stdapis 
+</pre>
+
+<div class="note"><span class="notetitle">Note:</span> Some of the SSL/cryptography functions need more than the default available
+stack. The recommended stack size is 10K. To set the stack size to 10K add
+in the MMP file.</div>
+
+<pre class="codeblock">EPOCSTACKSIZE 0x10000</pre>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-85372267-C352-4389-8FC9-32B8E1622BC9.html">Getting Started</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

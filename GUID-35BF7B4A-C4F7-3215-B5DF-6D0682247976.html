@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="RSqlColumnReadStream"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-35BF7B4A-C4F7-3215-B5DF-6D0682247976"/>
+
+<title>RSqlColumnReadStream</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-35BF7B4A-C4F7-3215-B5DF-6D0682247976"><a name="GUID-35BF7B4A-C4F7-3215-B5DF-6D0682247976"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2490214 id2490614 id2490875 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">RSqlColumnReadStream Class Reference</h1>
+	<table class="signature"><tr><td>class RSqlColumnReadStream : public RReadStream</td></tr></table><div class="section"><div>
+			<p>The read stream interface.</p>
+
+			<p>The class is used for reading the content of a column containing either binary data or text data.</p>
+
+			<p>The class derives from <a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html#GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468">RReadStream</a>, which means that all <a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html#GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468">RReadStream</a> public member functions and predefined stream operators &gt;&gt; can be used to deal with column data.</p>
+
+			<p>If the blob or text data is over 2Mb in size then it is recommended that the <a href="GUID-03426E55-3C0A-322B-9CE7-556D63FD762F.html#GUID-03426E55-3C0A-322B-9CE7-556D63FD762F">RSqlBlobReadStream</a> or <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a> class is used instead. These classes provide a more RAM-efficient way of reading large amounts of blob or text data from a database.</p>
+
+			<p>The following two cases are typical:</p>
+
+			<p>CASE 1 - processing large binary column data.</p>
+
+			<div class="p">
+				<pre class="codeblock">RSqlDatabase db;
+&lt;open/create "db" object&gt;;
+RSqlStatement stmt;
+&lt;prepare "stmt" object&gt;;
+TInt rc = stmt.Next();
+if(rc == KSqlAtRow)
+	{
+	RSqlColumnReadStream colStream;
+	CleanupClosePushL(colStream);
+	User::LeaveIfError(colStream.ColumnBinary(stmt, &lt;column_number&gt;));
+	TInt size = stmt.ColumnSize(&lt;column_number&gt;);
+	//read the column data in a buffer ("buf" variable).
+	//(or the column data can be retrieved in a smaller portions)
+	colStream.ReadL(buf, size);
+	//Close the stream
+	CleanupStack::PopAndDestroy(&amp;colStream);
+	}
+else
+	{
+	...
+	}</pre>
+
+			</div>
+
+			<p>CASE 2 - processing large text column data.</p>
+
+			<div class="p">
+				<pre class="codeblock">RSqlDatabase db;
+&lt;open/create "db" object&gt;;
+RSqlStatement stmt;
+&lt;prepare "stmt" object&gt;;
+TInt rc = stmt.Next();
+if(rc == KSqlAtRow)
+	{
+	RSqlColumnReadStream colStream;
+	CleanupClosePushL(colStream);
+	User::LeaveIfError(colStream.ColumnText(stmt, &lt;column_number&gt;));
+	TInt size = stmt.ColumnSize(&lt;column_number&gt;);
+	//read the column data in a buffer ("buf" variable).
+	//(or the column data can be retrieved in a smaller portions)
+	colStream.ReadL(buf, size);
+	//Close the stream
+	CleanupStack::PopAndDestroy(&amp;colStream);
+	}
+else
+	{
+	...
+	}</pre>
+
+			</div>
+
+			<p>
+				<a href="GUID-03426E55-3C0A-322B-9CE7-556D63FD762F.html#GUID-03426E55-3C0A-322B-9CE7-556D63FD762F">RSqlBlobReadStream</a> <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a></p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">RSqlColumnReadStream<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-19990282-8BFD-3019-8F9E-197042F1CAB0">ColumnBinaryL</a>(<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-57AC605A-7CB2-3C86-9DD9-32C7A9A61983">ColumnText</a>(<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-C7C5ED4C-78BA-3CBA-ABA4-3D9756C83232">ColumnTextL</a>(<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::Attach(MStreamBuf *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::Close()</a></td></tr><tr><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::Detach()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::Pop()</a></td></tr><tr><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::PushL()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::RReadStream()</a></td></tr><tr><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::RReadStream(MStreamBuf *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadInt16L()</a></td></tr><tr><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadInt32L()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadInt8L()</a></td></tr><tr><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadL(RWriteStream &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadL(RWriteStream &amp;,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadL(TDes16 &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadL(TDes16 &amp;,TChar)</a></td></tr><tr><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadL(TDes16 &amp;,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadL(TDes8 &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadL(TDes8 &amp;,TChar)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadL(TDes8 &amp;,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadL(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadL(TUint16 *,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadL(TUint8 *,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadReal32L()</a></td></tr><tr><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadReal64L()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadUint16L()</a></td></tr><tr><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadUint32L()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::ReadUint8L()</a></td></tr><tr><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::Release()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-81056EAD-722C-373F-A8CF-4CC67A5B4468.html">RReadStream::Source()</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-19990282-8BFD-3019-8F9E-197042F1CAB0"><a name="GUID-19990282-8BFD-3019-8F9E-197042F1CAB0"><!-- --></a>
+		<h2 class="topictitle2">ColumnBinaryL(RSqlStatement &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ColumnBinaryL</td><td>(</td><td><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp;</td><td>aStmt,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp; aStmt</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-57AC605A-7CB2-3C86-9DD9-32C7A9A61983"><a name="GUID-57AC605A-7CB2-3C86-9DD9-32C7A9A61983"><!-- --></a>
+		<h2 class="topictitle2">ColumnText(RSqlStatement &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ColumnText</td><td>(</td><td><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp;</td><td>aStmt,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Gives access to column data as a read-only stream of characters,</p>
+
+				<p>The function can only be used for text and binary column types.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>None </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp; aStmt</td><td>The RSqlStatement object to which the referred column belongs.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td>The index value identifying the column; this is 0 for the first column. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C7C5ED4C-78BA-3CBA-ABA4-3D9756C83232"><a name="GUID-C7C5ED4C-78BA-3CBA-ABA4-3D9756C83232"><!-- --></a>
+		<h2 class="topictitle2">ColumnTextL(RSqlStatement &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ColumnTextL</td><td>(</td><td><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp;</td><td>aStmt,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aColumnIndex</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Gives access to column data as a read-only stream of characters,</p>
+
+				<p>The function can only be used for text and binary column types.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNoMemory, an out of memory condition occurred; KErrArgument, the column type is neither text nor binary. Note that database specific errors categorised as ESqlDbError, and other system-wide error codes may also be returned.</dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>capability</strong>
+							</dt>
+
+							<dd>None </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp; aStmt</td><td>The RSqlStatement object to which the referred column belongs.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aColumnIndex</td><td>The index value identifying the column; this is 0 for the first column. </td></tr></table></div>
+
+	</div>
+
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

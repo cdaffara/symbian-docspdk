@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Audio Output Streaming Tutorial"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4D94A4B8-392D-5657-BD71-F1EA54318C47.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1DE5CDAD-8D71-5384-9E98-5665D5A4C792.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3E341F9F-2635-589B-A59A-B999FE7DF9BE.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DDE1A8A9-1D67-53BF-8A65-340F139AD4AB.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-46E12D78-5F1F-55B8-B7E8-1B4862CC70E8.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4D94A4B8-392D-5657-BD71-F1EA54318C47.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Audio Output Streaming Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2405098 id2405245 id2405934 id2406055 id2406070 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-1DE5CDAD-8D71-5384-9E98-5665D5A4C792.html">Multimedia Guide</a> &gt; <a href="GUID-3E341F9F-2635-589B-A59A-B999FE7DF9BE.html">Multimedia APIs and Frameworks Collection</a> &gt; <a href="GUID-DDE1A8A9-1D67-53BF-8A65-340F139AD4AB.html">Multimedia Framework Component</a> &gt; <a href="GUID-46E12D78-5F1F-55B8-B7E8-1B4862CC70E8.html">Audio Output Stream Library</a> &gt; <a href="GUID-4D94A4B8-392D-5657-BD71-F1EA54318C47.html" title="This section describes how to use the Audio Output Stream library.">Audio Output Stream Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Audio Output Streaming Tutorial</h1>
+<div><p>This tutorial describes how to use Audio Output Streaming. </p>
+ <div class="section"><h2 class="sectiontitle">Purpose</h2> <p>The purpose of this tutorial is to show you how to open, play and then close an audio output stream. </p>
+ <p><strong>Required Background</strong> </p>
+ <p>The user needs to maintain the data packets in a queue before starting to send it to the server. There is no need for the entire sound clip to arrive to be able to pass on to the low level audio controller. They can be forwarded as they arrive. If the server tends to receive data more than it can read or process, then a separate queue is maintained in the client side whose elements are references to the buffers passed to it. Once the server is free to receive more data the client sends the data in the queue and receives a notification from the server by means of a callback. As a result of this, the client deletes the data fragments from the queue. </p>
+ <p>Upon receiving the data packets the audio controller maintains them in the received buffers. A read function is instantiated to read the data into the destination descriptors. </p>
+ <p><strong>Introduction</strong> </p>
+ <p>The Audio streaming API is the interface providing the functionalities for playing, stopping, and recording the audio stream to and from the audio buffers. The audio output stream interface class, <a href="GUID-B87C8F92-9737-3636-9800-BA267A1DCA6D.html"><span class="apiname">CMdaAudioOutputStream</span></a>, enables client applications to: </p>
+ <ul><li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-542B9854-AF72-5A00-B05C-AF7DE8C56916"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-542B9854-AF72-5A00-B05C-AF7DE8C56916"><!-- --></a><p>Stream raw audio data from specified buffers to audio devices. </p>
+ </li>
+ <li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-C4F56B32-661A-5160-AE11-C11BCCDA856E"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-C4F56B32-661A-5160-AE11-C11BCCDA856E"><!-- --></a><p>Specify the priority of the audio stream relative to other clients trying to use the same hardware. </p>
+ </li>
+ <li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-40790849-788F-56A1-8116-90AA755698DE"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-40790849-788F-56A1-8116-90AA755698DE"><!-- --></a><p>Set the sample rate and the number of audio channels before playback. </p>
+ </li>
+ <li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-3664365E-FB62-5EB6-B396-B83655ECC49C"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-3664365E-FB62-5EB6-B396-B83655ECC49C"><!-- --></a><p>Adjust the volume and channel balance during playback. </p>
+ </li>
+ </ul>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Using Audio Output Streaming </h2> <p>Typically, using an audio output stream involves the following steps as shown in the sequence diagram below: </p>
+ <div class="fignone" id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-2D2AAE41-55E6-5BB6-B572-0A8C8015054C"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-2D2AAE41-55E6-5BB6-B572-0A8C8015054C"><!-- --></a><img src="GUID-534C1D1A-9450-5A1B-933F-5157039BF069_d0e522268_href.png"/></div>
+ <p>The following tasks will be covered in this tutorial: </p>
+ <ul><li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-C498F32D-D466-5C10-893D-71B8168E6C1D"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-C498F32D-D466-5C10-893D-71B8168E6C1D"><!-- --></a><p><a href="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781.html#GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-7435C237-DB6C-516E-BB4D-C31BF96470B0"> Constructing an audio output stream</a>  </p>
+ </li>
+ <li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-F66078F3-9125-5277-BEAF-2740869354ED"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-F66078F3-9125-5277-BEAF-2740869354ED"><!-- --></a><p><a href="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781.html#GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-A48822BE-E726-5892-A83D-CDD224C27EA0"> Opening an audio output stream</a>  </p>
+ </li>
+ <li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-F3A82F27-5406-5937-BC5E-E83D9C7A6F6B"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-F3A82F27-5406-5937-BC5E-E83D9C7A6F6B"><!-- --></a><p><a href="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781.html#GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-E21EE5D7-42ED-5D7C-AB8F-000D6BBE88A9">Getting and setting the stream properties</a>  </p>
+ </li>
+ <li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-5F166776-8C9C-5C00-8A39-E77C9157DF59"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-5F166776-8C9C-5C00-8A39-E77C9157DF59"><!-- --></a><p><a href="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781.html#GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-CD886111-BE51-523D-A782-FA35A3889A0B"> Playing an audio output stream</a>  </p>
+ </li>
+ <li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-7F60C260-A0B3-51C7-A1B1-4BE5A3F7E03A"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-7F60C260-A0B3-51C7-A1B1-4BE5A3F7E03A"><!-- --></a><p><a href="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781.html#GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-B18F568C-E82B-5D46-A225-96816258E8AB">Stopping an audio output stream</a>  </p>
+ </li>
+ </ul>
+ <p id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-7435C237-DB6C-516E-BB4D-C31BF96470B0"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-7435C237-DB6C-516E-BB4D-C31BF96470B0"><!-- --></a><strong>Basic Procedure for Constructing an Audio Output Stream</strong> </p>
+ <p>The high level step to construct an audio output stream is shown here: </p>
+ <ul><li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-8314E401-E900-587A-A7DD-2899214AB883"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-8314E401-E900-587A-A7DD-2899214AB883"><!-- --></a><p>The client application creates an audio output stream object using the static function <a href="GUID-B87C8F92-9737-3636-9800-BA267A1DCA6D.html#GUID-B87C8F92-9737-3636-9800-BA267A1DCA6D__GUID-B4D44672-C628-304A-B36E-8AF0ACAA8A80"><span class="apiname">CMdaAudioOutputStream::NewL()</span></a>. Optionally, it also sets the audio priorities to be able to access the audio hardware in relation to the other clients trying to access the same device. </p>
+ <pre class="codeblock" id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-ACD5FF96-44F1-5DC8-8A89-CD3C193EAACE"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-ACD5FF96-44F1-5DC8-8A89-CD3C193EAACE"><!-- --></a>static IMPORT_C CMdaAudioOutputStream *NewL(MMdaAudioOutputStreamCallback &amp;aCallBack, 
+TInt aPriority, TMdaPriorityPreference aPref=EMdaPriorityPreferenceTimeAndQuality);</pre>
+ </li>
+ </ul>
+ <p id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-A48822BE-E726-5892-A83D-CDD224C27EA0"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-A48822BE-E726-5892-A83D-CDD224C27EA0"><!-- --></a><strong>Basic Procedure for Opening an Audio Output Stream </strong> </p>
+ <p>The high level steps to open an audio output stream are shown here: </p>
+ <a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-B7CF17BD-41ED-5B34-8801-7101170D43C9"><!-- --></a><ol id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-B7CF17BD-41ED-5B34-8801-7101170D43C9"><li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-074798AB-3B28-52FA-9082-0B34DBB6118C"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-074798AB-3B28-52FA-9082-0B34DBB6118C"><!-- --></a><p>To open the output stream, use the <a href="GUID-20D0D10F-3401-3F72-8AF6-DC35F6025DC2.html"><span class="apiname">Open()</span></a> member function. For example: </p>
+ <pre class="codeblock" id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-7EA3B237-91BB-5933-AAEE-1A59375BF004"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-7EA3B237-91BB-5933-AAEE-1A59375BF004"><!-- --></a>virtual void Open(TMdaPackage* aSettings);</pre>
+ </li>
+ <li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-2D96C7A5-A81C-5B6A-A977-5A897B357FEE"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-2D96C7A5-A81C-5B6A-A977-5A897B357FEE"><!-- --></a><p>Once the stream is open <a href="GUID-A35C1D9B-DC43-39FB-9FF1-39CD01D981B8.html#GUID-A35C1D9B-DC43-39FB-9FF1-39CD01D981B8__GUID-148F9A5D-883E-3E9E-A3F4-FBACFACC2CB4"><span class="apiname">MMdaAudioOutputStreamCallback::MaoscOpenComplete()</span></a> is invoked to indicate that the stream is ready to use. </p>
+ <pre class="codeblock" id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-6F18FC40-E21D-58D9-8703-0BDA17E69F0A"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-6F18FC40-E21D-58D9-8703-0BDA17E69F0A"><!-- --></a>void CIOStreamAudio::MaoscOpenComplete(TInt aError)
+    {
+    ASSERT(iState==EStateOpeningOutput);
+    TInt error = aError;
+    if (error==KErrNone)
+        {
+        iState = EStateWriting;    
+        iOutputStream-&gt;SetVolume(iOutputStream-&gt;MaxVolume()/2);
+        TRAP(error, iOutputStream-&gt;WriteL(iMainBuffer));
+        }
+    if (error!=KErrNone)
+        {
+        Complete(aError);    
+        }
+    }</pre>
+ </li>
+ </ol>
+ <p id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-E21EE5D7-42ED-5D7C-AB8F-000D6BBE88A9"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-E21EE5D7-42ED-5D7C-AB8F-000D6BBE88A9"><!-- --></a><strong>Basic Procedure for Getting and Setting the Stream Properties</strong> </p>
+ <p>The high level steps to get and set stream properties are shown here: </p>
+ <a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-A7DF8DD3-B3CC-56AB-B900-5FA1AB5D7E89"><!-- --></a><ol id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-A7DF8DD3-B3CC-56AB-B900-5FA1AB5D7E89"><li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-D300515F-450D-52E2-A7A3-5AB02A642143"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-D300515F-450D-52E2-A7A3-5AB02A642143"><!-- --></a><p>To set the sampling rate and number of audio channels use <a href="GUID-38034819-8999-3EBE-9833-479D96D5DAB6.html"><span class="apiname">SetAudioPropertiesL()</span></a>. For example: </p>
+ <pre class="codeblock" id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-C36320C7-403B-50B2-868E-F8B23C3F921C"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-C36320C7-403B-50B2-868E-F8B23C3F921C"><!-- --></a>virtual void SetAudioPropertiesL(TInt aSampleRate, TInt aChannels);</pre>
+ <p>You cannot set these values while playing the stream. Also, you must specify them as enums; for example, <a href="GUID-CF54F882-E290-3C68-9352-79C6B7303FDF.html#GUID-CF54F882-E290-3C68-9352-79C6B7303FDF__GUID-681C1220-0CDD-34BF-848F-9DC82CB001DB"><span class="apiname">TMdaAudioDataSettings::ESampleRate8000Hz</span></a> rather than <samp class="codeph">8000</samp> (Hz). </p>
+ </li>
+ <li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-77B3670A-0DC3-52BE-B245-58AF9852AF66"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-77B3670A-0DC3-52BE-B245-58AF9852AF66"><!-- --></a><p>The <a href="GUID-657CDF11-EA74-3074-9872-412D2C26F3E6.html"><span class="apiname">Volume()</span></a> and <a href="GUID-DDE4193C-AB52-3FE9-8AD5-2DB344BD3404.html"><span class="apiname">GetbalanceL()</span></a> member functions let you determine current volume and balance settings. For example: </p>
+ <ul><li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-581B588C-5F23-57F6-9113-A34B2B796AE1"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-581B588C-5F23-57F6-9113-A34B2B796AE1"><!-- --></a><pre class="codeblock" id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-07B29807-340D-5C6E-89F5-F0522F3CD611"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-07B29807-340D-5C6E-89F5-F0522F3CD611"><!-- --></a>IMPORT_C TInt GetBalanceL() const;</pre>
+ </li>
+ <li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-550C5E9C-4073-5F54-937F-2FD6E0A0F684"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-550C5E9C-4073-5F54-937F-2FD6E0A0F684"><!-- --></a><pre class="codeblock" id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-6C5293FE-EB1B-52B2-BE07-2E0D0393B863"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-6C5293FE-EB1B-52B2-BE07-2E0D0393B863"><!-- --></a>virtual TInt Volume();</pre>
+ </li>
+ </ul>
+ </li>
+ <li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-23A18BCE-75EB-5B7D-8812-A7D883061B1B"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-23A18BCE-75EB-5B7D-8812-A7D883061B1B"><!-- --></a><p>The <a href="GUID-171667CD-06F4-3DF5-A4E1-360422F362D2.html"><span class="apiname">SetVolume()</span></a> and <a href="GUID-D1856981-6A17-3CD9-80B5-65781A803BA4.html"><span class="apiname">SetBalanceL()</span></a> member functions let you set the volume and balance respectively. You can use them while the stream is open, with the new settings taking immediate effect. </p>
+ </li>
+ </ol>
+ <p id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-CD886111-BE51-523D-A782-FA35A3889A0B"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-CD886111-BE51-523D-A782-FA35A3889A0B"><!-- --></a><strong>Basic Procedure for Playing an Audio Output Stream</strong> </p>
+ <p>The high level steps to play an audio output stream are shown here: </p>
+ <a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-EABB52B7-5B85-5E65-9BA5-58168A0331AA"><!-- --></a><ol id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-EABB52B7-5B85-5E65-9BA5-58168A0331AA"><li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-C2D6E0ED-85F3-5FF5-BA6A-67EAEB039CE2"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-C2D6E0ED-85F3-5FF5-BA6A-67EAEB039CE2"><!-- --></a><p>To play an audio stream from the current position use the <a href="GUID-60E583FD-35E0-349A-B2A9-B28C8B8B4AE1.html"><span class="apiname">WriteL()</span></a> member function. For example: </p>
+ <pre class="codeblock" id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-2BAD8EF3-AA4D-564A-816F-5ABC69863153"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-2BAD8EF3-AA4D-564A-816F-5ABC69863153"><!-- --></a>virtual void WriteL(const TDesC8&amp; aData);</pre>
+ <p>This function is asynchronous. </p>
+ <p>When <samp class="codeph">aData</samp> is received, the client is notified by a call to <a href="GUID-EF3C442E-03C4-3630-98A8-C2ABD94D1A3F.html#GUID-EF3C442E-03C4-3630-98A8-C2ABD94D1A3F__GUID-D4E0CAA0-9FF3-3E02-BC0B-CCC9F91E8E66"><span class="apiname">MdaAudioOutputStreamCallback::MaoscBufferCopied()</span></a>. </p>
+ <pre class="codeblock" id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-BF75B2F0-9A63-5249-BF37-007A817D8C0A"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-BF75B2F0-9A63-5249-BF37-007A817D8C0A"><!-- --></a>void CIOStreamAudio::MaoscBufferCopied(TInt aError, const TDesC8&amp; IFDEBUG(aBuffer))
+    {
+    ASSERT(iState==EStateWriting);
+    if (aError!=KErrNone)
+        {
+        // ignore any KErrAbort returns - this would happen during a Stop() call
+        // if we were playing 
+        if (aError!=KErrAbort)
+            {
+            Complete(aError);    
+            }
+        }
+    else
+        {
+        ASSERT(aBuffer.Length()==iMainBuffer.Length());
+        // output almost complete - have been asked for more data
+        iState = EStateWritingPostBuffer;
+        }
+    }</pre>
+ <p>The <a href="GUID-60E583FD-35E0-349A-B2A9-B28C8B8B4AE1.html"><span class="apiname">WriteL()</span></a> can be called again before this notification is triggered because the buffers are held in a client-side queue until they have been sent. </p>
+ </li>
+ <li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-1671B229-D248-56E6-9CBA-6F2A674B3ED9"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-1671B229-D248-56E6-9CBA-6F2A674B3ED9"><!-- --></a><p>When the audio stream has completed playing, the callback function <a href="GUID-A35C1D9B-DC43-39FB-9FF1-39CD01D981B8.html#GUID-A35C1D9B-DC43-39FB-9FF1-39CD01D981B8__GUID-93577BCB-6063-3BC4-A051-38A5BE5C6A8C"><span class="apiname">MMdaAudioOutputStreamCallback::MaoscPlayComplete()</span></a> is invoked. </p>
+ <pre class="codeblock" id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-033737CB-294F-5B55-A5BF-C66245B172DE"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-033737CB-294F-5B55-A5BF-C66245B172DE"><!-- --></a>void CIOStreamAudio::MaoscPlayComplete(TInt aError)
+    {
+    ASSERT(iState==EStateWriting || iState==EStateWritingPostBuffer);
+    TInt error = aError;
+    if (aError==KErrUnderflow &amp;&amp; iState==EStateWritingPostBuffer)
+        {
+        error = KErrNone; // normal termination is underflow following buffer request    
+        }
+    Complete(error);
+    }</pre>
+ <p>This closes the stream and sets the callback <a href="GUID-DA707A8F-7006-3193-B8E5-3197BB471B4F.html"><span class="apiname">aError</span></a> to <a href="GUID-F9B50A12-0CDE-3D5F-89B2-E2864B00E156.html"><span class="apiname">KErrUnderFlow</span></a>. </p>
+ </li>
+ </ol>
+ <p id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-B18F568C-E82B-5D46-A225-96816258E8AB"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-B18F568C-E82B-5D46-A225-96816258E8AB"><!-- --></a><strong>Basic Procedure for Stopping an Audio Output Stream</strong> </p>
+ <p>The high level step to stop an audio output stream is shown here: </p>
+ <ul><li id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-453E8330-16E2-5A6A-B2B4-E1D08E80AC12"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-453E8330-16E2-5A6A-B2B4-E1D08E80AC12"><!-- --></a><p>To stop audio playback (stop data being sent to the stream) use the <a href="GUID-7CBDCF0D-1D11-34D1-BF5C-1E5B50DA75B5.html"><span class="apiname">Stop()</span></a> member function. </p>
+ <p>For example: </p>
+ <pre class="codeblock" id="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-084898F1-DB72-5DB4-9FCA-581F1AA96F6F"><a name="GUID-ECBA6331-2187-52C9-A5DF-20CD1EEFE781__GUID-084898F1-DB72-5DB4-9FCA-581F1AA96F6F"><!-- --></a>virtual void Stop();</pre>
+ <p>This invokes <a href="GUID-A35C1D9B-DC43-39FB-9FF1-39CD01D981B8.html#GUID-A35C1D9B-DC43-39FB-9FF1-39CD01D981B8__GUID-93577BCB-6063-3BC4-A051-38A5BE5C6A8C"><span class="apiname">MMdaAudioOutputStreamCallback::MaoscPlayComplete()</span></a> to notify successful closure of the stream. </p>
+ </li>
+ </ul>
+ </div>
+ <div class="section"><h2 class="sectiontitle">See Also</h2> <p><a href="GUID-1C499E7D-8099-5BE4-AE46-6143388E6ACB.html"> Audio Input Streaming Tutorial</a>  </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-4D94A4B8-392D-5657-BD71-F1EA54318C47.html" title="This section describes how to use the Audio Output Stream library.">Audio Output Stream Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

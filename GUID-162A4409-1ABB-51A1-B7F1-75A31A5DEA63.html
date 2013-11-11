@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Using CIdle"/>
+<meta name="abstract" content="This document describes how to use the CIdle class to implement long running background tasks."/>
+<meta name="description" content="This document describes how to use the CIdle class to implement long running background tasks."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3786D8E6-17A9-52E4-A8DF-CFCDC3039854.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B507490F-6BD3-5DF5-97E4-EFDFEA2B4EDD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-162A4409-1ABB-51A1-B7F1-75A31A5DEA63"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Using CIdle</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-162A4409-1ABB-51A1-B7F1-75A31A5DEA63"><a name="GUID-162A4409-1ABB-51A1-B7F1-75A31A5DEA63"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2393224 id2393257 id2393330 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-3786D8E6-17A9-52E4-A8DF-CFCDC3039854.html">Inter Process Communication</a> &gt; <a href="GUID-B507490F-6BD3-5DF5-97E4-EFDFEA2B4EDD.html">Using Asynchronous Programming</a> &gt; <a href="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html">High Level Asynchronous Service Handling</a> &gt; </div>
+<h1 class="topictitle1">Using
+CIdle</h1>
+<div><p>This document describes how to use the CIdle class to implement
+long running background tasks.</p>
+
+<p>An instance of the <samp class="codeph">CIdle</samp> class, an idle time active object,
+can be used to perform low-priority processing when no higher-priority active
+objects are ready to run. </p>
+
+<p>An idle time active object together with its associated callback function
+may be used to implement potentially long running background tasks, such as
+spreadsheet recalculation and word processor repagination. </p>
+
+<p>A typical example is a background re-calculation in a spreadsheet. Assume
+that the spreadsheet is encapsulated by some class <samp class="codeph">CSheet</samp>. </p>
+
+<pre class="codeblock" id="GUID-162A4409-1ABB-51A1-B7F1-75A31A5DEA63__GUID-01DE940E-BAA9-51C6-A6B2-5B251382428B"><a name="GUID-162A4409-1ABB-51A1-B7F1-75A31A5DEA63__GUID-01DE940E-BAA9-51C6-A6B2-5B251382428B"><!-- --></a>class CSheet
+ {
+ ...
+ TInt LaunchReCalcL();
+ TInt DoBackgroundRecalc();
+ static TInt BackgroundRecalc(TAny *aSheet);
+ ...
+private:
+ CIdle* iRecalc;
+ ...
+ };</pre>
+
+<p>Assume that a <samp class="codeph">CSheet</samp> object has been created and that,
+as a result of user interaction or some other event, a background re-calculation
+is launched by a call to <samp class="codeph">LaunchReCalc()</samp>. The implementation
+of this function would construct a <samp class="codeph">CIdle</samp> object, specifying
+a suitably low priority. The value <samp class="codeph">CActive::EPriorityIdle</samp> is
+recommended: </p>
+
+<pre class="codeblock" id="GUID-162A4409-1ABB-51A1-B7F1-75A31A5DEA63__GUID-20F61F7A-325B-53AA-B51F-575EA69B6CD3"><a name="GUID-162A4409-1ABB-51A1-B7F1-75A31A5DEA63__GUID-20F61F7A-325B-53AA-B51F-575EA69B6CD3"><!-- --></a>TInt CSheet::LaunchReCalcL()
+ {
+ ...
+ if (!(iRecalc))
+  {
+  iRecalc = CIdle::NewL(CActive::EPriorityIdle);
+  }
+ ...
+ iRecalc-&gt;Start(TCallBack(BackgroundRecalc,this)); 
+ ...
+ };</pre>
+
+<p>To start the background recalculation which is performed by the <samp class="codeph">DoBackGroundRecalc()</samp> member
+function of <samp class="codeph">CSheet</samp>, start by coding: </p>
+
+<pre class="codeblock" id="GUID-162A4409-1ABB-51A1-B7F1-75A31A5DEA63__GUID-08FC5576-EFA4-5527-851E-9E03531ED596"><a name="GUID-162A4409-1ABB-51A1-B7F1-75A31A5DEA63__GUID-08FC5576-EFA4-5527-851E-9E03531ED596"><!-- --></a>iRecalc-&gt;Start(TCallBack(BackgroundRecalc,this));</pre>
+
+<p> <samp class="codeph">CIdle::Start()</samp> requires a <samp class="codeph">TCallBack</samp> object
+to encapsulate the function to be called and a pointer to be passed as a parameter
+to that function. As the encapsulated function must either be static or a
+non-member function, the easiest way to handle this is to pass the static
+function <samp class="codeph">BackgroundRecalc()</samp> and a pointer to the sheet object
+itself. <samp class="codeph">BackgroundRecalc()</samp> then calls the non-static <samp class="codeph">DoBackgroundRecalc()</samp>: </p>
+
+<pre class="codeblock" id="GUID-162A4409-1ABB-51A1-B7F1-75A31A5DEA63__GUID-A4122F78-A32B-5592-9A65-B05EDBF30EF5"><a name="GUID-162A4409-1ABB-51A1-B7F1-75A31A5DEA63__GUID-A4122F78-A32B-5592-9A65-B05EDBF30EF5"><!-- --></a>TInt Sheet::BackgroundRecalc(TAny* aSheet)
+ {
+ return ((CSheet*)aSheet)-&gt;DoBackgroundRecalc();
+ }</pre>
+
+<p> <samp class="codeph">BackgroundRecalc()</samp> is called when there are no higher
+priority active objects with events to process. It does a small amount of
+recalculation before returning. </p>
+
+<p>If the function has further work to do, it returns a true value to ensure
+that it is called again when there is no other higher priority event to handle.
+When the function finally completes its recalculation task, it returns a false
+value; the function is not called again. </p>
+
+<p>Typically, an object such as <samp class="codeph">CSheet</samp> or some other object
+accessible from <samp class="codeph">CSheet</samp>, keeps track of the state of the re-calculation. </p>
+
+<p>It is important for application responsiveness that each iteration of the
+idle time object take only a short time. All other events handled by the active
+scheduler, even high-priority ones, cannot be processed until the idle time
+object's callback function returns. </p>
+
+<p>When the background recalculation is complete, the callback function is
+not called again. The idle time active object can be destroyed or left until
+needed again. </p>
+
+<p>If <samp class="codeph">Cancel()</samp> is called, the callback function is not called
+again. An application would need to implement appropriate cleanup. </p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html">High Level Asynchronous Service Handling</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

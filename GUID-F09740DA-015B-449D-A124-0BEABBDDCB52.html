@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Enabling and Disabling"/>
+<meta name="abstract" content="This document describes how device drivers enable and disable interrupts."/>
+<meta name="description" content="This document describes how device drivers enable and disable interrupts."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-F09740DA-015B-449D-A124-0BEABBDDCB52"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Enabling and Disabling</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-F09740DA-015B-449D-A124-0BEABBDDCB52"><a name="GUID-F09740DA-015B-449D-A124-0BEABBDDCB52"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 id2388365 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; <a href="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442.html" title="This document describes how device drivers use interrupts.">Interrupts</a> &gt; </div>
+<h1 class="topictitle1">Enabling
+and Disabling</h1>
+<div><p>This document describes how device drivers enable and disable interrupts.</p>
+
+<p>Drivers can enable and disable the interrupts on the relevant interrupt
+sources while handling the interrupts using the <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html"><span class="apiname">Interrupt</span></a> class.
+Typically, handling an interrupt is done with disabled interrupts. The interrupt
+is then enabled after the completion of interrupt handling. </p>
+
+<pre class="codeblock" id="GUID-F09740DA-015B-449D-A124-0BEABBDDCB52__GUID-7805933A-51F6-5169-81D0-C1A8E9647C0D"><a name="GUID-F09740DA-015B-449D-A124-0BEABBDDCB52__GUID-7805933A-51F6-5169-81D0-C1A8E9647C0D"><!-- --></a>Interrupt::Disable(aIntId);
+...
+// handle interrupt
+...
+Interrupt::Enable(aIntId);
+</pre>
+
+<pre class="codeblock" id="GUID-F09740DA-015B-449D-A124-0BEABBDDCB52__GUID-87C0A4CF-BA67-58DE-A180-EA30189BEDF4"><a name="GUID-F09740DA-015B-449D-A124-0BEABBDDCB52__GUID-87C0A4CF-BA67-58DE-A180-EA30189BEDF4"><!-- --></a>/**
+ Interrupt Service Routine (ISR) for the UART driver. This function
+ is associated with the UART interrupt, EUartIrq (value obtained from 
+ TRM). This function is called whenever there is an interrupt on this 
+ interrupt line and the interrupt source is enabled. The ISR must be a 
+ static void function, taking a single TAny* parameter, which is an 
+ object passed at the time of binding, usually a pointer to the owning
+ class. Interrupt::Enable() must be called to start receiving 
+ interrupts.
+ 
+ The ISR implementation is hardware and driver specific. The ISR must
+ be self-contained as the state of the system is indeterminate. It
+ should not signal threads, allocate or de-allocate memory, copy
+ memory to or from user processes, or call most Kernel functions.
+ Also the whole system is blocked while the ISR is running, so it must be
+ kept as short as possible. Any lengthy processing must be done in a
+ delayed function call (DFC).
+ 
+ A typical ISR would,
+   Clear the interrupt in the peripheral.
+   Disable the interrupt.
+   Read or write peripheral registers, e.g. to determine errors, or 
+   to start a new task.
+   Read data from, or write data to, the peripheral.
+   Start or stop NTimers or DMA transfer operations.
+   Queue DFCs.
+ 
+ @param     aParam
+         pointer to object passed as parameter while binding
+ */    
+
+void DExUartPhysicalChannelH4::UartIsr(TAny* aParam)
+    {
+    // Do the high priority device specific interrupt handling
+    // i.e. read the interrupt type from device, clear the 
+    // interrupt.
+    ...
+    // Defer the remaining processing by queuing the respective 
+    // DFC based on the interrupt type
+    ...
+    }</pre>
+
+<p>Some operations may need to be performed with all the interrupts, not just
+the particular interrupt source, disabled. In this case, the <a href="GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02.html"><span class="apiname">NKern</span></a> class
+must be used to disable and enable all interrupts globally at the Interrupt
+controller. <a href="GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02.html#GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02__GUID-8C251C65-FDE7-3161-8D2B-61401FB6487F"><span class="apiname">NKern::DisableAllInterrupts()</span></a> can disable all
+IRQs, or IRQs and FIQs. <a href="GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02.html#GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02__GUID-2D328082-3A9F-3467-81CF-B1C68866E163"><span class="apiname">NKern::RestoreInterrupts()</span></a> can
+restore the interrupts to their state before disabling. </p>
+
+<pre class="codeblock" id="GUID-F09740DA-015B-449D-A124-0BEABBDDCB52__GUID-A34A1AEB-9B00-556D-A280-9BFF7A6BAA8C"><a name="GUID-F09740DA-015B-449D-A124-0BEABBDDCB52__GUID-A34A1AEB-9B00-556D-A280-9BFF7A6BAA8C"><!-- --></a>alevel = 1; // 1 to disable IRQs and 2 to disable IRQs and FIQs
+state = NKern::DisableAllInterrupts(aLevel);
+...
+// perform the required operations
+...
+NKern::RestoreInterrupts(state);
+</pre>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442.html" title="This document describes how device drivers use interrupts.">Interrupts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

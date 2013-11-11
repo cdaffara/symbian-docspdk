@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CAlfLayout"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-E6DD76AC-2009-3278-A373-ED16581402F6"/>
+
+<title>CAlfLayout</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-E6DD76AC-2009-3278-A373-ED16581402F6"><a name="GUID-E6DD76AC-2009-3278-A373-ED16581402F6"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2414975 id2414979 id2537184 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CAlfLayout Class Reference</h1>
+	<table class="signature"><tr><td>class CAlfLayout : public CAlfVisual</td></tr></table><div class="section"><div>
+			<p>Base class for all layouts.</p>
+
+			<div class="p">alfclient.lib <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 v3.2</dd>
+</dl>
+Layouts are visuals that manage the placement of a set of child visuals (or other layouts).</div>
+
+			<p>Layouts are responsible for setting the positions and sizes of their child visuals. Each layout can define a position, a size, or both (or neither) for their children.</p>
+
+			<p>Layouts use the children's ordinal numbers to determine where each of them should be placed. For example, a grid layout could define that the top row contains children with ordinals 0..3, from left to right. The second row could then contain the children 4..7. When the order of the child visuals changes within their parent layout, the parent layout will recalculate the positions and sizes of the affected children.</p>
+
+			<p>When the size of a layout changes, it will immediately recalculate the layout of its children. The transition time that is specified in the size transition of the layout is used when setting the targets of the children's new positions and sizes.</p>
+
+			<p>Layouts are able to notify their controls when their size is changed. These notifications are needed because the size of a layout is not known until the display is refreshed. This means that the <strong>size of a layout is not available when your controls ConstructL is executed</strong>, unless it is explicitly set. The notifications are also handy because they allow the controls to respond to dynamic screen size changes. So unless if the whole screen is not used for the layout, the notifications are the only way to do calculations based on the layout size.</p>
+
+			<p>To make the control receive layout update notifications call:</p>
+
+			<p>
+				<tt> layout-&gt;SetFlags(EAlfVisualFlagLayoutUpdateNotification); </tt>
+			</p>
+
+			<p>.. and override VisualLayoutUpdated() method in your control.</p>
+
+			<p>
+				<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html#GUID-BAB22162-1233-3465-A11F-99745526E222">SetSize()</a> <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html#GUID-5BB8FF19-D464-35D4-BA72-704556D653C9">SetFlags()</a> <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-1628481D-EE86-3FE8-AF7A-F7F89754F9F2">CAlfControl::VisualLayoutUpdated()</a>Each layout defines its own local coordinate system used for interpreting the positions and sizes of its child visuals. The base unit of the coordinate system is defined with the <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html#GUID-45A5D600-867A-39F6-985F-FE6B9B484FBD">SetBaseUnit()</a> method, which sets a <a href="GUID-00265FF6-8FC8-39D6-BE6B-DB5D2F27FA9A.html#GUID-00265FF6-8FC8-39D6-BE6B-DB5D2F27FA9A">TAlfXYMetric</a> to use as the basis for all coordinate calculations. The default metric is [1px, 1px] which corresponds to pixels on the display.</p>
+
+			<p>The local coordinate system of a layout can be mirrored horizontally and/or vertically by using a negative magnitude in the relevant <a href="GUID-56D620BF-369E-3F31-932D-D5F0CA668995.html#GUID-56D620BF-369E-3F31-932D-D5F0CA668995">TAlfMetric</a> of the base unit. Note that this will only affect the local coordinate system of the layout: the contents of the child visuals or child layouts will not be mirrored. Visual mirroring should be done with a CAlfTransformation, and child layouts can be mirrored by further application of the negative base unit metrics. In order to enable a layout to automatically mirror the horizontal component of the base unit based on locale mirroring, set the visual flag <tt>EAlfVisualFlagAutomaticLocaleMirroringEnabled</tt>, note that it is necessary to set this flag for each layout for which this feature is required.</p>
+
+			<p>To create to a fully scalable UI, the appropriate base unit metrics and layout visuals must be used. For example, the EAlfUnitS60 metric unit is dependent on the platform-specified measurement units for layout. <a href="GUID-C91666B7-C1F4-347B-8085-FCF4F0DDBE03.html#GUID-C91666B7-C1F4-347B-8085-FCF4F0DDBE03">CAlfGridLayout</a> and <a href="GUID-F22D079B-BBBD-3916-B86F-9B8CD6674B4E.html#GUID-F22D079B-BBBD-3916-B86F-9B8CD6674B4E">CAlfAnchorLayout</a> provide support for pixel-independent placement of their children.</p>
+
+			<p>
+				<a href="GUID-F22D079B-BBBD-3916-B86F-9B8CD6674B4E.html#GUID-F22D079B-BBBD-3916-B86F-9B8CD6674B4E">CAlfAnchorLayout</a> <a href="GUID-C91666B7-C1F4-347B-8085-FCF4F0DDBE03.html#GUID-C91666B7-C1F4-347B-8085-FCF4F0DDBE03">CAlfGridLayout</a>Applications that need more complex layouts should derive their own <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html#GUID-E6DD76AC-2009-3278-A373-ED16581402F6">CAlfLayout</a> based classes that implement the necessary layout calculations. In many cases, however, a combination of some of the built-in layout classes such as anchor and grid layouts will be sufficient. </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CAlfLayout<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a><ul class="derivation"><li class="derivation-depth-2 "><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner</a><ul class="derivation"><li class="derivation-depth-3 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></li></ul></li></ul></div>
+<div class="section nested"><h2 class="sectiontitle">Nested Classes and Structures</h2><ul><li><a href="GUID-6E66DC5D-7146-30CF-81A2-EFCB92E19276.html">CAlfLayout::TLayoutPrivateData</a></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-5DA48F15-1BD7-3FB5-B7F0-99BA8D9C6E44">CAlfLayout</a>()</td></tr><tr class="bg"><td align="right" class="code"/><td><a href="#GUID-BF191B9A-F9DC-3F9D-A8B2-05C3B17BB035">~CAlfLayout</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> *</td><td><a href="#GUID-8DF64E6A-ABE9-3D63-95AB-AE662856847C">AddNewL</a>(<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> &amp;, <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-4B53B7AB-8246-32ED-9C80-DE2F66580485">Append</a>(<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-00265FF6-8FC8-39D6-BE6B-DB5D2F27FA9A.html">TAlfXYMetric</a></td><td><a href="#GUID-406AAFEC-333C-3703-821E-61296CEBD22D">BaseUnit</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-5DE97F7C-D951-3947-BCBC-84D18582E9F0">ChildOrdinal</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-4B342D5B-0992-3671-A357-81F04809344D">ChildPos</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-4EDD1C36-52A8-33A2-8157-A517267ECAEB">ChildSize</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-3177E026-3B66-33C3-BF09-62AC22AA9E22">ConstructL</a>(<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-C4FEB54F-ED38-3C2E-81FA-45156D77A19B">Count</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-4787A74B-092D-3534-9CE1-E26DF4F6D1E7">EffectiveLayoutOrdinal</a>(const <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-D7C220A5-5D58-3CD4-8933-8E7BCC944EC8">EnableScrollingL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *</td><td><a href="#GUID-562AEF9B-945E-3568-8653-315375E17F4F">FindTag</a>(const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-7B24E593-2F8B-396D-BA1E-4C1D9A743F4A">FindVisual</a>(<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-515A707B-6662-341F-A1EE-2EC6B729A2BC">HorizontalInnerPadding</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a></td><td><a href="#GUID-214E8A43-AF68-382D-B1DE-FE8933B3E31A">InnerPadding</a>()</td></tr><tr><td align="right" class="code">IMPORT_C const <a href="GUID-00265FF6-8FC8-39D6-BE6B-DB5D2F27FA9A.html">TAlfXYMetric</a> &amp;</td><td><a href="#GUID-671F9003-3321-3F4A-920D-E44209B7B326">InnerPaddingAsMetric</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-357B0605-5A66-3A29-A1FF-CD7FF5D71F5A.html">TAlfRealPoint</a></td><td><a href="#GUID-0C0FF79E-0303-3F55-B57F-2D9483BD1798">InnerPaddingInBaseUnits</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-6C3F96B7-983D-33C5-8F4B-03E30720FCD5">Insert</a>(<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-B7CA0C5A-AAF7-39AC-95F9-3C9AC304A5E3">MoveVisualToBack</a>(<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-996A1F6A-DF2D-376D-BEA0-A9447E0C3DB9">MoveVisualToFront</a>(<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-5F613251-4D1B-31D2-90A3-0A4408FB2D06">Remove</a>(<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-A982A42A-5D66-30EF-A822-C324DD56E324">RemoveAndDestroyAllD</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-54640F2A-394B-3271-B94E-97BE24201017">Reorder</a>(<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C const <a href="GUID-15BFA2C1-02EF-327D-8314-06B9EE53CDBB.html">TAlfTimedPoint</a> &amp;</td><td><a href="#GUID-AF10BA71-6B96-394D-AD14-11B20575E475">ScrollOffset</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-81BFB642-250F-31DF-8AE7-4126499597AC">Scrolling</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-45A5D600-867A-39F6-985F-FE6B9B484FBD">SetBaseUnit</a>(const <a href="GUID-56D620BF-369E-3F31-932D-D5F0CA668995.html">TAlfMetric</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-D463492D-D86D-36A6-9FEE-C08AFB8FB657">SetBaseUnit</a>(const <a href="GUID-00265FF6-8FC8-39D6-BE6B-DB5D2F27FA9A.html">TAlfXYMetric</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-DC8FC312-B262-3C5B-8CAB-22890404F2DB">SetInnerPadding</a>(const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-D1D8A9C1-EB25-304C-A4B6-DDA7F76F1A35">SetInnerPadding</a>(const <a href="GUID-00265FF6-8FC8-39D6-BE6B-DB5D2F27FA9A.html">TAlfXYMetric</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-196B028C-982D-3D5C-8A7A-2905153AB4F7">SetScrollOffset</a>(const <a href="GUID-15BFA2C1-02EF-327D-8314-06B9EE53CDBB.html">TAlfTimedPoint</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-218BAA13-37F9-323C-9DFF-4F3E278B46C7">SetTransitionTime</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-A516B107-5D7C-3626-B442-8BFB7A59955E">TransitionTime</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-7477D53E-8CA1-353E-9F9D-AA6D5FC4D92F">UpdateChildrenLayout</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-E9D42F81-B163-3473-8912-CF3476DC70B1">VerticalInnerPadding</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a></td><td><a href="#GUID-13110200-0B68-35AE-8282-A04B4546ABFA">VirtualSize</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;</td><td><a href="#GUID-3D8F47CB-5429-3497-BB89-FA6C94BBD684">Visual</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-A1DCB7AF-F2CA-38DF-A758-0EB22672F3BF">DoRemoveAndDestroyAllD</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-C8951ABB-9D70-304A-9522-BCCEBF13ADFA">PropertyOwnerExtension</a>(const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> **)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::CAlfPropertyOwner()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::CopyProperty(const CAlfPropertyOwner &amp;,const TDesC8 &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::PropertyClear()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::PropertyFindInteger(const TDesC8 &amp;,TInt *)const</a></td></tr><tr><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::PropertyFindString(const TDesC8 &amp;,TDesC **)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::PropertyRemove(const TDesC8 &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::PropertySetIntegerL(const TDesC8 &amp;,TInt,TInt,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::PropertySetStringL(const TDesC8 &amp;,const TDesC &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::~CAlfPropertyOwner()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::AlignByOrigin(TAlfRealRect &amp;)const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Brushes()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::CAlfVisual()</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::ClearFlag(TAlfVisualFlags)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::ClearFlags(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Clipping()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Comms()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::ConstructL(CAlfControl &amp;,TInt,TInt,const TDesC8 &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::CopyValues(const CAlfVisual &amp;,TInt,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::DepthOffset()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Display()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::DisplayRect()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::DisplayRectTarget()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::DisplayToLocal(const TAlfRealPoint &amp;)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::DisplayToLocal(const TPoint &amp;)const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::DropShadowHandler()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::EffectiveOpacity()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::EnableBrushesL(TBool)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::EnableDropShadowL(TBool)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::EnableTransformationL(TBool)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Env()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Flags()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::HasTactileFeedback(TInt)const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::HorizontalOrigin()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::HorizontalPadding()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Identifier()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::IsTagged()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Layout()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::LocalToDisplay(const TAlfRealPoint &amp;)const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::LocalToDisplay(const TPoint &amp;)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::MaxSize()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::MaxSizeInBaseUnits()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Mimic(CAlfVisual &amp;,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::MinSize()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::MinSizeInBaseUnits()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Move(const TAlfRealPoint &amp;,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Move(const TPoint &amp;,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::MoveToFront(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Opacity()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Owner()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Padding()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::PaddingAsMetric()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::PaddingInPixels()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Pause(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Pos()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::RemoveTactileFeedback(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Resume(TInt)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetCenteredPosAndSize(const TAlfRealPoint &amp;,const TAlfRealSize &amp;,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetCenteredPosAndSize(const TPoint &amp;,const TSize &amp;,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetClipping(TBool)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetDepthOffset(const TAlfTimedValue &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetDisplay(CAlfDisplay *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetEffectL(const TDesC &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetFlag(TAlfVisualFlags)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetFlags(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetGroupEffectL(const TDesC &amp;,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetLayout(CAlfLayout *)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetMaxSize(const TAlfRealSize &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetMaxSize(const TSize &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetMinSize(const TAlfRealSize &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetMinSize(const TSize &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetOpacity(const TAlfTimedValue &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetOrigin(TAlfVisualHOrigin,TAlfVisualVOrigin)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetOwner(CAlfControl &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetPadding(TInt)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetPadding(const TAlfBoxMetric &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetPadding(const TPoint &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetPos(const TAlfRealPoint &amp;,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetPos(const TAlfTimedPoint &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetRect(const TAlfRealRect &amp;,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetSize(const TAlfRealSize &amp;,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetSize(const TAlfTimedPoint &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetTactileFeedbackL(TInt,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::SetTagL(const TDesC8 &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Size()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Tag()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::TagMatches(const TDesC8 &amp;)const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::Transformation()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::VerticalOrigin()const</a></td></tr><tr><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::VerticalPadding()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual::~CAlfVisual()</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Enumerations</th></tr></thead><tbody><tr><td align="right" valign="top">enum</td><td><a href="#GUID-15B3618E-833E-32FD-ADFC-9ED62917550A">TExpansionFlags</a> { <a href="#GUID-5C9DC725-5672-3410-B65F-649919F6B4AF">EExpandNone</a> = 0, <a href="#GUID-A0EA8AD4-C7FA-366C-A4CE-1907F5DE86CB">EExpandHorizontally</a> = 1, <a href="#GUID-18DF9D9F-719F-3F95-83CA-6FDCE9CA445F">EExpandVertically</a> = 2 }</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">TLayoutPrivateData *</td><td><a href="#GUID-92E42318-4DA3-3C15-9459-5690DFCAEA7B">iLayoutData</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-5DA48F15-1BD7-3FB5-B7F0-99BA8D9C6E44"><a name="GUID-5DA48F15-1BD7-3FB5-B7F0-99BA8D9C6E44"><!-- --></a>
+		<h2 class="topictitle2">CAlfLayout()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>CAlfLayout</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Constructor. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-BF191B9A-F9DC-3F9D-A8B2-05C3B17BB035"><a name="GUID-BF191B9A-F9DC-3F9D-A8B2-05C3B17BB035"><!-- --></a>
+		<h2 class="topictitle2">~CAlfLayout()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CAlfLayout</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Virtual destructor. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-8DF64E6A-ABE9-3D63-95AB-AE662856847C"><a name="GUID-8DF64E6A-ABE9-3D63-95AB-AE662856847C"><!-- --></a>
+		<h2 class="topictitle2">AddNewL(CAlfControl &amp;, CAlfLayout *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> *</td><td>AddNewL</td><td>(</td><td><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> &amp;</td><td>aOwner,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> *</td><td>aParentLayout = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>2-phased constructor which also gives ownedship to control.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> &amp; aOwner</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> * aParentLayout = 0</td><td>If given, has the parent layout.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4B53B7AB-8246-32ED-9C80-DE2F66580485"><a name="GUID-4B53B7AB-8246-32ED-9C80-DE2F66580485"><!-- --></a>
+		<h2 class="topictitle2">Append(CAlfVisual *, TBool, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Append</td><td>(</td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *</td><td>aVisual,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aConstructedWithParentInformation = EFalse,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLayoutTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Append a new visual to the layout.</p>
+
+				<p>
+					<a href="GUID-B5108D30-E655-3827-B3F6-CD6873840421.html#GUID-4DC365C5-333A-3FC7-95EA-6DD92DF884B3">TodoAdd a method for appending multiple visuals in one set, so that they only cause a single layout update. </a>
+				</p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> * aVisual</td><td>Visual to append.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aConstructedWithParentInformation = EFalse</td><td>Whether visual already knows its parent  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLayoutTransitionTime = 0</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-406AAFEC-333C-3703-821E-61296CEBD22D"><a name="GUID-406AAFEC-333C-3703-821E-61296CEBD22D"><!-- --></a>
+		<h2 class="topictitle2">BaseUnit()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-00265FF6-8FC8-39D6-BE6B-DB5D2F27FA9A.html">TAlfXYMetric</a></td><td>BaseUnit</td><td>(</td><td>)</td><td>const [virtual]</td></tr></table><div class="section"><div>
+				<p>Returns the layout's base measurement unit. The positions and sizes of the children of this layout are interpreted as multiples of this base unit. For example, the actual X position of a child is determined by <tt>aBaseUnit.iX * childX</tt>.</p>
+
+				<p>The effect of the base unit is limited to the children of this layout -- the grandchildren use the base units of their parents, not this base unit.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>that if the visual flag <tt>EAlfVisualFlagAutomaticLocaleMirroringEnabled</tt> is set, the value returned by this method will change based on the current platform locale mirroring in the X-axis. So for example if the current layout is mirrored, then the value returned by this method will have the X magnitude set to the negative of the value that was set using <tt>SetBaseUnit</tt>.</p>
+
+					</div>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-5DE97F7C-D951-3947-BCBC-84D18582E9F0"><a name="GUID-5DE97F7C-D951-3947-BCBC-84D18582E9F0"><!-- --></a>
+		<h2 class="topictitle2">ChildOrdinal(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ChildOrdinal</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Determines the layout ordinal for a child visual. The child's placement depends on the ordinal number.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>Index of the child visual.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4B342D5B-0992-3671-A357-81F04809344D"><a name="GUID-4B342D5B-0992-3671-A357-81F04809344D"><!-- --></a>
+		<h2 class="topictitle2">ChildPos(TInt, TPoint &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>ChildPos</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aOrdinal,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aPos</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Determines the position of a child visual according to the layout.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aOrdinal</td><td>Layout ordinal of the child visual.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aPos</td><td>New position for the child. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4EDD1C36-52A8-33A2-8157-A517267ECAEB"><a name="GUID-4EDD1C36-52A8-33A2-8157-A517267ECAEB"><!-- --></a>
+		<h2 class="topictitle2">ChildSize(TInt, TSize &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>ChildSize</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aOrdinal,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a> &amp;</td><td>aSize</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Determines the size of a child visual according to the layout.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aOrdinal</td><td>Layout ordinal of the child visual.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a> &amp; aSize</td><td>New target size for the child. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3177E026-3B66-33C3-BF09-62AC22AA9E22"><a name="GUID-3177E026-3B66-33C3-BF09-62AC22AA9E22"><!-- --></a>
+		<h2 class="topictitle2">ConstructL(CAlfControl &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ConstructL</td><td>(</td><td><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> &amp;</td><td>aOwner</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html#GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3">CAlfVisual</a>. Second-phase constructor. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> &amp; aOwner</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C4FEB54F-ED38-3C2E-81FA-45156D77A19B"><a name="GUID-C4FEB54F-ED38-3C2E-81FA-45156D77A19B"><!-- --></a>
+		<h2 class="topictitle2">Count()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Count</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the number of child visuals in the layout.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-A1DCB7AF-F2CA-38DF-A758-0EB22672F3BF"><a name="GUID-A1DCB7AF-F2CA-38DF-A758-0EB22672F3BF"><!-- --></a>
+		<h2 class="topictitle2">DoRemoveAndDestroyAllD()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>DoRemoveAndDestroyAllD</td><td>(</td><td>)</td><td>[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>
+					<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html#GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3">CAlfVisual</a> Deletes the child visuals </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-4787A74B-092D-3534-9CE1-E26DF4F6D1E7"><a name="GUID-4787A74B-092D-3534-9CE1-E26DF4F6D1E7"><!-- --></a>
+		<h2 class="topictitle2">EffectiveLayoutOrdinal(const CAlfVisual &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>EffectiveLayoutOrdinal</td><td>(</td><td>const <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;</td><td>aVisual</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Layout is calculated according the ordinals. The effective ordinal may not be the same as the real child ordinal, because some visuals are laid out manually.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp; aVisual</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D7C220A5-5D58-3CD4-8933-8E7BCC944EC8"><a name="GUID-D7C220A5-5D58-3CD4-8933-8E7BCC944EC8"><!-- --></a>
+		<h2 class="topictitle2">EnableScrollingL(TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>EnableScrollingL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aScrolling = ETrue</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Enables or disables scrolling in the layout.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aScrolling = ETrue</td><td>ETrue to enable scrolling, EFalse to disable.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-562AEF9B-945E-3568-8653-315375E17F4F"><a name="GUID-562AEF9B-945E-3568-8653-315375E17F4F"><!-- --></a>
+		<h2 class="topictitle2">FindTag(const TDesC8 &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *</td><td>FindTag</td><td>(</td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aTag</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>
+					<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html#GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3">CAlfVisual</a> Finds a visual whose tag descriptor contains a specific tag.</p>
+
+				<p>
+					<a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html#GUID-562AEF9B-945E-3568-8653-315375E17F4F">CAlfLayout::FindTag()</a> extends the search into child visuals, covering recursively entire visual hierarchies.</p>
+
+				<p>Todo: how should several visuals with matching tag to be handled ??</p>
+
+				<p>
+					<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html#GUID-302C3273-526E-3910-91E0-73244854E0AE">CAlfVisual::Tag()</a> <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html#GUID-B98F2162-9F60-3C98-A6ED-B4BEB4960C1E">CAlfVisual::SetTagL()</a> <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html#GUID-B7F616DA-50B6-3803-B1E5-1EAB80A6619F">CAlfVisual::IsTagged()</a> <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html#GUID-B951630A-3CA3-3130-BC57-B1E86ADEAA23">CAlfVisual::FindTag()</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aTag</td><td>Tag to look for. If this tag is found as a part of a visual's colon-separated tag descriptor, it is treated as a match and the visual is returned. The tag to look for cannot contain separator characters (:). </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7B24E593-2F8B-396D-BA1E-4C1D9A743F4A"><a name="GUID-7B24E593-2F8B-396D-BA1E-4C1D9A743F4A"><!-- --></a>
+		<h2 class="topictitle2">FindVisual(CAlfVisual *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>FindVisual</td><td>(</td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *</td><td>aVisual</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Finds a visual's index.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> * aVisual</td><td>Visual to look for. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-515A707B-6662-341F-A1EE-2EC6B729A2BC"><a name="GUID-515A707B-6662-341F-A1EE-2EC6B729A2BC"><!-- --></a>
+		<h2 class="topictitle2">HorizontalInnerPadding()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>HorizontalInnerPadding</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the inner horizontal padding.</p>
+
+				<p>this will return correct pixel values only if paddings were set using deprecated pixel based APIs, so migrate to using metrics instead </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-214E8A43-AF68-382D-B1DE-FE8933B3E31A"><a name="GUID-214E8A43-AF68-382D-B1DE-FE8933B3E31A"><!-- --></a>
+		<h2 class="topictitle2">InnerPadding()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a></td><td>InnerPadding</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the inner padding. this will return correct pixel values only if paddings were set using deprecated pixel based APIs, so migrate to using metrics instead </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-671F9003-3321-3F4A-920D-E44209B7B326"><a name="GUID-671F9003-3321-3F4A-920D-E44209B7B326"><!-- --></a>
+		<h2 class="topictitle2">InnerPaddingAsMetric()</h2>
+		<table class="signature"><tr><td>IMPORT_C const <a href="GUID-00265FF6-8FC8-39D6-BE6B-DB5D2F27FA9A.html">TAlfXYMetric</a> &amp;</td><td>InnerPaddingAsMetric</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the inner padding metric <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html#GUID-214E8A43-AF68-382D-B1DE-FE8933B3E31A">InnerPadding()</a> which is superceded by this method </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-0C0FF79E-0303-3F55-B57F-2D9483BD1798"><a name="GUID-0C0FF79E-0303-3F55-B57F-2D9483BD1798"><!-- --></a>
+		<h2 class="topictitle2">InnerPaddingInBaseUnits()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-357B0605-5A66-3A29-A1FF-CD7FF5D71F5A.html">TAlfRealPoint</a></td><td>InnerPaddingInBaseUnits</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the inner padding converted to the base units of this layout. These can be summed with the positions and sizes of the layout's children. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-6C3F96B7-983D-33C5-8F4B-03E30720FCD5"><a name="GUID-6C3F96B7-983D-33C5-8F4B-03E30720FCD5"><!-- --></a>
+		<h2 class="topictitle2">Insert(CAlfVisual *, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Insert</td><td>(</td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *</td><td>aVisual,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPosition</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Insert a new visual to the layout, at specified position (position 0 is the first, <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html#GUID-C4FEB54F-ED38-3C2E-81FA-45156D77A19B">Count()</a> -1 is the last). If the visual is already a member of some other layout, it will be removed from the old layout first.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> * aVisual</td><td>Visual to append.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPosition</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B7CA0C5A-AAF7-39AC-95F9-3C9AC304A5E3"><a name="GUID-B7CA0C5A-AAF7-39AC-95F9-3C9AC304A5E3"><!-- --></a>
+		<h2 class="topictitle2">MoveVisualToBack(CAlfVisual &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>MoveVisualToBack</td><td>(</td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;</td><td>aVisual,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLayoutTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Moves a child visual behind the other children (in drawing order). In other words the visual is drawn first (the other child visuals will be drawn on top of this visual).</p>
+
+				<p>In practise this affects the order of the visuals whithin this layout so that the visual is moved at the beginning of the list (ordinal 0).</p>
+
+				<p>
+					<a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html#GUID-996A1F6A-DF2D-376D-BEA0-A9447E0C3DB9">MoveVisualToFront()</a> <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html#GUID-54640F2A-394B-3271-B94E-97BE24201017">Reorder()</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp; aVisual</td><td>Child visual to move.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLayoutTransitionTime = 0</td><td>How long the transition should take visually, in milliseconds.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-996A1F6A-DF2D-376D-BEA0-A9447E0C3DB9"><a name="GUID-996A1F6A-DF2D-376D-BEA0-A9447E0C3DB9"><!-- --></a>
+		<h2 class="topictitle2">MoveVisualToFront(CAlfVisual &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>MoveVisualToFront</td><td>(</td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;</td><td>aVisual,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLayoutTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Moves a child visual to the front of the other children. In other words the visual is drawn last (on top of the other child visuals). In practise this affects the order of the visuals whithin this layout so that the visual is moved at the end of the list.</p>
+
+				<p>Causes layout recalculation.</p>
+
+				<p>
+					<a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html#GUID-B7CA0C5A-AAF7-39AC-95F9-3C9AC304A5E3">MoveVisualToBack()</a> <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html#GUID-54640F2A-394B-3271-B94E-97BE24201017">Reorder()</a><a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html#GUID-996A1F6A-DF2D-376D-BEA0-A9447E0C3DB9">MoveVisualToFront()</a> - Use this instead! </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp; aVisual</td><td>Child visual to move.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLayoutTransitionTime = 0</td><td>How long the transition should take visually, in milliseconds.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C8951ABB-9D70-304A-9522-BCCEBF13ADFA"><a name="GUID-C8951ABB-9D70-304A-9522-BCCEBF13ADFA"><!-- --></a>
+		<h2 class="topictitle2">PropertyOwnerExtension(const TUid &amp;, TAny **)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>PropertyOwnerExtension</td><td>(</td><td>const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;</td><td>aExtensionUid,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> **</td><td>aExtensionParams</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>! future proofing </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp; aExtensionUid</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> ** aExtensionParams</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5F613251-4D1B-31D2-90A3-0A4408FB2D06"><a name="GUID-5F613251-4D1B-31D2-90A3-0A4408FB2D06"><!-- --></a>
+		<h2 class="topictitle2">Remove(CAlfVisual *, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Remove</td><td>(</td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *</td><td>aVisual,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLayoutTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Remove a visual from the layout.</p>
+
+				<p>
+					<a href="GUID-B5108D30-E655-3827-B3F6-CD6873840421.html#GUID-40542FDD-5A50-3BAD-8E34-A265CE43635E">TodoAdd a method for removing multiple visuals in one set, so that they only cause a single layout update. </a>
+				</p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> * aVisual</td><td>Visual to remove.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLayoutTransitionTime = 0</td><td>How long the transition should take visually, in milliseconds. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A982A42A-5D66-30EF-A822-C324DD56E324"><a name="GUID-A982A42A-5D66-30EF-A822-C324DD56E324"><!-- --></a>
+		<h2 class="topictitle2">RemoveAndDestroyAllD()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RemoveAndDestroyAllD</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html#GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3">CAlfVisual</a>. Removes this layout from its owner and and destroys the layout. Also removes the entire hierarchy of child visuals and destroys all of them. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-54640F2A-394B-3271-B94E-97BE24201017"><a name="GUID-54640F2A-394B-3271-B94E-97BE24201017"><!-- --></a>
+		<h2 class="topictitle2">Reorder(CAlfVisual &amp;, TInt, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Reorder</td><td>(</td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;</td><td>aVisual,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPosition,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLayoutTransitionTime = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Moves the given child visual to specific position in the layout's list of child visuals. Affects the drawing order (last child is drawn last), and possibly the final laid out position and size of the visual. This is due to that many layout implementations calculate the positioning of their children based on child's order number in the list.</p>
+
+				<p>Causes layout recalculation.</p>
+
+				<p>
+					<a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html#GUID-B7CA0C5A-AAF7-39AC-95F9-3C9AC304A5E3">MoveVisualToBack()</a> <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html#GUID-996A1F6A-DF2D-376D-BEA0-A9447E0C3DB9">MoveVisualToFront()</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp; aVisual</td><td>Child visual to move.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPosition</td><td>New position (and ordinal number) in the child list (0 = first, Count()-1 = last).  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLayoutTransitionTime = 0</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AF10BA71-6B96-394D-AD14-11B20575E475"><a name="GUID-AF10BA71-6B96-394D-AD14-11B20575E475"><!-- --></a>
+		<h2 class="topictitle2">ScrollOffset()</h2>
+		<table class="signature"><tr><td>IMPORT_C const <a href="GUID-15BFA2C1-02EF-327D-8314-06B9EE53CDBB.html">TAlfTimedPoint</a> &amp;</td><td>ScrollOffset</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the scroll offset of the layout. The scroll offset is in layout's base units.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-81BFB642-250F-31DF-8AE7-4126499597AC"><a name="GUID-81BFB642-250F-31DF-8AE7-4126499597AC"><!-- --></a>
+		<h2 class="topictitle2">Scrolling()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>Scrolling</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Is scrolling in the layout.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-45A5D600-867A-39F6-985F-FE6B9B484FBD"><a name="GUID-45A5D600-867A-39F6-985F-FE6B9B484FBD"><!-- --></a>
+		<h2 class="topictitle2">SetBaseUnit(const TAlfMetric &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetBaseUnit</td><td>(</td><td>const <a href="GUID-56D620BF-369E-3F31-932D-D5F0CA668995.html">TAlfMetric</a> &amp;</td><td>aBaseUnit</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Defines the base unit used for positioning and sizing children within this layout. For example, the actual X position of a child is determined by <tt>aBaseUnit.iX * childX</tt>. The effect of the base unit is limited to the children of this layout -- the grandchildren use the base units of their parents, not this base unit.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>It is recommended to use EAlfUnitNormalized if proportional base units are required. For example, EAlfUnitRelativeToMySize would not make sense as a base unit.</p>
+
+					</div>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-56D620BF-369E-3F31-932D-D5F0CA668995.html">TAlfMetric</a> &amp; aBaseUnit</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D463492D-D86D-36A6-9FEE-C08AFB8FB657"><a name="GUID-D463492D-D86D-36A6-9FEE-C08AFB8FB657"><!-- --></a>
+		<h2 class="topictitle2">SetBaseUnit(const TAlfXYMetric &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetBaseUnit</td><td>(</td><td>const <a href="GUID-00265FF6-8FC8-39D6-BE6B-DB5D2F27FA9A.html">TAlfXYMetric</a> &amp;</td><td>aBaseUnit</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Defines the base unit used for positioning and sizing children within this layout. For example, the actual X position of a child is determined by <tt>aBaseUnit.iX * childX</tt>. The effect of the base unit is limited to the children of this layout -- the grandchildren use the base units of their parents, not this base unit.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-00265FF6-8FC8-39D6-BE6B-DB5D2F27FA9A.html">TAlfXYMetric</a> &amp; aBaseUnit</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DC8FC312-B262-3C5B-8CAB-22890404F2DB"><a name="GUID-DC8FC312-B262-3C5B-8CAB-22890404F2DB"><!-- --></a>
+		<h2 class="topictitle2">SetInnerPadding(const TPoint &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetInnerPadding</td><td>(</td><td>const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aInnerPadding</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the inner padding of the layout. This is typically the amount of empty space between child visuals in the layout.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>that the left and right paddings will be the same, and the top and bottom paddings will be the same. </p>
+
+					</div>
+migrate to using metrics instead </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aInnerPadding</td><td>Inner padding (e.g., column, row separation).  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D1D8A9C1-EB25-304C-A4B6-DDA7F76F1A35"><a name="GUID-D1D8A9C1-EB25-304C-A4B6-DDA7F76F1A35"><!-- --></a>
+		<h2 class="topictitle2">SetInnerPadding(const TAlfXYMetric &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetInnerPadding</td><td>(</td><td>const <a href="GUID-00265FF6-8FC8-39D6-BE6B-DB5D2F27FA9A.html">TAlfXYMetric</a> &amp;</td><td>aInnerPadding</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the inner padding of the layout. This is typically the amount of empty space between child visuals in the layout.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>as paddings are relative to the layout visual, if relative units are required, it is advisable to use EAlfUnitRelativeToMySize so that the paddings are relative to the size of this layout visual</p>
+
+					</div>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-00265FF6-8FC8-39D6-BE6B-DB5D2F27FA9A.html">TAlfXYMetric</a> &amp; aInnerPadding</td><td>Inner padding, using metrics.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-196B028C-982D-3D5C-8A7A-2905153AB4F7"><a name="GUID-196B028C-982D-3D5C-8A7A-2905153AB4F7"><!-- --></a>
+		<h2 class="topictitle2">SetScrollOffset(const TAlfTimedPoint &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetScrollOffset</td><td>(</td><td>const <a href="GUID-15BFA2C1-02EF-327D-8314-06B9EE53CDBB.html">TAlfTimedPoint</a> &amp;</td><td>aPoint</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Set the scroll offset</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-15BFA2C1-02EF-327D-8314-06B9EE53CDBB.html">TAlfTimedPoint</a> &amp; aPoint</td><td>Sets the point.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-218BAA13-37F9-323C-9DFF-4F3E278B46C7"><a name="GUID-218BAA13-37F9-323C-9DFF-4F3E278B46C7"><!-- --></a>
+		<h2 class="topictitle2">SetTransitionTime(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetTransitionTime</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aTransitionTime</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the transition time for the recalculation of this layout's contents. This is used when a visual is added or removed or when the order of the children is changed.</p>
+
+				<p>Set to KAlfLayoutDefaultTransitionTime to make the layout use the default transition time queried from CAlfStatic.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aTransitionTime</td><td>Transition time in milliseconds, or KAlfLayoutDefaultTransitionTime.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A516B107-5D7C-3626-B442-8BFB7A59955E"><a name="GUID-A516B107-5D7C-3626-B442-8BFB7A59955E"><!-- --></a>
+		<h2 class="topictitle2">TransitionTime()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>TransitionTime</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the transition time of this layout.</p>
+
+				<p>
+					<a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html#GUID-218BAA13-37F9-323C-9DFF-4F3E278B46C7">CAlfLayout::SetTransitionTime()</a> </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-7477D53E-8CA1-353E-9F9D-AA6D5FC4D92F"><a name="GUID-7477D53E-8CA1-353E-9F9D-AA6D5FC4D92F"><!-- --></a>
+		<h2 class="topictitle2">UpdateChildrenLayout(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>UpdateChildrenLayout</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aTransitionTime = 0</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>
+					<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html#GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3">CAlfVisual</a> Update the layout of all children. Subclasses can call this to recalculate the layout of all children.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aTransitionTime = 0</td><td>Time for layout transition in milliseconds. Any negative value uses value given in CAlfEnv::StaticSetLayoutTransitionTime()  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E9D42F81-B163-3473-8912-CF3476DC70B1"><a name="GUID-E9D42F81-B163-3473-8912-CF3476DC70B1"><!-- --></a>
+		<h2 class="topictitle2">VerticalInnerPadding()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>VerticalInnerPadding</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the inner vertical padding.</p>
+
+				<p>this will return correct pixel values only if paddings were set using deprecated pixel based APIs, so migrate to using metrics instead </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-13110200-0B68-35AE-8282-A04B4546ABFA"><a name="GUID-13110200-0B68-35AE-8282-A04B4546ABFA"><!-- --></a>
+		<h2 class="topictitle2">VirtualSize()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-938244B2-5E1A-39F7-8ACA-E6DE4C44A313.html">TSize</a></td><td>VirtualSize</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Determines the virtual size of the layout. The virtual size may be larger than the actual size. The virtual size is updated automatically when the layout's children are positioned.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-3D8F47CB-5429-3497-BB89-FA6C94BBD684"><a name="GUID-3D8F47CB-5429-3497-BB89-FA6C94BBD684"><!-- --></a>
+		<h2 class="topictitle2">Visual(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;</td><td>Visual</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns a child visual.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>Index of the child visual. </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Enumerations Documentation</h1><div class="nested1" id="GUID-15B3618E-833E-32FD-ADFC-9ED62917550A"><a name="GUID-15B3618E-833E-32FD-ADFC-9ED62917550A"><!-- --></a>
+		<h2 class="topictitle2">Enum TExpansionFlags</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EExpandNone = 0</td><td>
+							<p>Not expanding in any direction. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EExpandHorizontally = 1</td><td>
+							<p>Expands horizontally. </p>
+
+						 </td></tr><tr><td valign="top">EExpandVertically = 2</td><td>
+							<p>Expands vertically. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-92E42318-4DA3-3C15-9459-5690DFCAEA7B"><a name="GUID-92E42318-4DA3-3C15-9459-5690DFCAEA7B"><!-- --></a>
+		<h2 class="topictitle2">TLayoutPrivateData * iLayoutData</h2>
+		<table class="signature"><tr><td>TLayoutPrivateData *</td><td>iLayoutData</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

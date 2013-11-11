@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Creating Processes and Threads"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ADB9AD91-37A2-4FE6-B378-C43CD0A7B513.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-545DA961-217E-49CA-A90E-7A41E2C03A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B58D282E-E6EC-4AE1-96DB-30A5FB850563.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6590B534-D976-5305-BE95-48DD05120DFB.html#GUID-6590B534-D976-5305-BE95-48DD05120DFB/GUID-3CA8FF29-79B4-5D43-8A23-EDB136BF7A8F"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-AF07AD54-86F1-5DB7-80FF-633A559DA4BD"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Creating Processes and Threads</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-AF07AD54-86F1-5DB7-80FF-633A559DA4BD"><a name="GUID-AF07AD54-86F1-5DB7-80FF-633A559DA4BD"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381193 id2381201 id2381344 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html">Generic Open Libraries</a> &gt; <a href="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html">Open Environment Core (P.I.P.S.)</a> &gt; <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Creating
+Processes and Threads </h1>
+<div>
+<div class="section" id="GUID-AF07AD54-86F1-5DB7-80FF-633A559DA4BD__GUID-6E0A2832-98BA-54AF-B7A7-28DFFD5FEC76"><a name="GUID-AF07AD54-86F1-5DB7-80FF-633A559DA4BD__GUID-6E0A2832-98BA-54AF-B7A7-28DFFD5FEC76"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p>Process
+creation on Unix-like machines is normally done in two stages. Firstly, <samp class="codeph">fork()</samp> is
+called. This creates a child process, which is a clone of the calling (parent)
+process. The child process is identical (except for a few details) to the
+parent. Secondly, a call to one of the <samp class="codeph">exec()</samp> family functions
+is invoked by the child which changes the program being executed by that process.
+For more information about <samp class="codeph">fork()</samp> or <samp class="codeph">exec()</samp>,
+see <a href="http://www.opengroup.org" target="_blank">Open Group</a>. </p>
+ <p>P.I.P.S.
+does not support <samp class="codeph">fork()</samp> and <samp class="codeph">exec()</samp> and the
+reasons for the same are described in the following sections. However, there
+are industry standard alternatives supported by P.I.P.S. and are detailed
+in the following sections: </p>
+ <ul>
+<li><p><a href="GUID-ADB9AD91-37A2-4FE6-B378-C43CD0A7B513.html" title="P.I.P.S. supports some industry standard alternatives for fork() and exec() while creating child processes. The scenarios are discussed in the following sections:">Alternatives
+to <samp class="codeph">fork()</samp> and <samp class="codeph">exec()</samp> for creating child
+processes</a></p>
+</li>
+
+<li><p><a href="GUID-545DA961-217E-49CA-A90E-7A41E2C03A99.html" title="A Unix-like system may create the child process using fork(), which then does not make a subsequent exec() call. The result of this is that the parent and child processes run the same executable. The child may communicate with the parent using pipes. One example of a system which does this is the email software program Exim (www.exim.org). In addition to forking without exec(), it can also re-exec() itself to regain dropped root privileges.">Forking without <samp class="codeph">exec()</samp></a></p>
+</li>
+
+<li><p><a href="GUID-B58D282E-E6EC-4AE1-96DB-30A5FB850563.html"><samp class="codeph">exec()</samp> without
+forking using <span class="apiname">posix_spawn()</span></a></p>
+</li>
+
+</ul>
+ <p><strong>Omission of fork()</strong> </p>
+ <p>A Unix-like kernel is designed
+with the two stage process creation in mind. On the Symbian platform (and
+Microsoft Windows®), the kernel was designed to create a process, which runs
+a single executable, in a single step. </p>
+ <p>P.I.P.S. does not implement
+the <samp class="codeph">fork()</samp> operation because this would require an entirely
+new way of dealing with processes in the kernel and memory model. For example,
+duplicating the address space of an existing process was not something that
+was considered in the Symbian platform kernel's design. Symbian took this
+decision as the effort involved in customising this feature would be more
+than the benefit of providing the <samp class="codeph">fork()</samp> function, especially
+in the provision of Pthreads. For more information about Pthreads, see the <a href="http://en.wikipedia.org/wiki/POSIX_Threads" target="_blank">Pthread
+Wikipage</a>. </p>
+ <p><strong>Omission of exec()</strong> </p>
+ <p>On Unix-like systems, <samp class="codeph">exec()</samp> is
+the standard way to load a process image into memory. Only the initialisation
+process is loaded directly into a new address space (special case code in
+the kernel), all other processes are loaded into an existing address space
+which was initially created by forking. </p>
+ <p>On the Symbian
+platform, the only way to load a process image into memory is using the loader.
+It assumes that the image is being loaded as a new process - one that owns
+no resources, has no open handles and so on. The change to the loader and
+any associated kernel changes, to support the <samp class="codeph">exec()</samp> function
+were deemed to be too risky. </p>
+ <p><strong>Generic IPC</strong> </p>
+ <p>P.I.P.S. supports
+two types of Inter-Process Communication (IPC) between processes or threads: </p>
+ <ul>
+<li><p> <strong>Pipes (named and unnamed):</strong> Unnamed pipes are created using <a href="GUID-EC7F85FF-FD4E-324C-8D01-EF6F7E7A79FE.html"><span class="apiname">pipe()</span></a> and
+named pipes are created using <a href="GUID-F4749DAA-1B29-3D1D-A3AA-0D52B851E501.html"><span class="apiname">mkfifo()</span></a>. Pipe-based communication
+is also possible between a parent and a child process when the child is created
+using <a href="GUID-A9DB6E7C-B8D6-377A-BBE6-39E0A7A09E5D.html"><span class="apiname">popen()</span></a> or <a href="GUID-A1E2E172-C4E4-30FB-99CF-E4140E31DF59.html"><span class="apiname">popen3()</span></a>. </p>
+</li>
+
+<li><p> <strong>Local file sockets:</strong> These correspond to sockets created with <samp class="codeph">AF_LOCAL/PF_LOCAL/AF_UNIX</samp> as
+the address family. The semantics of their use are similar to those of their
+Unix equivalents. </p>
+</li>
+
+</ul>
+ </div>
+
+</div>
+<div>
+<ul class="ullinks">
+<li class="ulchildlink"><strong><a href="GUID-ADB9AD91-37A2-4FE6-B378-C43CD0A7B513.html">Alternatives to fork() and exec() for creating child processes</a></strong><br/>
+P.I.P.S. supports some industry standard alternatives for <samp class="codeph">fork()</samp> and <samp class="codeph">exec()</samp> while creating child processes. The scenarios are discussed in the following sections:</li>
+<li class="ulchildlink"><strong><a href="GUID-545DA961-217E-49CA-A90E-7A41E2C03A99.html">Forking without exec()</a></strong><br/>
+A Unix-like system may create the child process using <samp class="codeph">fork()</samp>, which then does not make a subsequent <samp class="codeph">exec()</samp> call. The result of this is that the parent and child processes run the same executable. The child may communicate with the parent using pipes. One example of a system which does this is the email software program Exim (www.exim.org). In addition to forking without <samp class="codeph">exec()</samp>, it can also <samp class="codeph">re-exec()</samp> itself to regain dropped root privileges.</li>
+<li class="ulchildlink"><strong><a href="GUID-B58D282E-E6EC-4AE1-96DB-30A5FB850563.html">exec() without forking using posix_spawn()</a></strong><br/>
+</li>
+</ul>
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a></div>
+</div>
+<div class="relinfo"><strong>Related information</strong><br/>
+<div><a href="GUID-6590B534-D976-5305-BE95-48DD05120DFB.html#GUID-6590B534-D976-5305-BE95-48DD05120DFB__GUID-3CA8FF29-79B4-5D43-8A23-EDB136BF7A8F">One Definition Rule - warning</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

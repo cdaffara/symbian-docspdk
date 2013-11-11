@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to walk the heap"/>
+<meta name="abstract" content="The THeapWalk class provides behaviour for walking the heap. This class is pure virtual and developers must provide a derived class in order to use it."/>
+<meta name="description" content="The THeapWalk class provides behaviour for walking the heap. This class is pure virtual and developers must provide a derived class in order to use it."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A1BD83F8-C6DB-5737-8052-7B710B19147F.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9636A30F-39EB-54E6-8125-4487D4002FE0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A1BD83F8-C6DB-5737-8052-7B710B19147F.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-8E363123-A85E-521C-BC10-96C59130E45C"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to walk the heap</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-8E363123-A85E-521C-BC10-96C59130E45C"><a name="GUID-8E363123-A85E-521C-BC10-96C59130E45C"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2393700 id2393767 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-9636A30F-39EB-54E6-8125-4487D4002FE0.html" title="Memory is allocated to programs in chunks, the documentation in this set explains how to allocate, manage and release that memory.">Memory Management</a> &gt; <a href="GUID-A1BD83F8-C6DB-5737-8052-7B710B19147F.html" title="These documents cover heap management, specifically sharing, walking and switching heaps.">Using Memory Allocation</a> &gt; </div>
+<h1 class="topictitle1">How
+to walk the heap</h1>
+<div><p>The <samp class="codeph">THeapWalk</samp> class provides behaviour for walking
+the heap. This class is pure virtual and developers must provide a derived
+class in order to use it.</p>
+
+<p>A heap can be checked to make sure that its allocated and free cells are
+in a consistent state and that the heap is not corrupt.</p>
+
+<p>The <samp class="codeph">THeapWalk</samp> class provides the behaviour for doing this.
+This class is pure virtual and developers must provide a derived class in
+order to use it.</p>
+
+<p>Simply construct a <samp class="codeph">THeapWalk</samp> derived object, passing a
+reference to the heap which is to be checked in its constructor. Walking the
+heap is initiated by calling <samp class="codeph">Walk()</samp>. This function follows
+the list of allocated and free cells in the heap. The function calls the virtual
+function <samp class="codeph">Info()</samp> for every good cell it finds, passing the
+cell's address and length.</p>
+
+<p><samp class="codeph">Info()</samp> is a pure virtual function and a derived class
+must provide an implementation for it.</p>
+
+<p><samp class="codeph">Walk()</samp> terminates when it has successfully followed the
+entire list of free and allocated cells or until it finds the first bad cell.</p>
+
+<p>As a minimum, a class derived from <samp class="codeph">THeapWalk</samp> might be:</p>
+
+<pre class="codeblock" id="GUID-8E363123-A85E-521C-BC10-96C59130E45C__GUID-A3AC2314-4C1E-5F1F-9BCB-694893AB47FB"><a name="GUID-8E363123-A85E-521C-BC10-96C59130E45C__GUID-A3AC2314-4C1E-5F1F-9BCB-694893AB47FB"><!-- --></a>class TMyClass : public THeapWalk
+    {</pre>
+
+<pre class="codeblock" id="GUID-8E363123-A85E-521C-BC10-96C59130E45C__GUID-C45FDA92-5BEE-57A3-BB1B-F4AB203EC0EC"><a name="GUID-8E363123-A85E-521C-BC10-96C59130E45C__GUID-C45FDA92-5BEE-57A3-BB1B-F4AB203EC0EC"><!-- --></a>public :
+    TMyClass(RHeap&amp; aHeap);
+    void Info(TCellType aType,TAny *aBase,TInt aLength);
+    }</pre>
+
+<p>where the constructor would be implemented as:</p>
+
+<pre class="codeblock" id="GUID-8E363123-A85E-521C-BC10-96C59130E45C__GUID-F7B66153-EAFE-570C-997F-42BDBB05DE01"><a name="GUID-8E363123-A85E-521C-BC10-96C59130E45C__GUID-F7B66153-EAFE-570C-997F-42BDBB05DE01"><!-- --></a>TMyClass::TMyClass(RHeap&amp; aHeap)
+    : THeapWalk(aHeap)
+    {}</pre>
+
+<p>Typically, the <samp class="codeph">Info()</samp> function might consist of a switch
+statement based on the value of <samp class="codeph">aType</samp>:</p>
+
+<pre class="codeblock" id="GUID-8E363123-A85E-521C-BC10-96C59130E45C__GUID-379F76EF-8FC0-5085-BB05-373E2B64508C"><a name="GUID-8E363123-A85E-521C-BC10-96C59130E45C__GUID-379F76EF-8FC0-5085-BB05-373E2B64508C"><!-- --></a>TMyClass::Info(TCellType aType,TAny *aBase,TInt aLength)
+    {
+    switch(aType)
+        {
+    case EGoodAllocatedCell:
+        ...
+        break;
+    case EGoodFreeCell:
+        ...
+        break;
+    case EBadFreeCellAddress:
+        ...
+        break;
+    default:
+        ...
+        }
+    }</pre>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-A1BD83F8-C6DB-5737-8052-7B710B19147F.html" title="These documents cover heap management, specifically sharing, walking and switching heaps.">Using Memory Allocation</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

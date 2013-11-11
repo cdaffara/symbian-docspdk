@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="TLS Look-up Reduction Tutorial"/>
+<meta name="abstract" content="This task describes how to reduce Thread Local Storage (TLS) look-ups when allocating MBufs."/>
+<meta name="description" content="This task describes how to reduce Thread Local Storage (TLS) look-ups when allocating MBufs."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A248C2C0-5F64-5484-85B2-57C86E3499E1.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-12D1F61B-6BC6-5215-A832-E84C0F480765.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A248C2C0-5F64-5484-85B2-57C86E3499E1.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-55E4D84B-1B90-5BA4-9CE0-6D26EA208F13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B4F15CA3-CAD4-5A87-9610-A656CA337B72.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F0891698-F714-55AA-A089-790BB0B07AE4.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-F2E86FB3-C634-5CF9-87B2-EAB18BF25C4B"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>TLS Look-up Reduction Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-F2E86FB3-C634-5CF9-87B2-EAB18BF25C4B"><a name="GUID-F2E86FB3-C634-5CF9-87B2-EAB18BF25C4B"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2682451 id2518193 id2518202 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html" title="The Communications Framework is the base for all communications, network and telephony services that Symbian platform provides. The Communications Framework manages the communications threads and the flow of information between those threads. The Framework also manages and stores the communications related settings.">Communications Framework Guide</a> &gt; <a href="GUID-12D1F61B-6BC6-5215-A832-E84C0F480765.html" title="Comms Framework Utilities provides the infrastructure that allows communication between Communications threads and processes. The utilities also provide specialised memory management behaviour that meets the requirements of Communications.">Communications Framework Utilities</a> &gt; <a href="GUID-A248C2C0-5F64-5484-85B2-57C86E3499E1.html" title="This topic describes essential memory management aspects of the Communications Framework.">Memory Management in the Communications Framework</a> &gt; </div>
+<h1 class="topictitle1"> TLS Look-up Reduction Tutorial </h1>
+<div><p>This task describes how to reduce Thread Local Storage (TLS) look-ups when allocating MBufs. </p>
+<div class="section" id="GUID-F2E86FB3-C634-5CF9-87B2-EAB18BF25C4B__GUID-67DCAC1D-896C-55B3-96E8-C38A93B7EFDE"><a name="GUID-F2E86FB3-C634-5CF9-87B2-EAB18BF25C4B__GUID-67DCAC1D-896C-55B3-96E8-C38A93B7EFDE"><!-- --></a><p>If you allocate an MBuf with a simple <samp class="codeph">RMBufChain::Alloc()</samp> or <samp class="codeph">RMBufChain::Alloc(size)</samp> call, the thread performs a context-switch to retrieve the pointer to the Comms pond from the TLS. The context-switch is a processor-intensive operation. To reduce the number of TLS look-ups, use a <a href="GUID-5E763DBF-2C22-3335-9D80-89783095D5AA.html"><span class="apiname">RMBufAllocator</span></a> object, which keeps a local copy of the pointer to the pond. </p>
+ <p>The <samp class="codeph">RMBufAllocator</samp> acts as a cache so that the allocation methods do not need to perform a TLS look-up each time they are called. </p>
+ <p>The classes that frequently allocate Comms chains define the <samp class="codeph">RMBufAllocator</samp> object as a member, instantiate it once, and then pass it to the methods of the <a href="GUID-E0ADB108-D3B2-3670-907D-2AE595BECE3F.html"><span class="apiname">RMBuf</span></a> and <a href="GUID-F024208C-ED19-3301-85C1-53F397C9910F.html"><span class="apiname">RMBufChain</span></a> classes. For most of the methods that may cause an allocation, such as <samp class="codeph">Alloc()</samp>, <samp class="codeph">Append()</samp> or <samp class="codeph">Split()</samp>, you should call the overloaded version that passes a <samp class="codeph">RMBufAllocator</samp> parameter. There is no TLS look-up when you call these functions. </p>
+ </div>
+ <div class="example" id="GUID-F2E86FB3-C634-5CF9-87B2-EAB18BF25C4B__GUID-6C44C52D-BEA1-5350-8872-27A3D83A46BF"><a name="GUID-F2E86FB3-C634-5CF9-87B2-EAB18BF25C4B__GUID-6C44C52D-BEA1-5350-8872-27A3D83A46BF"><!-- --></a><h2 class="sectiontitle">Reduce TLS look-up example</h2> <p>The following example creates an <a href="GUID-5E763DBF-2C22-3335-9D80-89783095D5AA.html"><span class="apiname">RMBufAllocator</span></a> object and uses it when allocating MBufs: </p>
+ <pre class="codeblock" id="GUID-F2E86FB3-C634-5CF9-87B2-EAB18BF25C4B__GUID-C8598472-3A6C-5122-99B8-BAFA49658A12"><a name="GUID-F2E86FB3-C634-5CF9-87B2-EAB18BF25C4B__GUID-C8598472-3A6C-5122-99B8-BAFA49658A12"><!-- --></a>class RDataSource {
+   private:     
+      // [...]
+      RMBufAllocator iAllocator;
+                        RMBufChain iReceived;
+
+public: 
+      // [...]
+      TInt InitBuffer();
+
+}
+
+// [...]
+
+TInt InitBuffer()
+{
+   // Request buffer and provide the allocator
+   iReceived.Alloc(1204,iAllocator);
+}
+
+</pre>
+ <p>See the reference documentation of <a href="GUID-E0ADB108-D3B2-3670-907D-2AE595BECE3F.html"><span class="apiname">RMBuf</span></a>, <a href="GUID-F024208C-ED19-3301-85C1-53F397C9910F.html"><span class="apiname">RMBufChain</span></a>, <a href="GUID-4FB33BFE-DCF7-3B77-A447-F9C049DF86CB.html"><span class="apiname">RCommsBuf</span></a>, and <a href="GUID-107ADE6D-7AFF-3B07-9606-BCA33A3B63EF.html"><span class="apiname">RCommsBufChain</span></a> for the list of methods passing an allocator. </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-A248C2C0-5F64-5484-85B2-57C86E3499E1.html" title="This topic describes essential memory management aspects of the Communications Framework.">Memory Management in the Communications Framework</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-55E4D84B-1B90-5BA4-9CE0-6D26EA208F13.html" title="This topic describes memory management in the Communications Framework.">Overview</a></div>
+<div><a href="GUID-B4F15CA3-CAD4-5A87-9610-A656CA337B72.html" title="This topic describes Comms buffers (MBuf) and Comms chains.">Comms Buffers (MBuf)
+                and Comms Chains</a></div>
+</div>
+<div class="relinfo reltasks"><strong>Related tasks</strong><br/>
+<div><a href="GUID-F0891698-F714-55AA-A089-790BB0B07AE4.html" title="This tutorial describes how to allocate MBufs (for data source components in the Data Plane).">Allocation tutorial</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

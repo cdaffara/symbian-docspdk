@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="How to Write a Serial Protocol Module: Tutorial"/>
+<meta name="abstract" content="This topic gives a summary of the APIs that must be implemented for a new Serial Protocol Module."/>
+<meta name="description" content="This topic gives a summary of the APIs that must be implemented for a new Serial Protocol Module."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ED2F48EA-8C31-5729-B312-E925B7EC3B24.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9B83CDD4-FC94-51A0-AC67-CD04BCAFEF08.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ED2F48EA-8C31-5729-B312-E925B7EC3B24.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to Write a Serial Protocol Module: Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04"><a name="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2682451 id2518666 id2518814 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html" title="The Communications Framework is the base for all communications, network and telephony services that Symbian platform provides. The Communications Framework manages the communications threads and the flow of information between those threads. The Framework also manages and stores the communications related settings.">Communications Framework Guide</a> &gt; <a href="GUID-9B83CDD4-FC94-51A0-AC67-CD04BCAFEF08.html">Serial Communications Server</a> &gt; <a href="GUID-ED2F48EA-8C31-5729-B312-E925B7EC3B24.html">Serial Protocol Modules (CSYs) Developer Tutorial</a> &gt; </div>
+<h1 class="topictitle1">How to Write a Serial Protocol Module: Tutorial</h1>
+<div><p>This topic gives a summary of the APIs that must be implemented for a new Serial Protocol Module. </p>
+<a name="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-68872B97-1FC9-58A3-86D3-D7C815CCF215"><!-- --></a><ol id="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-68872B97-1FC9-58A3-86D3-D7C815CCF215"><li class="stepexpand" id="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-18B80EE7-46D0-58D3-8C2E-361C34AE4EE6"><a name="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-18B80EE7-46D0-58D3-8C2E-361C34AE4EE6"><!-- --></a><span/><br/> Create a new DLL project with a <span class="filepath">.csy</span> extension and a <span class="keyword">UID</span> 2 of <samp class="codeph">0x10000049</samp>.  </li>
+<li class="stepexpand" id="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-369B15AD-FC60-5B79-B4E8-3EBD8D8B240E"><a name="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-369B15AD-FC60-5B79-B4E8-3EBD8D8B240E"><!-- --></a><span/><br/> Create a class which derives from the <a href="GUID-5CEF7907-E485-3626-8587-53CAC2A06544.html"><span class="apiname">CPort</span></a> class. This class implements the Serial service provider. Requests are delivered by the Serial Communications Server to the <samp class="codeph">CPort</samp> class using pure virtual functions. These functions include:  <a name="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-394FEAFC-CEC3-522C-9E3D-943CC8023B4E"><!-- --></a><ol type="a" id="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-394FEAFC-CEC3-522C-9E3D-943CC8023B4E"><li class="substepexpand" id="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-0C9B671E-EE13-51E7-86D4-C41859A6AD32"><a name="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-0C9B671E-EE13-51E7-86D4-C41859A6AD32"><!-- --></a><span> <a href="GUID-5CEF7907-E485-3626-8587-53CAC2A06544.html#GUID-5CEF7907-E485-3626-8587-53CAC2A06544__GUID-6794366E-3E5F-3ABA-B650-56968B261E89"><span class="apiname">CPort::StartRead()</span></a>, which must be implemented to handle client requests to read data from the port </span><br/>   <a href="GUID-5CEF7907-E485-3626-8587-53CAC2A06544.html#GUID-5CEF7907-E485-3626-8587-53CAC2A06544__GUID-F35F3290-A99A-3FF2-AAFA-240F23D422E4"><span class="apiname">CPort::IPCWrite()</span></a> can be used to send the data to the client  </li>
+ <li class="substepexpand" id="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-74799819-3C48-543A-BBD1-C9E0109E0FE5"><a name="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-74799819-3C48-543A-BBD1-C9E0109E0FE5"><!-- --></a><span> <a href="GUID-5CEF7907-E485-3626-8587-53CAC2A06544.html#GUID-5CEF7907-E485-3626-8587-53CAC2A06544__GUID-99D433D7-6AFC-3A1D-B53A-AB875CF21D17"><span class="apiname">CPort::StartWrite()</span></a>, which must be implemented to handle client requests to write data to the port </span><br/>   <a href="GUID-5CEF7907-E485-3626-8587-53CAC2A06544.html#GUID-5CEF7907-E485-3626-8587-53CAC2A06544__GUID-479BBBC4-BB04-3C59-A09B-68957FE69A7E"><span class="apiname">CPort::IPCRead()</span></a> can be used to get the data from the client  </li>
+ </ol>
+ </li>
+<li class="stepexpand" id="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-DCECA07A-DAA4-5509-AE91-BF57FE06F2C2"><a name="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-DCECA07A-DAA4-5509-AE91-BF57FE06F2C2"><!-- --></a><span/><br/> Create a class which derives from the <a href="GUID-D8C11F99-7452-35BB-B53E-440968D4C1A3.html"><span class="apiname">CSerial</span></a> class. This class implements the Serial protocol factory. The <a href="GUID-D8C11F99-7452-35BB-B53E-440968D4C1A3.html#GUID-D8C11F99-7452-35BB-B53E-440968D4C1A3__GUID-59F200BD-B75D-3D3C-AE01-FD6B85525B9C"><span class="apiname">CSerial::NewPortL()</span></a> function must return a new instance of the Serial service provider. The <a href="GUID-D8C11F99-7452-35BB-B53E-440968D4C1A3.html#GUID-D8C11F99-7452-35BB-B53E-440968D4C1A3__GUID-B53A32A7-8AB0-31D2-ACAA-69DA0EF2DD23"><span class="apiname">CSerial::Info()</span></a> function must return a complete <a href="GUID-A6E4627A-A3AE-3B64-9E5C-710EE15C5595.html"><span class="apiname">TSerialInfo</span></a> record with information for the Serial Protocol Module.  </li>
+</ol>
+ <div class="section"><p>The flexibility of the Comms Architecture allows a Serial protocol module to use the Socket API to use a protocol stack and the protocol stack then uses the Serial Communications Server API ( <a href="GUID-6B3CA99B-ABF2-32EA-935D-23AE5AE2C306.html"><span class="apiname">RCommServ</span></a> and <a href="GUID-3B4E8ED5-72F7-3E51-B188-3C1045526DDF.html"><span class="apiname">RComm</span></a> APIs) to use a serial protocol. In some cases this re-entrant configuration causes a deadlock. </p>
+ <p>A Serial protocol module can avoid deadlock when the following conditions are met: </p>
+ <ul><li id="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-C65EE183-6B11-5654-AD1C-21DD7BD9ED57"><a name="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-C65EE183-6B11-5654-AD1C-21DD7BD9ED57"><!-- --></a><p>The serial protocol module never uses code which causes an <samp class="codeph">RComm</samp> request on the same serial protocol module </p>
+ </li>
+ <li id="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-C13CEC2A-0203-5A38-AA82-092C2614D63C"><a name="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-C13CEC2A-0203-5A38-AA82-092C2614D63C"><!-- --></a><p>The serial protocol module must be in a different thread to the other serial protocol module. </p>
+ </li>
+ </ul>
+ <p>Other tips: </p>
+ <ul><li id="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-4FA03E52-C9A2-52B1-804B-76784D43D270"><a name="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-4FA03E52-C9A2-52B1-804B-76784D43D270"><!-- --></a><p>Always call <a href="GUID-EF29C1D7-B1E5-370F-AE37-66231A6BE449.html#GUID-EF29C1D7-B1E5-370F-AE37-66231A6BE449__GUID-68A206F1-3E5C-3B74-9E83-0EE2E0D4F448"><span class="apiname">RSocketServ::StartProtocol()</span></a> which is asynchronous before calling <a href="GUID-D4F08503-F1EF-3531-9C3C-4AF24A6255F0.html#GUID-D4F08503-F1EF-3531-9C3C-4AF24A6255F0__GUID-3491CE2A-A94D-34E0-B0DD-D476EE3334D7"><span class="apiname">RSocket::Open()</span></a> which is synchronous, but may cause an <samp class="codeph">RComm</samp> class to be instantiated. </p>
+ </li>
+ <li id="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-88A8DD6F-8620-596A-AB8E-37C7B4890DD8"><a name="GUID-DB6AF6D3-38B6-51EF-A830-388961A3BF04__GUID-88A8DD6F-8620-596A-AB8E-37C7B4890DD8"><!-- --></a><p>The Serial protocol module must correctly implement the <a href="GUID-5CEF7907-E485-3626-8587-53CAC2A06544.html#GUID-5CEF7907-E485-3626-8587-53CAC2A06544__GUID-6C3DE0B7-5B94-3998-A0E5-B17124986A33"><span class="apiname">CPort::Destruct()</span></a> function. A standard C++ destructor must run synchronously, so <samp class="codeph">CPort::Destruct()</samp> allows the Serial protocol module to complete asynchronous operations during the close of the port. For example, a Serial protocol module that needs to close an <samp class="codeph">RComm</samp> object must do this asynchronously. </p>
+ </li>
+ </ul>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-ED2F48EA-8C31-5729-B312-E925B7EC3B24.html">Serial Protocol Modules (CSYs) Developer Tutorial</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-0A61CB48-B8EA-5516-B24E-65898CDF2566.html" title="This page describes how a device manufacturer can configure the grouping of CSYs into various threads."> How
+                to Configure Multithreaded C32 Serial Comms: Tutorial</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

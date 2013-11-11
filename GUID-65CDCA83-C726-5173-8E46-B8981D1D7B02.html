@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Battery Monitor Implementation Tutorial"/>
+<meta name="abstract" content="A base port can implement code to monitor the battery of the phone and to provide notifications when the battery power is low."/>
+<meta name="description" content="A base port can implement code to monitor the battery of the phone and to provide notifications when the battery power is low."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Battery Monitor Implementation Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02"><a name="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2400380 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html" title="This topic describes how to implement a power controller in a base port.">Power Management Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Battery
+Monitor Implementation Tutorial</h1>
+<div><p>A base port can implement code to monitor the battery of the phone
+and to provide notifications when the battery power is low.</p>
+
+<p> The battery monitor code is implemented in the power controller kernel
+extension. </p>
+
+<p>Note: to implement battery monitor code, the battery monitor hardware must
+be accessible to the Application CPU of the phone. </p>
+
+<p>Typically, your battery monitor class would derive from the <samp class="codeph">DBatteryMonitor</samp> class,
+defined as: </p>
+
+<pre class="codeblock" id="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-D0249D2C-933F-584F-9596-126CCC4361AC"><a name="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-D0249D2C-933F-584F-9596-126CCC4361AC"><!-- --></a>class DBatteryMonitor
+    {
+public:
+    IMPORT_C DBatteryMonitor();
+    IMPORT_C void Register();
+public:
+    virtual TSupplyStatus MachinePowerStatus() = 0;
+    virtual void SystemTimeChanged(TInt anOldTime, TInt aNewTime) = 0;
+    };</pre>
+
+<p>Symbian platform considers that batteries can be in one of 4 possible logical
+states, defined by the <samp class="codeph">TSupplyStatus</samp> enum. It is up to the
+implementor of the battery monitor component to map these logical states to
+points on the main battery discharge curve. </p>
+
+<p>There are two pure virtual functions to be implemented: </p>
+
+<ul>
+<li id="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-714DB74E-2405-54B5-B129-B6D2A3C4D5B5"><a name="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-714DB74E-2405-54B5-B129-B6D2A3C4D5B5"><!-- --></a><p> <a href="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02.html#GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-3471CC3E-0903-54F0-8EB2-5201AB139731">DBatteryMonitor::MachinePowerStatus()</a> </p>
+ </li>
+
+<li id="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-4296048D-82EC-5513-A089-E723D390EF5E"><a name="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-4296048D-82EC-5513-A089-E723D390EF5E"><!-- --></a><p> <a href="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02.html#GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-1A5D9A50-1A28-59B5-862B-3DA5EAAAC26F">DBatteryMonitor::SystemTimeChanged()</a> </p>
+ </li>
+
+</ul>
+
+<p>We also suggest that the battery monitor component offer a public function
+prototyped as: </p>
+
+<pre class="codeblock" id="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-EFB607B3-828C-54C3-A365-662FD6A74701"><a name="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-EFB607B3-828C-54C3-A365-662FD6A74701"><!-- --></a>void SupplyInfo(TSupplyInfoV1&amp; si);</pre>
+
+<p>to supply information about the state of the main battery and the backup
+battery (if there is one), or external power to user side components that
+may require it (e.g. a user-side power monitor component that is used to track
+the state of batteries and initiate an orderly shutdown if it reaches a critically
+low level), and is usually called by the <samp class="codeph">EHalGroupPower</samp> handler
+for <samp class="codeph">EPowerHalSupplyInfo</samp> in response to calling <samp class="codeph">HAL::Get()</samp> with <samp class="codeph">EPowerGood</samp>, <samp class="codeph">EPowerBatteryStatus</samp>, <samp class="codeph">EPowerBackupStatus</samp>, and <samp class="codeph">EPowerExternal</samp>.
+Such a function would need to fill in a subset of the fields defined by <samp class="codeph">TSupplyInfoV1</samp>. </p>
+
+<div class="section" id="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-3471CC3E-0903-54F0-8EB2-5201AB139731"><a name="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-3471CC3E-0903-54F0-8EB2-5201AB139731"><!-- --></a><h2 class="sectiontitle">DBatteryMonitor::MachinePowerStatus()</h2> <pre class="codeblock" id="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-32E4B2FF-F638-59DC-98B9-CBFE15E1FCEC"><a name="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-32E4B2FF-F638-59DC-98B9-CBFE15E1FCEC"><!-- --></a>virtual TSupplyStatus MachinePowerStatus() = 0;</pre>
+ <p>This
+should read and return the logical state of the main battery or, if external
+power is connected, it should return <samp class="codeph">EGood</samp>. </p>
+ <p><strong>When
+is it called?</strong> </p>
+ <p>The function is called by peripheral drivers via
+a call to <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-84835157-E5B9-3834-8FFC-CD482A946F4A"><span class="apiname">Kern::MachinePowerStatus()</span></a> before starting lengthy
+operations or operations that may result in a substantial increase in power
+consumption. </p>
+ <p><strong>Implementation issues</strong> </p>
+ <p>A suggested implementation
+would have the function reading the state of the main battery, or whether
+external power is connected, and mapping to one of the logical states defined
+by <samp class="codeph">TSupplyStatus</samp>. When requested by the power manager it
+returns the logical state. </p>
+ </div>
+
+<div class="section" id="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-1A5D9A50-1A28-59B5-862B-3DA5EAAAC26F"><a name="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-1A5D9A50-1A28-59B5-862B-3DA5EAAAC26F"><!-- --></a><h2 class="sectiontitle">DBatteryMonitor::SystemTimeChanged()</h2> <pre class="codeblock" id="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-CC55B65D-B849-5FAA-A678-3DFD58D14F9D"><a name="GUID-65CDCA83-C726-5173-8E46-B8981D1D7B02__GUID-CC55B65D-B849-5FAA-A678-3DFD58D14F9D"><!-- --></a>virtual void SystemTimeChanged(TInt anOldTime, TInt aNewTime) = 0;</pre>
+ <p>This
+function is now deprecated, and you should just define an empty implementation. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html" title="This topic describes how to implement a power controller in a base port.">Power Management Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

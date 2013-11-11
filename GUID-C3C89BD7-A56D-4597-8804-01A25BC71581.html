@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Data Transfer between LDD and PDD"/>
+<meta name="abstract" content="This document describes how LDDs and PDDs exchange data."/>
+<meta name="description" content="This document describes how LDDs and PDDs exchange data."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E90DBF35-0A05-4751-904D-4F06987FFF48.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E90DBF35-0A05-4751-904D-4F06987FFF48.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-C3C89BD7-A56D-4597-8804-01A25BC71581"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Data Transfer between LDD and PDD</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-C3C89BD7-A56D-4597-8804-01A25BC71581"><a name="GUID-C3C89BD7-A56D-4597-8804-01A25BC71581"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 id2388215 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; <a href="GUID-E90DBF35-0A05-4751-904D-4F06987FFF48.html" title="These documents describe how device drivers handle memory buffers and transfer data.">Memory Management</a> &gt; </div>
+<h1 class="topictitle1">Data
+Transfer between LDD and PDD</h1>
+<div><p>This document describes how LDDs and PDDs exchange data.</p>
+
+<div class="section" id="GUID-C3C89BD7-A56D-4597-8804-01A25BC71581__GUID-F65FC583-DDC7-40B6-B875-44A8D11A2971"><a name="GUID-C3C89BD7-A56D-4597-8804-01A25BC71581__GUID-F65FC583-DDC7-40B6-B875-44A8D11A2971"><!-- --></a>      
+      <p>The device driver framework supplies each LDD with a pointer, <a href="GUID-E7550422-5121-3393-A85E-BB797969CD2A.html#GUID-E7550422-5121-3393-A85E-BB797969CD2A__GUID-CF58D3F1-8185-3A91-A7E8-338B43D329A5"><span class="apiname">DLogicalChannelBase::iPdd</span></a>,
+through which it can access PDD functions. The pointer is initialised by the
+Kernel while creating a physical channel. </p>
+ <p>An example of this pointer
+in use: </p>
+ <pre class="codeblock" id="GUID-C3C89BD7-A56D-4597-8804-01A25BC71581__GUID-55814834-E7CD-5F19-BA09-B91DA25C8FE3"><a name="GUID-C3C89BD7-A56D-4597-8804-01A25BC71581__GUID-55814834-E7CD-5F19-BA09-B91DA25C8FE3"><!-- --></a>inline DExUartPhysicalChannel * DExDriverLogicalChannel::Pdd()
+    { return (DExUartPhysicalChannel *)iPdd; }
+
+// example use
+Pdd()-&gt;SetDfcQ();</pre>
+ <p>Similarly, a PDD can access a LDD, though
+this access must be initialised by the LDD. In the following example, the
+physical channel declares a pointer to a logical channel, which the LDD sets.
+Callbacks to the LDD are done using this pointer. </p>
+ <pre class="codeblock" id="GUID-C3C89BD7-A56D-4597-8804-01A25BC71581__GUID-A4A52268-B5B9-53D4-9F69-B506F268201D"><a name="GUID-C3C89BD7-A56D-4597-8804-01A25BC71581__GUID-A4A52268-B5B9-53D4-9F69-B506F268201D"><!-- --></a>// PDD channel class
+class DExH4PhysicalChannel: public DBase
+    {
+    ...
+public:
+    DExDriverLogicalChannel* iLdd;
+    }
+
+// Second stage constructor of Logical channel
+TInt DExDriverLogicalChannel::DoCreate(TInt /*aUnit*/, const TDesC8*
+        /*anInfo*/, const TVersion&amp; aVer)
+    {
+    ...
+    Pdd()-&gt;iLdd=this;
+    }
+
+// example use in PDD
+iLdd-&gt;ReceiveDataComplete(KErrNone);</pre>
+ <p>The logical channel class, <a href="GUID-E7550422-5121-3393-A85E-BB797969CD2A.html"><span class="apiname">DLogicalChannelBase</span></a>,
+also has pointers to a logical device (<samp class="codeph">iDevice</samp>) and a physical
+device (<samp class="codeph">iPhysicalDevice</samp>). These pointers are initialised
+during the driver loading and channel open operations, so they can also be
+used to pass information between the LDD and PDD. </p>
+ <pre class="codeblock" id="GUID-C3C89BD7-A56D-4597-8804-01A25BC71581__GUID-4B86BED0-22CB-53BC-A1C7-9BEB0CEA1EDE"><a name="GUID-C3C89BD7-A56D-4597-8804-01A25BC71581__GUID-4B86BED0-22CB-53BC-A1C7-9BEB0CEA1EDE"><!-- --></a>class DLogicalChannelBase: public DObject
+    {
+    ...
+public:
+    DLogicalDevice* iDevice;
+    DPhysicalDevice* iPhysicalDevice;
+    DBase* iPdd;
+    }
+
+// example use
+TDynamicDfcQue* DExUartPhysicalChannelH4::DfcQ(TInt aUnit)
+    {    
+    ...
+    return ((DExH4PhysicalDevice*)
+            (iLdd-&gt;iPhysicalDevice))-&gt;iDfcQueue;    
+    }</pre>
+     </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E90DBF35-0A05-4751-904D-4F06987FFF48.html" title="These documents describe how device drivers handle memory buffers and transfer data.">Memory Management</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

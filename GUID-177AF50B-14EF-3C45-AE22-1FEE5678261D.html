@@ -1,0 +1,1155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CBaseMtm"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D"/>
+
+<title>CBaseMtm</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D"><a name="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CBaseMtm Class Reference</h1>
+	<table class="signature"><tr><td>class CBaseMtm : public CBase</td></tr></table><div class="section"><div>
+			<p>Provides a high-level interface for accessing and manipulating a Message Server entry.</p>
+
+			<p>Message client applications use the class to access such functionality polymorphically. MTM implementers implement a derived class to provide such functionality for their message protocol.</p>
+
+			<p>The following are some significant groups of functions:</p>
+
+			<p>Context functions: the <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-5DCAD130-9EC2-3FEE-9CFB-A5277CAEAA43">SetCurrentEntryL()</a> and <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-7F35C252-DE15-369C-B710-463C3F9B9B41">SwitchCurrentEntryL()</a> functions change the context - the entry on which later actions are performed. After creating a new Client-side MTM object, a message client application should set an initial context before using other functions. Note that: any changes made to an existing context are not automatically saved: the message client application should ensure this itself by calling <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-A097A4B2-44C3-3BC9-A910-7F14F7DF680C">SaveMessageL()</a>; no message data for the new context is retrieved from the Message Server, to retrieve entry data, call <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-E71B3386-8544-3314-B900-1ABF65DCF07B">LoadMessageL()</a> after setting the context; calling <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-072E627F-8AB4-3C90-AD48-A5AF6A39581B">Body()</a> immediately after setting the context returns an empty <a href="GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934.html#GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934">CRichText</a> object: this is because the private cache of context body text that the base class maintains is re-initialised to an empty value. MTM implementers should note that the virtual <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-E6F33364-7F0F-3DBF-BC24-439A248083CE">ContextEntrySwitched()</a> is called from these functions to allow derived classes to also clear any caches of MTM-specific entry data.</p>
+
+			<p>Store and restore entry data functions: the changes that a message client application makes to a message context through Client-side MTM functions, such as altering the body text obtained through <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-072E627F-8AB4-3C90-AD48-A5AF6A39581B">Body()</a>, are, for efficiency, cached in memory by a Client-side MTM. The message store and restore functions are concerned with transferring data between that cache and committed storage. Note that, unlike message contexts, message client applications are not expected to manipulate directly service contexts. Instead, the corresponding <a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-C197C9A7-EA05-3F24-9854-542E984C612D">User</a> Interface MTM will provide dialogs to allow the user to alter service settings, and call Client-side MTM functions to handle their retrieval and storage. Symbian OS v5 expects the base class functions to handle storage and retrieval for both message and service contexts, and their implementations must detect what the context is, and act accordingly. Post-v5, the API is clarified by restricting the base class functions to handle message contexts only. To handle service contexts, a Client-side MTM must define its own functions for the <a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-C197C9A7-EA05-3F24-9854-542E984C612D">User</a> Interface MTM to call.</p>
+
+			<p>Store and restore body text functions: the base class maintains a private <a href="GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934.html#GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934">CRichText</a> object cache to store the body text for the current context. This can be accessed for reading and writing by message client applications through <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-072E627F-8AB4-3C90-AD48-A5AF6A39581B">Body()</a>. <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-A06B39FB-DB87-34DD-9FFB-299A122C9003">StoreBodyL()</a> and <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-AA6F1B2A-9CAF-3FFE-8A2C-C9D584E6588F">RestoreBodyL()</a> encapsulate for implementers of derived classes the retrieval and storage of this <a href="GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934.html#GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934">CRichText</a> object to a <a href="GUID-8CB90FA2-A6CF-3FA2-81FF-7D22EFD9C2CE.html#GUID-8CB90FA2-A6CF-3FA2-81FF-7D22EFD9C2CE">CMsvStore</a>.</p>
+
+			<p>Address list functions: the format and storage of message addresses is MTM-specific. <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-A3BF16D1-1C8A-3EA1-9A8D-E3C176B74451">AddresseeList()</a>, <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-F260B7A1-2EF2-34B6-9307-0B2BBFA4977A">AddAddresseeL()</a>, and <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-C037CBB6-6D3A-36D0-8BF8-04DDD4C57E06">RemoveAddressee()</a> are designed to allow clients with no MTM-specific knowledge to access address information in a generic way. The base class has a protected data member iAddresseeList, an array of descriptors, which these functions manipulate. Implementations should save the address information to the appropriate place in the message store when the message is stored.</p>
+
+			<p>MTM-specific functionality: MTM components can offer protocol-specific functionality not provided by base class interface functions. MTM components define IDs that correspond to each protocol-specific operation offered, and implement the <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-2824C0F4-A066-342F-B692-EEB7DDF533D6">InvokeSyncFunctionL()</a> and <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-67A1D416-9438-3F26-B73C-806BCB106F40">InvokeAsyncFunctionL()</a> functions to allow clients to access these operations by passing in the appropriate ID. Two functions are provided to allow the MTM component to offer both synchronous and asynchronous functionality. Message client applications can dynamically add user-interface features for these operations using CBaseMtmUiData::MtmSpecificFunctions(). MTM developers should document the IDs if they wish to make the operations available to clients.   </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CBaseMtm<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-69447359-3A9F-3E0B-8E95-AEDA3B49F9C7">~CBaseMtm</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-F260B7A1-2EF2-34B6-9307-0B2BBFA4977A">AddAddresseeL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-48CC4A21-708B-3B4A-A93A-CF4E4E80312B">AddAddresseeL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-503017D1-645F-30A4-83E9-6CEDE0F835E7">AddAddresseeL</a>(<a href="GUID-9ED1CCBB-F61A-377A-B4B7-06B78E41DC81.html">TMsvRecipientType</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-5DB0DC3B-B13F-3B48-8A92-0C6577C63A4E">AddAddresseeL</a>(<a href="GUID-9ED1CCBB-F61A-377A-B4B7-06B78E41DC81.html">TMsvRecipientType</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-667AFC1E-A157-3738-B26E-5336D895DA41">AddAttachmentL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-D0C13AEF-808F-368E-80CE-03FCE5016446">AddLinkedAttachmentL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C const <a href="GUID-054B4527-09AF-3A9F-902C-C30840AC7444.html">CMsvRecipientList</a> &amp;</td><td><a href="#GUID-A3BF16D1-1C8A-3EA1-9A8D-E3C176B74451">AddresseeList</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-20AF1342-D460-3992-93DF-C285E8CE895E">BioTypeChangedL</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934.html">CRichText</a> &amp;</td><td><a href="#GUID-072E627F-8AB4-3C90-AD48-A5AF6A39581B">Body</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-1054B044-F00B-312D-B015-FBA5A8C2D73C">CancelAttachmentOperation</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F1CB8EBF-8E6E-3C98-8C95-666121648F50">ChangeDefaultServiceL</a>(const <a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-3DB9007E-89A1-3FC3-8076-73E49E55BE60">CreateAttachmentL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html">RFile</a> &amp;, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-EC899A62-A064-36ED-9B58-902E27C7D6A5">CreateMessageL</a>(<a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a></td><td><a href="#GUID-338BD7D8-0DF4-3AFE-80DE-1DE2C26C1E0D">DefaultServiceL</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-AD199F26-EAD0-3C20-9F11-DFE9E627B286">Filler1</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-35F7A8C6-A994-301F-8924-9C862DB33565">Filler2</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a>
+				</td><td><a href="#GUID-81E4BB21-19F6-3235-A435-EA07F9BCE69B">Find</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html">CMsvOperation</a> *</td><td><a href="#GUID-25D6640A-73D9-35DC-BA4D-FA3A2A1060FB">ForwardL</a>(<a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a>, <a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td><a href="#GUID-0F713DC6-607A-3AB1-98B8-86DEC7F03783">GetExtensionData</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-BE40C6B8-9EB3-3DAF-AAA3-5FC8A9D34FE9">HasContext</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html">CMsvOperation</a> *</td><td><a href="#GUID-67A1D416-9438-3F26-B73C-806BCB106F40">InvokeAsyncFunctionL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;, <a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp;, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-2824C0F4-A066-342F-B692-EEB7DDF533D6">InvokeSyncFunctionL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;, <a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-E71B3386-8544-3314-B900-1ABF65DCF07B">LoadMessageL</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-6070FFC9-F5BD-3C9A-BE5E-7A7F17B1D730">QueryCapability</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-C037CBB6-6D3A-36D0-8BF8-04DDD4C57E06">RemoveAddressee</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-C3B6E3EC-DBD8-307E-B099-00AAF5B9E013">RemoveDefaultServiceL</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html">CMsvOperation</a> *</td><td><a href="#GUID-F5254B53-9CC0-3C7A-B685-64A5A1835E5B">ReplyL</a>(<a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a>, <a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-A097A4B2-44C3-3BC9-A910-7F14F7DF680C">SaveMessageL</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> &amp;</td><td><a href="#GUID-231FBCD7-32E6-3D9D-AE66-3ADD354F7F11">Session</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-5DCAD130-9EC2-3FEE-9CFB-A5277CAEAA43">SetCurrentEntryL</a>(<a href="GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49.html">CMsvEntry</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-08D1D7DB-DABA-3023-9134-58D42CF28006">SetExtensionData</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-D1800183-56E8-36B7-A8A6-D0A329D40126">SetMessageCharacterSet</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-D6E775A7-5824-34BF-83D1-1717CEBF5A58">SetSubjectL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C const <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td><a href="#GUID-CF404788-295C-3FF7-9510-35C3DAE7A833">SubjectL</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-7F35C252-DE15-369C-B710-463C3F9B9B41">SwitchCurrentEntryL</a>(<a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td><a href="#GUID-8E5623D2-4EA6-3BB6-93CB-2730DB43A1C1">Type</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a>
+				</td><td><a href="#GUID-813100DC-0189-3C1B-B34A-65B3E21458FD">ValidateMessage</a>(<a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-FF7BD650-B691-3653-A542-994A2F134ABA">CBaseMtm</a>(<a href="GUID-0D5D7FAC-4F14-3046-92FB-873B8350FF4C.html">CRegisteredMtmDll</a> &amp;, <a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-E6F33364-7F0F-3DBF-BC24-439A248083CE">ContextEntrySwitched</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-592F7E11-48E1-3C97-86B9-2A1EC12A1484">Extension_</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *&amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td><a href="#GUID-864D338F-C7C4-3B62-9A34-99C4BF9B22E0">GetInterface</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-A4997E8B-3B1D-379E-A458-0C09F7C96AFE">HandleEntryEventL</a>(TMsvEntryEvent, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-16565E7A-9FD0-3067-9F83-D61E460FE783">RestoreBodyL</a>(<a href="GUID-8CB90FA2-A6CF-3FA2-81FF-7D22EFD9C2CE.html">CMsvStore</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-A06B39FB-DB87-34DD-9FFB-299A122C9003">StoreBodyL</a>(<a href="GUID-8CB90FA2-A6CF-3FA2-81FF-7D22EFD9C2CE.html">CMsvStore</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">void</td><td><a href="#GUID-06CBAE80-45E2-3808-B977-1D7612AB9026">AddFilePathAttachmentL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, <a href="GUID-8C2B9B89-D6B7-3622-AF26-658F53BCB70F.html">CMsvAttachment::TMsvAttachmentType</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-6180CE92-6739-3435-BA9E-F17974E9EBAB">DeleteEntry</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-054B4527-09AF-3A9F-902C-C30840AC7444.html">CMsvRecipientList</a> *</td><td><a href="#GUID-7FEB8D8D-0D0E-386C-A4B3-E58E394E1909">iAddresseeList</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-7BEFAAD5-15C3-35A0-BDEF-BC56380D6CE5.html">CCharFormatLayer</a> *</td><td><a href="#GUID-5B5FAC17-CCE7-3FAC-8DE4-08FFA6260B68">iCharFormatLayer</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49.html">CMsvEntry</a> *</td><td><a href="#GUID-A5F06606-477E-30A2-823E-EBA3F1BA5436">iMsvEntry</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-C5A6B3D4-1BDE-35B4-AC6B-DF517A4D4147.html">CParaFormatLayer</a> *</td><td><a href="#GUID-20CB836B-B3FB-328B-8BE6-51B02B9E76F7">iParaFormatLayer</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-5E8E81E5-6854-3C07-B76B-061007B29127.html">CMsvAttachmentWaiter</a> *</td><td><a href="#GUID-F76C7659-9E88-3F51-9826-3FA4BDE3EB98">iAttachmentWaiter</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a>
+				</td><td><a href="#GUID-AAA0C4E0-5B49-3109-97F2-9B4103C2B92E">iEntryId</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td><a href="#GUID-5FC7B1A1-CBB8-32B4-AB02-231E0A25B925">iExtensionData</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-0D5D7FAC-4F14-3046-92FB-873B8350FF4C.html">CRegisteredMtmDll</a> &amp;</td><td><a href="#GUID-22F2EBD6-AB93-3D03-842A-AF254AB2DDED">iRegisteredMtmDll</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934.html">CRichText</a> *</td><td><a href="#GUID-C6369976-3205-3A2C-90B5-9E93530F3EC9">iRichTextBody</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> &amp;</td><td><a href="#GUID-954C6044-1FE5-35BB-96DB-B59A976703D6">iSession</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-FF7BD650-B691-3653-A542-994A2F134ABA"><a name="GUID-FF7BD650-B691-3653-A542-994A2F134ABA"><!-- --></a>
+		<h2 class="topictitle2">CBaseMtm(CRegisteredMtmDll &amp;, CMsvSession &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>CBaseMtm</td><td>(</td><td><a href="GUID-0D5D7FAC-4F14-3046-92FB-873B8350FF4C.html">CRegisteredMtmDll</a> &amp;</td><td>aRegisteredMtmDll,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> &amp;</td><td>aSession</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected]</td></tr></table><div class="section"><div>
+				<p>Creates a <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D">CBaseMtm</a> with member variables initialised from the passed arguments.</p>
+
+				<p>Client applications do not use this function. It is relevant only to implementers of derived classes.</p>
+
+				<p>The value of aSession can be accessed through <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-231FBCD7-32E6-3D9D-AE66-3ADD354F7F11">Session()</a>.</p>
+
+				<p>Derived classes can implement a constructor to perform any additional MTM-specific setup that can be safely carried out in a constructor. Such constructors must call the base class constructor function.</p>
+
+				<p>Derived classes also implement two-phase construction functions (NewL(), ConstructL()) to create a new instance of the object, in which any dynamic allocation should be performed. Client-side MTMs also implement a factory function by which a MTM registry can request an instance of the class.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0D5D7FAC-4F14-3046-92FB-873B8350FF4C.html">CRegisteredMtmDll</a> &amp; aRegisteredMtmDll</td><td>Registration data for the MTM DLL.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> &amp; aSession</td><td>The CMsvSession of the client requesting the object  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-69447359-3A9F-3E0B-8E95-AEDA3B49F9C7"><a name="GUID-69447359-3A9F-3E0B-8E95-AEDA3B49F9C7"><!-- --></a>
+		<h2 class="topictitle2">~CBaseMtm()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CBaseMtm</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Cleans up the base class.</p>
+
+				<p>
+					<a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D">CBaseMtm</a> -derived objects must be deleted by client applications when they are no longer required.</p>
+
+				<p>Derived classes can implement a destructor to do any additional clean up tasks that they require. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-F260B7A1-2EF2-34B6-9307-0B2BBFA4977A"><a name="GUID-F260B7A1-2EF2-34B6-9307-0B2BBFA4977A"><!-- --></a>
+		<h2 class="topictitle2">AddAddresseeL(const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>AddAddresseeL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aRealAddress</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Adds an addressee for the current context.</p>
+
+				<p>Addresses are not validated by checking their format by this function. Usually that is performed by calling <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-813100DC-0189-3C1B-B34A-65B3E21458FD">ValidateMessage()</a>.</p>
+
+				<p>Requirements:</p>
+
+				<p>Implementations should append the address to the object's address cache in the protected iAddresseeList data member. Some implementations may also wish to store addresses in an internal data structure appropriate for the protocol, for example, a class holding message header information.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The message already has the maximum number of addressees</dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aRealAddress</td><td>String representing an address to be added to the list for the current message  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-48CC4A21-708B-3B4A-A93A-CF4E4E80312B"><a name="GUID-48CC4A21-708B-3B4A-A93A-CF4E4E80312B"><!-- --></a>
+		<h2 class="topictitle2">AddAddresseeL(const TDesC &amp;, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>AddAddresseeL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aRealAddress,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aAlias</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Adds an addressee for the current context, and enables the client to specify an alias, which may be useful for some protocols. For example, for fax, if the address is the fax number, the alias could supply the recipient's name.</p>
+
+				<p>Addresses are not validated by checking their format by this function. Usually that is performed by calling <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-813100DC-0189-3C1B-B34A-65B3E21458FD">ValidateMessage()</a>.</p>
+
+				<p>Requirements:</p>
+
+				<p>Implementations should append the address to the object's address cache in the protected iAddresseeList data member. Some implementations may also wish to store addresses in an internal data structure appropriate for the protocol, for example, a class holding message header information.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The message already has the maximum number of addressees</dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aRealAddress</td><td>String representing an address to be added to the list for the current message  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aAlias</td><td>Alias information  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-503017D1-645F-30A4-83E9-6CEDE0F835E7"><a name="GUID-503017D1-645F-30A4-83E9-6CEDE0F835E7"><!-- --></a>
+		<h2 class="topictitle2">AddAddresseeL(TMsvRecipientType, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AddAddresseeL</td><td>(</td><td><a href="GUID-9ED1CCBB-F61A-377A-B4B7-06B78E41DC81.html">TMsvRecipientType</a></td><td>aType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aRealAddress</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>Adds addressee to list.</p>
+
+				<p>The default implementation treats To: and Cc: type addressees as if the addressee had no type.</p>
+
+				<p>The default implementation does not support Bcc type addressees.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupprted The addressee type was Bcc which is not supported in the default implementation. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-9ED1CCBB-F61A-377A-B4B7-06B78E41DC81.html">TMsvRecipientType</a> aType</td><td>The addressee type. </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aRealAddress</td><td>The addressee address. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5DB0DC3B-B13F-3B48-8A92-0C6577C63A4E"><a name="GUID-5DB0DC3B-B13F-3B48-8A92-0C6577C63A4E"><!-- --></a>
+		<h2 class="topictitle2">AddAddresseeL(TMsvRecipientType, const TDesC &amp;, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AddAddresseeL</td><td>(</td><td><a href="GUID-9ED1CCBB-F61A-377A-B4B7-06B78E41DC81.html">TMsvRecipientType</a></td><td>aType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aRealAddress,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aAlias</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-9ED1CCBB-F61A-377A-B4B7-06B78E41DC81.html">TMsvRecipientType</a> aType</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aRealAddress</td><td> </td></tr><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aAlias</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-667AFC1E-A157-3738-B26E-5336D895DA41"><a name="GUID-667AFC1E-A157-3738-B26E-5336D895DA41"><!-- --></a>
+		<h2 class="topictitle2">AddAttachmentL(const TDesC &amp;, const TDesC8 &amp;, TUint, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AddAttachmentL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aFilePath,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aMimeType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aCharset,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aFilePath</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aMimeType</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aCharset</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-06CBAE80-45E2-3808-B977-1D7612AB9026"><a name="GUID-06CBAE80-45E2-3808-B977-1D7612AB9026"><!-- --></a>
+		<h2 class="topictitle2">AddFilePathAttachmentL(const TDesC &amp;, const TDesC8 &amp;, TUint, CMsvAttachment::TMsvAttachmentType, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>AddFilePathAttachmentL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aFilePath,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aMimeType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aCharset,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-8C2B9B89-D6B7-3622-AF26-658F53BCB70F.html">CMsvAttachment::TMsvAttachmentType</a></td><td>aType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aFilePath</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aMimeType</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aCharset</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-8C2B9B89-D6B7-3622-AF26-658F53BCB70F.html">CMsvAttachment::TMsvAttachmentType</a> aType</td><td> </td></tr><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D0C13AEF-808F-368E-80CE-03FCE5016446"><a name="GUID-D0C13AEF-808F-368E-80CE-03FCE5016446"><!-- --></a>
+		<h2 class="topictitle2">AddLinkedAttachmentL(const TDesC &amp;, const TDesC8 &amp;, TUint, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AddLinkedAttachmentL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aFilePath,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aMimeType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aCharset,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>Adds a file attachment to the current message entry as a linked file.</p>
+
+				<p>The attachment is referenced by its file path and is not copied into the message store. The attachment file is always used from its original location on disk indicated by the aFilePath parameter. Only one asynchronous operation can be run at any one time.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>System-wide error codes. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aFilePath</td><td>The full path specification of the attachment file.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aMimeType</td><td>The mime type of the attachment file.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aCharset</td><td>The mime charset. The value is a standard IANA value. The value 0 indicates that no charset is provided.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>The request status to complete when request has completed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A3BF16D1-1C8A-3EA1-9A8D-E3C176B74451"><a name="GUID-A3BF16D1-1C8A-3EA1-9A8D-E3C176B74451"><!-- --></a>
+		<h2 class="topictitle2">AddresseeList()</h2>
+		<table class="signature"><tr><td>IMPORT_C const <a href="GUID-054B4527-09AF-3A9F-902C-C30840AC7444.html">CMsvRecipientList</a> &amp;</td><td>AddresseeList</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Gets the list of intended recipients for the current context, which must be a message.</p>
+
+				<p>In the case of protocols that allow different classes of recipient (such as To, Cc and Bcc), the list returned is whatever the protocol defines as the default recipient list.</p>
+
+				<p>Requirements:</p>
+
+				<p>The default implementation simply returns the value of the protected data member iAddresseeList. As a consequence, Client-side MTM implementations should update this member whenever the address list is modified.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-20AF1342-D460-3992-93DF-C285E8CE895E"><a name="GUID-20AF1342-D460-3992-93DF-C285E8CE895E"><!-- --></a>
+		<h2 class="topictitle2">BioTypeChangedL(TUid)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>BioTypeChangedL</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aBioTypeUid</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Informs client-side MTM that the context's BIO field is being changed as a result of a call to CSendAs::SetBioTypeL().</p>
+
+				<p>CSendAs::SetBioTypeL() calls this function before setting the BIO field in the context's index entry. This allows a client-side MTM to perform MTM specific actions when the BIO type changes.</p>
+
+				<p>CSendAs will not change the BIO type if this function leaves.</p>
+
+				<p>The default implementation is to do nothing.</p>
+
+				<p>CSendAs::SetBioTypeL() </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aBioTypeUid</td><td>New value for the BIO field  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-072E627F-8AB4-3C90-AD48-A5AF6A39581B"><a name="GUID-072E627F-8AB4-3C90-AD48-A5AF6A39581B"><!-- --></a>
+		<h2 class="topictitle2">Body()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934.html">CRichText</a> &amp;</td><td>Body</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Gets the body text of the context, that must be a message. For non-message contexts, an empty <a href="GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934.html#GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934">CRichText</a> is returned.</p>
+
+				<p>
+					<a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-A06B39FB-DB87-34DD-9FFB-299A122C9003">StoreBodyL()</a> <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-AA6F1B2A-9CAF-3FFE-8A2C-C9D584E6588F">RestoreBodyL()</a> </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-1054B044-F00B-312D-B015-FBA5A8C2D73C"><a name="GUID-1054B044-F00B-312D-B015-FBA5A8C2D73C"><!-- --></a>
+		<h2 class="topictitle2">CancelAttachmentOperation()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>CancelAttachmentOperation</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-F1CB8EBF-8E6E-3C98-8C95-666121648F50"><a name="GUID-F1CB8EBF-8E6E-3C98-8C95-666121648F50"><!-- --></a>
+		<h2 class="topictitle2">ChangeDefaultServiceL(const TMsvId &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ChangeDefaultServiceL</td><td>(</td><td>const <a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a> &amp;</td><td>aService</td><td>)</td><td>[virtual]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a> &amp; aService</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E6F33364-7F0F-3DBF-BC24-439A248083CE"><a name="GUID-E6F33364-7F0F-3DBF-BC24-439A248083CE"><!-- --></a>
+		<h2 class="topictitle2">ContextEntrySwitched()</h2>
+		<table class="signature"><tr><td>void</td><td>ContextEntrySwitched</td><td>(</td><td>)</td><td>[protected, pure virtual]</td></tr></table><div class="section"><div>
+				<p>Called by the base class functions <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-7F35C252-DE15-369C-B710-463C3F9B9B41">SwitchCurrentEntryL()</a> and <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-5DCAD130-9EC2-3FEE-9CFB-A5277CAEAA43">SetCurrentEntryL()</a> when the context is changed to another entry.</p>
+
+				<p>Client applications do not use this function. It is relevant only to implementers of derived classes.</p>
+
+				<p>Requirements:</p>
+
+				<p>An implementation should clear:</p>
+
+				<p>1. address data stored in iAddresseeList</p>
+
+				<p>2. any caches of MTM-specific entry data relating to a previous context. For example, if the implementation has a private buffer storing a message subject, for access through Subject(), this buffer should be cleared. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-3DB9007E-89A1-3FC3-8076-73E49E55BE60"><a name="GUID-3DB9007E-89A1-3FC3-8076-73E49E55BE60"><!-- --></a>
+		<h2 class="topictitle2">CreateAttachmentL(const TDesC &amp;, RFile &amp;, const TDesC8 &amp;, TUint, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>CreateAttachmentL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aFileName,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html">RFile</a> &amp;</td><td>aAttachmentFile,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aMimeType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aCharset,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>Creates a new empty file attachment to the current message entry.</p>
+
+				<p>An empty file attachment is created with the suggested given name and if completed successfully, the aAttachmentFile will be open on the new file. Only one asynchronous operation can be run at any one time.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>System-wide error codes. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aFileName</td><td>The suggested file name for the new attachment file.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html">RFile</a> &amp; aAttachmentFile</td><td>If successful, this will be set to the open new file.  </td></tr><tr><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aMimeType</td><td>The mime type of the attachment file.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aCharset</td><td>The mime charset. The value is a standard IANA value. The value 0 indicates that no charset is provided.  </td></tr><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>The request status to complete when request has completed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EC899A62-A064-36ED-9B58-902E27C7D6A5"><a name="GUID-EC899A62-A064-36ED-9B58-902E27C7D6A5"><!-- --></a>
+		<h2 class="topictitle2">CreateMessageL(TMsvId)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>CreateMessageL</td><td>(</td><td><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a></td><td>aServiceId</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Creates a new message entry as a child of the current context.</p>
+
+				<p>The default implementation creates an empty entry with its visible flag set to false and its in-preparation flag set to true.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a> aServiceId</td><td>ID of the service to own the entry.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-338BD7D8-0DF4-3AFE-80DE-1DE2C26C1E0D"><a name="GUID-338BD7D8-0DF4-3AFE-80DE-1DE2C26C1E0D"><!-- --></a>
+		<h2 class="topictitle2">DefaultServiceL()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a></td><td>DefaultServiceL</td><td>(</td><td>)</td><td>const [virtual]</td></tr></table><div class="section"><div>
+				<p>Gets the default MTM service.</p>
+
+				<p>The default implementation is to assume the MTM only supports one service so finds the first service associated with this MTM and returns that.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd/>
+
+						
+					</dl>
+KErrNotFound If no service has been created. </div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-6180CE92-6739-3435-BA9E-F17974E9EBAB"><a name="GUID-6180CE92-6739-3435-BA9E-F17974E9EBAB"><!-- --></a>
+		<h2 class="topictitle2">DeleteEntry()</h2>
+		<table class="signature"><tr><td>void</td><td>DeleteEntry</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-592F7E11-48E1-3C97-86B9-2A1EC12A1484"><a name="GUID-592F7E11-48E1-3C97-86B9-2A1EC12A1484"><!-- --></a>
+		<h2 class="topictitle2">Extension_(TUint, TAny *&amp;, TAny *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Extension_</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aExtensionId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *&amp;</td><td>a0,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>a1</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>The default Extension service. The default implementation of this function assumes that the new service for setting the charset encoding value for a SMS message is not supported. TAny* is equivalent to void*. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aExtensionId</td><td>Uid of the extension interface  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *&amp; a0</td><td>The collective parameters of TAny*  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * a1</td><td>The collective parameters of TAny*,Charset encoding value is actually extracted from a1.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AD199F26-EAD0-3C20-9F11-DFE9E627B286"><a name="GUID-AD199F26-EAD0-3C20-9F11-DFE9E627B286"><!-- --></a>
+		<h2 class="topictitle2">Filler1()</h2>
+		<table class="signature"><tr><td>void</td><td>Filler1</td><td>(</td><td>)</td><td>[inline, virtual]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-35F7A8C6-A994-301F-8924-9C862DB33565"><a name="GUID-35F7A8C6-A994-301F-8924-9C862DB33565"><!-- --></a>
+		<h2 class="topictitle2">Filler2()</h2>
+		<table class="signature"><tr><td>void</td><td>Filler2</td><td>(</td><td>)</td><td>[inline, virtual]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-81E4BB21-19F6-3235-A435-EA07F9BCE69B"><a name="GUID-81E4BB21-19F6-3235-A435-EA07F9BCE69B"><!-- --></a>
+		<h2 class="topictitle2">Find(const TDesC &amp;, TMsvPartList)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a>
+				</td><td>Find</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aTextToFind,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a></td><td>aPartList</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Searches the specified message part(s) for the plain-text version of the text to be found.</p>
+
+				<p>If the specified part list indicates a part that is not supported, or is not present in the current message, the function behaves as if the specified part exists but does not contain the required text.</p>
+
+				<p>Requirements:</p>
+
+				<p>The parts of the entry for which searching is allowed is implementation specific. If no searching is supported, always return 0.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aTextToFind</td><td>The plain-text version of the text to be found.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a> aPartList</td><td>Indicates the message parts which should be searched.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-25D6640A-73D9-35DC-BA4D-FA3A2A1060FB"><a name="GUID-25D6640A-73D9-35DC-BA4D-FA3A2A1060FB"><!-- --></a>
+		<h2 class="topictitle2">ForwardL(TMsvId, TMsvPartList, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html">CMsvOperation</a> *</td><td>ForwardL</td><td>(</td><td><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a></td><td>aDestination,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a></td><td>aPartList,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aCompletionStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Creates a forwarded message from the current message context.</p>
+
+				<p>Some MTMs may support inclusion of elements, specified by aPartlist, from the original message in the forwarded message. The parent for the new entry is specified in aDestination. The returned <a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html#GUID-AF724192-6580-3DE3-9287-3A005C0AA932">CMsvOperation</a> object completes when editing the forwarded message is complete. On completion, the context is set to the forwarded message.</p>
+
+				<p>Requirements:</p>
+
+				<p>A typical implementation for this function would include the following steps:</p>
+
+				<p>1. create a new message in the specified destination by calling <a href="GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49.html#GUID-EE975469-20F9-388A-ABBF-B66472377DCD">CMsvEntry::CreateL()</a></p>
+
+				<p>2. set the entry index values as appropriate</p>
+
+				<p>3. set message content as required. The normal minimum is to include the text of the original message. An implementation may also follow the options specified in aPartlist to include other properties of the original message.</p>
+
+				<p>4. set the context to the reply</p>
+
+				<p>5. return a CMsvOperation-derived object to provide asynchronous control and monitoring of the operation</p>
+
+				<p>If forwarded messages are not supported, implementations should leave with KErrNotSupported.</p>
+
+				<p>The implementation of this function may be similar to that of <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-F5254B53-9CC0-3C7A-B685-64A5A1835E5B">ReplyL()</a>, allowing opportunities for code sharing.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The Client-side MTM does not support creation of forwarded messages </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a> aDestination</td><td>The entry to which to assign the forwarded message  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a> aPartList</td><td>Defines the parts that are to be copied from the original message into the forwarded message  </td></tr><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aCompletionStatus</td><td>The request status to be completed when the operation has finished  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0F713DC6-607A-3AB1-98B8-86DEC7F03783"><a name="GUID-0F713DC6-607A-3AB1-98B8-86DEC7F03783"><!-- --></a>
+		<h2 class="topictitle2">GetExtensionData()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>GetExtensionData</td><td>(</td><td>)</td><td/></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-864D338F-C7C4-3B62-9A34-99C4BF9B22E0"><a name="GUID-864D338F-C7C4-3B62-9A34-99C4BF9B22E0"><!-- --></a>
+		<h2 class="topictitle2">GetInterface(TUid)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>GetInterface</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aUid</td><td>)</td><td>[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>Returns a pointer to the interface with the specified Uid.</p>
+
+				<p>This method is the first part of an extension pattern to allow for more functionality to be supported without adding virtual methods to this base class.</p>
+
+				<p>The default implementation returns a NULL pointer.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aUid</td><td>Uid of the extension interface  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A4997E8B-3B1D-379E-A458-0C09F7C96AFE"><a name="GUID-A4997E8B-3B1D-379E-A458-0C09F7C96AFE"><!-- --></a>
+		<h2 class="topictitle2">HandleEntryEventL(TMsvEntryEvent, TAny *, TAny *, TAny *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>HandleEntryEventL</td><td>(</td><td>TMsvEntryEvent</td><td>aEvent,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aArg1,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aArg2,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aArg3</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected]</td></tr></table><div class="section"><div>
+				<p>Indicates that an event has occurred.</p>
+
+				<p>Client applications do not use this function. It is relevant only to implementers of derived classes.</p>
+
+				<p>The Client-side MTM object is automatically set as an observer, through <a href="GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49.html#GUID-F650AC17-21DB-3CE3-8954-30D9AB0F3C8A">CMsvEntry::AddObserverL()</a>, for the context whenever the context changes (by <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-5DCAD130-9EC2-3FEE-9CFB-A5277CAEAA43">SetCurrentEntryL()</a> or <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-7F35C252-DE15-369C-B710-463C3F9B9B41">SwitchCurrentEntryL()</a>).</p>
+
+				<p>The default implementation is defined to do nothing.</p>
+
+				<p>Requirements:</p>
+
+				<p>Implementations can override this function to handle events concerning the current context.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">TMsvEntryEvent aEvent</td><td>Indicates the event type  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aArg1</td><td>Event specific argument value  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aArg2</td><td>Event specific argument value  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aArg3</td><td>Event specific argument value  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BE40C6B8-9EB3-3DAF-AAA3-5FC8A9D34FE9"><a name="GUID-BE40C6B8-9EB3-3DAF-AAA3-5FC8A9D34FE9"><!-- --></a>
+		<h2 class="topictitle2">HasContext()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>HasContext</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Tests if an MTM context has been set.</p>
+
+				<p>A Client-side MTM has no context until one is set through <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-7F35C252-DE15-369C-B710-463C3F9B9B41">SwitchCurrentEntryL()</a> or <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-5DCAD130-9EC2-3FEE-9CFB-A5277CAEAA43">SetCurrentEntryL()</a> .</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-67A1D416-9438-3F26-B73C-806BCB106F40"><a name="GUID-67A1D416-9438-3F26-B73C-806BCB106F40"><!-- --></a>
+		<h2 class="topictitle2">InvokeAsyncFunctionL(TInt, const CMsvEntrySelection &amp;, TDes8 &amp;, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html">CMsvOperation</a> *</td><td>InvokeAsyncFunctionL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aFunctionId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;</td><td>aSelection,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp;</td><td>aParameter,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aCompletionStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Invokes asynchronous protocol-specific operations. For synchronous operations, a similar function, <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-2824C0F4-A066-342F-B692-EEB7DDF533D6">InvokeSyncFunctionL()</a>, is available.</p>
+
+				<p>aSelection and aParameter allow data to be passed to the operation. The <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html#GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646">TRequestStatus</a> and <a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html#GUID-AF724192-6580-3DE3-9287-3A005C0AA932">CMsvOperation</a> objects are used as normal to control and monitor the operation.</p>
+
+				<p>Requirements:</p>
+
+				<p>For functionality that requires message transport access, such as making a connection, the implementation should pass the request onto the corresponding Server-side MTM. This is done through calling <a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html#GUID-E8F64F32-15D1-3FAE-BBD8-FEE6D31D5B1B">CMsvSession::TransferCommandL()</a>. Implementations may also provide protocol-specific functions themselves if this is useful.</p>
+
+				<p>
+					<a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-67A1D416-9438-3F26-B73C-806BCB106F40">InvokeAsyncFunctionL()</a> should return a CMsvOperation-derived object to provide asynchronous control and monitoring of the operation. If <a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html#GUID-E8F64F32-15D1-3FAE-BBD8-FEE6D31D5B1B">CMsvSession::TransferCommandL()</a> is called, this should be the <a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html#GUID-AF724192-6580-3DE3-9287-3A005C0AA932">CMsvOperation</a> object returned by that function.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported aFunctionId is not a recognised operation ID </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aFunctionId</td><td>ID of the requested operation  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp; aSelection</td><td>Selection of message entries. This is used if the operation requires message entries to work on.  </td></tr><tr><td class="parameter"><a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp; aParameter</td><td>Buffer containing input and output parameters. The format of this is specific to the operation.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aCompletionStatus</td><td>The request status to be completed when the operation has finished  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2824C0F4-A066-342F-B692-EEB7DDF533D6"><a name="GUID-2824C0F4-A066-342F-B692-EEB7DDF533D6"><!-- --></a>
+		<h2 class="topictitle2">InvokeSyncFunctionL(TInt, const CMsvEntrySelection &amp;, TDes8 &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>InvokeSyncFunctionL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aFunctionId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp;</td><td>aSelection,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp;</td><td>aParameter</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Invokes synchronous protocol-specific operations. For asynchronous operations, a similar function, <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-67A1D416-9438-3F26-B73C-806BCB106F40">InvokeAsyncFunctionL()</a>, is available.</p>
+
+				<p>aSelection and aParameter allow data to be passed to the operation.</p>
+
+				<p>Requirements:</p>
+
+				<p>For functionality that requires message transport access, such as making a connection, the implementation should pass the request onto the corresponding Server-side MTM. This is done through calling <a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html#GUID-E8F64F32-15D1-3FAE-BBD8-FEE6D31D5B1B">CMsvSession::TransferCommandL()</a>. Implementations may also provide protocol-specific functions themselves if this is useful.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported aFunctionId is not a recognised operation ID </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aFunctionId</td><td>ID of the requested operation  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-6BC8851B-D913-3CE5-B343-5163661E8AD5.html">CMsvEntrySelection</a> &amp; aSelection</td><td>Selection of message entries. This is used if the operation requires message entries to work on.  </td></tr><tr><td class="parameter"><a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp; aParameter</td><td>Buffer containing input and output parameters. The format of this is specific to the operation.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E71B3386-8544-3314-B900-1ABF65DCF07B"><a name="GUID-E71B3386-8544-3314-B900-1ABF65DCF07B"><!-- --></a>
+		<h2 class="topictitle2">LoadMessageL()</h2>
+		<table class="signature"><tr><td>void</td><td>LoadMessageL</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Loads the cache with the message data for the current context.</p>
+
+				<p>It can only be called on message contexts.</p>
+
+				<p>It is typically used after the context has been set with <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-5DCAD130-9EC2-3FEE-9CFB-A5277CAEAA43">SetCurrentEntryL()</a> or <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-7F35C252-DE15-369C-B710-463C3F9B9B41">SwitchCurrentEntryL()</a>. <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D">CBaseMtm</a> functions to manipulate the entry can only be called after this function has been called.</p>
+
+				<p>Requirements:</p>
+
+				<p>An implementation must restore the store and index entry relating to the message context. Typically, the message store should be opened for reading with <a href="GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49.html#GUID-78A5A0B1-58D8-392B-90C2-6F68B92F0BD1">CMsvEntry::ReadStoreL()</a>. It should be then be read to set the following:</p>
+
+				<p>1. body text: call <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-AA6F1B2A-9CAF-3FFE-8A2C-C9D584E6588F">RestoreBodyL()</a> to update the cached body text</p>
+
+				<p>2. address list: read the appropriate MTM-specific area of the store to update iAddresseeList</p>
+
+				<p>3. subject: if supported, read the appropriate MTM-specific area of the store and update the cache with <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-D6E775A7-5824-34BF-83D1-1717CEBF5A58">SetSubjectL()</a></p>
+
+				<p>The function should panic for non-message contexts. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-6070FFC9-F5BD-3C9A-BE5E-7A7F17B1D730"><a name="GUID-6070FFC9-F5BD-3C9A-BE5E-7A7F17B1D730"><!-- --></a>
+		<h2 class="topictitle2">QueryCapability(TUid, TInt &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>QueryCapability</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aCapability,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aResponse</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>Queries if the MTM supports a particular capability, specified by a UID.</p>
+
+				<p>For MTM-specific UIDs, see the documentation for the relevant MTM.</p>
+
+				<p>Requirements:</p>
+
+				<p>Implementations should check aCapability for the standard capability values, plus any MTM-specific capabilities, and if recognised, return a suitable response in aResponse. If aCapability is unknown, return KErrNotSupported.</p>
+
+				<p>The default implementation returns KErrNotSupported.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aCapability</td><td>UID of capability to be queried  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aResponse</td><td>Response value. The format of the response varies according to the capability.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C037CBB6-6D3A-36D0-8BF8-04DDD4C57E06"><a name="GUID-C037CBB6-6D3A-36D0-8BF8-04DDD4C57E06"><!-- --></a>
+		<h2 class="topictitle2">RemoveAddressee(TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>RemoveAddressee</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Removes an address from the current address list. The address is specified by a zero-based index into the address list. If the index is not known, applications can use <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-A3BF16D1-1C8A-3EA1-9A8D-E3C176B74451">AddresseeList()</a> to retrieve the entire list to find the item.</p>
+
+				<p>Requirements:</p>
+
+				<p>Implementations should call iAddresseeList-&gt;Delete(aIndex) to remove the address from in the address list protected data member.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>Index of address to be removed  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C3B6E3EC-DBD8-307E-B099-00AAF5B9E013"><a name="GUID-C3B6E3EC-DBD8-307E-B099-00AAF5B9E013"><!-- --></a>
+		<h2 class="topictitle2">RemoveDefaultServiceL()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RemoveDefaultServiceL</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Removes the default service setting. The default implementation of this function assumes that the MTM only supports one service and therefore this does nothing. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-F5254B53-9CC0-3C7A-B685-64A5A1835E5B"><a name="GUID-F5254B53-9CC0-3C7A-B685-64A5A1835E5B"><!-- --></a>
+		<h2 class="topictitle2">ReplyL(TMsvId, TMsvPartList, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html">CMsvOperation</a> *</td><td>ReplyL</td><td>(</td><td><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a></td><td>aDestination,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a></td><td>aPartlist,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aCompletionStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Creates a reply message to the current message context.</p>
+
+				<p>Some MTMs may support inclusion of elements, specified by aPartlist, from the original message in the reply. The parent for the new entry is specified in aDestination.</p>
+
+				<p>The returned <a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html#GUID-AF724192-6580-3DE3-9287-3A005C0AA932">CMsvOperation</a> object completes when creating the reply is complete. On completion, the context is set to the reply message.</p>
+
+				<p>Requirements:</p>
+
+				<p>A typical implementation for this function would include the following steps:</p>
+
+				<p>1. create a new message in the specified destination by calling <a href="GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49.html#GUID-EE975469-20F9-388A-ABBF-B66472377DCD">CMsvEntry::CreateL()</a></p>
+
+				<p>2. set the entry index values as appropriate</p>
+
+				<p>3. set the properties of the message as required. The normal minimum is to set the address to the sender of the original message. An implementation may also follow the options specified in aPartlist to set other properties, for example, to include the original message text.</p>
+
+				<p>4. set the context to the reply</p>
+
+				<p>5. return a CMsvOperation-derived object to provide asynchronous control and monitoring of the operation</p>
+
+				<p>If message replies are not supported, implementations should leave with KErrNotSupported.</p>
+
+				<p>The implementation of this function may be similar to that of <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-25D6640A-73D9-35DC-BA4D-FA3A2A1060FB">ForwardL()</a>, allowing opportunities for code sharing.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The Client-side MTM does not support reply operations </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other leave codes Dependent on implementation </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a> aDestination</td><td>The entry to which to assign the reply  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a> aPartlist</td><td>Defines the parts that are to be copied from the original message into the reply  </td></tr><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aCompletionStatus</td><td>The request status to be completed when the operation has finished  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-16565E7A-9FD0-3067-9F83-D61E460FE783"><a name="GUID-16565E7A-9FD0-3067-9F83-D61E460FE783"><!-- --></a>
+		<h2 class="topictitle2">RestoreBodyL(CMsvStore &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RestoreBodyL</td><td>(</td><td><a href="GUID-8CB90FA2-A6CF-3FA2-81FF-7D22EFD9C2CE.html">CMsvStore</a> &amp;</td><td>aStore</td><td>)</td><td>[protected]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-8CB90FA2-A6CF-3FA2-81FF-7D22EFD9C2CE.html">CMsvStore</a> &amp; aStore</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A097A4B2-44C3-3BC9-A910-7F14F7DF680C"><a name="GUID-A097A4B2-44C3-3BC9-A910-7F14F7DF680C"><!-- --></a>
+		<h2 class="topictitle2">SaveMessageL()</h2>
+		<table class="signature"><tr><td>void</td><td>SaveMessageL</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Commits cached changes to the storage controlled by the Message Server.</p>
+
+				<p>It can only be called on message contexts. It should be called in the following circumstances:</p>
+
+				<p>1. to preserve changes when the context is changed, or when the Client-side MTM object is deleted</p>
+
+				<p>2. to enable other parts of the Messaging to access the updated entry, as required, for example, before sending a message</p>
+
+				<p>Requirements:</p>
+
+				<p>An implementation must update the store and index entry relating to the message context. Typically, the message store should be opened for editing with <a href="GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49.html#GUID-1864B96D-CB22-3EE1-8E73-023F12C68CB0">CMsvEntry::EditStoreL()</a>. It should be updated as follows:</p>
+
+				<p>1. body text: call <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-A06B39FB-DB87-34DD-9FFB-299A122C9003">StoreBodyL()</a> to update the store's body text stream</p>
+
+				<p>2. address list: update the appropriate MTM-specific area of the store from the data in iAddresseeList</p>
+
+				<p>3. subject: if supported, update the appropriate MTM-specific area of the store from the private cache set by <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-D6E775A7-5824-34BF-83D1-1717CEBF5A58">SetSubjectL()</a></p>
+
+				<p>Changes can then be committed to the store with <a href="GUID-8CB90FA2-A6CF-3FA2-81FF-7D22EFD9C2CE.html#GUID-F1D4FE2A-8BB9-3CC2-9C30-DC053848A6B5">CMsvStore::CommitL()</a>.</p>
+
+				<p>The index entry should also be updated to reflect changes. Possible fields that may need updating include: Description (for subject changes); Details and Multiple Recipients (for recipient changes); and Size. Index entry changes are committed using <a href="GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49.html#GUID-E24122BB-380D-3C4D-90E5-4924649A80C6">CMsvEntry::ChangeL()</a>.</p>
+
+				<p>The function should panic for non-message contexts. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-231FBCD7-32E6-3D9D-AE66-3ADD354F7F11"><a name="GUID-231FBCD7-32E6-3D9D-AE66-3ADD354F7F11"><!-- --></a>
+		<h2 class="topictitle2">Session()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> &amp;</td><td>Session</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Gets a reference to the session object passed by the creator of the Client-side MTM.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-5DCAD130-9EC2-3FEE-9CFB-A5277CAEAA43"><a name="GUID-5DCAD130-9EC2-3FEE-9CFB-A5277CAEAA43"><!-- --></a>
+		<h2 class="topictitle2">SetCurrentEntryL(CMsvEntry *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetCurrentEntryL</td><td>(</td><td><a href="GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49.html">CMsvEntry</a> *</td><td>aEntry</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the entry on which later actions are performed to the specified <a href="GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49.html#GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49">CMsvEntry</a>.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNoMemory Insufficient memory </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49.html">CMsvEntry</a> * aEntry</td><td>The entry on which all following actions will be performed  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-08D1D7DB-DABA-3023-9134-58D42CF28006"><a name="GUID-08D1D7DB-DABA-3023-9134-58D42CF28006"><!-- --></a>
+		<h2 class="topictitle2">SetExtensionData(TAny *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetExtensionData</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>aSortData</td><td>)</td><td/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * aSortData</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D1800183-56E8-36B7-A8A6-D0A329D40126"><a name="GUID-D1800183-56E8-36B7-A8A6-D0A329D40126"><!-- --></a>
+		<h2 class="topictitle2">SetMessageCharacterSet(TUint)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SetMessageCharacterSet</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aCharSet</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the character encoding value. The character encoding value options are 7-bit, 8-bit and 16-Bit Unicode. By default the character set encoding is 7 bit encoding. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aCharSet</td><td>Character encoding value may be 7-bit/8-bit/16-bit Unicode.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D6E775A7-5824-34BF-83D1-1717CEBF5A58"><a name="GUID-D6E775A7-5824-34BF-83D1-1717CEBF5A58"><!-- --></a>
+		<h2 class="topictitle2">SetSubjectL(const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetSubjectL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSubject</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Sets the subject text of the context, which must be a message.</p>
+
+				<p>Some Client-side MTMs may not support subject text, in which case the function leaves with KErrNotSupported.</p>
+
+				<p>Requirements:</p>
+
+				<p>If the message protocol supports subject text, implementations should maintain a private buffer to store this information, settable through this function.</p>
+
+				<p>Implementations should save the subject text to the appropriate place in the message store when the message is stored.</p>
+
+				<p>The default implementation leaves with KErrNotSupported.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The Client-side MTMs does not support subject text </dd>
+
+						
+					</dl>
+
+					<a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-A06B39FB-DB87-34DD-9FFB-299A122C9003">StoreBodyL()</a> <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-AA6F1B2A-9CAF-3FFE-8A2C-C9D584E6588F">RestoreBodyL()</a> </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSubject</td><td>Message subject text  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A06B39FB-DB87-34DD-9FFB-299A122C9003"><a name="GUID-A06B39FB-DB87-34DD-9FFB-299A122C9003"><!-- --></a>
+		<h2 class="topictitle2">StoreBodyL(CMsvStore &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>StoreBodyL</td><td>(</td><td><a href="GUID-8CB90FA2-A6CF-3FA2-81FF-7D22EFD9C2CE.html">CMsvStore</a> &amp;</td><td>aStore</td><td>)</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Stores and commits the current cached <a href="GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934.html#GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934">CRichText</a> body text to the appropriate stream in the specified message store. Client applications do not use this function. It is relevant only to implementers of derived classes.</p>
+
+				<p>The function overwrites any existing data in that stream. The implementation must have write access to aStore.</p>
+
+				<p>A typical use of this function is from <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-A097A4B2-44C3-3BC9-A910-7F14F7DF680C">SaveMessageL()</a>.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrAccessDenied The store was opened for read only </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Other Standard stream-related leave codes </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-8CB90FA2-A6CF-3FA2-81FF-7D22EFD9C2CE.html">CMsvStore</a> &amp; aStore</td><td>Message store in which to store the body text  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CF404788-295C-3FF7-9510-35C3DAE7A833"><a name="GUID-CF404788-295C-3FF7-9510-35C3DAE7A833"><!-- --></a>
+		<h2 class="topictitle2">SubjectL()</h2>
+		<table class="signature"><tr><td>IMPORT_C const <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td>SubjectL</td><td>(</td><td>)</td><td>const [virtual]</td></tr></table><div class="section"><div>
+				<p>Gets the subject text of the context, which must be a message.</p>
+
+				<p>Some Client-side MTMs may not support subject text, in which case the function leaves with KErrNotSupported.</p>
+
+				<p>Requirements:</p>
+
+				<p>If the message protocol supports subject text, implementations should maintain a private buffer to store this information, gettable through this function.</p>
+
+				<p>The default implementation leaves with KErrNotSupported.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported The Client-side MTMs does not support subject text </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-7F35C252-DE15-369C-B710-463C3F9B9B41"><a name="GUID-7F35C252-DE15-369C-B710-463C3F9B9B41"><!-- --></a>
+		<h2 class="topictitle2">SwitchCurrentEntryL(TMsvId)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SwitchCurrentEntryL</td><td>(</td><td><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a></td><td>aId</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Changes the entry on which later actions are performed to the entry with the specified TMsvId.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNoMemory Insufficient memory </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotFound The requested entry does not exist </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a> aId</td><td>The ID of the entry upon which all following actions will be performed </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8E5623D2-4EA6-3BB6-93CB-2730DB43A1C1"><a name="GUID-8E5623D2-4EA6-3BB6-93CB-2730DB43A1C1"><!-- --></a>
+		<h2 class="topictitle2">Type()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>Type</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-813100DC-0189-3C1B-B34A-65B3E21458FD"><a name="GUID-813100DC-0189-3C1B-B34A-65B3E21458FD"><!-- --></a>
+		<h2 class="topictitle2">ValidateMessage(TMsvPartList)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a>
+				</td><td>ValidateMessage</td><td>(</td><td><a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a></td><td>aPartList</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Validates the current message context.</p>
+
+				<p>The precise validation performed is specific to the MTM, but, typically, checks that the specified message parts are well-formed.</p>
+
+				<p>Requirements:</p>
+
+				<p>Implementation of this function is highly protocol-specific. A minimum step is to check that the current context is a message.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-70DD55DC-4191-3B40-9C4A-7AD0482B7F8D.html">TMsvPartList</a> aPartList</td><td>Indicates the message parts for which validation is requested </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-7FEB8D8D-0D0E-386C-A4B3-E58E394E1909"><a name="GUID-7FEB8D8D-0D0E-386C-A4B3-E58E394E1909"><!-- --></a>
+		<h2 class="topictitle2">
+					CMsvRecipientList * iAddresseeList</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-054B4527-09AF-3A9F-902C-C30840AC7444.html">CMsvRecipientList</a> *</td><td>iAddresseeList</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>The address list for the current context. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-F76C7659-9E88-3F51-9826-3FA4BDE3EB98"><a name="GUID-F76C7659-9E88-3F51-9826-3FA4BDE3EB98"><!-- --></a>
+		<h2 class="topictitle2">
+					CMsvAttachmentWaiter * iAttachmentWaiter</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-5E8E81E5-6854-3C07-B76B-061007B29127.html">CMsvAttachmentWaiter</a> *</td><td>iAttachmentWaiter</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-5B5FAC17-CCE7-3FAC-8DE4-08FFA6260B68"><a name="GUID-5B5FAC17-CCE7-3FAC-8DE4-08FFA6260B68"><!-- --></a>
+		<h2 class="topictitle2">
+					CCharFormatLayer * iCharFormatLayer</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-7BEFAAD5-15C3-35A0-BDEF-BC56380D6CE5.html">CCharFormatLayer</a> *</td><td>iCharFormatLayer</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Character formatting applied to the <a href="GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934.html#GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934">CRichText</a> object for the body text, as returned by <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-072E627F-8AB4-3C90-AD48-A5AF6A39581B">Body()</a>.</p>
+
+				<p>Implementations can modify this if they wish to apply particular formatting to body text. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-AAA0C4E0-5B49-3109-97F2-9B4103C2B92E"><a name="GUID-AAA0C4E0-5B49-3109-97F2-9B4103C2B92E"><!-- --></a>
+		<h2 class="topictitle2">
+					TMsvId
+				 iEntryId</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-EE46F451-70DA-31DE-B49A-79EF77B492FC.html">TMsvId</a>
+				</td><td>iEntryId</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-5FC7B1A1-CBB8-32B4-AB02-231E0A25B925"><a name="GUID-5FC7B1A1-CBB8-32B4-AB02-231E0A25B925"><!-- --></a>
+		<h2 class="topictitle2">
+					TAny * iExtensionData</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>iExtensionData</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-A5F06606-477E-30A2-823E-EBA3F1BA5436"><a name="GUID-A5F06606-477E-30A2-823E-EBA3F1BA5436"><!-- --></a>
+		<h2 class="topictitle2">
+					CMsvEntry * iMsvEntry</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49.html">CMsvEntry</a> *</td><td>iMsvEntry</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>The current context. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-20CB836B-B3FB-328B-8BE6-51B02B9E76F7"><a name="GUID-20CB836B-B3FB-328B-8BE6-51B02B9E76F7"><!-- --></a>
+		<h2 class="topictitle2">
+					CParaFormatLayer * iParaFormatLayer</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-C5A6B3D4-1BDE-35B4-AC6B-DF517A4D4147.html">CParaFormatLayer</a> *</td><td>iParaFormatLayer</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Paragraph formatting applied to the <a href="GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934.html#GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934">CRichText</a> object for the body text, as returned by <a href="GUID-177AF50B-14EF-3C45-AE22-1FEE5678261D.html#GUID-072E627F-8AB4-3C90-AD48-A5AF6A39581B">Body()</a>. This is set to an empty <a href="GUID-C5A6B3D4-1BDE-35B4-AC6B-DF517A4D4147.html#GUID-C5A6B3D4-1BDE-35B4-AC6B-DF517A4D4147">CParaFormatLayer</a> instance whenever the context is set.</p>
+
+				<p>Implementations can modify this if they wish to apply particular formatting to body text. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-22F2EBD6-AB93-3D03-842A-AF254AB2DDED"><a name="GUID-22F2EBD6-AB93-3D03-842A-AF254AB2DDED"><!-- --></a>
+		<h2 class="topictitle2">
+					CRegisteredMtmDll &amp; iRegisteredMtmDll</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-0D5D7FAC-4F14-3046-92FB-873B8350FF4C.html">CRegisteredMtmDll</a> &amp;</td><td>iRegisteredMtmDll</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-C6369976-3205-3A2C-90B5-9E93530F3EC9"><a name="GUID-C6369976-3205-3A2C-90B5-9E93530F3EC9"><!-- --></a>
+		<h2 class="topictitle2">
+					CRichText * iRichTextBody</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-39945DA4-B362-3DF6-BF9E-DD079EEA7934.html">CRichText</a> *</td><td>iRichTextBody</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-954C6044-1FE5-35BB-96DB-B59A976703D6"><a name="GUID-954C6044-1FE5-35BB-96DB-B59A976703D6"><!-- --></a>
+		<h2 class="topictitle2">
+					CMsvSession &amp; iSession</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> &amp;</td><td>iSession</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

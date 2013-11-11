@@ -1,0 +1,1561 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Platform Specific Layer Implementation"/>
+<meta name="abstract" content="Describes how to implement the Platform Specific Layer of the MMC Controller."/>
+<meta name="description" content="Describes how to implement the Platform Specific Layer of the MMC Controller."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-86082C0C-B0EE-5E7C-85B4-4A509066012F.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CFD2236E-7775-5532-89CD-7D0E1E219FD8.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2F114BC9-9B5D-5989-9CF3-37A43377DC58.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-79B2CF91-FB95-5E7C-81CC-235A6A660D88.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-86082C0C-B0EE-5E7C-85B4-4A509066012F.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Platform Specific Layer Implementation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2400576 id2400607 id2400622 id2400700 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-CFD2236E-7775-5532-89CD-7D0E1E219FD8.html" title="Provides an overview of generic driver support.">Generic Driver Support</a> &gt; <a href="GUID-2F114BC9-9B5D-5989-9CF3-37A43377DC58.html" title="Provides the physical device drivers, called media drivers, and associated libraries that manage storage media hardware.">Media Drivers</a> &gt; <a href="GUID-79B2CF91-FB95-5E7C-81CC-235A6A660D88.html" title="The MMC Controller provides kernel extensions that manages access to the MultiMediaCard hardware on behalf of media drivers or any other device driver.">MMC Controller</a> &gt; <a href="GUID-86082C0C-B0EE-5E7C-85B4-4A509066012F.html" title="Describes the steps to implement a port of the MMC Controller.">MMC Porting Implementation Tutorial</a> &gt; </div>
+<h1 class="topictitle1">Platform
+Specific Layer Implementation</h1>
+<div><p>Describes how to implement the Platform Specific Layer of the MMC
+Controller. </p>
+
+<div class="section" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-4C6CA873-A798-5C79-8838-0CC3C9E914FB"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-4C6CA873-A798-5C79-8838-0CC3C9E914FB"><!-- --></a><h2 class="sectiontitle">DMMCStack derived
+class</h2> <p>This class controls access to the MultiMediaCard stack. This
+class has a number of pure virtual functions that need to be implemented in
+your Variant DLL. The diagram at <a href="GUID-BE6AFD38-5952-537F-848C-C76C8F5FA9BF.html#GUID-BE6AFD38-5952-537F-848C-C76C8F5FA9BF__GUID-92F5EBE4-C9AD-5D9A-A80E-9AFD1A09B6B3">MultiMediaCard
+controller basic structure</a> shows the class in context. </p>
+ <p>There
+is one virtual function with a default implementation that needs to be overridden. </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-01ABEA80-002F-5490-B90F-3AE83927220B"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-01ABEA80-002F-5490-B90F-3AE83927220B"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0B55A650-E9ED-56CB-B06F-B1113ACDF282">Init()</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-04245FCC-D55A-5840-98CC-2113E7B6D9E4"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-04245FCC-D55A-5840-98CC-2113E7B6D9E4"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-CEF0EDF7-4B33-5452-8635-51C5319F78AE">MachineInfo()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C5C86175-9100-5687-96EB-F4AEAF0CE161"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C5C86175-9100-5687-96EB-F4AEAF0CE161"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-F41EA0A6-1CBF-5AE2-9C66-DD6E3B7312E0">ProgramPeriodInMilliSeconds()</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-12B3B751-9EFE-5273-844B-A18D99E2A7FF"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-12B3B751-9EFE-5273-844B-A18D99E2A7FF"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-A7EC6536-3822-58C8-9A65-B71FDDBA10F3">AdjustPartialRead()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-AF40CF60-918D-5D9D-96C3-D96FDAD94B85"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-AF40CF60-918D-5D9D-96C3-D96FDAD94B85"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-8A3E9782-C8D4-562D-9470-5CCE0ED1C303">GetBufferInfo()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-60AC1F94-4936-5AB1-B31E-CEDBDE59E08E"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-60AC1F94-4936-5AB1-B31E-CEDBDE59E08E"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-BC742EB6-7063-5D00-B422-96B3772605D5">SetBusConfigDefaults()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-592CDEF6-F450-572A-878E-077ED633C621"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-592CDEF6-F450-572A-878E-077ED633C621"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-49DF2E60-AE31-502E-B7CB-694AFAF69F1B">InitClockOff()</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-82080A27-BCB7-5EC3-8F3E-2C1CDEDCA601"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-82080A27-BCB7-5EC3-8F3E-2C1CDEDCA601"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0DF60D11-AAD6-59E2-AE81-16E0DF96291B">ASSPDisengage()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-5E0E9EC9-742A-5265-9429-C52B60D83863"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-5E0E9EC9-742A-5265-9429-C52B60D83863"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-99AC4F3B-E273-515E-8690-983E98E17256">ASSPReset()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-DA38EA59-0A91-5498-9B3A-1F17D4511EFC"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-DA38EA59-0A91-5498-9B3A-1F17D4511EFC"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-6EEE7EF6-4272-5116-BCEF-A852BB7B8FBD">CardDetect()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-9F025A5A-F303-55C8-85C4-BAC0BF0C27E4"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-9F025A5A-F303-55C8-85C4-BAC0BF0C27E4"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3F34865D-5B16-5F53-AF9E-9F52DB5D0FB5">WriteProtected()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-D1B3A73F-E3AC-55C6-84E4-11A2AA9C3A7F"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-D1B3A73F-E3AC-55C6-84E4-11A2AA9C3A7F"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-65547330-E112-55F2-AD4A-9B9CA5617E33">DoPowerDown()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-4117DD14-59D4-5257-AAAD-79498391979E"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-4117DD14-59D4-5257-AAAD-79498391979E"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C8C15101-4614-5DEC-A620-6EAE8EC463ED">DoPowerUpSM()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-D93B8DEC-CFA0-5FC9-AF46-81A3B21F3545"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-D93B8DEC-CFA0-5FC9-AF46-81A3B21F3545"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C976320E-80FF-50F8-A882-F89C74F76ED3">InitClockOnSM()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-F6BB7D3C-8A9A-5228-88ED-2F28980373D8"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-F6BB7D3C-8A9A-5228-88ED-2F28980373D8"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-FABAED76-FC63-577B-9436-DC7C8978E2AE">IssueMMCCommandSM()</a>  </p>
+ </li>
+
+</ul>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0B55A650-E9ED-56CB-B06F-B1113ACDF282"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0B55A650-E9ED-56CB-B06F-B1113ACDF282"><!-- --></a><strong>Init()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-43A06EF7-FA7B-3653-97B4-B04336E3EB54"><span class="apiname">DMMCStack::Init()</span></a>  </p>
+ <p>The
+function is intended to initialize the stack, and is called during initialization
+of the MultiMediaCard controller Variant DLL from <a href="GUID-45B97680-1756-3559-8A2D-2F2E851AD6A7.html#GUID-45B97680-1756-3559-8A2D-2F2E851AD6A7__GUID-18825E56-F155-38D0-A4DF-A7C57D73C1EF"><span class="apiname">DMMCSocket::Init()</span></a>: </p>
+ <p>You
+will almost certainly need to provide your own implementation to perform any
+platform-specific MultiMediaCard stack initialization. Whatever your implementation
+provides, <em>it is important that you call the base class function from within
+your derived version</em>. </p>
+ <p>Return <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a> if initialization
+is successful, otherwise return one of the system-wide error codes to indicate
+initialization failure. Note that returning a value other than <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a> will
+cause the kernel to panic and to fail to boot. </p>
+ <p>You will allocate a
+data transfer buffer here. The MultiMediaCard media driver needs a memory
+buffer to perform data transfer operations. Where supported, DMA is generally
+used to do this, and requires physically contiguous memory. However, the media
+driver is created each time a card is inserted into a machine and destroyed
+when the card is removed, and giving the media driver the responsibility for
+allocating the memory buffer means that it might not always be possible to
+allocate physically contiguous pages for it as memory becomes fragmented over
+time. </p>
+ <p>The MultiMediaCard media driver uses the <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-8A3E9782-C8D4-562D-9470-5CCE0ED1C303">GetBufferInfo()</a> function each time it is created to get a pointer
+to the buffer, and to get its length. </p>
+ <p>Although the MultiMediaCard
+media driver only expects a single buffer, it actually uses this as two separate
+buffers: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-21E69407-DEB2-5DBE-9614-ADFF7DBF06B6"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-21E69407-DEB2-5DBE-9614-ADFF7DBF06B6"><!-- --></a><p>a minor buffer which
+must have at least enough space for the MBR (512 bytes) </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-1FF25456-0CE3-582C-9FEC-B5913C1E437A"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-1FF25456-0CE3-582C-9FEC-B5913C1E437A"><!-- --></a><p>a cache buffer to cache
+data blocks from the card. </p>
+ </li>
+
+</ul>
+ <p>The ideal size of the cache buffer depends on the characteristics
+of the card present at the time, and it is possible to customize the MultiMediaCard
+controller at the platform specific layer for a particular card. </p>
+ <p>The
+following example code allocates a physically contiguous buffer - a minor
+buffer size of one block is allocated together with a cache buffer size of
+eight blocks. The whole buffer is then rounded up to a whole number of memory
+pages. </p>
+ <pre class="codeblock" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-B01B50BE-6574-5A81-BA25-8FDFEB2C5620"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-B01B50BE-6574-5A81-BA25-8FDFEB2C5620"><!-- --></a>// The constant calculations could be explicitly folded, but this illustrates
+// how the values are derived.
+const TUint blkSzLog2 = 9;                    
+const TUint blkSz = 1 &lt;&lt; blkSzLog2;
+const TInt minorBufLen = Max(KDiskSectorSize, blkSz);
+
+const TInt KMinBlocksInBuffer = 8;
+const TInt cchBufLen = KMinBlocksInBuffer &lt;&lt; blkSzLog2;
+
+TInt totalBufLen = minorBufLen + cchBufLen;
+
+// Allocate contiguous physical memory
+totalBufLen = Kern::RoundToPageSize(totalBufLen);
+
+TPhysAddr physAddr = 0;
+r = Epoc::AllocPhysicalRam(totalBufLen, physAddr);
+__KTRACE_OPT(KHARDWARE, Kern::Printf("mmc:ini:physical = %08x", physAddr));
+if (r != KErrNone)
+    {
+    return r;
+    }
+
+DPlatChunkHw* bufChunk = NULL;
+r = DPlatChunkHw::New(bufChunk, physAddr, totalBufLen, EMapAttrCachedWBRA|EMapAttrSupRw);
+
+if(r != KErrNone)
+    {
+    if (physAddr)
+        {
+        Epoc::FreePhysicalRam(physAddr, totalBufLen);
+        }
+    return r;
+    }
+          
+iMDBuf = reinterpret_cast&lt;TUint8*&gt;(bufChunk-&gt;LinearAddress());
+iMDBufLen = totalBufLen;
+</pre>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-CEF0EDF7-4B33-5452-8635-51C5319F78AE"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-CEF0EDF7-4B33-5452-8635-51C5319F78AE"><!-- --></a><strong>MachineInfo()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-3E5532A5-4645-3F77-A7A9-7AFF334FA5A4"><span class="apiname">DMMCStack::MachineInfo()</span></a>  </p>
+ <p>The
+function returns configuration information for the MultiMediaCard stack. </p>
+ <p>The
+function takes a reference to a <a href="GUID-3F9D89E8-44F0-35B3-9404-6CCAC79763E8.html"><span class="apiname">TMMCMachineInfo</span></a> object,
+and your implementation must fill the public data members of the object. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-F41EA0A6-1CBF-5AE2-9C66-DD6E3B7312E0"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-F41EA0A6-1CBF-5AE2-9C66-DD6E3B7312E0"><!-- --></a><strong>ProgramPeriodInMilliSeconds()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-C0998F1F-EE3B-32C1-9898-288EA1D71AC0"><span class="apiname">DMMCStack::ProgramPeriodInMilliSeconds()</span></a>  </p>
+ <p>When a data block is written to a card, the data is read into an
+internal buffer on the card and is then programmed into the payload memory.
+While the card is in <em>programming mode</em>, it cannot be read from, or written
+to, but it is possible to query its status using CMD13. </p>
+ <p>Immediately
+after a block of data is written by <samp class="codeph">CIMReadWriteBlocksSM()</samp>,
+the MultiMediaCard controller requests the card's state using CMD13. If the
+card is still in the programming state, then the state machine <samp class="codeph">ProgramTimerSM()</samp> launches
+a timer with the period returned by <samp class="codeph">ProgramPeriodInMilliSeconds()</samp>.
+The state of the card is periodically checked until it is no longer in programming
+mode. </p>
+ <p>For platforms that do not provide an interrupt to indicate when
+programming mode is finished, <samp class="codeph">ProgramPeriodInMilliSeconds()</samp> should
+return the interval, in milliseconds, to be used by the poll timer. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-A7EC6536-3822-58C8-9A65-B71FDDBA10F3"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-A7EC6536-3822-58C8-9A65-B71FDDBA10F3"><!-- --></a><strong>AdjustPartialRead()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-7FEC1574-5448-3DF5-8BD2-AABDBD0211C3"><span class="apiname">DMMCStack::AdjustPartialRead()</span></a>  </p>
+ <p>Some
+cards support a partial read feature, which is indicated by the <samp class="codeph">READ_BL_PARTIAL</samp> bit
+in the <samp class="codeph">CSD</samp> register. When this is the case, it is possible
+to read a section within a single physical block, without having to read the
+entire block. </p>
+ <p>The MultiMediaCard media driver uses this feature to
+read small amounts of data more quickly. However, many hardware implementations
+impose restrictions on the granularity of the data that can be read from the
+card. For example, they may use a 32-bit FIFO. </p>
+ <p>This function allows
+you to enforce the limits imposed by the hardware. </p>
+ <p>The <samp class="codeph">aStart</samp> and <samp class="codeph">aEnd</samp> arguments
+of <samp class="codeph">AdjustPartialRead()</samp> define the range on the card from
+which the media driver would like to read. Your implementation should return
+in <samp class="codeph">*aPhysStart</samp> and <samp class="codeph">*aPhysEnd</samp> the range that
+the hardware will allow to be read. </p>
+ <p>For example, to word align data,
+the function would be implemented using the following code: </p>
+ <pre class="codeblock" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-30DE526C-70C2-5118-BFBB-72759EFC8C93"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-30DE526C-70C2-5118-BFBB-72759EFC8C93"><!-- --></a>void AdjustPartialRead(const TMMCard* aCard, TUint32 aStart, TUint32 aEnd, TUint32* aPhysStart, TUint32* aPhysEnd);
+    {
+    ...
+    const TUint32 KWordMask = 3;
+    *aPhysStart = aStart &amp; ~KWordMask;
+    *aPhysEnd = (aEnd + KWordMask) &amp; ~KWordMask;
+    ...
+    }
+</pre>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-8A3E9782-C8D4-562D-9470-5CCE0ED1C303"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-8A3E9782-C8D4-562D-9470-5CCE0ED1C303"><!-- --></a><strong>GetBufferInfo()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-EC9B740A-3A07-35AB-BACE-2EC1F96EEF0F"><span class="apiname">DMMCStack::GetBufferInfo()</span></a>  </p>
+ <p>The
+MultiMediaCard media driver needs a memory buffer to perform data transfer
+operations, and this is, typically, allocated once only by the <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0B55A650-E9ED-56CB-B06F-B1113ACDF282">Init()</a> function when this stack object is initialized. </p>
+ <p>The
+MultiMediaCard media driver is created each time a card is inserted into a
+machine and destroyed when the card is removed, and it uses this function,
+each time it is created to get a pointer to the memory buffer, and to get
+its length. The MultiMediaCard media driver then uses this buffer, over its
+lifetime, for data transfer operations. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-BC742EB6-7063-5D00-B422-96B3772605D5"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-BC742EB6-7063-5D00-B422-96B3772605D5"><!-- --></a><strong>SetBusConfigDefaults()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-C7297E13-5F78-396D-842B-FB16D3424374"><span class="apiname">DMMCStack::SetBusConfigDefaults()</span></a>  </p>
+ <p>The function returns information about the MultiMediaCard bus configuration
+for this platform. </p>
+ <p>The function takes a <a href="GUID-F9432D7B-41C9-3048-AC50-B5BCF8BE11D0.html"><span class="apiname">TUint</span></a> value
+containing the bus speed that the controller intends to use, and a reference
+to a <a href="GUID-C0E2780A-47B3-31A2-827C-AF89C1B65F2E.html"><span class="apiname">TMMCBusConfig</span></a> object. The implementation of this function
+must fill the public data members of this object. See the class reference
+documentation for the data members. </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html"><span class="apiname">DMMCStack</span></a> has
+two private data members of type <a href="GUID-75FF770B-07D1-3C07-9577-5A37841E53E7.html"><span class="apiname">TMMCStackConfig</span></a>: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-A56BF364-F02F-54EA-80F8-E4AB5E7A10C9"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-A56BF364-F02F-54EA-80F8-E4AB5E7A10C9"><!-- --></a><p> <samp class="codeph">iMasterConfig</samp>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C94FFA4E-51C7-5CBA-BFBB-F692438412FE"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C94FFA4E-51C7-5CBA-BFBB-F692438412FE"><!-- --></a><p> <samp class="codeph">iConfig</samp>  </p>
+ </li>
+
+</ul>
+ <p>The information returned by the call to <samp class="codeph">SetBusConfigDefaults()</samp> is
+stored in <samp class="codeph">iMasterConfig</samp>'s <samp class="codeph">iBusConfig</samp> private
+data member. </p>
+ <p> <samp class="codeph">iMasterConfig</samp> contains the master bus
+configuration settings for the platform. Each time a new session is made current,
+the master bus configuration settings are merged with the specific bus configuration
+settings for that session, (as set up in the public data member <a href="GUID-0186BEDE-8E28-3F8C-8CAE-A8B92F41F47A.html#GUID-0186BEDE-8E28-3F8C-8CAE-A8B92F41F47A__GUID-73BC8CE4-593E-3BAC-909A-FB8F419895C8"><span class="apiname">DMMCSession::iConfig</span></a>),
+and the result is stored in <samp class="codeph">iConfig</samp>. It is these merged bus
+configuration settings that are used to configure the hardware interface.
+The platform specific layer can access these settings with a call to Master<a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-E0275614-109E-3803-A0AE-3313E1E0038B"><span class="apiname">DMMCStack::BusConfig()</span></a>. </p>
+ <p> <samp class="codeph"> SetBusConfigDefaults()</samp> is called at two stages in the execution of the macro CIM_UPDATE_ACQ to
+update the <samp class="codeph">iMasterConfig</samp> object. </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-5C98DB8C-60AF-5333-A250-5D6509D754E5"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-5C98DB8C-60AF-5333-A250-5D6509D754E5"><!-- --></a><p>First, it is called
+at the start of the card initialization stage with the bus speed argument, <samp class="codeph">aClock</samp>,
+set to the fOD rate (400kHz). </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0CD15184-15F8-5104-908F-612CCBCA953A"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0CD15184-15F8-5104-908F-612CCBCA953A"><!-- --></a><p>Second, it is called
+after the CSD registers for each card have been read with the bus speed argument, <samp class="codeph">aClock</samp>,
+set to the slowest maximum transfer rate (TRAN_SPEED) reported by any of the
+CSD registers. </p>
+ </li>
+
+</ul>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-49DF2E60-AE31-502E-B7CB-694AFAF69F1B"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-49DF2E60-AE31-502E-B7CB-694AFAF69F1B"><!-- --></a><strong> InitClockOff()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-BF94B298-7F72-33F7-A2F0-F19807BF2CDC"><span class="apiname">DMMCStack::InitClockOff()</span></a>  </p>
+ <p>Switches
+from identification mode of operation to data transfer mode operation. </p>
+ <p>When
+this function is called, the clock information in the <samp class="codeph">iBusConfig</samp> member
+(see <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-BC742EB6-7063-5D00-B422-96B3772605D5">SetBusConfigDefaults()</a>)
+will not have been updated to the new data transfer rate. </p>
+ <p>This function
+should, in general, just switch from open drain to push-pull bus mode, with
+the clock rate being changed at the start of <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-A48C1C16-B465-3DDA-9C83-00DEB8D27B68"><span class="apiname">DMMCStack::IssueMMCCommandSM()</span></a>,
+when <samp class="codeph">iBusConfig</samp> will be valid. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0DF60D11-AAD6-59E2-AE81-16E0DF96291B"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0DF60D11-AAD6-59E2-AE81-16E0DF96291B"><!-- --></a><strong> ASSPDisengage()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-36C720F9-DEAF-3896-A12A-2AE2581AA347"><span class="apiname">DMMCStack::ASSPDisengage()</span></a>  </p>
+ <p>This
+function is called by the platform independent layer each time a session has
+completed or has been aborted. </p>
+ <p>The function gives the platform specific
+layer the chance to free resources or disable any activities that were required
+to perform the session. </p>
+ <p>The implementation should not turn off the
+clock to the hardware interface as this will be turned off by the inactivity
+timer. Typically, the implementation disables DMA and interface interrupts,
+and forces the hardware interface into idle. </p>
+ <p>At the end of your implementation,
+you must add a call <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-3DFCBE96-E9F3-3FF3-97BC-A3A3024089BD"><span class="apiname">DMMCStack::ReportASSPDisengaged()</span></a> to
+report to the platform independent layer that platform specific layer resources
+have been disengaged. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-99AC4F3B-E273-515E-8690-983E98E17256"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-99AC4F3B-E273-515E-8690-983E98E17256"><!-- --></a><strong>ASSPReset()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-36D3F4D9-A2FC-3355-ABE0-31C9F7397E2D"><span class="apiname">DMMCStack::ASSPReset()</span></a>  </p>
+ <p>This
+function is called by the platform independent layer when the current session
+is being aborted, and platform specific asynchronous activity is to be cancelled.
+The function may also be called by the platform specific layer as part of
+the <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-65547330-E112-55F2-AD4A-9B9CA5617E33">DoPowerDown()</a> implementation. </p>
+ <p>The function gives the platform specific layer the chance to stop all activities
+on the host stack. It will, in general, perform the same operations as <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0DF60D11-AAD6-59E2-AE81-16E0DF96291B">ASSPDisengage()</a> but,
+in addition, will turn off the clock to the hardware interface and release
+any requested power requirements made on the power model, i.e. release any
+power requirements made by <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C976320E-80FF-50F8-A882-F89C74F76ED3">InitClockOnSM()</a>. </p>
+ <p>At the end of your implementation, you must add a call <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-3DFCBE96-E9F3-3FF3-97BC-A3A3024089BD"><span class="apiname">DMMCStack::ReportASSPDisengaged()</span></a> to
+report to the platform independent layer that platform specific layer resources
+have been disengaged. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-6EEE7EF6-4272-5116-BCEF-A852BB7B8FBD"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-6EEE7EF6-4272-5116-BCEF-A852BB7B8FBD"><!-- --></a><strong>CardDetect()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-02C4D1A0-6149-389D-9F31-3E7EBF1DCA66"><span class="apiname">DMMCStack::CardDetect()</span></a>  </p>
+ <p>Implement
+this function to report whether a card is present in a specified card socket. </p>
+ <p>This
+function takes a <a href="GUID-F9432D7B-41C9-3048-AC50-B5BCF8BE11D0.html"><span class="apiname">TUint</span></a> value containing the card socket
+that is to be queried. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3F34865D-5B16-5F53-AF9E-9F52DB5D0FB5"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3F34865D-5B16-5F53-AF9E-9F52DB5D0FB5"><!-- --></a><strong>WriteProtected()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-E7E97501-10E7-38E6-9F8C-2A62F260BA46"><span class="apiname">DMMCStack::WriteProtected()</span></a>  </p>
+ <p>Implement
+this function to report whether a card in a specified card socket is mechanically
+write protected. </p>
+ <p>This function takes a <a href="GUID-F9432D7B-41C9-3048-AC50-B5BCF8BE11D0.html"><span class="apiname">TUint</span></a> value
+containing the card socket that is to be queried. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-65547330-E112-55F2-AD4A-9B9CA5617E33"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-65547330-E112-55F2-AD4A-9B9CA5617E33"><!-- --></a><strong>DoPowerDown()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-3E90AF73-F4D3-34C5-B6D3-6BF69C6137C8"><span class="apiname">DMMCStack::DoPowerDown()</span></a>  </p>
+ <p>This
+function is called as part of the bus power down sequence: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E9E072D3-A2F7-5DD2-B7D9-A89840BBA914"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E9E072D3-A2F7-5DD2-B7D9-A89840BBA914"><!-- --></a><p>by the power model,
+in power standby and power emergency standby situations </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-1EFB0616-45B9-5EC2-9456-54F7D10D2894"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-1EFB0616-45B9-5EC2-9456-54F7D10D2894"><!-- --></a><p>when a door-open event
+occurs </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-83F42DEB-C6EE-5558-8907-CFD141461456"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-83F42DEB-C6EE-5558-8907-CFD141461456"><!-- --></a><p>when the bus inactivity
+timer has timed out </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0EA77E57-E2D0-599D-8E90-ECE1D21BC329"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0EA77E57-E2D0-599D-8E90-ECE1D21BC329"><!-- --></a><p>if a power supply unit
+(PSU) voltage check fails. </p>
+ </li>
+
+</ul>
+ <p>The function should stop all activities on the host stack, turn off
+the clock to the hardware interface and release any requested power requirements
+made on the power model. The function is very often implemented as a call
+of <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-99AC4F3B-E273-515E-8690-983E98E17256">ASSPReset()</a>. </p>
+ <p>The
+function should not turn off the MultiMediaCard power supply unit as this
+will be performed immediately afterwards by a call to the <a href="GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B.html#GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B__GUID-4DF0741F-B143-3B46-82BE-9CD0261C27E5"><span class="apiname">DMMCPsu::DoSetState()</span></a> derived
+class function from the platform independent layer. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C8C15101-4614-5DEC-A620-6EAE8EC463ED"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C8C15101-4614-5DEC-A620-6EAE8EC463ED"><!-- --></a><strong> DoPowerUpSM()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-791BCA03-61F3-3C1C-BA2D-D633A94AF299"><span class="apiname">DMMCStack::DoPowerUpSM()</span></a>  </p>
+ <p>This
+is a state machine function, called as a child function at the start of the <samp class="codeph">CIM_UPDATE_ACQ</samp> macro
+state machine. </p>
+ <p>The function should perform the necessary platform
+specific actions associated with powering up the bus. This includes turning
+on the MultiMediaCard PSU. However, the hardware interface clock should <em>not</em> be
+turned on as part of this function. </p>
+ <p>If the controller has to request
+power resources from the power model, e.g. where a fast system clock is required
+all the time the bus is powered, then this state machine function can be used
+to wait asynchronously for this resource to become available. </p>
+ <p>If the
+activity performed by this function completes successfully: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-7C64DB32-139B-5F45-9F2C-6693F9E16F83"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-7C64DB32-139B-5F45-9F2C-6693F9E16F83"><!-- --></a><p>it must call <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-40973A35-3A73-3DBD-9EB7-99CE55E6D694"><span class="apiname">DMMCStack::ReportPowerUp()</span></a>. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-42E872B5-EA6A-5901-AD93-5F9B99C81D69"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-42E872B5-EA6A-5901-AD93-5F9B99C81D69"><!-- --></a><p>it returns <a href="GUID-E7D46003-E502-39D1-AF52-83B87AE6930B.html"><span class="apiname">KMMCErrNone</span></a>. </p>
+ </li>
+
+</ul>
+ <p>The function should return <a href="GUID-E7D46003-E502-39D1-AF52-83B87AE6930B.html"><span class="apiname">KMMCErrNone</span></a> if it completes
+successfully or one of the other <a href="GUID-FF4AB1CF-7A2C-3FC6-B123-D6819E1BCDCA.html"><span class="apiname">TMMCErr</span></a> error codes. </p>
+ <p>See
+the general background information on <a href="GUID-80E0DB93-A96A-54A8-A201-E11935418BE7.html" title="Description of the structure and operation of state machines.">the
+state machine</a>. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C976320E-80FF-50F8-A882-F89C74F76ED3"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C976320E-80FF-50F8-A882-F89C74F76ED3"><!-- --></a><strong>InitClockOnSM()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-7B91EF52-26E5-333C-A037-B142B492BCC4"><span class="apiname">DMMCStack::InitClockOnSM()</span></a>  </p>
+ <p>This
+is a state machine function, called as part of the <samp class="codeph">CIM_UPDATE_ACQ</samp> macro
+state machine. </p>
+ <p>The function should turn on the clock to the hardware
+interface. The function is so named because this clock is always first turned
+on at the identification mode frequency. </p>
+ <p>The function is implemented
+as a state machine function because it may be necessary to include a short
+delay after the clock has been turned on to allow it to stabilize. </p>
+ <p>If
+it is necessary for the MultiMediaCard controller to request any power resources
+from the power model on this platform, for example, requesting a necessary
+system clock, then it should be performed as part of this function. In some
+cases, it may be necessary to wait for this power resource to become available. </p>
+ <p>At
+the <em>beginning</em> of your implementation, you must add a call <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-D797747A-0AF6-36B1-BD92-3D6950A3B7B4"><span class="apiname">DMMCStack::ReportASSPEngaged()</span></a> to
+report to the platform independent layer that platform specific layer resources
+have been engaged. </p>
+ <p>The function should return <a href="GUID-E7D46003-E502-39D1-AF52-83B87AE6930B.html"><span class="apiname">KMMCErrNone</span></a> if
+it completes successfully or one of the other <a href="GUID-FF4AB1CF-7A2C-3FC6-B123-D6819E1BCDCA.html"><span class="apiname">TMMCErr</span></a> error
+codes. </p>
+ <p>Note: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2474710D-C595-5331-9182-A2EF97A1EB27"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2474710D-C595-5331-9182-A2EF97A1EB27"><!-- --></a><p>the function is only
+called once for each invocation of the CIM_UPDATE_ACQ macro and the important
+thing to stress is that the interface clock is being turned on after a period
+when it has been off, and therefore often requires time to stabilize. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-FE92334D-757D-5C08-AF98-9E0912BA2820"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-FE92334D-757D-5C08-AF98-9E0912BA2820"><!-- --></a><p>In the course of executing
+a session, the MultiMediaCard controller may switch the clock more than once
+between the identification mode frequency and the data transfer mode frequency,
+but this function only ever gets called once. </p>
+ </li>
+
+</ul>
+ <p>See the general background information on <a href="GUID-80E0DB93-A96A-54A8-A201-E11935418BE7.html" title="Description of the structure and operation of state machines.">the
+state machine</a>. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-FABAED76-FC63-577B-9436-DC7C8978E2AE"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-FABAED76-FC63-577B-9436-DC7C8978E2AE"><!-- --></a><strong> IssueMMCCommandSM()</strong> </p>
+ <p> <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-A48C1C16-B465-3DDA-9C83-00DEB8D27B68"><span class="apiname">DMMCStack::IssueMMCCommandSM()</span></a>  </p>
+ <p>This
+is a <a href="GUID-80E0DB93-A96A-54A8-A201-E11935418BE7.html" title="Description of the structure and operation of state machines.">state machine</a> function
+that executes a single command over the bus. The implementation of this function
+is an important part in the process of porting the MultiMediaCard controller. </p>
+ <p>The
+input parameters for the command are passed via the current command descriptor,
+an instance of the <a href="GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A.html"><span class="apiname">TMMCCommandDesc</span></a> class, on the session’s
+command stack. The parameters contain information such as: the type of command,
+the response type, the command arguments, the data source/destination for
+data transfer commands etc. Use <a href="GUID-0186BEDE-8E28-3F8C-8CAE-A8B92F41F47A.html#GUID-0186BEDE-8E28-3F8C-8CAE-A8B92F41F47A__GUID-931547BD-665D-326A-92B5-909B2D57F8C6"><span class="apiname">DMMCSession::Command()</span></a> to
+get the current command descriptor. </p>
+ <p>Information about the command
+response, the number of bytes transferred etc., is passed back using the same
+command descriptor. Specifically, the platform independent layer relies on
+responses to the following commands being returned in the <a href="GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A.html#GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A__GUID-86553172-AE4E-3707-A0D2-8C2BB8880253"><span class="apiname">TMMCCommandDesc::iResponse</span></a> member,
+in big-endian format: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-45605105-B91A-506B-A0F9-A317CA84D5EF"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-45605105-B91A-506B-A0F9-A317CA84D5EF"><!-- --></a><p>Returns the OCR register
+value in response to a SEND_OP_COND command (CMD1). Note that there is <em>no
+CRC</em> with this response. Your code should ignore any CRC failure indication
+from the MultiMediaCard controller hardware, and just copy the response into <a href="GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A.html#GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A__GUID-86553172-AE4E-3707-A0D2-8C2BB8880253"><span class="apiname">TMMCCommandDesc::iResponse</span></a>. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3E8B7D20-71F1-5609-8A16-24C6E2A7186A"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3E8B7D20-71F1-5609-8A16-24C6E2A7186A"><!-- --></a><p>Returns the CID register
+value in response to an ALL_SEND_CID command (CMD2) and a SEND_CID command
+(CMD10). </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-8D051F10-65BB-57AF-8B75-247829DC239A"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-8D051F10-65BB-57AF-8B75-247829DC239A"><!-- --></a><p>Returns the CSD register
+value in response to a SEND_CSD command (CMD9). </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C899645F-8478-57BF-8E1E-58AC50EB9FE3"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C899645F-8478-57BF-8E1E-58AC50EB9FE3"><!-- --></a><p>Returns the card status
+in response to all R1 and R1b commands. </p>
+ </li>
+
+</ul>
+ <p>Note that you can use the functions <a href="GUID-32036692-8BA3-3AAF-9FD8-D135DFADAE77.html#GUID-32036692-8BA3-3AAF-9FD8-D135DFADAE77__GUID-D2EFC17B-FC2E-3FDC-AE7A-E2AA109D4B40"><span class="apiname">TMMC::BigEndian4Bytes()</span></a> and
+TMC::to help with conversion to big-endian format. </p>
+ <p>The function should
+return <a href="GUID-E7D46003-E502-39D1-AF52-83B87AE6930B.html"><span class="apiname">KMMCErrNone</span></a> if it completes successfully or one
+of the other <a href="GUID-FF4AB1CF-7A2C-3FC6-B123-D6819E1BCDCA.html"><span class="apiname">TMMCErr</span></a> error codes. </p>
+ <p>See also background
+information: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0667980A-4A9E-5BD0-952E-97AD4C83B939"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0667980A-4A9E-5BD0-952E-97AD4C83B939"><!-- --></a><p> <a href="GUID-C059F39F-BC53-5C92-B05E-863B8CF22859.html" title="The MultiMediaCard controller uses a TMMCCommandDesc object to contain command and parameter information when issuing a command over the bus.">Issuing
+commands</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-DF2B96DD-DD85-52C2-9EC8-30379E03D1DA"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-DF2B96DD-DD85-52C2-9EC8-30379E03D1DA"><!-- --></a><p> <a href="GUID-80E0DB93-A96A-54A8-A201-E11935418BE7.html" title="Description of the structure and operation of state machines.">The
+state machine</a>. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3A1E907E-A74D-59CB-A1D6-FEF4849EF2D5"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3A1E907E-A74D-59CB-A1D6-FEF4849EF2D5"><!-- --></a><h2 class="sectiontitle">DMMCPsu derived
+class</h2> <p>This class controls the MultiMediaCard socket's power supply.
+A class needs to be derived from this in the platform specific layer to handle
+the Variant specific functionality of the power supply. </p>
+ <p>This class
+has a number of pure virtual functions that need to be implemented in your
+Variant DLL. The diagram at <a href="GUID-BE6AFD38-5952-537F-848C-C76C8F5FA9BF.html#GUID-BE6AFD38-5952-537F-848C-C76C8F5FA9BF__GUID-92F5EBE4-C9AD-5D9A-A80E-9AFD1A09B6B3">MultiMediaCard
+controller basic structure</a> shows the class in context. </p>
+ <p>There
+is one virtual function with an empty default implementation that needs to
+be overridden. </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-025272EF-9DE8-5975-8993-006EE4D56E80"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-025272EF-9DE8-5975-8993-006EE4D56E80"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-6EB8EF1C-BCCB-54A1-8CBA-4E8A2A20CABE">DoCreate()</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-6BAFE3AA-6CCA-581B-A96C-D1FD89D1D8CD"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-6BAFE3AA-6CCA-581B-A96C-D1FD89D1D8CD"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-99529E84-17E1-5F23-9A1B-EBE3976D9B14">PsuInfo()</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-7419D681-D0CC-5CA7-8EE7-0D5A20779921"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-7419D681-D0CC-5CA7-8EE7-0D5A20779921"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-5809318D-E3E1-5261-AABA-604EBE72523F">DoSetState()</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E570E830-B57E-5A39-9EF1-CF68F3853AFF"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E570E830-B57E-5A39-9EF1-CF68F3853AFF"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-B5030D2E-A466-596C-A2C3-73F38CF9C1A7">DoCheckVoltage()</a>  </p>
+ </li>
+
+</ul>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-6EB8EF1C-BCCB-54A1-8CBA-4E8A2A20CABE"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-6EB8EF1C-BCCB-54A1-8CBA-4E8A2A20CABE"><!-- --></a><strong>DoCreate()</strong> </p>
+ <p> <a href="GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B.html#GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B__GUID-32771B9D-D2B8-33F5-AFC5-4476165C0A76"><span class="apiname">DMMCPsu::DoCreate()</span></a>  </p>
+ <p>The
+function is intended to perform hardware initialization on the MultiMediaCard
+power supply, for example, setting port direction registers. </p>
+ <p>The function
+is called after creation of the <a href="GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B.html"><span class="apiname">DMMCPsu</span></a> derived class instance,
+which is done during kernel initialization when the MultiMediaCard controller
+Variant DLL extension is loaded. </p>
+ <p>The function has a default implementation
+that just returns <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a>. </p>
+ <p>Your implementation
+should <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a> if the hardware initialization is successful,
+otherwise it should return one of the system-wide error codes to indicate
+initialization failure. Note that returning a value other than <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a> will
+cause the kernel to panic and to fail to boot. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-99529E84-17E1-5F23-9A1B-EBE3976D9B14"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-99529E84-17E1-5F23-9A1B-EBE3976D9B14"><!-- --></a><strong>PsuInfo()</strong> </p>
+ <p> <a href="GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B.html#GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B__GUID-C7600EDA-B564-31E2-835C-9C580A29FC1D"><span class="apiname">DMMCPsu::PsuInfo()</span></a>  </p>
+ <p>The
+function returns information about the MultiMediaCard power supply. </p>
+ <p>The
+function takes a reference to a <a href="GUID-E3BB783F-423F-352A-9B6E-FD23EC80AA8D.html"><span class="apiname">TPBusPsuInfo</span></a> object, and
+your implementation must fill the public data members of the object. </p>
+ <p>Note: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-B8527FE4-61BB-574A-A200-5EA083A76A6D"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-B8527FE4-61BB-574A-A200-5EA083A76A6D"><!-- --></a><p>You can use the constant <a href="GUID-3B63FFD6-AE21-366A-B435-AE6213AA2EE0.html"><span class="apiname">KMMCAdjustableOpVoltage</span></a> to
+set bit 31 in <a href="GUID-E3BB783F-423F-352A-9B6E-FD23EC80AA8D.html#GUID-E3BB783F-423F-352A-9B6E-FD23EC80AA8D__GUID-6B1E1CDD-A0E7-3AA5-989E-8D7A199ADE2A"><span class="apiname">TPBusPsuInfo::iVoltageSupported</span></a>. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-694DB272-C66E-5392-8C7E-DC1B875E9DD3"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-694DB272-C66E-5392-8C7E-DC1B875E9DD3"><!-- --></a><p>Set <a href="GUID-E3BB783F-423F-352A-9B6E-FD23EC80AA8D.html#GUID-E3BB783F-423F-352A-9B6E-FD23EC80AA8D__GUID-8C9792BC-8FAA-3DE5-8032-7546887FA8FB"><span class="apiname">TPBusPsuInfo::iNotLockedTimeOut</span></a> to
+0. </p>
+ </li>
+
+</ul>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-5809318D-E3E1-5261-AABA-604EBE72523F"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-5809318D-E3E1-5261-AABA-604EBE72523F"><!-- --></a><strong> DoSetState()</strong> </p>
+ <p> <a href="GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B.html#GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B__GUID-4DF0741F-B143-3B46-82BE-9CD0261C27E5"><span class="apiname">DMMCPsu::DoSetState()</span></a>  </p>
+ <p>The
+function is called to turn the PSU on or off. </p>
+ <p>The requested state
+of the PSU depends on the <a href="GUID-CD00D507-CC86-33BE-91A7-FAF7EAFD4840.html"><span class="apiname">TPBusPsuState</span></a> value passed to
+it. </p>
+ <p>If the PSU supports voltage adjustment, rather than a single fixed
+value, then the required voltage setting is contained in the protected data
+member <a href="GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B.html#GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B__GUID-7A625108-D5AE-301F-9CAB-2625DAD0C0B0"><span class="apiname">DMMCPsu::iVoltageSetting</span></a>. </p>
+ <p>Note that the
+stack may call this function to request the power to be turned on when it
+is already on. You should check for this and do nothing if the power is already
+in the requested state. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-B5030D2E-A466-596C-A2C3-73F38CF9C1A7"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-B5030D2E-A466-596C-A2C3-73F38CF9C1A7"><!-- --></a><strong>DoCheckVoltage()</strong> </p>
+ <p> <a href="GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B.html#GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B__GUID-17AC2A1C-5430-38B1-BD3F-966CE4936940"><span class="apiname">DMMCPsu::DoCheckVoltage()</span></a>  </p>
+ <p>The
+function is called to check that the voltage level of the PSU is as expected. </p>
+ <p>Checking
+the voltage level may be a long running operation (e.g. using an ADC), and
+it may not always be appropriate to perform and complete the check directly
+within this function. </p>
+ <p>When voltage checking is complete, either synchronously
+in this function, or asynchronously at some later stage, the result should
+be returned by calling the base class function <a href="GUID-A8B5FB5A-4709-3F29-B2CB-81FC5B0E7D63.html#GUID-A8B5FB5A-4709-3F29-B2CB-81FC5B0E7D63__GUID-5643935F-9E97-35B0-9D92-88CA613F0016"><span class="apiname">DPBusPsuBase::ReceiveVoltageCheckResult()</span></a>.
+Pass <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a> to indicate a successful check; pass <a href="GUID-A94AC24A-EADF-3913-8345-708ED637968E.html"><span class="apiname">KErrGeneral</span></a> to
+indicate a failed check. </p>
+ <p>Note that this function is not called as
+part of <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-791BCA03-61F3-3C1C-BA2D-D633A94AF299"><span class="apiname">DMMCStack::DoPowerUpSM()</span></a> processing, which means
+that it is not possible to use this function to introduce a delay until power
+is stable when the PSU is turned on. If such a delay is required while the
+power lines stabilize, then it will be necessary to make this function part
+of the DoPowerUpSM state machine. </p>
+ </div>
+
+<div class="section" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C80E57B1-933B-55D7-949B-E68DB9B96B94"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C80E57B1-933B-55D7-949B-E68DB9B96B94"><!-- --></a><h2 class="sectiontitle">DMMCMediaChange
+derived class</h2> <p>This class provides support for dealing with media
+change events, i.e. the insertion and removal of removable media. </p>
+ <p>A
+class needs to be derived from this in the platform specific layer to handle
+the Variant specific functionality. </p>
+ <p>This class has a number of pure
+virtual functions that need to be implemented in your Variant DLL. The diagram
+at <a href="GUID-BE6AFD38-5952-537F-848C-C76C8F5FA9BF.html#GUID-BE6AFD38-5952-537F-848C-C76C8F5FA9BF__GUID-92F5EBE4-C9AD-5D9A-A80E-9AFD1A09B6B3">MultiMediaCard
+controller basic structure</a> shows the class in context. </p>
+ <p>There
+is one virtual function with an empty default implementation that needs to
+be overridden. </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-1BAEFE73-3B73-5BA7-872D-89C3B3F8BF75"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-1BAEFE73-3B73-5BA7-872D-89C3B3F8BF75"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-BFC23CC1-102F-5740-A608-CF91C2BC3897">Create()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C1235A87-68BB-5AF4-80F6-DFB7DBA8432C"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C1235A87-68BB-5AF4-80F6-DFB7DBA8432C"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-726A2A5F-18D3-55BD-9B92-0676266794C6">MediaState()</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-BBAEC56C-DBA7-586C-A9CC-1E4E70A81096"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-BBAEC56C-DBA7-586C-A9CC-1E4E70A81096"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-1ADD0F5A-B561-54AE-BB2F-81AC3E8D81A4">DoDoorOpen()</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-22D6992C-868B-5E18-9AA0-624EA51DB529"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-22D6992C-868B-5E18-9AA0-624EA51DB529"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-58829228-43A9-546B-8CFD-31DF8FBB0078">DoDoorClosed()</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-04B7E650-7DA8-5F61-9D8E-89FC2B93AE20"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-04B7E650-7DA8-5F61-9D8E-89FC2B93AE20"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-F91B9434-5B90-5221-B5E6-D57F50391D81">ForceMediaChange()</a>  </p>
+ </li>
+
+</ul>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-BFC23CC1-102F-5740-A608-CF91C2BC3897"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-BFC23CC1-102F-5740-A608-CF91C2BC3897"><!-- --></a><strong>Create()</strong> </p>
+ <p> <a href="GUID-2F974AD8-551B-35F0-B72C-99122913714D.html#GUID-2F974AD8-551B-35F0-B72C-99122913714D__GUID-F96EF34B-7B38-37DC-9B34-E0D4D1963622"><span class="apiname">DMMCMediaChange::Create()</span></a>  </p>
+ <p>The
+function is intended to perform hardware initialization on the MultiMediaCard
+media change hardware, for example, setting port direction registers, binding
+to the door open interrupt etc. </p>
+ <p>The function is called after creation
+of the <a href="GUID-2F974AD8-551B-35F0-B72C-99122913714D.html"><span class="apiname">DMMCMediaChange</span></a> derived class instance, which is
+done during kernel initialization when the MultiMediaCard controller Variant
+DLL extension is loaded. </p>
+ <p>The function has a default implementation
+that just returns <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a>. </p>
+ <p>Your implementation
+should return <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a> if the hardware initialization is
+successful, otherwise it should return one of the system-wide error codes
+to indicate initialization failure. Note that returning a value other than <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a> will
+cause the kernel to panic and to fail to boot. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-726A2A5F-18D3-55BD-9B92-0676266794C6"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-726A2A5F-18D3-55BD-9B92-0676266794C6"><!-- --></a><strong> MediaState()</strong> </p>
+ <p> <a href="GUID-2F974AD8-551B-35F0-B72C-99122913714D.html#GUID-2F974AD8-551B-35F0-B72C-99122913714D__GUID-A951EF31-83F1-3E07-A5BD-5342B6125ACF"><span class="apiname">DMMCMediaChange::MediaState()</span></a>  </p>
+ <p>The
+function should return the current state of the media, i.e. whether the media
+door is open or closed. To indicate the state, it should return one of the <a href="GUID-49F96729-2DDB-37E0-AE39-9BEF2B7FF7F9.html"><span class="apiname">TMediaState</span></a> enum
+values. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-1ADD0F5A-B561-54AE-BB2F-81AC3E8D81A4"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-1ADD0F5A-B561-54AE-BB2F-81AC3E8D81A4"><!-- --></a><strong>DoDoorOpen()</strong> </p>
+ <p> <a href="GUID-2F974AD8-551B-35F0-B72C-99122913714D.html#GUID-2F974AD8-551B-35F0-B72C-99122913714D__GUID-6F734353-3458-3A8B-93E7-317674A1CAA4"><span class="apiname">DMMCMediaChange::DoDoorOpen()</span></a>  </p>
+ <p>This
+function should handle a media door open event. What needs to be done depends
+on how door open and door closed events are detected. </p>
+ <p>The most common
+pattern is where the platform hardware is capable of generating an interrupt
+when a door open event occurs, but cannot generate an interrupt when a door
+closed event occurs. In this situation, the hardware provides a readable door
+status that can be checked for the door closed state on a periodic basis (i.e.
+polling). </p>
+ <p>Assuming this, <samp class="codeph">DoDoorOpen()</samp> would need
+to enable a tick timer to poll for the door closing. The timer callback function
+would check the state of the door, and if this showed a closed door, the timer
+would be disabled and the function <a href="GUID-C122D579-BB08-3084-A30E-DC857D6E7282.html#GUID-C122D579-BB08-3084-A30E-DC857D6E7282__GUID-4F53C9F7-89C5-3CB6-A3D5-7DF40DAFF37F"><span class="apiname">DMediaChangeBase::DoorClosedService()</span></a> called.
+This results in a call to <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-58829228-43A9-546B-8CFD-31DF8FBB0078">DoDoorClosed()</a>. </p>
+ <p>Note that the door open interrupt is cleared before this function is
+called. The interrupt results in a call to <a href="GUID-C122D579-BB08-3084-A30E-DC857D6E7282.html#GUID-C122D579-BB08-3084-A30E-DC857D6E7282__GUID-6197984B-3884-367B-AE91-8E7E25203C95"><span class="apiname">DMediaChangeBase::DoorOpenService()</span></a>,
+which in turn results in a call to this function <samp class="codeph">DoDoorOpen()</samp>. </p>
+ <p>Your
+implementation would necessarily be different if an open door event could
+not be signalled by an interrupt and a tick timer were to be used to poll
+for an open door status. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-58829228-43A9-546B-8CFD-31DF8FBB0078"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-58829228-43A9-546B-8CFD-31DF8FBB0078"><!-- --></a><strong>DoDoorClosed()</strong> </p>
+ <p> <a href="GUID-2F974AD8-551B-35F0-B72C-99122913714D.html#GUID-2F974AD8-551B-35F0-B72C-99122913714D__GUID-F26714BC-6648-349D-812D-6FD911602754"><span class="apiname">DMMCMediaChange::DoDoorClosed()</span></a>  </p>
+ <p>This
+function should handle a media door closed event. What needs to be done depends
+on how door open and door closed events are detected. </p>
+ <p>The most common
+pattern is where the platform hardware is capable of generating an interrupt
+when a door open event occurs, but cannot generate an interrupt when a door
+closed event occurs. In this situation, the hardware provides a readable door
+status that can be checked for the door closed state on a periodic basis (i.e.
+polling). </p>
+ <p>Assuming this, <samp class="codeph">DoDoorClosed()</samp> would be
+called by the timer callback function established by <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-1ADD0F5A-B561-54AE-BB2F-81AC3E8D81A4">DoDoorOpen()</a> when the door status indicates a closed door; the function
+would need to re-enable the door open interrupt. </p>
+ <p>Your implementation
+would necessarily be different if a closed door event were to be signalled
+by an interrupt. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-F91B9434-5B90-5221-B5E6-D57F50391D81"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-F91B9434-5B90-5221-B5E6-D57F50391D81"><!-- --></a><strong> ForceMediaChange()</strong> </p>
+ <p> <a href="GUID-2F974AD8-551B-35F0-B72C-99122913714D.html#GUID-2F974AD8-551B-35F0-B72C-99122913714D__GUID-2DB81D37-C930-3B3C-A64E-B734039A2C95"><span class="apiname">DMMCMediaChange::ForceMediaChange()</span></a>  </p>
+ <p>This function is called by the local media device driver to force a remount
+of the media device. For example to reopen a media driver in secure mode. </p>
+ <p>It
+should result in the same sequence of operations as would occur if a door
+open event had taken place; for example, disabling the door open interrupt
+and calling <a href="GUID-C122D579-BB08-3084-A30E-DC857D6E7282.html#GUID-C122D579-BB08-3084-A30E-DC857D6E7282__GUID-6197984B-3884-367B-AE91-8E7E25203C95"><span class="apiname">DMediaChangeBase::DoorOpenService()</span></a>. </p>
+ </div>
+
+<div class="section" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-7E709B21-8D38-5041-846F-CB7983B66834"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-7E709B21-8D38-5041-846F-CB7983B66834"><!-- --></a><h2 class="sectiontitle">TMMCardControllerInterface
+derived class (The factory class)</h2> <p>This is a class, also known as <a href="GUID-BE6AFD38-5952-537F-848C-C76C8F5FA9BF.html#GUID-BE6AFD38-5952-537F-848C-C76C8F5FA9BF__GUID-26CFDD03-A4C4-5C96-88D4-5E750FDF69A3">the
+controller factory</a> that is responsible for deciding which peripheral
+bus sockets are sockets that have been designated as a MultiMediaCard sockets
+on this platform. It is also responsible for creating the platform-specific
+layer objects associated with those MultiMediaCard sockets, i.e. the DMMCSocket,
+DMMCStack, DMMCMediaChange, and DMMCPsu objects. </p>
+ <p>This class defines
+a number of pure virtual functions that need to be implemented in your Variant
+DLL to provide the functionality that is specific to your platform. </p>
+ <p>An
+instance of your <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html"><span class="apiname">TMMCardControllerInterface</span></a> derived class
+is created in the <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-732EDE1D-452A-5A48-B5DB-1196C5F8BEBD">Variant
+DLL entry point code</a>. </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-61BF196A-EFD3-57E1-98C2-A5B6350AC82E"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-61BF196A-EFD3-57E1-98C2-A5B6350AC82E"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2477BA25-2ADD-55CB-93F2-84F114221EBA">IsMMCSocket()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0FED2860-6710-517D-BB60-7FCBD043CEFB"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0FED2860-6710-517D-BB60-7FCBD043CEFB"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-829E686F-58F9-56A9-9EC4-CD59B14E127B">NewSocket()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3213A9CF-3155-513D-9F29-AB573018F23B"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3213A9CF-3155-513D-9F29-AB573018F23B"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E0F612EB-85BC-533D-A71C-3FC93D9CC708">NewStack()</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-9C8219D2-67EF-55B0-B01E-ACB2B0AC63CB"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-9C8219D2-67EF-55B0-B01E-ACB2B0AC63CB"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-33A9C3DE-80EF-5895-BC7D-EA2ED6EB083B">MediaChangeID()</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-B8309E5D-7F8A-5B62-81B3-6679AFBC9319"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-B8309E5D-7F8A-5B62-81B3-6679AFBC9319"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-6B1FE81F-1497-5447-9286-B0BE54AE6831">NewMediaChange()</a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-62725219-BAD2-528E-BC6A-84ACBA0A5C87"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-62725219-BAD2-528E-BC6A-84ACBA0A5C87"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E969F613-01A3-54A7-8CC6-67F4A8E9558F">VccID()</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-67AE2495-BCF2-51B6-9F52-78FA36A65F2A"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-67AE2495-BCF2-51B6-9F52-78FA36A65F2A"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-083F38DB-AC65-5257-B169-2099194D3082">NewVcc()</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-428FA30E-1E9A-50EA-BE3F-02E9B279E868"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-428FA30E-1E9A-50EA-BE3F-02E9B279E868"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-81A8BF8E-FB8B-596D-8C9A-690CD6449C12">Init()</a>  </p>
+ </li>
+
+</ul>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2477BA25-2ADD-55CB-93F2-84F114221EBA"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2477BA25-2ADD-55CB-93F2-84F114221EBA"><!-- --></a><strong>IsMMCSocket()</strong> </p>
+ <p> <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-5EC9F2EE-5D14-37F9-9EFE-95BD1062C681"><span class="apiname">TMMCardControllerInterface::IsMMCSocket()</span></a>  </p>
+ <p>Implement this function to indicate whether the peripheral bus socket, as
+identified by the specified peripheral bus socket number, is designated as
+a MultiMediaCard socket on this platform. It should return <a href="GUID-781E8158-805B-3784-8FED-D7A191822FC3.html"><span class="apiname">ETrue</span></a> if
+the socket has been so designated, and return <a href="GUID-A759CA2D-8327-348F-9337-4886E619D920.html"><span class="apiname">EFalse</span></a> if
+not. </p>
+ <p>The function is called from <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-2C6EA849-1B62-3158-A328-DB2A7149346C"><span class="apiname">TMMCardControllerInterface::Create()</span></a>,
+which passes a socket number that can fall into the range 0 to <a href="GUID-2C5A5F8F-381C-3B99-AADE-44474E629CC4.html"><span class="apiname">KMaxPBusSockets</span></a>. </p>
+ <p>Internally,
+Symbian platform reserves space for an array of pointers to <a href="GUID-C988CAE6-9073-3851-A0B0-5479D1A34CFB.html"><span class="apiname">DPBusSocket</span></a> objects,
+and this function allows the platform specific layer to identify which slot
+is to be used for the <a href="GUID-45B97680-1756-3559-8A2D-2F2E851AD6A7.html"><span class="apiname">DMMCSocket</span></a> object. </p>
+ <pre class="codeblock" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-F1E0478A-8CE8-5E2F-87F8-AAFCCCE8A042"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-F1E0478A-8CE8-5E2F-87F8-AAFCCCE8A042"><!-- --></a>GLDEF_D DPBusSocket* TheSockets[KMaxPBusSockets];</pre>
+ <p>(This
+array is internal to Symbian platform.) </p>
+ <p>If, on this platform, a socket
+has been designated as a MultiMediaCard stack, then the function not only
+returns <a href="GUID-781E8158-805B-3784-8FED-D7A191822FC3.html"><span class="apiname">ETrue</span></a>, but also provides the media information
+for that socket, by filling in the members of the <a href="GUID-FC0F974E-9ABB-348B-9AE9-778B3A1F413A.html"><span class="apiname">SMediaDeviceInfo</span></a> object
+passed in. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-829E686F-58F9-56A9-9EC4-CD59B14E127B"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-829E686F-58F9-56A9-9EC4-CD59B14E127B"><!-- --></a><strong>NewSocket()</strong> </p>
+ <p> <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-90615A9A-BFC2-3E1B-B2AC-7D1CF322FC65"><span class="apiname">TMMCardControllerInterface::NewSocket()</span></a>  </p>
+ <p>Implement
+this function to create, and return a pointer to, an instance of the <a href="GUID-45B97680-1756-3559-8A2D-2F2E851AD6A7.html"><span class="apiname">DMMCSocket</span></a> class.
+This can be a class derived from <samp class="codeph">DMMCSocket</samp>, but this should
+rarely be necessary. </p>
+ <p>The function is called from <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-2C6EA849-1B62-3158-A328-DB2A7149346C"><span class="apiname">TMMCardControllerInterface::Create()</span></a>. </p>
+ <p>If
+you create a <a href="GUID-45B97680-1756-3559-8A2D-2F2E851AD6A7.html"><span class="apiname">DMMCSocket</span></a> object, simply forward the peripheral
+bus socket number and pointer to the password store; there is no need to do
+anything with them. </p>
+ <p>If you create an instance of a <a href="GUID-45B97680-1756-3559-8A2D-2F2E851AD6A7.html"><span class="apiname">DMMCSocket</span></a> derived
+class, then just pass the socket number and pointer to the <samp class="codeph">DMMCSocket</samp> constructor
+in your constructor's ctor list. </p>
+ <p>Note: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-FA8D57D9-0827-5090-A12B-A47C936B6F70"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-FA8D57D9-0827-5090-A12B-A47C936B6F70"><!-- --></a><p>The socket number can
+fall into the range 0 to <a href="GUID-2C5A5F8F-381C-3B99-AADE-44474E629CC4.html"><span class="apiname">KMaxPBusSockets</span></a>, and is a value
+for which <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2477BA25-2ADD-55CB-93F2-84F114221EBA">IsMMCSocket()</a> returned <a href="GUID-781E8158-805B-3784-8FED-D7A191822FC3.html"><span class="apiname">ETrue</span></a>. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3C4FCA1F-558D-5964-91F5-98588694DA70"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3C4FCA1F-558D-5964-91F5-98588694DA70"><!-- --></a><p>This function is only
+called for sockets that are associated with MultiMediaCard devices as reported
+by the function <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2477BA25-2ADD-55CB-93F2-84F114221EBA">IsMMCSocket()</a>. </p>
+ </li>
+
+</ul>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E0F612EB-85BC-533D-A71C-3FC93D9CC708"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E0F612EB-85BC-533D-A71C-3FC93D9CC708"><!-- --></a><strong>NewStack()</strong> </p>
+ <p> <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-E2F99378-DD63-3BE0-8550-66EBF2C5D087"><span class="apiname">TMMCardControllerInterface::NewStack()</span></a>  </p>
+ <p>Implement
+this function to create, and return a pointer to, an instance of a <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-4C6CA873-A798-5C79-8838-0CC3C9E914FB">DMMCStack derived class</a>. </p>
+ <p>The function is called from <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-2C6EA849-1B62-3158-A328-DB2A7149346C"><span class="apiname">TMMCardControllerInterface::Create()</span></a>. </p>
+ <p>The
+peripheral bus socket number and pointer to the socket object should be forwarded
+to the <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html"><span class="apiname">DMMCStack</span></a> constructor in your class constructor's
+ctor list. </p>
+ <p>Note: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-CE363D03-6FEA-5AFE-A085-98D0FBAA9D52"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-CE363D03-6FEA-5AFE-A085-98D0FBAA9D52"><!-- --></a><p>The socket number can
+fall into the range 0 to <a href="GUID-2C5A5F8F-381C-3B99-AADE-44474E629CC4.html"><span class="apiname">KMaxPBusSockets</span></a>, and is a value
+for which <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2477BA25-2ADD-55CB-93F2-84F114221EBA">IsMMCSocket()</a> returned <a href="GUID-781E8158-805B-3784-8FED-D7A191822FC3.html"><span class="apiname">ETrue</span></a>. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-7F8F2267-E8C3-5AC5-92AB-7D3179BA6D10"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-7F8F2267-E8C3-5AC5-92AB-7D3179BA6D10"><!-- --></a><p>The socket is the object
+created by <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-829E686F-58F9-56A9-9EC4-CD59B14E127B">NewSocket()</a>. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-DF7C2369-D225-54E4-B6F1-D444343E7084"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-DF7C2369-D225-54E4-B6F1-D444343E7084"><!-- --></a><p>This function is only
+called for sockets that are associated with MultiMediaCard devices as reported
+by the function <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2477BA25-2ADD-55CB-93F2-84F114221EBA">IsMMCSocket()</a>. </p>
+ </li>
+
+</ul>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-33A9C3DE-80EF-5895-BC7D-EA2ED6EB083B"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-33A9C3DE-80EF-5895-BC7D-EA2ED6EB083B"><!-- --></a><strong>MediaChangeID()</strong> </p>
+ <p> <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-10B49F15-8ED5-3CA9-873A-788B87078367"><span class="apiname">TMMCardControllerInterface::MediaChangeID()</span></a>  </p>
+ <p>Implement this function to report which media change object is to be
+associated with the specified peripheral bus socket number. </p>
+ <p>The function
+is called from <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-2C6EA849-1B62-3158-A328-DB2A7149346C"><span class="apiname">TMMCardControllerInterface::Create()</span></a>. </p>
+ <p>The
+media change object is represented by a number, which is simply an index value
+that ranges from 0 to <a href="GUID-92555AA1-73A5-3F88-8227-8D20C977F046.html"><span class="apiname">KMaxMediaChanges</span></a>. Internally, Symbian
+platform reserves space for an array of pointers to <a href="GUID-C122D579-BB08-3084-A30E-DC857D6E7282.html"><span class="apiname">DMediaChangeBase</span></a> objects,
+and this function allows the platform specific layer to identify which slot
+is to be used for the <a href="GUID-2F974AD8-551B-35F0-B72C-99122913714D.html"><span class="apiname">DMMCMediaChange</span></a> object that will
+correspond to the specified socket number. </p>
+ <pre class="codeblock" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-08AE1956-86E0-544A-A95C-0D16DE6694D3"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-08AE1956-86E0-544A-A95C-0D16DE6694D3"><!-- --></a>GLDEF_D DMediaChangeBase* TheMediaChanges[KMaxMediaChanges];</pre>
+ <p>(This array is internal to Symbian platform.) </p>
+ <p>Note: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-1A4ED330-90E5-5215-8149-093987DD5D9B"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-1A4ED330-90E5-5215-8149-093987DD5D9B"><!-- --></a><p>The socket number can
+fall into the range 0 to <a href="GUID-2C5A5F8F-381C-3B99-AADE-44474E629CC4.html"><span class="apiname">KMaxPBusSockets</span></a>, and is a value
+for which <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2477BA25-2ADD-55CB-93F2-84F114221EBA">IsMMCSocket()</a> returned <a href="GUID-781E8158-805B-3784-8FED-D7A191822FC3.html"><span class="apiname">ETrue</span></a>. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-5EA3662D-82B2-529B-8DF4-2EAA9429990A"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-5EA3662D-82B2-529B-8DF4-2EAA9429990A"><!-- --></a><p>This function is only
+called for sockets that are associated with MultiMediaCard devices as reported
+by the function <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2477BA25-2ADD-55CB-93F2-84F114221EBA">IsMMCSocket()</a>. </p>
+ </li>
+
+</ul>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-6B1FE81F-1497-5447-9286-B0BE54AE6831"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-6B1FE81F-1497-5447-9286-B0BE54AE6831"><!-- --></a><strong>NewMediaChange()</strong> </p>
+ <p> <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-2961273F-0D5A-3B9E-94D8-1FE216A57985"><span class="apiname">TMMCardControllerInterface::NewMediaChange()</span></a>  </p>
+ <p>Implement this function to create, and return a pointer to, an instance
+of a <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C80E57B1-933B-55D7-949B-E68DB9B96B94">DMMCMediaChange
+derived class</a>. </p>
+ <p>The function is called from <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-2C6EA849-1B62-3158-A328-DB2A7149346C"><span class="apiname">TMMCardControllerInterface::Create()</span></a>. </p>
+ <p>The
+media change number should be forwarded to the <a href="GUID-2F974AD8-551B-35F0-B72C-99122913714D.html"><span class="apiname">DMMCMediaChange</span></a> constructor
+in your class constructor's ctor list. </p>
+ <p>Note: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-69B6384E-1B3C-567B-89AD-E0BE42E1F043"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-69B6384E-1B3C-567B-89AD-E0BE42E1F043"><!-- --></a><p>The media change number
+can fall into the range 0 to <a href="GUID-92555AA1-73A5-3F88-8227-8D20C977F046.html"><span class="apiname">KMaxMediaChanges</span></a>, and is the
+value returned by <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-33A9C3DE-80EF-5895-BC7D-EA2ED6EB083B">MediaChangeID()</a>. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-FD2DA86D-5D0E-5661-AC09-55F10087D7A2"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-FD2DA86D-5D0E-5661-AC09-55F10087D7A2"><!-- --></a><p>This function is only
+called for sockets that are associated with MultiMediaCard devices as reported
+by the function <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2477BA25-2ADD-55CB-93F2-84F114221EBA">IsMMCSocket()</a>. </p>
+ </li>
+
+</ul>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E969F613-01A3-54A7-8CC6-67F4A8E9558F"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E969F613-01A3-54A7-8CC6-67F4A8E9558F"><!-- --></a><strong>VccID()</strong> </p>
+ <p> <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-1553B339-4171-396B-89E6-6C47C539D21F"><span class="apiname">TMMCardControllerInterface::VccID()</span></a>  </p>
+ <p>Implement
+this function to report which power supply unit (PSU) object is to be associated
+with the specified peripheral bus socket number. </p>
+ <p>The function is called
+from <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-2C6EA849-1B62-3158-A328-DB2A7149346C"><span class="apiname">TMMCardControllerInterface::Create()</span></a>. </p>
+ <p>The
+PSU object is represented by a number, which is simply an index value that
+ranges from 0 to <a href="GUID-E5DEB888-EC0E-3160-BA7D-76954B282D43.html"><span class="apiname">KMaxPBusVccs</span></a>. Internally, Symbian platform
+reserves space for an array of pointers to <a href="GUID-A8B5FB5A-4709-3F29-B2CB-81FC5B0E7D63.html"><span class="apiname">DPBusPsuBase</span></a> objects,
+and this function allows the platform specific layer to identify which slot
+is to be used for the <a href="GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B.html"><span class="apiname">DMMCPsu</span></a> object that will correspond
+to the specified socket number. </p>
+ <pre class="codeblock" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-99CD9798-2CFB-533D-82E0-352B84FA5AC9"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-99CD9798-2CFB-533D-82E0-352B84FA5AC9"><!-- --></a>GLDEF_D DPBusPsuBase* TheVccs[KMaxPBusVccs];
+</pre>
+ <p>(This array is internal to Symbian platform.) </p>
+ <p>Note: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2C77F138-1444-5815-AB12-16D3ED6D908E"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2C77F138-1444-5815-AB12-16D3ED6D908E"><!-- --></a><p>The socket number can
+fall into the range 0 to <a href="GUID-2C5A5F8F-381C-3B99-AADE-44474E629CC4.html"><span class="apiname">KMaxPBusSockets</span></a>, and is a value
+for which <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2477BA25-2ADD-55CB-93F2-84F114221EBA">IsMMCSocket()</a> returned <a href="GUID-781E8158-805B-3784-8FED-D7A191822FC3.html"><span class="apiname">ETrue</span></a>. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-F8F4E84D-C46D-5547-AD19-61FB30E2CC3F"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-F8F4E84D-C46D-5547-AD19-61FB30E2CC3F"><!-- --></a><p>This function is only
+called for sockets that are associated with MultiMediaCard devices as reported
+by the function <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2477BA25-2ADD-55CB-93F2-84F114221EBA">IsMMCSocket()</a>. </p>
+ </li>
+
+</ul>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-083F38DB-AC65-5257-B169-2099194D3082"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-083F38DB-AC65-5257-B169-2099194D3082"><!-- --></a><strong>NewVcc()</strong> </p>
+ <p> <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-600A5477-E99A-39BC-9982-D54C07A528BE"><span class="apiname">TMMCardControllerInterface::NewVcc()</span></a>  </p>
+ <p>The
+function should create, and return a pointer to, an instance of a <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3A1E907E-A74D-59CB-A1D6-FEF4849EF2D5">DMMCPsu derived class</a>. </p>
+ <p>The function is called from <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-2C6EA849-1B62-3158-A328-DB2A7149346C"><span class="apiname">TMMCardControllerInterface::Create()</span></a>. </p>
+ <p>The
+Power Supply Unit (PSU) number and the media change number should be forwarded
+to the <a href="GUID-FBCEFDB6-28FF-3201-8E13-F12E3759E36B.html"><span class="apiname">DMMCPsu</span></a> constructor in your class constructor's
+ctor list. </p>
+ <p>Note: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-833A0119-6A98-5F5F-BAEE-5070C7C23A55"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-833A0119-6A98-5F5F-BAEE-5070C7C23A55"><!-- --></a><p>The PSU number can fall
+into the range 0 to <a href="GUID-E5DEB888-EC0E-3160-BA7D-76954B282D43.html"><span class="apiname">KMaxPBusVccs</span></a>, and is the value returned
+by <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E969F613-01A3-54A7-8CC6-67F4A8E9558F">VccID()</a>. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-25D7430A-2C12-50CF-BF84-FD2309732FC8"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-25D7430A-2C12-50CF-BF84-FD2309732FC8"><!-- --></a><p>The media change number
+can fall into the range 0 to <a href="GUID-92555AA1-73A5-3F88-8227-8D20C977F046.html"><span class="apiname">KMaxMediaChanges</span></a>, and is the
+value returned by <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-33A9C3DE-80EF-5895-BC7D-EA2ED6EB083B">MediaChangeID()</a>. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-A8908747-E292-5D01-91E2-045DE2F341B2"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-A8908747-E292-5D01-91E2-045DE2F341B2"><!-- --></a><p>This function is only
+called for sockets that are associated with MultiMediaCard devices as reported
+by the function <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2477BA25-2ADD-55CB-93F2-84F114221EBA">IsMMCSocket()</a>. </p>
+ </li>
+
+</ul>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-81A8BF8E-FB8B-596D-8C9A-690CD6449C12"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-81A8BF8E-FB8B-596D-8C9A-690CD6449C12"><!-- --></a><strong>Init()</strong> </p>
+ <p> <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html#GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A__GUID-1F0C99EC-D8A9-304A-A738-BACAB5C766A6"><span class="apiname">TMMCardControllerInterface::Init()</span></a>  </p>
+ <p>Implement
+this function to perform any initialization that the platform specific layer
+needs to do. </p>
+ <p>It should return <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a> to indicate
+successful completion, or return one of the other system-wide error codes
+to indicate initialization failure. </p>
+ <p>Note that you should <em>not</em> do
+any initialization that is specifically associated with: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-9D706630-C477-5163-B0B2-5745D5D04559"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-9D706630-C477-5163-B0B2-5745D5D04559"><!-- --></a><p>the stack - use <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0B55A650-E9ED-56CB-B06F-B1113ACDF282">DMMCStack::Init()</a> for
+this. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-99B883A6-FE47-5B7F-A9D1-01CCD7954DCD"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-99B883A6-FE47-5B7F-A9D1-01CCD7954DCD"><!-- --></a><p>the power supply unit
+- use <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-6EB8EF1C-BCCB-54A1-8CBA-4E8A2A20CABE">DMMCPsu::DoCreate()</a> for
+this. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C7EAE4E6-DEE4-515A-83B1-E40EE8D37F32"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C7EAE4E6-DEE4-515A-83B1-E40EE8D37F32"><!-- --></a><p>dealing with media change
+events - use <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-BFC23CC1-102F-5740-A608-CF91C2BC3897">DMMCMediaChange::Create()</a> for
+this. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-732EDE1D-452A-5A48-B5DB-1196C5F8BEBD"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-732EDE1D-452A-5A48-B5DB-1196C5F8BEBD"><!-- --></a><h2 class="sectiontitle"> Variant DLL
+entry point code</h2> <p>The platform-specific layer as implemented in
+the Variant DLL is a standard kernel extension. The entry point for all standard
+kernel extensions is declared by a </p>
+ <pre class="codeblock" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-8835A131-2CDC-51AC-9C59-D72BAD651EA6"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-8835A131-2CDC-51AC-9C59-D72BAD651EA6"><!-- --></a>DECLARE_STANDARD_EXTENSION()</pre>
+ <p>statement,
+followed by the block of code that runs on entry to the DLL. </p>
+ <p>Initialization
+of the MultiMediaCard DLL is done at this point, and follows the pattern shown
+below. It needs to create an instance of your <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html"><span class="apiname">TMMCardControllerInterface</span></a> derived
+class, followed by a call to <samp class="codeph">Create()</samp> on this object. This
+starts a cascade of effects resulting in calls to your implementation of the <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html"><span class="apiname">TMMCardControllerInterface</span></a> functions,
+which in turn result in the creation of the platform-specific layer objects
+associated with the MultiMediaCard sockets, i.e. the DMMCSocket, DMMCStack,
+DMMCMediaChange, and DMMCPsu objects. </p>
+ <pre class="codeblock" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-16F754D1-6161-5E05-8BEA-2A89CC80CC41"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-16F754D1-6161-5E05-8BEA-2A89CC80CC41"><!-- --></a>DECLARE_STANDARD_EXTENSION()
+//
+// Extension Entry Point
+//
+    {
+    __KTRACE_OPT(KPBUS1,Kern::Printf("Starting MMC interface"));
+
+    TInt r=KErrNoMemory;
+    TVARMMCardControllerInterface* pI=new TVARMMCardControllerInterface;
+    if (pI)
+        {
+        r=pI-&gt;Create();
+        }
+
+    __KTRACE_OPT(KPBUS1,Kern::Printf("MMC: Returns %d",r));
+    return r;
+    }
+</pre>
+ <p>In this example, <samp class="codeph">TVARMMCardControllerInterface</samp> is
+your class derived from <a href="GUID-B1F2C60B-E098-395F-8ED0-FF33E3EC9E4A.html"><span class="apiname">TMMCardControllerInterface</span></a>  </p>
+ </div>
+
+<div class="section" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-00F918D3-761B-5500-805F-AB4DEE72144E"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-00F918D3-761B-5500-805F-AB4DEE72144E"><!-- --></a><h2 class="sectiontitle">Direct memory
+addressing</h2> <p>To transfer data between a user side process and the
+media device, the Platform Specific Layer allocates a DMA-safe buffer at initialization.
+This buffer is allocated from physical memory. The memory in the user side
+process is virtual and you perform an inter-process copy of data between the
+user side process and the buffer allocated by the Platform Specific Layer. </p>
+ <p>Data
+transfer is faster if the MultiMediaCard controller knows that an address
+passed in an I/O request is a physical address. The File caching and Demand
+Paging features in the file server and kernel can pass physical addresses.
+A physical address avoids the need for an inter-process copy operation. </p>
+ <p>If
+you use a mechanism like <a href="GUID-DF2F0439-AE1A-599C-91B9-6EF2177C3C7E.html" title="The DMA Framework is a kernel extension that manages DMA (Direct Memory Access) hardware.">DMA</a> to
+transfer data, and your platform specific layer can deal with physical addresses,
+you need to make changes to the platform specific layer listed below. </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-04D498F3-F4BB-5A15-BE31-8DF6F11DB9BD"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-04D498F3-F4BB-5A15-BE31-8DF6F11DB9BD"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E50081BC-C923-5DAF-950C-9E1411916FED">Implement double buffers</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-39F10C4A-4291-579E-878B-E5BD2FB9C9D0"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-39F10C4A-4291-579E-878B-E5BD2FB9C9D0"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-575211BC-BF66-5817-9825-EE402648D0CD">Register support for physical addresses</a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-5638CD98-469C-587C-87B2-CA470D76F474"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-5638CD98-469C-587C-87B2-CA470D76F474"><!-- --></a><p> <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-27FCEF7D-0AAB-599C-8405-4BD284308314">Modify the data transfer phase to handle physical memory</a>  </p>
+ </li>
+
+</ul>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E50081BC-C923-5DAF-950C-9E1411916FED"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E50081BC-C923-5DAF-950C-9E1411916FED"><!-- --></a><strong>Implement double buffers</strong> </p>
+ <p>If
+you enable double buffer behavior, the MultiMediaCard subsystem can perform
+multiple data transfers in a single bus transaction. The double buffer implementation
+performs many data transfers in a single bus transaction. The MultiMediaCard
+subsystem logically splits the buffer allocated by the platform specific layer
+into two segments. Data transfer to the media device is in progress from one
+segment - this is the active segment. Concurrently, the media driver can prepare
+data in the other segment. </p>
+ <p>To implement double buffers, you need to
+make changes to the platform specific layer. </p>
+ <p><strong>Use the command descriptor functions </strong> </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-9471B51C-CB76-537F-B958-F61466A6B8F7"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-9471B51C-CB76-537F-B958-F61466A6B8F7"><!-- --></a><p>Use the function <a href="GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A.html#GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A__GUID-7BDD7C93-65D3-312B-B99E-B4B07AA32B2C"><span class="apiname">TMMCCommandDesc::BlockLength()</span></a> to
+get the block length of the transaction. Find all direct references in the
+source code of the platform specific layer to <samp class="codeph">TMMCCommandDesc::iBlockLength</samp>.
+Replace each reference with a call to <a href="GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A.html#GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A__GUID-7BDD7C93-65D3-312B-B99E-B4B07AA32B2C"><span class="apiname">TMMCCommandDesc::BlockLength()</span></a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-902FFE84-8F97-511D-B554-41283550DB16"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-902FFE84-8F97-511D-B554-41283550DB16"><!-- --></a><p>Use the function <a href="GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A.html#GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A__GUID-65B1C01B-1C8D-373A-83DB-0CEFF17667FC"><span class="apiname">TMMCCommandDesc::BufferLength()</span></a> to
+get the length of the next active segment. Find all references to <samp class="codeph">TMMCCommandDesc::iTotalLength</samp>.
+There are two areas in the code where this data member can be referenced: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-626ACF48-ADD0-5530-8CDB-373A3855FF81"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-626ACF48-ADD0-5530-8CDB-373A3855FF81"><!-- --></a><p>code where you test
+the progress of the data transfer operation and set up the MMC command. Do
+not change this code, because <samp class="codeph">TMMCCommandDesc::iTotalLength</samp> still
+represents the total amount of data to be transferred. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-25A1A62A-9B80-5ACB-B9BB-6884B4331CD7"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-25A1A62A-9B80-5ACB-B9BB-6884B4331CD7"><!-- --></a><p>code where you set up
+the DMA controller to transfer a number of blocks of data. Replace references
+to <samp class="codeph">TMMCCommandDesc::iTotalLength</samp> with calls to <a href="GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A.html#GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A__GUID-65B1C01B-1C8D-373A-83DB-0CEFF17667FC"><span class="apiname">TMMCCommandDesc::BufferLength()</span></a>.
+This describes the size of the current segment. Note that if double buffers
+are not enabled, the value returned by this function is the same as <samp class="codeph">TMMCCommandDesc::iTotalLength</samp>. </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-860835C7-D3FD-5727-9ADA-60E080EB1669"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-860835C7-D3FD-5727-9ADA-60E080EB1669"><!-- --></a><p>You can use the function <a href="GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A.html#GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A__GUID-DFD121A5-0C03-31A3-AF20-6E693EDC8502"><span class="apiname">TMMCCommandDesc::IsDoubleBuffered()</span></a> to
+determine if the current transaction uses double buffers. </p>
+ </li>
+
+</ul>
+ <p><strong>Separate the command and data phases </strong> </p>
+ <p>Without double buffer
+behavior, a single MMC command is always associated with a single buffer into
+which the hardware transfers data. With double buffer behavior, multiple buffers
+or segments are used to transfer data within a single command. You need to
+separate the command and data transfer phases. </p>
+ <p>This code fragment
+is a simplified example of a platform specific layer that sets up the command
+and the data transfers in separate stages: </p>
+ <pre class="codeblock" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-D349BEBB-E983-59AA-AA7F-29928D5491F5"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-D349BEBB-E983-59AA-AA7F-29928D5491F5"><!-- --></a>   
+   TMMCErr DExampleMMCStack::IssueMMCCommandSM()
+    {
+    enum states
+        {
+        EStBegin=0,
+        EStSetUpCommand,
+        EStWaitComplete,
+        EStEnd
+        };
+    
+       TMMCCommandDesc&amp; cmd = Command();
+    
+    SMF_BEGIN
+
+       /** ...omitted for clarity */
+         
+    SMF_STATE(EStSetUpCommand)
+                 
+       /**
+        * Set up the controller to issue the command.  Depending on
+        * the command type, this will prepare DMA transfers and wait
+        * for a response to be received before unblocking the stack.
+        */
+       BlockCurrentSession(KMMCBlockOnASSPFunction);
+    
+       SetupCommand(cmd);
+        
+       If(iDataTransfer)
+          SetupDataTransfer(cmd);
+
+        /**
+        * Wait for all events to be received
+        *  - command sent, data transferred, response received
+        */
+       SMF_WAITS(EStWaitComplete);
+         
+    SMF_STATE(EStWaitComplete)
+
+       /**
+        * Command issued, data transferred and response received.
+        *  - check for and report any errors
+        *
+        *  - Note, functionality omitted for clarity – in practice this will
+        *    check the controller status and wait for more events as appropriate.
+        */
+       TMMCErr err = KMMCErrNone;
+
+       if(iResponseExpected)
+          err = ExtractResponse();
+
+       if(iDataTransfer &amp;&amp; err == KMMCErrNone)
+          err = CheckDataTransferErrors();
+
+       if(err)
+           SMF_RETURN(err);
+
+    SMF_END
+    }
+
+</pre>
+ <p>If you depend on the MMC controller to signal the completion
+of data transfer after all blocks have been transmitted or received, change
+the DMA controller. Change the code to block the stack when DMA transfer starts,
+and unblock the stack when the current DMA transfer finishes. Do this operation
+while you wait for the final interrupt that signals the end of the data transfer. </p>
+ <p>The
+following code fragment shows how to set the <a href="GUID-8A9A2DD2-C630-3651-8374-17BCF2A09AC4.html"><span class="apiname">KMMCBlockOnASSPFunction</span></a> blocking
+condition before the start of DMA transfer. After DMA transfer has finished,
+unblock the stack in the DMA complete service routine, <a href="GUID-8B538AA6-9489-309F-8756-2474310CD5DA.html"><span class="apiname">DmaService()</span></a>. </p>
+ <pre class="codeblock" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-FC9573C5-7A01-536B-8DA4-82F6DB493849"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-FC9573C5-7A01-536B-8DA4-82F6DB493849"><!-- --></a>
+   void DExampleMMCStack::SetupDataTransfer(const TMMCCommandDesc&amp; aCmd)
+      {
+      TUint8* bufPtr = reinterpret_cast&lt;TUint8*&gt;(aCmd.iDataMemoryP);
+      TUint32 bufLen = aCmd.BufferLength();
+
+      /** ...omitted for clarity */
+
+      BlockCurrentSession(KMMCBlockOnASSPFunction);
+      iDmaController::Start(aCmd.Direction(), bufPtr, bufLen);
+      }
+
+
+   void DExampleDmaController::DmaService()
+      {
+      /** ...omitted for clarity */
+
+      Session().iState |= KMMCSessStateDoDFC;
+      UnBlockCurrentSession(KMMCBlockOnASSPFunction, KErrNone);
+      }
+</pre>
+ <p><strong>Implement the double buffer state machine </strong> </p>
+ <p>Update the platform
+specific layer to implement the double buffer state machine. You use the function <a href="GUID-0186BEDE-8E28-3F8C-8CAE-A8B92F41F47A.html#GUID-0186BEDE-8E28-3F8C-8CAE-A8B92F41F47A__GUID-32596EBB-4315-3EF7-8175-8579DE69F78B"><span class="apiname">DMMCSession::RequestMoreData()</span></a>.
+The platform specific layer uses this function to tell the MMC subsystem to
+prepare the next segment for data transfer. You call this function when the
+hardware is busy performing a DMA transfer for the current segment. This allows
+the MMC Media Driver to copy data to/from the client process ready for the
+next transfer while the MMC card is transferring it’s current payload. </p>
+ <p>This
+function sets the static <samp class="codeph">KMMCBlockOnMoreData</samp> blocking condition.
+The platform specific layer must use <samp class="codeph">SMF_WAITS</samp> (or equivalent)
+to suspend the platform specific layer state machine until the media driver
+has processed the current segment. When finished, the command descriptor is
+populated with the details of the next segment to be transferred. The <samp class="codeph">KMMCBlockOnMoreData</samp> block
+condition set by this function can be set with the <samp class="codeph">KMMCBlockOnASSPFunction</samp> condition.
+It allows the hardware to perform useful work, (for example, transfer the
+current buffer to or from the card) while the media driver is busy preparing
+the next buffer. In this case, the platform specific layer is unblocked when
+both the hardware and media driver have completed their tasks. </p>
+ <p>The
+following code fragment shows how you do this: </p>
+ <pre class="codeblock" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-97151CF9-2C59-57D3-8856-8BCAB9BDC5B9"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-97151CF9-2C59-57D3-8856-8BCAB9BDC5B9"><!-- --></a>TMMCErr DExampleMMCStack::IssueMMCCommandSM()
+    {
+    enum states
+       {
+       EStBegin=0,
+       EStSetUpCommand,
+   EStWaitDataTransfer
+       EStWaitComplete,
+       EStEnd
+       };
+    
+       TMMCCommandDesc&amp; cmd = Command();
+    
+    SMF_BEGIN
+
+       /** ...omitted for clarity */
+         
+    SMF_STATE(EStSetUpCommand)
+                 
+       /**
+        * Set up the controller to issue the command.  Depending on
+        * the command type, this will prepare DMA transfers and wait
+        * for a response to be received before unblocking the stack.
+        */
+       BlockCurrentSession(KMMCBlockOnASSPFunction);
+    
+       SetupCommand(cmd);
+        
+       If(iDataTransfer)
+      {
+          /**
+       * Kick off DMA transfer for the first buffer.
+           * …the stack will be blocked on KMMCBlockOnASSPFunction until DMA complete
+       */
+          SetupDataTransfer(cmd);
+      
+      /**
+       * DMA is now active. Now request the Media Driver to prepare the next 
+       * buffer in parallel. While active, the stack will be blocked with
+       * the KMMCBlockOnMoreData blocking condition and unblocked when complete.
+       */
+      Session().RequestMoreData();      
+      }
+
+        /**
+        * Wait for DMA and Media Driver completion.
+        */
+       SMF_WAITS(EStWaitDataTransfer);
+         
+    SMF_STATE(EStWaitDataTransfer)
+
+       /**
+        * DMA is complete and the Media Driver has prepared the next buffer.
+        *  - Start the next DMA transfer and request more data from the media driver.
+        */
+
+       if(cmd.BufferLength() &gt; 0)
+          {
+          /**
+           * There is more data to transfer.
+           * ..start DMA transfer, prepare the next buffer and wait for completion.
+           */
+          SetupDataTransfer(cmd);
+      Session().RequestMoreData();      
+          SMF_WAITS(EStWaitDataTransfer);
+          }
+
+       /**
+        * There is no more data to transfer.
+        * ..do whatever we need to do to wait for hardware completion
+        */
+
+       // …omitted for clarity
+
+   SMF_WAITS(EStWaitComplete);
+
+    SMF_STATE(EStWaitComplete)
+
+       /**
+        * Command issued, data transferred and response received.
+        *  - check for and report any errors
+        *
+        *  - Note, functionality omitted for clarity – in practice this will
+        *    check the controller status and wait for more events as appropriate.
+        */
+       TMMCErr err = KMMCErrNone;
+
+       if(iResponseExpected)
+          err = ExtractResponse();
+
+       if(iDataTransfer &amp;&amp; err == KMMCErrNone)
+          err = CheckDataTransferErrors();
+
+       if(err)
+          SMF_RETURN(err);
+
+    SMF_END
+    }
+</pre>
+ <p><strong>Register support for double buffers with the platform independent layer </strong> </p>
+ <p>You
+must tell the <a href="GUID-40F2BC43-5022-5F4E-B445-56FEF43FEB8B.html#GUID-40F2BC43-5022-5F4E-B445-56FEF43FEB8B__GUID-119E4B4A-03DB-5C79-AA97-14434E4BC2CA">platform
+independent layer</a> that you support double buffers. Set <a href="GUID-3F9D89E8-44F0-35B3-9404-6CCAC79763E8.html#GUID-3F9D89E8-44F0-35B3-9404-6CCAC79763E8__GUID-B11D1DA9-89C2-37E3-A2CD-19EF5706ACB8"><span class="apiname">TMMCMachineInfo::ESupportsDoubleBuffering</span></a> into
+the <a href="GUID-3F9D89E8-44F0-35B3-9404-6CCAC79763E8.html"><span class="apiname">TMMCMachineInfo</span></a> object that you pass to <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-CEF0EDF7-4B33-5452-8635-51C5319F78AE">DMMCStack::MachineInfo()</a>. </p>
+ <p><strong>Choose the size of the buffer </strong> </p>
+ <p>To choose the optimum size
+of buffer, you must perform benchmark tests on your system. A small buffer
+gives you a lower command setup latency, but DMA transfers and calls to the
+callback function <a href="GUID-0186BEDE-8E28-3F8C-8CAE-A8B92F41F47A.html#GUID-0186BEDE-8E28-3F8C-8CAE-A8B92F41F47A__GUID-32596EBB-4315-3EF7-8175-8579DE69F78B"><span class="apiname">DMMCSession::RequestMoreData()</span></a> occur
+more frequently. The time taken to set up the DMA transfers can exceed the
+time taken to transfer the data into or out of the active segment. </p>
+ <p><strong>Testing </strong> </p>
+ <p>You need to do the standard E32 and F32 automated
+tests to check the operation of the MMC subsystem. You also need to perform
+the MMC specific manual test, T_MMCDRV. The test listed below performs data
+transfers in excess of the PSL buffer size to make sure that double buffer
+behavior is exercised. </p>
+ <pre class="codeblock" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-ED1D5B35-432C-5C54-9A13-92DD499316FD"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-ED1D5B35-432C-5C54-9A13-92DD499316FD"><!-- --></a>   
+   /**
+   @SYMTestCaseID PBASE-T_MMCDRV-0558
+   @SYMTestCaseDesc Test Long Read/Write Boundaries
+   @SYMTestPriority High
+
+   @SYMTestActions  
+
+   Perform and Write/Read/Verify for the given length (L) of data across the following boundaries.
+   Depending on the length, this will also perform a partial write/read at the end sector.
+
+             --------------
+            | Start    | End    |
+            |--------------|
+            | 0    | L    |
+            | 507    | L-507    |
+            | 10    | L    |
+            | 0    | L-3    |
+            | 27    | L-512    |
+            | 0    | L-509    |
+            | 3    | L-3    |
+             --------------
+
+   For each combination, the write/read/verify operations are performed in the following sequence:
+
+a: Write and Read in single 512-byte blocks.
+b: Write in a single operation (multiple blocks), Read in 512-Byte blocks.
+c: Write in 512-Byte blocks, Read in a single operation (multiple-blocks).
+d: Write and Read in a single operation (multiple-blocks).
+
+   In the cases where a partial read/write operation occurs (ie - the start and/or end position
+   don't lie within a sector boundary), the original contents of the start and/or end sectors are
+   read and stored at the start of the test, and compared with the contents of the sectors at the
+   end of the test to ensure that unwritten data within the sectors remain unaffected.
+  
+   @SYMTestExpectedResults All tests must pass
+
+   @SYMPREQ1389 REQ6951 Double Buffering and SD Switch
+   *
+   */
+
+</pre>
+ <p>The test T_MMCDRV must be performed on versions of the platform
+specific layer that has: double buffers enabled, double buffers disabled,
+and with a number of different buffer sizes (for example, from 32k to 256k). </p>
+ <p>The
+test cannot dynamically set the size of the buffer. You must do manual configuration
+of the buffer to test all configurations. </p>
+ <p>To measure performance,
+use T_FSYSBM, with and without double buffers enable. </p>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-575211BC-BF66-5817-9825-EE402648D0CD"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-575211BC-BF66-5817-9825-EE402648D0CD"><!-- --></a><strong>Register support for physical
+addresses</strong> </p>
+ <p>There are three items to do: </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0E169605-00B8-53F9-AF7A-5410EEE73A70"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-0E169605-00B8-53F9-AF7A-5410EEE73A70"><!-- --></a><p>you must tell the <a href="GUID-40F2BC43-5022-5F4E-B445-56FEF43FEB8B.html#GUID-40F2BC43-5022-5F4E-B445-56FEF43FEB8B__GUID-119E4B4A-03DB-5C79-AA97-14434E4BC2CA">platform
+independent layer</a> that you support physical addresses in your implementation
+of <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-CEF0EDF7-4B33-5452-8635-51C5319F78AE">DMMCStack::MachineInfo()</a>.
+The function takes a <a href="GUID-3F9D89E8-44F0-35B3-9404-6CCAC79763E8.html"><span class="apiname">TMMCMachineInfo</span></a> type. Set the <a href="GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6.html#GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6__GUID-CB8D99BA-8EC2-3A98-B3BF-BA5FEE3A6AE1"><span class="apiname">THardwareConfig::ESupportsDMA</span></a> flags
+into the <samp class="codeph">iFlags</samp> member of <a href="GUID-3F9D89E8-44F0-35B3-9404-6CCAC79763E8.html"><span class="apiname">TMMCMachineInfo</span></a>. </p>
+ <p>If
+you set the <a href="GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6.html#GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6__GUID-CB8D99BA-8EC2-3A98-B3BF-BA5FEE3A6AE1"><span class="apiname">THardwareConfig::ESupportsDMA</span></a> flag, you also
+set the <a href="GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6.html#GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6__GUID-3276FBA3-7028-30C2-A820-CEBD77DCF817"><span class="apiname">THardwareConfig::ESupportsDoubleBuffering</span></a> flag
+automatically. This flag enables double buffer support. You must also<a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-E50081BC-C923-5DAF-950C-9E1411916FED">implement
+double buffers</a> if you use physical addresses. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-752318C6-301B-51B0-A064-64EAEBCF0E35"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-752318C6-301B-51B0-A064-64EAEBCF0E35"><!-- --></a><p>You must tell the <a href="GUID-40F2BC43-5022-5F4E-B445-56FEF43FEB8B.html#GUID-40F2BC43-5022-5F4E-B445-56FEF43FEB8B__GUID-119E4B4A-03DB-5C79-AA97-14434E4BC2CA">platform
+independent layer</a> the maximum transfer length that you support. This
+can be a limit imposed on you by the hardware. For example, if you use DMA,
+the DMA controller can impose a limit. You set one of the flags listed below
+into the <samp class="codeph">iFlags</samp> member of <a href="GUID-3F9D89E8-44F0-35B3-9404-6CCAC79763E8.html"><span class="apiname">TMMCMachineInfo</span></a> in
+your implementation of <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-CEF0EDF7-4B33-5452-8635-51C5319F78AE">DMMCStack::MachineInfo()</a>. </p>
+ <p>Each flag represents a maximum transfer length. The MultiMediaCard
+subsystem splits a data transfer request that is bigger than the maximum into
+multiple data transfers. </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-1BD38D21-6B02-5610-8495-4C7C194657CF"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-1BD38D21-6B02-5610-8495-4C7C194657CF"><!-- --></a><p> <a href="GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6.html#GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6__GUID-3375EE8E-49B8-3F24-BF40-D780AD8E1B0A"><span class="apiname">THardwareConfig::EMaxTransferLength_256K</span></a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-D4AB6165-036A-5259-922A-E9E1CB5749C8"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-D4AB6165-036A-5259-922A-E9E1CB5749C8"><!-- --></a><p> <a href="GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6.html#GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6__GUID-F3BEFC8A-55F6-3B28-B383-6B33BAD2B5F7"><span class="apiname">THardwareConfig::EMaxTransferLength_512K</span></a> </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-72380863-E20E-5478-98D8-FA342C14E80C"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-72380863-E20E-5478-98D8-FA342C14E80C"><!-- --></a><p> <a href="GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6.html#GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6__GUID-20FB2892-190F-31C4-9F58-66AAB02DC4E1"><span class="apiname">THardwareConfig::EMaxTransferLength_1M</span></a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-68C4292C-5D9D-5E23-8608-DFBA2846A8FA"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-68C4292C-5D9D-5E23-8608-DFBA2846A8FA"><!-- --></a><p> <a href="GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6.html#GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6__GUID-45913568-5C4E-3A6F-A727-8734C303AC3D"><span class="apiname">THardwareConfig::EMaxTransferLength_2M</span></a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-D637F68D-4530-5BE5-9B99-A7437E7AF9BC"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-D637F68D-4530-5BE5-9B99-A7437E7AF9BC"><!-- --></a><p> <a href="GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6.html#GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6__GUID-66707CB4-A8E0-305E-9599-D22CBBC41E91"><span class="apiname">THardwareConfig::EMaxTransferLength_4M</span></a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-69AD58F1-06F6-564C-B130-BDBF8F1745BB"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-69AD58F1-06F6-564C-B130-BDBF8F1745BB"><!-- --></a><p> <a href="GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6.html#GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6__GUID-DA25B30F-671C-3B54-B58D-9F58B17BC11F"><span class="apiname">THardwareConfig::EMaxTransferLength_8M,</span></a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-AAE1868C-8C51-58DE-8F29-34463E0F7104"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-AAE1868C-8C51-58DE-8F29-34463E0F7104"><!-- --></a><p> <a href="GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6.html#GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6__GUID-565830C3-14D4-3AA7-990E-78A199275DDF"><span class="apiname">THardwareConfig::EMaxTransferLength_16M</span></a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-BFC9B360-8023-5AC5-A2FC-F52A7D6BFD06"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-BFC9B360-8023-5AC5-A2FC-F52A7D6BFD06"><!-- --></a><p> <a href="GUID-FA278485-D2CC-35D8-A779-8F0BDB691C3F.html"><span class="apiname">TMMCMachineInfoV4.iFlags</span></a>  </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-54BCDD97-4E54-52D5-9526-BFAC5041F8F8"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-54BCDD97-4E54-52D5-9526-BFAC5041F8F8"><!-- --></a><p>You must tell the <a href="GUID-40F2BC43-5022-5F4E-B445-56FEF43FEB8B.html#GUID-40F2BC43-5022-5F4E-B445-56FEF43FEB8B__GUID-119E4B4A-03DB-5C79-AA97-14434E4BC2CA">platform
+independent layer</a> the address scheme that the hardware uses. Mis-alignment
+of memory can corrupt data. You set <em>one</em> of the flags shown in the list
+below into the <samp class="codeph">iFlags</samp> member of <a href="GUID-3F9D89E8-44F0-35B3-9404-6CCAC79763E8.html"><span class="apiname">TMMCMachineInfo</span></a> in
+your implementation of <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-CEF0EDF7-4B33-5452-8635-51C5319F78AE">DMMCStack::MachineInfo()</a>. Each flags represents a different address scheme. You can set only one
+flag. If you set more than one of these flags, the creation of the media driver
+fails. </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3055EE71-56B8-566A-A2B8-6F415F2D1675"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-3055EE71-56B8-566A-A2B8-6F415F2D1675"><!-- --></a><p> <a href="GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6.html#GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6__GUID-A36BA08C-2010-3002-8FB2-A8E917700604"><span class="apiname">THardwareConfig::EDma8BitAddressing</span></a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C71091D1-7E53-530B-8AE6-37BD9125B8B2"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-C71091D1-7E53-530B-8AE6-37BD9125B8B2"><!-- --></a><p> <a href="GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6.html#GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6__GUID-DA9AE183-855B-31A0-BDE3-54BFE894C1F8"><span class="apiname">THardwareConfig::EDma16BitAddressing</span></a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-6402A30F-4A49-528B-BF74-EB715521773B"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-6402A30F-4A49-528B-BF74-EB715521773B"><!-- --></a><p> <a href="GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6.html#GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6__GUID-6D844C49-AD50-3C73-BEA8-473A44B9E9D4"><span class="apiname">THardwareConfig::EDma32BitAddressing</span></a>  </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-F10F9E09-151D-5BB2-B1B6-B0B08B49B8F6"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-F10F9E09-151D-5BB2-B1B6-B0B08B49B8F6"><!-- --></a><p> <a href="GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6.html#GUID-9E833DE8-E795-3EC8-B27B-CFB6D7E1C4C6__GUID-6F43817F-611B-326C-8A1C-55703FFC6500"><span class="apiname">THardwareConfig::EDma64BitAddressing</span></a>  </p>
+ </li>
+
+</ul>
+ </li>
+
+</ul>
+ <p>The following code is an example implementation of <a href="GUID-B5193656-9819-3E00-A335-EEF1726115A5.html#GUID-B5193656-9819-3E00-A335-EEF1726115A5__GUID-3E5532A5-4645-3F77-A7A9-7AFF334FA5A4"><span class="apiname">DMMCStack::MachineInfo()</span></a>. </p>
+ <pre class="codeblock" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-BF942E07-A7E8-5300-9015-3FC06CAB835E"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-BF942E07-A7E8-5300-9015-3FC06CAB835E"><!-- --></a>void DVariantMmcHwStack::MachineInfo(TMMCMachineInfoV4&amp; aMachineInfo)
+/**
+ * Gets the machine info for the hardware variant
+ *
+ * @param aMachineInfo    Info structure to populate
+ */
+    {
+    aMachineInfo.iTotalSockets=MMC_DRIVECOUNT;
+    aMachineInfo.iTotalMediaChanges=0;          // Not used at present
+    aMachineInfo.iTotalPrimarySupplies=0;        // Not used at present
+    
+    aMachineInfo.iBaseBusNumber=0;
+    aMachineInfo.iVersion = TMMCMachineInfoV4::EVersion4;
+    aMachineInfo.iMaxBusWidth = EBusWidth4;
+
+    // Report support for Physical Addressing
+    aMachineInfo.iFlags  = TMMCMachineInfo::ESupportsDMA;
+    aMachineInfo.iFlags |= TMMCMachineInfo::EMaxTransferLength_1M; 
+    aMachineInfo.iFlags |= TMMCMachineInfo::EDma16BitAddressing;
+
+    // High voltage (3.6V) power class. Set to maximum = 2000mA RMS
+    aMachineInfo.iHighVoltagePowerClass = TMMCMachineInfoV4::EHi200mA;
+
+    // Low voltage (1.95V) power class. Set to maximum = 200mA RMS
+    aMachineInfo.iLowVoltagePowerClass = TMMCMachineInfoV4::ELo200mA;
+    
+    // 52 Mhz clock supported
+    aMachineInfo.iMaxClockSpeedInMhz = TMMCMachineInfoV4::EClockSpeed52Mhz;    
+    }</pre>
+ <p id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-27FCEF7D-0AAB-599C-8405-4BD284308314"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-27FCEF7D-0AAB-599C-8405-4BD284308314"><!-- --></a><strong>Modify the data transfer
+phase to handle physical memory </strong> </p>
+ <p>The implementation of double
+buffers has separated the command setup and the data transfer phases. You
+need to change the data transfer phase to handle physical memory. </p>
+ <ul>
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-59E7DD5F-39B6-5CA5-9C8C-CC4847A885DC"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-59E7DD5F-39B6-5CA5-9C8C-CC4847A885DC"><!-- --></a><p>The data member <a href="GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A.html#GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A__GUID-596E150B-E5F1-3945-9C00-64B8EB24550C"><span class="apiname">TMMCCommandDesc::iDataMemoryP</span></a> contains
+the source or target memory address for the current data transfer command.
+Use the function <a href="GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A.html#GUID-6B3DDBFD-3A4A-3694-A058-7794700FEC7A__GUID-3A25BD15-A832-3C76-AB68-0B4470710C3A"><span class="apiname">TMMCCommandDesc::IsPhysicalAddress()</span></a> to
+determine if this address is a physical address or a virtual address. If you
+do not <a href="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B.html#GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-575211BC-BF66-5817-9825-EE402648D0CD">register
+support for physical addresses</a>, this function always returns <a href="GUID-A759CA2D-8327-348F-9337-4886E619D920.html"><span class="apiname">EFalse</span></a>. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-B9D101C4-FDD1-5233-9DCB-12DDA47073FC"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-B9D101C4-FDD1-5233-9DCB-12DDA47073FC"><!-- --></a><p>You do not need to perform
+virtual address to physical address translation on physical addresses. </p>
+ </li>
+
+<li id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2382A7A0-B0EB-5E1F-9ADE-47389FABABBA"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-2382A7A0-B0EB-5E1F-9ADE-47389FABABBA"><!-- --></a><p>you do not need to perform
+DMA synchronization for physical addresses, because the local media subsystem
+performs DMA synchronization for you. You need to perform DMA synchronization
+for virtual addresses. DMA synchronization is performed by calls to <a href="GUID-4425E698-EE8A-369B-92CD-09B1CBD2911F.html#GUID-4425E698-EE8A-369B-92CD-09B1CBD2911F__GUID-3FF3C567-C1BD-3D4E-97E1-B036456A374E"><span class="apiname">Cache::SyncMemoryBeforeDmaRead()</span></a> or <a href="GUID-4425E698-EE8A-369B-92CD-09B1CBD2911F.html#GUID-4425E698-EE8A-369B-92CD-09B1CBD2911F__GUID-5F08DEAA-1237-32DE-AE41-CE7B18230972"><span class="apiname">Cache::SyncMemoryBeforeDmaWrite()</span></a>. </p>
+ </li>
+
+</ul>
+ <p>The following code is an example of the changes needed for a read
+operation. </p>
+ <pre class="codeblock" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-B92D3E0B-09F3-54C9-83AE-34DA544C0055"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-B92D3E0B-09F3-54C9-83AE-34DA544C0055"><!-- --></a>TInt DMMCDmaRx::Start(const TMMCCommandDesc&amp; aCmd)
+/**
+ *  Queues a DMA request after checking the buffer alignment constraints.
+ *
+ *  @param aCmd The command structure containing the details about the command.
+ */
+{
+   …
+   TUint flags = KDmaMemDest;
+
+   // Check if a physical address has been provided with this request
+   if(aCmd.IsPhysicalAddress())
+{
+       // …if so, set the appropriate flag for this DDmaRequest
+flags |= KDmaPhysAddrDest;
+}
+
+   TInt retval = iRequest-&gt;Fragment(    KMMC_Buf_Dt_Reg,
+                                        (TUint32)aCmd.iDataMemoryP,
+                aCmd.BufferLength(), 
+                                 flags,
+                                 0 /* no HW Flags*/);
+
+   if(retval != KErrNone)
+Kern::Fault("MMC DMA RX Start Fragment", retval);
+
+   …
+   return KErrNone;
+}
+</pre>
+ <pre class="codeblock" id="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-AB1E5042-8680-57C4-87F7-71F362232C37"><a name="GUID-E55B4FE5-517C-5A23-8ACA-E28EE202330B__GUID-AB1E5042-8680-57C4-87F7-71F362232C37"><!-- --></a>void DMMCRxDmaHelp::ChannelTransfer(const SDmaPseudoDes&amp; aDes)
+    {
+…
+    TPhysAddr dest;
+
+// Don’t perform Linear to Physical translation if we 
+    // have already been supplied with a Physical Address
+    if (aDes.iFlags &amp; KDmaPhysAddrDest)
+        dest = (TPhysAddr) aDes.iDest;
+    else
+        dest = Epoc::LinearToPhysical(aDes.iDest);
+
+    TPlatDma::SetDMARegister(KHoDMA_CDSA(iChno), dest);
+…
+    }
+</pre>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-86082C0C-B0EE-5E7C-85B4-4A509066012F.html" title="Describes the steps to implement a port of the MMC Controller.">MMC Porting Implementation Tutorial</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

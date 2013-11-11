@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Basic Management"/>
+<meta name="abstract" content="This document describes how device drivers should manage shared chunks."/>
+<meta name="description" content="This document describes how device drivers should manage shared chunks."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-132349A6-9A5F-4866-A54D-F01B6F58ABDD.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E90DBF35-0A05-4751-904D-4F06987FFF48.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-132349A6-9A5F-4866-A54D-F01B6F58ABDD.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-43782364-0865-43D0-BC89-D63BA9912FB6"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Basic Management</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-43782364-0865-43D0-BC89-D63BA9912FB6"><a name="GUID-43782364-0865-43D0-BC89-D63BA9912FB6"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 id2388215 id2388242 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; <a href="GUID-E90DBF35-0A05-4751-904D-4F06987FFF48.html" title="These documents describe how device drivers handle memory buffers and transfer data.">Memory Management</a> &gt; <a href="GUID-132349A6-9A5F-4866-A54D-F01B6F58ABDD.html" title="This document describes the use of shared chunks to share data.">Shared Chunks</a> &gt; </div>
+<h1 class="topictitle1">Basic Management</h1>
+<div><p>This document describes how device drivers should manage shared
+chunks.</p>
+
+<div class="section" id="GUID-43782364-0865-43D0-BC89-D63BA9912FB6__GUID-A30FD089-100B-44A3-B174-A68C7BC00372"><a name="GUID-43782364-0865-43D0-BC89-D63BA9912FB6__GUID-A30FD089-100B-44A3-B174-A68C7BC00372"><!-- --></a><h2 class="sectiontitle">Creation</h2> <p>A
+shared chunk is created in kernel space. The user is given a handle to the
+shared chunk to access it, and can pass the handle to other process or other
+drivers. Chunks are represented by <a href="GUID-85454082-6734-3F1D-983F-734D4C2AB12D.html"><span class="apiname">DChunk</span></a> objects on the
+kernel side and by <a href="GUID-326A2F4D-0E99-31C0-A35D-E8BF45913F07.html"><span class="apiname">RChunk</span></a> on the user side. </p>
+ <p>A shared
+chunk is created by using <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-F8D1FB29-7238-3438-951A-6F853C7CF817"><span class="apiname">Kern::ChunkCreate()</span></a>, which takes
+a <a href="GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4.html"><span class="apiname">TChunkCreateInfo</span></a> argument that sets the chunk properties. </p>
+ <p>Chunk
+creation should be done in a critical section, created using <a href="GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02.html#GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02__GUID-841D587C-E9E6-34EE-8ED0-E9A206F64379"><span class="apiname">NKern::ThreadEnterCS()</span></a> and <a href="GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02.html#GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02__GUID-2C897BA5-2BD7-3ABA-9F2B-F0B1AC14D1AE"><span class="apiname">NKern::ThreadLeaveCS()</span></a>. The size of the chunk should be in multiples of MMU pages, which can be
+calculated using <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-B37D12CF-449A-3EC3-9C4F-854A35E98CE3"><span class="apiname">Kern::RoundToSize(n)</span></a>, where <var class="varname">n</var> is
+the actual size that needs to be rounded. </p>
+ <pre class="codeblock" id="GUID-43782364-0865-43D0-BC89-D63BA9912FB6__GUID-5F307D2C-517B-505D-A8D3-A4820B612E53"><a name="GUID-43782364-0865-43D0-BC89-D63BA9912FB6__GUID-5F307D2C-517B-505D-A8D3-A4820B612E53"><!-- --></a>/**
+ Create a transmit shared chunk of specified size.
+ 
+ @param    aChunkSize
+         size of the chunk to be created
+             
+ @return    KErrNone on success, standard error code on failure
+ */    
+TInt DExUartPhysicalChannel::CreateTxChunk(TUint aChunkSize)
+    {
+    ...
+    // Round up the transmit chunk size to the page size. 
+    // Kern::RoundToPageSize() rounds up the argument to the size 
+    // of a MMU page. The size of one MMU page can be found out by 
+    // calling Kern::RoundToPageSize(1). 
+ 
+    size=Kern::RoundToPageSize(aChunkSize);
+        
+    // Thread must be in critical section 
+    NKern::ThreadEnterCS();
+    ...
+    // Create the chunk. Example is given in next code snippet
+    ...
+    // Commit the chunk. Example is given in following sections
+    ...
+    // Thread can leave the critical section 
+    NKern::ThreadLeaveCS();
+    }
+
+TInt DExUartPhysicalChannel::CreateTxChunk(TUint aChunkSize)
+    {
+    ...
+    NKern::ThreadLeaveCS(); // Enter the critical section
+        
+    // TChunkCreateInfo holds the parameters required to create a 
+    // chunk and is used by Kern::ChunkCreate()
+    TChunkCreateInfo info;
+    
+    // ESharedKernelMultiple specifies that a chunk which may be opened by 
+    // any number of user side processes
+    info.iType=TChunkCreateInfo::ESharedKernelMultiple;        
+    info.iMaxSize= size;        // Chunk size
+    
+    // This specifies the caching attributes for the chunk. It can 
+    // be no caching or fully caching (TMappingAttributes enum 
+    // type). If the MMU does not support the requested attributes,  
+    // then a lesser cached attribute will be used. The actual 
+    // value used is returned in aMapAttr of Kern::ChunkCreate() 
+    info.iMapAttr=EMapAttrFullyBlocking; // No Caching, suitable for DMA
+    
+    // Set to true if the chunk is to own its committed memory. 
+    // In this case all memory committed to the chunk will come 
+    // from the system's free pool and will be returned there when 
+    // the chunk is destroyed. If the chunk will be committed to 
+    // physical address, then EFalse can be set.
+    info.iOwnsMemory=ETrue;            // using RAM pages
+    
+    // As chunk destruction is asynchronous we can have 
+    // a DFC, if required, specifying a callback function to get 
+    // the chunk destroy notification exactly. This is used if any 
+    // follow up cleaning has to be done after chunk destruction.
+    info.iDestroyedDfc=NULL;    // No chunk destroy DFC.
+    
+    DChunk* chunk;
+    TUint32 mapAttr;
+    // Creates a chunk that can be shared between a user thread and a 
+    // kernel thread. This will be the initial step for a shared 
+    // chunk. Once created, the chunk owns a region of linear 
+    // address space of the requested size. This region is empty 
+    // (uncommitted) so before it can be used either RAM or I/O 
+    // devices must be mapped into it. This is achieved with the 
+    // Commit functions.
+    // Here iTxChunkKernAddr returns the linear address of the 
+    // chunk created.
+    //
+    TInt r=Kern::ChunkCreate(info,chunk,iTxChunkKernAddr, mapAttr);
+    if (r!=KErrNone)
+        {
+        // Thread can leave the critical section
+        NKern::ThreadLeaveCS();
+        return r;
+        }
+    ...
+    }</pre>
+ </div>
+
+<div class="section" id="GUID-43782364-0865-43D0-BC89-D63BA9912FB6__GUID-84D1C7D6-5EFE-4D88-BC87-1D8897693B8A"><a name="GUID-43782364-0865-43D0-BC89-D63BA9912FB6__GUID-84D1C7D6-5EFE-4D88-BC87-1D8897693B8A"><!-- --></a><h2 class="sectiontitle">Destruction</h2> <p>To allow a chunk to be properly cleaned
+up, a driver should close the chunk when it is no longer required. When a
+chunk is closed, the reference count is decremented by one. The chunk gets
+destroyed when the reference count becomes zero. Closing the chunk should
+be done within a critical section. </p>
+ <p>The destruction of the chunk happens
+asynchronously, and a notification of this can be requested. This is done
+using a DFC, by initialising <a href="GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4.html#GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4__GUID-F6394BC5-16A9-383B-8E5D-446FB3136762"><span class="apiname">TChunkCreateInfo::iDestroyDfc()</span></a> with
+the DFC object. </p>
+ <pre class="codeblock" id="GUID-43782364-0865-43D0-BC89-D63BA9912FB6__GUID-14F48A69-FCDF-5D5A-A6C6-42E4D57CB497"><a name="GUID-43782364-0865-43D0-BC89-D63BA9912FB6__GUID-14F48A69-FCDF-5D5A-A6C6-42E4D57CB497"><!-- --></a>/**
+ Close the transmit chunk, that was already created. This is 
+ called while closing the logical channel
+ */
+void DExUartPhysicalChannel::CloseTxChunk()
+    {
+    // Thread must be in critical section
+    NKern::ThreadEnterCS();
+    
+    // Atomically get pointer to our chunk and NULL the iChunk 
+    // member. Nkern::SafeSwap() atomically replaces the word 
+    // referenced by aPtr with aNewValue, here NULL.
+    //
+ DChunk* chunk = (DChunk*)NKern::SafeSwap(NULL,(TAny*&amp;)iTxChunk);
+    
+    if (chunk)
+        {
+        // Close the chunk that was created. This should be 
+        // done in a critical section. This function decrements 
+        // a chunk's access count, and, if the count reaches 
+        // zero, the chunk is scheduled for destruction.
+        // ChunkClose() has to be called the same number of times 
+        // as chunk creation. A mismatch in this will result 
+        // in either a memory leak or a panic.
+        //
+        Kern::ChunkClose(chunk);
+        }
+    // Thread can leave the critical section    
+    NKern::ThreadLeaveCS();        
+    }</pre>
+</div>
+
+<div class="section" id="GUID-43782364-0865-43D0-BC89-D63BA9912FB6__GUID-2CCEB305-03D7-44A4-A489-3B00680383F9"><a name="GUID-43782364-0865-43D0-BC89-D63BA9912FB6__GUID-2CCEB305-03D7-44A4-A489-3B00680383F9"><!-- --></a><h2 class="sectiontitle">Mapping</h2> <p>Shared chunks must be mapped to memory,
+which means that either RAM or an I/O device must be committed to a shared
+chunk before it can be used. This maps the chunk to a certain address. The
+memory can be physical contiguous RAM pages, an arbitrary set of RAM pages,
+a physical region, or a physical region with a list of physical addresses.
+The Kernel provides the following APIs for committing these types of memory: </p>
+ <pre class="codeblock" id="GUID-43782364-0865-43D0-BC89-D63BA9912FB6__GUID-256A14F7-D9D8-528A-8E8A-C573A492F803"><a name="GUID-43782364-0865-43D0-BC89-D63BA9912FB6__GUID-256A14F7-D9D8-528A-8E8A-C573A492F803"><!-- --></a>// Commit RAM to a shared chunk. The memory pages to commit are 
+// obtained from the system's free pool
+TInt Kern::ChunkCommit(DChunk *aChunk, TInt aOffset, TInt aSize);
+
+// Commit RAM to a shared chunk. The memory pages to commit are 
+// obtained from the system's free pool and will have physically 
+// contiguous addresses. Used when TChunkCreateInfo::iOwnsMemory 
+// is ETrue
+TInt Kern::ChunkCommitContiguous(DChunk *aChunk, TInt aOffset, 
+                TInt aSize, TUint32 &amp;aPhysicalAddress);
+
+// Commit memory to a shared chunk. The physical region committed 
+// is that which starts at the supplied physical address. 
+// Typically, this region either represents memory mapped I/O, or 
+// RAM that was set aside for special use at system boot time. 
+// This is used when TChunkCreateInfo::iOwnsMemory is EFalse.
+TInt Kern::ChunkCommitPhysical(DChunk *aChunk, TInt aOffset, 
+                TInt aSize, TUint32 aPhysicalAddress);
+
+// Commit memory to a shared chunk. The physical region committed
+// is determined by the list of physical addresses supplied to 
+// this function
+TInt Kern::ChunkCommitPhysical(DChunk *aChunk, TInt aOffset, 
+        TInt aSize, const TUint32 *aPhysicalAddressList);
+</pre>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-132349A6-9A5F-4866-A54D-F01B6F58ABDD.html" title="This document describes the use of shared chunks to share data.">Shared Chunks</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

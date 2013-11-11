@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Sample Device Drivers"/>
+<meta name="abstract" content="This document describes the steps and options for coding a device driver, and how to use APIs to access the services provided by the Symbian platform kernel."/>
+<meta name="description" content="This document describes the steps and options for coding a device driver, and how to use APIs to access the services provided by the Symbian platform kernel."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0F17BCDF-CF50-40D1-9048-793DC4442B50.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0F17BCDF-CF50-40D1-9048-793DC4442B50.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-67CFF27B-55AF-42AC-95AF-E71A7C54039E"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Sample Device Drivers</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-67CFF27B-55AF-42AC-95AF-E71A7C54039E"><a name="GUID-67CFF27B-55AF-42AC-95AF-E71A7C54039E"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 id2388046 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; <a href="GUID-0F17BCDF-CF50-40D1-9048-793DC4442B50.html" title="This set of documents describes the device driver development process and provides links to example material.">Introduction</a> &gt; </div>
+<h1 class="topictitle1">Sample
+Device Drivers</h1>
+<div><p>This document describes the steps and options for coding a device
+driver, and how to use APIs to access the services provided by the Symbian
+platform kernel.</p>
+
+<p>Illustrations of the use of APIs are taken from a number of example device
+drivers. These are summarised below. All of the drivers implement support
+for serial communications over a UART. They are designed to show a number
+of different implementation techniques. </p>
+
+
+<div class="tablenoborder"><a name="GUID-67CFF27B-55AF-42AC-95AF-E71A7C54039E__GUID-6AD1B279-724D-5EBD-9372-66400B8C9465"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-67CFF27B-55AF-42AC-95AF-E71A7C54039E__GUID-6AD1B279-724D-5EBD-9372-66400B8C9465" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <strong>Name</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Key functionality</strong>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <span class="filepath"> exdriver_pio</span>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Shows a simple driver running on a kernel DFC thread. It polls for
+data using a timer. </p>
+ <p><a href="GUID-1AFAD1C4-340B-4119-94A8-F50E9D8DA8E6.html" title="This document introduces the use of timers by device drivers.">Timers</a> discusses
+timers in detail. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <span class="filepath"> exdriver_int</span>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Illustrates the use of interrupts and asynchronous request handling. </p>
+ <p><a href="GUID-4DAC39E0-2EC2-40F7-9AEF-4FDA09F1A151.html" title="This document discusses the use of asynchronous requests by device drivers.">Asynchronous Requests</a> describes
+how to implement handling of asynchronous requests. </p>
+ <p><a href="GUID-8FA1B2B0-5842-4D5D-BD61-C2D79B56ADC6.html" title="This document describes interrupt service routines as used by device drivers.">Interrupt
+Service Routine (ISR)</a> describes how to write ISRs to handle interrupts
+from hardware devices. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <span class="filepath"> exdriver_dma</span>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Illustrates the use of DMA (Direct Memory Access). </p>
+ <p><a href="GUID-D1F7D21F-BA9D-482C-9B58-7C53A680145A.html">DMA</a> describes how
+to use DMA for fast copying of data from memory to memory, and between memory
+and peripherals. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <span class="filepath">exdriver_chnk</span>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Illustrates shared chunks and synchronization in a multi-thread
+context. </p>
+ <p><a href="GUID-132349A6-9A5F-4866-A54D-F01B6F58ABDD.html" title="This document describes the use of shared chunks to share data.">Shared
+Chunks</a> describes how to share data efficiently without the overhead
+of memory copy operations. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <span class="filepath"> exdriver_sync</span>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Illustrates synchronous request handling, and the use of the <a href="GUID-E7550422-5121-3393-A85E-BB797969CD2A.html"><span class="apiname">DLogicalChannelBase</span></a> base
+class for LDDs. </p>
+ <p><a href="GUID-CFE0A4EB-845C-43B6-A732-AA155AFD99D6.html" title="This document introduces user requests and synchronisation methods used by device drivers.">User
+Requests and Synchronisation</a> discusses the options for how LDDs can
+handle requests. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+
+<p>The source code for the example device drivers is delivered as part of
+the Symbian platform source code on kits, using the directory structure described
+previously in the <a href="GUID-2ADB873A-1580-476A-9642-AB47D13D4A98.html" title="This document details the directory structure and file types of logical device drivers and physical device drivers.">Source
+Directory Structure</a> section. </p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-0F17BCDF-CF50-40D1-9048-793DC4442B50.html" title="This set of documents describes the device driver development process and provides links to example material.">Introduction</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Static Data"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-5BDE6462-E6CA-5738-A587-C7D875574789"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Static Data</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id1198324 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a> &gt; </div>
+<h1 class="topictitle1">Static
+Data</h1>
+<div>
+<p>Symbian developers used to PC operating systems, such as Windows, may be
+used to using writeable static data (typically meaning global variables) in
+DLLs. On the Symbian platform, this is possible, but not recommended, because
+it is expensive in memory, and has limited support in the Symbian platform
+Emulator. </p>
+
+<p>This page describes writeable static data (WSD), the alternatives to using
+WSD, and the costs and issues associated with its use. </p>
+
+<div class="section" id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-4ED4247C-0515-4DC0-A6AA-73D0DB4E0CE9"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-4ED4247C-0515-4DC0-A6AA-73D0DB4E0CE9"><!-- --></a><h2 class="sectiontitle">Global writeable static data</h2> <p>Global writeable static
+data (WSD) is any per-process variable which exists for the lifetime of the
+process. In practice, this means any globally scoped data: data that is declared
+outside of a function, struct, or class, and function scoped static variables. </p>
+ <pre class="codeblock" id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-C7F90E06-286B-5E64-B94A-7683AA0DA0FB"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-C7F90E06-286B-5E64-B94A-7683AA0DA0FB"><!-- --></a>TBufC&lt;20&gt; fileName; //WSD 
+void SetFileName()
+ {
+ static Tint iCount; //WSD ...
+ }</pre>
+ <p>Sometimes writeable static data appears in a non-obvious
+way. It is not always the case that <samp class="codeph">const</samp> global variables
+are read-only data rather than global writeable static data. This is true
+for <samp class="codeph">const</samp> objects with trivial constructors, such as integers.
+However if a <samp class="codeph">const</samp> class has a non-trivial constructor, the <samp class="codeph">const</samp> object
+will require a real variable and must be stored as WSD. For example: </p>
+ <pre class="codeblock" id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-897D2E68-5AF6-5C69-A5AA-276A9FB89DEC"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-897D2E68-5AF6-5C69-A5AA-276A9FB89DEC"><!-- --></a>const TInt myVariable=…; //OK – truly const
+const TPtrC KSomeConstPtr=...; //NOT OK – non trivial constructor 
+const TRgb KSomeConstCol=...; //NOT OK – non trivial constructor</pre>
+ </div>
+
+<div class="section" id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-2FFCE39F-2387-4802-99B5-62B824D93667"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-2FFCE39F-2387-4802-99B5-62B824D93667"><!-- --></a><h2 class="sectiontitle">Support for global writeable static data on Symbian</h2> <p>The
+Symbian platform supports global writeable static data in EXEs on all versions
+and handsets. </p>
+ <p>Versions of Symbian based on the EKA2 kernel (8.1b and
+later) support WSD in DLLs on target hardware. Versions 8.1a and earlier,
+based on the EKA1 kernel, do not support global WSD in DLLs. </p>
+ </div>
+
+<div class="section" id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-D684D28A-5534-4867-BB3F-6341FAC55713"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-D684D28A-5534-4867-BB3F-6341FAC55713"><!-- --></a><h2 class="sectiontitle">Clean up of global writeable static data</h2> <p>Your program
+must make sure that global writeable static data that the program allocates
+is cleaned up. </p>
+ <p>The clean up rules are as follows: </p>
+ <ul>
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-1D25BA8E-1A8E-5502-8FD9-7F74DBB39EF4"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-1D25BA8E-1A8E-5502-8FD9-7F74DBB39EF4"><!-- --></a><p>Your program must clean
+up WSD objects that are defined in the process EXE or its statically-loaded
+DLLs. When a process exits, the Symbian platform does not automatically call
+the destructors of these WSD objects. </p>
+ </li>
+
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-7F1EB6D6-2EAD-5318-A066-DC9128A48EAF"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-7F1EB6D6-2EAD-5318-A066-DC9128A48EAF"><!-- --></a><p>Your program does not
+need to clean up WSD objects defined in DLLs that the process has dynamically
+loaded using <a href="GUID-25327159-83D6-3507-B187-09EA4BB3727F.html"><span class="apiname">RLibrary</span></a>. The Symbian platform automatically
+calls destructors of these objects. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-3458566D-FEC2-4ED2-AFB8-3C61F693FBEF"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-3458566D-FEC2-4ED2-AFB8-3C61F693FBEF"><!-- --></a><h2 class="sectiontitle">Alternatives to using global writeable static data</h2> <p>Native
+Symbian platform C++ code rarely uses WSD. </p>
+ <p>However, code ported from
+other operating systems may contain large amounts of static data. For example,
+code written in the C programming language often makes use of WSD as the "glue"
+between C function calls. </p>
+ <p>In EKA1, WSD is not supported, so there
+is no choice but to use the alternative mechanisms provided by the Symbian
+platform to port such code. Even in EKA2 where global data is supported, Symbian
+recommends that it only be used as a last resort. </p>
+ <p>The following sections
+describe the alternatives that can be used to port code that makes use of
+global writeable static data. </p>
+ <p><strong>Use
+thread-local storage (TLS)</strong> </p>
+ <p>Thread Local Storage (TLS) is a single
+per-thread word that can be used to simulate global writeable static data. </p>
+ <p>All
+the static data in the DLL is grouped into a single struct or class. On creation
+of the thread, an instance of the thread is allocated on the heap and a pointer
+to this data is saved to TLS (using <samp class="codeph">Dll::SetTls()</samp>). On destruction
+of the thread, the data is destroyed. Throughout the DLL the code references
+the TLS data (using <samp class="codeph">Dll::Tls()</samp>) rather than the original
+global writeable static data. </p>
+ <p><strong>Wrap
+in a server</strong> </p>
+ <p>The Symbian platform supports writeable global static
+data in EXEs. A common porting strategy is therefore to wrap the code in a
+Symbian server (which is an EXE), and expose its API as a client interface. </p>
+ <p><strong>Move global variables into your classes</strong> </p>
+ <p>With relatively small
+amounts of code, it may be possible to move most global data inside classes. </p>
+ </div>
+
+<div class="section" id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-03B7CEEC-AF27-430C-8B70-D8E5D2B9703C"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-03B7CEEC-AF27-430C-8B70-D8E5D2B9703C"><!-- --></a><h2 class="sectiontitle">Enabling global writeable static data</h2> <p>In order
+to enable global writeable static data, simply add a statement <samp class="codeph">epocallowdlldata</samp> (case
+insensitive) to the project's MMP file: </p>
+ <pre class="codeblock" id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-0E673C33-569E-5F7B-9E51-55C2FC233D70"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-0E673C33-569E-5F7B-9E51-55C2FC233D70"><!-- --></a>TARGET my.dll 
+TARGETTYPE dll 
+EPOCALLOWDLLDATA 
+… </pre>
+ </div>
+
+<div class="section" id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-1437C47C-4D74-4332-9138-F2DA552C6715"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-1437C47C-4D74-4332-9138-F2DA552C6715"><!-- --></a><h2 class="sectiontitle">Costs and limitations</h2> <p><strong>Emulator
+only allows a DLL with WSD to load into a single process</strong> </p>
+ <p>The Symbian
+platform EKA2 Emulator only allows a DLL with WSD to be loaded into a single
+process. </p>
+ <p>This is a very serious restriction. If you have a shared
+DLL with WSD, then the second process that attempts to load it in the emulator
+will fail with <samp class="codeph">KErrNotSupported</samp>. </p>
+ <p><strong>Emulator allows WSD by default</strong> </p>
+ <p>The Emulator will allow WSD
+in DLLs even if <samp class="codeph">epocallowdlldata</samp> is not declared in the mmp
+file. However the data will be truly global: there will be one copy for the
+entire emulator, rather than one copy for each emulated process. The only
+restriction is that if the data's initialisers call any Symbian platform kernel
+functions (i.e. executive calls), then the emulator will fault. </p>
+ <p><strong>RAM usage for WSD data chunk </strong> </p>
+ <p>When a process loads its first
+DLL containing WSD, it creates a single chunk to store the data. The data
+for subsequent WSD-enabled DLLs is loaded into the same chunk. </p>
+ <p>The
+data chunk will occupy at least one 4K RAM page (the smallest possible RAM
+allocation), irrespective of how much static data is required. Any memory
+not used for WSD will be wasted. Since the memory is per-process, the memory
+wastage on the machine is: </p>
+ <pre class="codeblock" id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-005105EF-A09A-5FF7-8056-7316AFCE1894"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-005105EF-A09A-5FF7-8056-7316AFCE1894"><!-- --></a>(4Kb - WSD Bytes) × number-client-processes</pre>
+ <p>It is very easy for a developer to add a few words of WSD to their DLL thinking
+that's all the memory that they are using. However, the cost is actually 4K
+for every process if a DLL with WSD has not already been loaded into the process.
+If for example the DLL is used by 4 processes, that's potentially an "invisible"
+cost of 16K. </p>
+ <p><strong>Chunks
+are a finite resource</strong> </p>
+ <p>EKA2 has a hard coded limit of 16 chunks
+per process; a limit that is required to ensure real-time behaviour. Every
+process loading WSD-enabled DLLs uses a chunk to hold the data, reducing the
+number of chunks available for other uses. </p>
+ <p><strong>ARM architecture 4 and 5 specific costs and limitations</strong> </p>
+ <p>There
+are other significant costs that apply only to DLLs that link against "fixed
+processes". Fixed processes are a feature of ARM v4 or v5 architecture only;
+the following behaviour does not apply to devices based on the ARMv6 architecture. </p>
+ <p> <strong>Case
+1: Non Execute-in-place DLLs</strong>  </p>
+ <p>For non-execute-in-place (non XIP)
+DLLs, an additional code chunk is required for every fixed process which links
+against the DLL. </p>
+ <p>So imagine a 20Kb DLL (with a few bytes of WSD) that
+is loaded into 4 normal "non-fixed" processes, and 2 fixed processes. The
+(static) memory consumed is: </p>
+ <ul>
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-57F9041D-240C-5B75-BC0C-EFA66AB411B6"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-57F9041D-240C-5B75-BC0C-EFA66AB411B6"><!-- --></a><p>Code chunk shared by
+all moving processes = 20 Kb </p>
+ </li>
+
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-1FCC1ED4-0A60-5983-AF5A-2F7C8622BC80"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-1FCC1ED4-0A60-5983-AF5A-2F7C8622BC80"><!-- --></a><p>Code chunk for each
+fixed process loading the DLL = 40 Kb </p>
+ </li>
+
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-6CD0DBDD-E406-5F7D-9207-8E55B4043779"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-6CD0DBDD-E406-5F7D-9207-8E55B4043779"><!-- --></a><p>Data chunk for each
+process loading the DLL = 6×4Kb = 24 Kb </p>
+ </li>
+
+</ul>
+ <p>So to allow a few bytes of WSD there is a 64Kb increase in consumed
+memory. Note that the 20Kb code chunk shared by all processes is consumed
+whether or not WSD is enabled. </p>
+ <p> <strong>Case 2: Execute-in-place DLLs</strong>  </p>
+ <p>For
+XIP DLLs, there is no additional RAM cost other than the size of the WSD itself,
+rounded up to the next multiple of 4KB. However: </p>
+ <ul>
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-8B1EDEA4-8082-5DB1-87A8-E7B0FE5BB802"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-8B1EDEA4-8082-5DB1-87A8-E7B0FE5BB802"><!-- --></a><p>An XIP DLL can be loaded
+by any non-fixed process, OR it may be loaded by a single fixed process (and
+therefore cannot be loaded by any other processes whatsoever) </p>
+ </li>
+
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-BA2D82B1-A036-5281-95EB-A46A7976605B"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-BA2D82B1-A036-5281-95EB-A46A7976605B"><!-- --></a><p>The ROM build fails
+if a DLL with static data links to a fixed process <em>and</em> any other process. </p>
+ </li>
+
+</ul>
+ <p> <strong>A few specific DLLs cannot have WSD</strong>  </p>
+ <p>DLLs that are
+required to initialise the file server cannot have WSD, e.g. HAL.DLL, EUSER.DLL,
+EFSRV.DLL. </p>
+ </div>
+
+<div class="section" id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-4DCE5F11-5066-4C72-9F39-E46737F7BDA8"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-4DCE5F11-5066-4C72-9F39-E46737F7BDA8"><!-- --></a><h2 class="sectiontitle">Frequently asked questions</h2> <p><strong>How
+does Symbian's WSD implementation work ?</strong> </p>
+ <p> <strong>Case 1. For moving
+processes:</strong>  </p>
+ <p>The Symbian platform supports a moving memory model,
+in which the data for a process is moved into a fixed virtual address space
+(the "run section") when the process is active, and then back into the processes
+"home" section when another process is active: </p>
+ <ul>
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-26E98921-9094-5260-BA99-2F7FA4F7D6A7"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-26E98921-9094-5260-BA99-2F7FA4F7D6A7"><!-- --></a><p>The data of processes
+in the "home section" is uniquely addressed both in terms of physical RAM
+pages, and in the MMU virtual address space. The data is protected from other
+processes, except for the Kernel. </p>
+ </li>
+
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-BBE7C17A-6FF7-5329-91C5-DEAF88A61B69"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-BBE7C17A-6FF7-5329-91C5-DEAF88A61B69"><!-- --></a><p>The data of processes
+in the run section occupies the same virtual address space as all other processes
+when they run (the MMU moves the physical RAM pages into the appropriate virtual
+address space). </p>
+ </li>
+
+</ul>
+ <p>When a DLL with WSD is loaded (or at ROM build time), its code is
+fixed to point to static data at specific addresses. In order to ensure that
+only a single copy of the DLL code is required, Symbian's moving-process WSD
+implementation ensures that the virtual addresses of static data is the same
+across every running process. </p>
+ <p>The way this works is: </p>
+ <a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-66A040C2-7B0F-56E0-A634-501D3E133A12"><!-- --></a><ol id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-66A040C2-7B0F-56E0-A634-501D3E133A12">
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-964A78E1-D86E-50D0-8AA0-D3D9346A43E7"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-964A78E1-D86E-50D0-8AA0-D3D9346A43E7"><!-- --></a><p>A specific address space
+is reserved for a per-process static data chunk. This chunk is used to hold
+all the static data for all the DLLs loaded into the process. </p>
+ </li>
+
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-0A528F28-55B2-5B8B-A337-8B2377241CF0"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-0A528F28-55B2-5B8B-A337-8B2377241CF0"><!-- --></a><p>At ROM build time the
+kernel reserves specific addresses within the static data chunk for all the
+WSD in all the ROM loaded DLLs. The addresses for ROM based DLLs are reserved
+from the top of the static data chunk address space to the bottom. Note that
+static data addresses for RAM based DLLs are reserved when the DLL is first
+loaded into any process. In this case, addresses are reserved from the bottom
+of the static data chunk address space. </p>
+ </li>
+
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-1898478C-2E24-53B4-BDEB-765FEEDC539C"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-1898478C-2E24-53B4-BDEB-765FEEDC539C"><!-- --></a><p>When the first DLL with
+WSD is loaded into a process, a static data chunk is created to hold the static
+data for all DLLs that are loaded into the process. </p>
+ </li>
+
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-7A88C9EB-31F9-559E-8DBD-221848CA2A46"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-7A88C9EB-31F9-559E-8DBD-221848CA2A46"><!-- --></a><p>Any global static data
+in the DLL is written to its specific reserved addresses. Note that addresses
+are reserved for that particular static data across all processes; if the
+DLL is loaded into another process, any static data will get the same virtual
+address. </p>
+ </li>
+
+</ol>
+ <p> <strong>Case 2. For fixed processes:</strong>  </p>
+ <p>A fixed process is
+one in which the process data does not move; code is run on process data stored
+in the process "home section". </p>
+ <p>Since the static data for every fixed
+process is uniquely addressed, and a DLL can only point to a single address
+for its data, the implication is that a separate copy of the DLL code is required
+for every fixed process that loads the DLL. </p>
+ <p>The restrictions listed
+above for ARM architecture 4 and 5 directly result. </p>
+ <ul>
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-125EDB37-4540-5EDB-9C19-6F92A307627F"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-125EDB37-4540-5EDB-9C19-6F92A307627F"><!-- --></a><p>For XIP based devices
+the DLL code chunk address is fixed at ROM build time, and there can only
+be one copy of the DLL code. Therefore the DLL code can address the data in
+either a single fixed process or the virtual address used by all moveable
+addresses. </p>
+ </li>
+
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-BC66EA5A-252D-5E37-80F6-BEC82C03DABA"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-BC66EA5A-252D-5E37-80F6-BEC82C03DABA"><!-- --></a><p>For non-XIP based devices
+the DLL is run from RAM, and the loader is able to fix-up the address that
+a DLL expects its data at load time (rather than ROM build time). Therefore
+in this case the loader creates a separate copy of DLL code for each fixed
+process that loads the DLL and a single copy shared by all moving processes. </p>
+ </li>
+
+</ul>
+ <p>Notes: Fixed processes are not supported or required on ARM v6 architectures.
+This discussion only applies to devices based on ARMv4 or v5. On ARM architecture
+6 each DLL with WSD has a reserved address, similar to the ARMv5 moving process
+case. However there is no 'home section' and memory is not relocated between
+low and high addresses on a context switch. Instead, each process uses its
+own set of page tables for the bottom half of virtual address space. </p>
+ <p><strong>Why does the EKA2 Emulator only allow a DLL with WSD to load into a single
+process?</strong> </p>
+ <p>The Symbian platform permits a DLL with global data to
+be loaded into only one Symbian platform process on the emulator. This limitation
+is a result of the way the Emulator is implemented on top of the Windows process
+model. </p>
+ <p>On EKA2, separate Symbian platform processes are emulated within
+a single Windows process. To preserve Symbian platform semantics there should
+be one copy of the global data for each emulated process. However, this is
+not possible since a DLL on the emulator is just a Windows DLL; Windows gives
+it a single copy of any global data it needs when it is loaded. </p>
+ <p><strong>What happens if epocallowdlldata isn't declared for a DLL with WSD?</strong> </p>
+ <p> <strong>Case
+1: On the EKA2 Emulator:</strong>  </p>
+ <p>Most constant data should be treated
+by the compiler as read-only rather than writeable static data (the exception
+is when the const data has a non-trivial constructor, so a real variable is
+required during initialisation). </p>
+ <p>Unfortunately, different compilers
+sometimes treat const data as WSD. For example, CodeWarrior puts it in writeable
+data and initialises it at run time. MSVC generally puts it into read-only
+data, but occasionally puts it into writeable data. </p>
+ <p>As most DLLs have
+const data, this means that the compilers have "accidentally" created WSD
+in almost every DLL. Symbian cannot therefore rigorously enforce the "single
+process can load a DLL with WSD" rule, as the Emulator would not work. </p>
+ <p>On
+the EKA2 Emulator, the workaround Symbian have implemented is to recognise
+two types of DLL global data: </p>
+ <ul>
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-6AD2E89F-6361-5F1F-8EC1-A203801BCC8F"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-6AD2E89F-6361-5F1F-8EC1-A203801BCC8F"><!-- --></a><p>'Deliberate' global
+data is where the programmer specifies that they want DLL global data (using
+the <samp class="codeph">epocallowdlldata</samp> keyword in the MMP file. In this case
+any global data in the DLL is assumed to be deliberate, and the "DLL loaded
+into one-emulated-process" rule applies. </p>
+ </li>
+
+<li id="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-225E44BE-434E-5C2A-8503-318E31B17EF0"><a name="GUID-5BDE6462-E6CA-5738-A587-C7D875574789__GUID-225E44BE-434E-5C2A-8503-318E31B17EF0"><!-- --></a><p>'Accidental' global
+data is the data introduced by the compiler with no encouragement from the
+programmer. If <samp class="codeph">epocallowdlldata</samp> is absent, global data is
+assumed to be accidental and the rule does not apply. Note that the global
+data includes both const and non-const static data; there is no way to tell
+the compilers to only apply it to non-const data - if we could do that then
+we could force correct handling of const static data. </p>
+ </li>
+
+</ul>
+ <p>In order to prevent abuse of this workaround, there are restrictions
+on what can be done with accidental global data; specifically, the Emulator
+will fault if any of the global data's initialisers attempt to call the Symbian
+platform kernel functions (i.e. executive calls). </p>
+ <p>Note that there
+is only one copy of the global data. Therefore it is possible for two processes
+to write to the same 'accidental' global data (causing undefined behaviour).
+The "DLL loaded into one-emulated-process" rule prevents this being a problem
+for deliberate global data. </p>
+ <p> <strong>Case 2: On the EKA1 Emulator</strong>  </p>
+ <p>The
+EKA1 emulator has no concept of separate Symbian platform processes. Global
+data is allowed on the Emulator as there is only one copy of any global data. </p>
+ <p>Symbian
+developers often have problems when porting to real hardware, which does not
+support this type of data. This is discussed in the following section. </p>
+ <p> <strong>Case
+3: On native target builds</strong>  </p>
+ <p>On either EKA1 or EKA2, target compilers
+will fail the build with an error indicating that the code has initialised
+or un-initialised data. </p>
+ <p>The error message does not specify the symbol(s)
+that are causing the problem. The <span class="filepath">.map</span> files output by
+the linker can however be helpful in finding the problem symbol. The RVCT
+map files provide a list of global symbols and the object files in which they
+occur. FAQ-0329 on the <a href="http://developer.symbian.org/wiki/index.php/Symbian_C++_Knowledgebase_Q&amp;As#How_can_I_find_the_.22uninitialised_data.22_in_my_DLL.3F" target="_blank">DevNet knowledgebase</a> works through an example of using
+a map file using the GCC compiler used on older Symbian platform releases. </p>
+ <p><strong>Can Kernel DLLs have WSD ?</strong> </p>
+ <p>Yes, WSD is supported for kernel
+DLLs in both EKA1 and EKA2 (through alternative mechanisms to those described
+here). </p>
+ <p>Of course, kernel DLLs are guaranteed to be loaded into only
+one process, so the per-process multiplication of RAM usage does not apply.
+EKA2 will work correctly with global data in any kernel DLL. However EKA1
+does not call constructors for global C++ objects in kernel extensions or
+device drivers, and does not call destructors for global C++ objects in device
+drivers at driver unload time. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

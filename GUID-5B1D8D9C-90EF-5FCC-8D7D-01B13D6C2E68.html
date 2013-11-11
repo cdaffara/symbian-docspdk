@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Nanokernel"/>
+<meta name="abstract" content="The nanokernel is the core of the Kernel, and is a small real-time operating system (RTOS) designed to run Symbian platform."/>
+<meta name="description" content="The nanokernel is the core of the Kernel, and is a small real-time operating system (RTOS) designed to run Symbian platform."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Nanokernel</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2399880 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html" title="Describes the architecture and technology features of the Kernel that are important for a base port.">Concepts</a> &gt; </div>
+<h1 class="topictitle1">Nanokernel</h1>
+<div><p>The nanokernel is the core of the Kernel, and is a small real-time
+operating system (RTOS) designed to run Symbian platform.</p>
+
+<p>A <a href="GUID-2700AAC8-A034-5E7D-B0E0-26B49E68BB18.html" title="A base port can add a software layer called a personality layer to the Kernel to provide an emulation of a real time operating system (RTOS)">Personality Layer
+for Real Time Applications</a> is a client of the nanokernel, and this
+topic is intended for writers of personality layers. </p>
+
+<div class="section" id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-B8D8C73E-75CB-417D-A6DA-EE8B77A28256"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-B8D8C73E-75CB-417D-A6DA-EE8B77A28256"><!-- --></a><h2 class="sectiontitle">Nanokernel threads</h2> <p>The fundamental unit of execution
+is the nanokernel thread, an <a href="GUID-187D314F-1115-3671-AC46-37AEC5DFB2AC.html"><span class="apiname">NThread</span></a> object. </p>
+ <p>A
+nanokernel thread has an integer priority, between 0 and 63 inclusive, and
+is scheduled according to priority, the highest priority first. Equal priority
+threads are scheduled on either a round robin or a run-to-completion basis,
+selectable for each thread. For round robin scheduling, the time slice is
+selectable for each thread. </p>
+ <p>Priority 0 is reserved for the system
+idle thread. </p>
+ <p>Priorities 1-27 inclusive, and priority 48 are currently
+used by Symbian platform threads; 12 is the priority of the foreground Symbian
+platform application. There are, therefore, 35 distinct priorities that are
+totally unused and available for a real time application. </p>
+ <p>Nanokernel
+threads may be created and destroyed dynamically, but the nanokernel does
+not do any memory management. Memory for both the thread object and the thread
+stack must be provided by the caller at create time. In fact the same rule
+applies throughout the nanokernel - all memory for dynamically created objects
+must be provided by the caller and freed by the caller after object destruction. </p>
+ </div>
+
+<div class="section" id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-45416245-24B2-40FA-98C2-94C29F94A200"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-45416245-24B2-40FA-98C2-94C29F94A200"><!-- --></a><h2 class="sectiontitle">Nanokernel synchronisation</h2> <p>The nanokernel provides
+the following synchronisation objects: </p>
+ <ul>
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-F94065EB-10A6-51A8-8B11-A0B887B994C6"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-F94065EB-10A6-51A8-8B11-A0B887B994C6"><!-- --></a><p>A fast semaphore, a <a href="GUID-22982E51-E746-37CB-9672-97B58C2672BF.html"><span class="apiname">NFastSemaphore</span></a> object.
+This is a lightweight counting semaphore owned by a specific nanokernel thread.
+Any thread can signal it, but only the owning thread can wait on it. </p>
+ </li>
+
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-CFA09EAD-34FE-5F41-83D5-52381B4A6C81"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-CFA09EAD-34FE-5F41-83D5-52381B4A6C81"><!-- --></a><p>A fast mutex, a <a href="GUID-D5B555DA-3D17-3ED2-A931-CB35BD93A953.html"><span class="apiname">NFastMutex</span></a> object.
+This is a lightweight mutual exclusion primitive. It is optimised for very
+fast acquisition and release in the case where there is no contention, and
+it provides priority inheritance. It is non-nestable, i.e. a thread is not
+allowed to hold two fast mutexes simultaneously or to wait on one which it
+already holds. In addition, a thread that holds a fast mutex cannot block
+on any other wait object. </p>
+ </li>
+
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-598F43D7-0517-5866-85BF-6E7D67C5CFDE"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-598F43D7-0517-5866-85BF-6E7D67C5CFDE"><!-- --></a><p>Deferred function calls
+(DFCs). </p>
+ </li>
+
+</ul>
+ <p>There is also the option of thread synchronisation by doing one of: </p>
+ <ul>
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-F3DBBDC5-1245-5C74-A02B-39FC5EFF8484"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-F3DBBDC5-1245-5C74-A02B-39FC5EFF8484"><!-- --></a><p>disabling interrupts,
+by calling <a href="GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02.html#GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02__GUID-8C251C65-FDE7-3161-8D2B-61401FB6487F"><span class="apiname">NKern::DisableAllInterrupts()</span></a>  </p>
+ </li>
+
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-869B40AF-9311-5539-8F5F-AFF1BF6F56F6"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-869B40AF-9311-5539-8F5F-AFF1BF6F56F6"><!-- --></a><p>disabling preemption,
+by calling <a href="GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02.html#GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02__GUID-7CBBF72B-4519-38DD-92CA-38AF636AFD8A"><span class="apiname">NKern::Lock()</span></a> </p>
+ </li>
+
+</ul>
+ <p>However, these two techniques must be used with caution as they affect
+all parts of the system. </p>
+ </div>
+
+<div class="section" id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-640C747E-6A7B-47B3-BC05-84A10DAE484F"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-640C747E-6A7B-47B3-BC05-84A10DAE484F"><!-- --></a><h2 class="sectiontitle">Scheduling threads following a hardware interrupt</h2> <p>In
+order to keep interrupt latency to a minimum the vast majority of the nanokernel
+runs with interrupts enabled; this includes the scheduler and other code which
+manipulates the thread ready list. A consequence of this is that it is <em>not</em> permissible
+for an interrupt service routine (ISR) to add a thread to the thread ready
+list. The only way an ISR can influence the scheduling of threads is by means
+of an Immediate Deferred Function Call (IDFC). </p>
+ <p>An IDFC is a function
+call that runs either: </p>
+ <ul>
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-4324A39E-D9F9-5F21-93BA-8014B39D17A0"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-4324A39E-D9F9-5F21-93BA-8014B39D17A0"><!-- --></a><p>immediately after the
+completion of the ISR, and any other ISRs that are pending. </p>
+ </li>
+
+</ul>
+ <p>or </p>
+ <ul>
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-BAA5895F-DBBC-5B42-B57A-5AF4DEC90824"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-BAA5895F-DBBC-5B42-B57A-5AF4DEC90824"><!-- --></a><p>as soon as preemption
+is re-enabled, if preemption was disabled at the time the interrupt occurred. </p>
+ </li>
+
+</ul>
+ <p>IDFCs run in FIFO order, i.e. the first one queued is first one to
+run, with interrupts enabled and preemption disabled. This means that IDFCs
+cannot be preempted either by threads or by other IDFCs, but only by ISRs.
+However, they can add threads to the ready list and thus cause rescheduling. </p>
+ <p>As
+IDFCs are nonpreemptive, they need to be kept short. This means that they
+affect thread latency. If a large amount of work needs to be done in response
+to an ISR, then a Deferred Function Call (DFC) should be used. </p>
+ <p>A DFC
+is a function call that runs in the context of a nominated thread. A DFC is
+associated with a DFC queue, which in turn is associated with a thread. The
+thread simply waits forever for a DFC to be added to the queue and then calls
+back the DFC. DFCs execute with both interrupts and preemption enabled. Because
+DFCs are so common in Symbian platform driver code, the nanokernel provides
+a shortcut to allow them to be queued directly by ISRs instead of by an IDFC.
+The same object, a <a href="GUID-A14562A5-3E91-3113-AB3C-71DBEA9D58EB.html"><span class="apiname">TDfc</span></a>, is used for both IDFCs and DFCs.
+When this object is queued by an ISR, it first executes as an IDFC; the code
+for this IDFC is buried in the nanokernel. This code transfers the object
+to the final DFC queue and wakes up the DFC thread as required. </p>
+ </div>
+
+<div class="section" id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-1EB1E07D-433B-4058-9CE3-4825A8945704"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-1EB1E07D-433B-4058-9CE3-4825A8945704"><!-- --></a><h2 class="sectiontitle">Nanokernel thread handlers</h2> <p>Each nanokernel thread
+can have the following handlers defined: </p>
+ <ul>
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-A52FA56C-D5CF-5186-A3A4-09941C17C0E0"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-A52FA56C-D5CF-5186-A3A4-09941C17C0E0"><!-- --></a><p>Exit handler. This is
+called in the context of the exiting thread just before it is terminated. </p>
+ </li>
+
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-66E53EEE-B076-5116-AA72-CDE4EE19315D"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-66E53EEE-B076-5116-AA72-CDE4EE19315D"><!-- --></a><p>Exception handler. This
+is called if a CPU exception occurs during the execution of the thread; it
+is called, in the context of the thread. </p>
+ </li>
+
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-8369C8AD-C9C1-505D-89F3-983F23009F9B"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-8369C8AD-C9C1-505D-89F3-983F23009F9B"><!-- --></a><p>Time-out handler. This
+is called if the thread's wait time-out expires with the thread in the BLOCKED
+state, or in an unknown state. It is called in the context of the nanokernel
+timer thread, DFC Thread 1, with preemption enabled. It is used in Symbian
+platform wait-with-timeout operations. </p>
+ </li>
+
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-7665E6CA-8BB4-5F1B-8CEB-DA5F59D77619"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-7665E6CA-8BB4-5F1B-8CEB-DA5F59D77619"><!-- --></a><p>State handler. <em>This
+is the fundamental hook used for personality layers.</em>. It is called if: </p>
+ <ul>
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-7996AB09-C5DF-520E-ADBB-B65AF9EC536F"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-7996AB09-C5DF-520E-ADBB-B65AF9EC536F"><!-- --></a><p>the thread is suspended </p>
+ </li>
+
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-39CC9F5E-663F-5BAD-8D04-55E698F7D405"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-39CC9F5E-663F-5BAD-8D04-55E698F7D405"><!-- --></a><p>the thread is resumed </p>
+ </li>
+
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-4DE5F701-EA02-5C43-896D-38202F9CB8EE"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-4DE5F701-EA02-5C43-896D-38202F9CB8EE"><!-- --></a><p>the thread is released </p>
+ </li>
+
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-EA3FCFAF-890B-537B-BE1F-F605B19BF9B5"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-EA3FCFAF-890B-537B-BE1F-F605B19BF9B5"><!-- --></a><p>the thread has its priority
+changed </p>
+ </li>
+
+<li id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-63E0ABEB-2878-5F4D-92CB-AF2EB28D2A54"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-63E0ABEB-2878-5F4D-92CB-AF2EB28D2A54"><!-- --></a><p>the thread's wait timeout
+expires and there is no time-out handler and the thread is in an unrecognised
+nanokernel state. </p>
+ </li>
+
+</ul>
+ </li>
+
+</ul>
+ <p>See also <span class="filepath">...\e32\personality\example\personality.cpp</span>. </p>
+ </div>
+
+<div class="section" id="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-600F44F2-9F2D-409A-9D66-10526319020C"><a name="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68__GUID-600F44F2-9F2D-409A-9D66-10526319020C"><!-- --></a><h2 class="sectiontitle">Timer management </h2> <p>The nanokernel provides a basic
+relative timer object, an <a href="GUID-D8CF05A3-5C9B-3662-92DA-3290C6EE7FD2.html"><span class="apiname">NTimer</span></a>, which can generate either
+one-shot or periodic interrupts. </p>
+ <p>A time-out handler is called when
+the timer expires, either from the timer ISR or from the nanokernel timer
+thread. Timer objects may be manipulated from any context. The timers are
+driven from a periodic system tick interrupt, usually a 1ms period. </p>
+ <p>For
+the purposes of power management, an API is provided to return the number
+of ticks left until the next timer expiry, thus enabling the tick interrupt
+to be suppressed and a deep sleep mode to be entered. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html" title="Describes the architecture and technology features of the Kernel that are important for a base port.">Concepts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

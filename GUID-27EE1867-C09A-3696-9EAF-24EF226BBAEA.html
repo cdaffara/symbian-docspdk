@@ -1,0 +1,1351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="ChspsInstallationHandler"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA"/>
+
+<title>ChspsInstallationHandler</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA"><a name="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">ChspsInstallationHandler Class Reference</h1>
+	<table class="signature"><tr><td>class ChspsInstallationHandler : public CBase</td></tr></table><div class="section"><div>
+			<p>Class <a href="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA.html#GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA">ChspsInstallationHandler</a>. <a href="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA.html#GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA">ChspsInstallationHandler</a> performs all theme installation related functionality for hspsThemeServer.</p>
+
+			<p>Class inheritance: ================== <a href="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA.html#GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA">ChspsInstallationHandler</a> implements <a href="GUID-56829E93-329C-3654-9F3F-74163747BEC3.html#GUID-56829E93-329C-3654-9F3F-74163747BEC3">MhspsInstallationService</a> from HSPS Theme Management Service and MContentHandler for XML-parsing of manifest file. For more information, see the architecture description in the beginning of this file.</p>
+
+			<p>Functionality: ============== <a href="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA.html#GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA">ChspsInstallationHandler</a> offer high- and low-level API-functionality. High-level and low-level calls are diffrentiated by their parametrization. High-level parametrization is directed to the be used by applications which need human readable data and offer a user interface. Low-level parametrization is directed to the machine-originated requestors like OTA Push or DM (Device Management) sub-systems where data is not needed to understand semanticly. Processing the installation task can be synchronous or asynchronous. Synchronous mode is applied everytime an installation is initiated. Application Theme may include resources. Importing these resources to the target device may need conversions. Such resources like some audio files etc., can be imported directly, however, most of the image-resources must be fitted for the target device because target screen device's color depth and/or pixel density varies. In this case, the needed conversions will be executed asynchronously. Asynchronous installation is executed in phases - resource by resource. Client application must initiate asynchronous mode by calling <a href="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA.html#GUID-A3147168-410C-3D80-8F6E-F4878441DBFD">hspsInstallNextPhaseL()</a> after testing that the synchronous call <a href="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA.html#GUID-6A575991-87CF-301D-9D60-2F9D19488F6A">hspsInstallTheme()</a> has returned EhspsInstallPhaseSuccess return code. This means that there are resources to convert asynchronoulsly. The rest of the asynchronous installation phases will be executed automatically, however, installation can be interrupted by calling <a href="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA.html#GUID-EA0A132D-15FC-3277-819C-4E6ED4E8A4F0">hspsCancelInstallTheme()</a> at any time. If installation is canceled, installation handler initiates roll-back functionality removing inconsistent installation. Installation Service uses specific manifest-file format to get informed about the xml, css, dtd, and resource files to be installed. Resource files might be locale-specific or generic as well. HSPS Definition Repository takes care of saving everything on their appropriate places in the target device. Repository, i.e. theme storage, is loacted on hspsThemeServer's private-folder. The storage is organized by the information contained in ODT-header. Locales are instructed in manifest file also. Manifest file's file-extension must be .dat, but actually, the file-name can be whatever, however, when low-level parametrization is used, the name must be "manifest.dat" and it must be the last file extracted from the installation package. For more information of manifest-file format, see "HSPS Manifest File User Guide.doc".</p>
+
+			<div class="p">Installation functions can return one of the following ThspsServiceCompletedMessage-codes:<ul><li><p>EhspsInstallThemeSuccess,</p>
+</li>
+<li><p>EhspsInstallPhaseSuccess, or</p>
+</li>
+<li><p>EhspsInstallThemeFailed.</p>
+</li>
+</ul>
+</div>
+
+			<div class="p">Client application must implement MhspsThemeManagementServiceObserver-interface and listen the messages mentionaed. Let it be emphasised that both synchronous and asynchronous calls can return the codes above. Installation functions may also return one of the following codes:<ul><li><p>EhspsServiceRequestSheduled, or</p>
+</li>
+<li><p>EhspsServiceRequestError.</p>
+</li>
+</ul>
+</div>
+
+			<p>For explanation of the meanings of these messages, see ThspsServiceCompletedMessage-documentation.</p>
+
+			<div class="p">hspsThemeServer.exe <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">ChspsInstallationHandler<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-27FB0FF1-9BB8-3B2B-A7C0-7053B57D461D">~ChspsInstallationHandler</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-6B3CE8E4-97E2-3E84-AE37-D7472B8A846A">CheckAutoInstallationValidityL</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-2309533C-1697-344E-8946-DC704446CA16">DisableNotifications</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-8188C5EC-EB96-3DB6-8778-50458BAB9B2C">DisableUdaEmmcInstallations</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-0223EFAA-3147-3795-A9DC-77D563AD6C06">DoInstallThemeL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td><a href="#GUID-7A089003-1AE6-3265-B076-EA94418FB9AD">GetExtendedInterface</a>(const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt32</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA.html">ChspsInstallationHandler</a> *</td><td><a href="#GUID-004803D8-D24A-3CDF-9D8D-2A18EEAEEE7F">NewL</a>(<a href="GUID-F78376A9-82E9-3EE6-842B-BE1A65DDB7F3.html">ChspsThemeServer</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA.html">ChspsInstallationHandler</a> *</td><td><a href="#GUID-88E36B4E-2E7F-3A6B-A945-76F670BF95D6">NewLC</a>(<a href="GUID-F78376A9-82E9-3EE6-842B-BE1A65DDB7F3.html">ChspsThemeServer</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-6A3F81A2-85B1-39A0-802E-2B160DA151E8">OnContentL</a>(const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-A96FF8D7-3021-3C6A-9D34-286BA3AF0DA1">OnEndDocumentL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-2B4BA2E2-BA5A-37A4-A8F4-F2C3D5E3D4CE">OnEndElementL</a>(const <a href="GUID-126C8A8B-583D-3E93-B68D-E945CA174A54.html">RTagInfo</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-91E7BEB3-0B44-338E-B112-AA1A90815C4D">OnEndPrefixMappingL</a>(const <a href="GUID-86301BC4-2A98-3F9B-BAE3-A6DE8D3BD632.html">RString</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-D026034D-D754-3BBD-AE16-65AF6039C38E">OnError</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-F039179B-F9C3-3B5B-9D16-44E9DACC782E">OnIgnorableWhiteSpaceL</a>(const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-3496E207-C86B-36C7-A631-99D5233BCCD0">OnProcessingInstructionL</a>(const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-21B95570-40B4-35E2-BEE8-4746CCC569C9">OnSkippedEntityL</a>(const <a href="GUID-86301BC4-2A98-3F9B-BAE3-A6DE8D3BD632.html">RString</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-230BC50F-1020-3CB9-9B70-B0B6CB59EDA9">OnStartDocumentL</a>(const RDocumentParameters &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-F68B45B3-9709-3460-AC9B-A7BFE7709EE3">OnStartElementL</a>(const <a href="GUID-126C8A8B-583D-3E93-B68D-E945CA174A54.html">RTagInfo</a> &amp;, const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RAttributeArray</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-8FBDD88E-FA70-3960-AF67-A818360452E0">OnStartPrefixMappingL</a>(const <a href="GUID-86301BC4-2A98-3F9B-BAE3-A6DE8D3BD632.html">RString</a> &amp;, const <a href="GUID-86301BC4-2A98-3F9B-BAE3-A6DE8D3BD632.html">RString</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-93B20DF2-07FF-3641-A447-D1A7BCBA84E4">ServiceInstallNextPhaseL</a>(const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-057D40F8-60B9-3A75-8F6E-7A8B7A154246">ServiceInstallThemeL</a>(const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a>
+				</td><td><a href="#GUID-EA0A132D-15FC-3277-819C-4E6ED4E8A4F0">hspsCancelInstallTheme</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-A3147168-410C-3D80-8F6E-F4878441DBFD">hspsInstallNextPhaseL</a>(<a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp;, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a>
+				</td><td><a href="#GUID-AC68689B-C7D1-3513-BF04-081D8595068F">hspsInstallNextPhaseL</a>(<a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a>
+				</td><td><a href="#GUID-BE99F9C5-D8E5-31B0-BD33-4B4150F15607">hspsInstallNextPhaseL</a>(<a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a>
+				</td><td><a href="#GUID-6A575991-87CF-301D-9D60-2F9D19488F6A">hspsInstallTheme</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a>
+				</td><td><a href="#GUID-3F161FEA-6944-333C-BFB3-24F37853B321">hspsInstallTheme</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">void</td><td><a href="#GUID-849BB2CA-EB51-37C8-BAC8-6AD7B8484F0A">RollBackL</a>(<a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-041B7737-CA56-35B2-BFB2-5943BA0F50A5">ChspsInstallationHandler</a>(<a href="GUID-F78376A9-82E9-3EE6-842B-BE1A65DDB7F3.html">ChspsThemeServer</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-8868276B-96CF-3C31-9968-665480B54E61">ActivateThemeL</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-F6E114B5-AC26-39F8-8ECA-E710A2B26D19">AddDtdFileL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">TLanguage</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-82A21318-8D98-32B4-AC6E-B90047B1CAA4">AddInterfaceResourcesV2L</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-A90EE525-B409-319C-8BD3-7AD071E83146">AddLocalesL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-7CC5EBB3-C7A1-3A32-BAFC-56774D18F4AD">AddResourceL</a>(<a href="GUID-A9BDCF9A-6A29-3329-898A-13CA8FF26510.html">CArrayPtrSeg</a>&lt; <a href="GUID-6155D650-4569-376C-98E8-960768B73B60.html">ChspsResource</a> &gt; &amp;, const <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a>, const <a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">TLanguage</a>, const <a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsResourceType</a>, const <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a>, const <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-C65D1C8E-8A3F-314C-AD71-30B4057B68A4">AppendPluginConfigurationsL</a>(<a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-F599CB1D-72E1-38B1-B11A-1C857652680B">ApplyUidRangeTestsL</a>(const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-65BF4B7A-5CFE-333C-822C-DC9A39F340DB">CheckHeaderL</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-D300268C-947C-3C2F-A846-2DA0A5DC0FE4">CleanupL</a>(const <a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-72BD7689-D26D-3E7E-BE70-A573EED8B2E6">CompleteRequestL</a>(const <a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a>, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-DD75AE3E-1454-3C15-854D-6881EE371A2E">ConstructL</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-59C3628B-440E-3424-A1BE-06341E82AFC4">FinalizeParsingL</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-C316C0B9-98DF-374E-8F61-A109DD0D2CEE">FindResourceFilesL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;, <a href="GUID-12C65B99-553E-35CA-B36F-2F77BFC972B3.html">CArrayFixFlat</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; *)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-CF32B734-D3D3-3FEE-A86D-E096808513A8">GetActiveAppConfsL</a>(<a href="GUID-A9BDCF9A-6A29-3329-898A-13CA8FF26510.html">CArrayPtrSeg</a>&lt; <a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &gt; &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-0B9C8884-6BFF-35E2-AA6F-E4057B85AFCF.html">TFileName</a>
+				</td><td><a href="#GUID-8E4FE565-F0BB-3B3F-95C7-7253FB223DCE">GetInterfacePath</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-F6162635-9E6E-3E5F-BF67-C560475C7BE9">ImportPluginsL</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-E0DFB1DE-BDA0-3B10-AB90-67BED8344705">InstallSkeletonL</a>(<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-672BCAD2-C4F7-3903-B985-F362C3F89E40">IsPluginUsedInAppConfsL</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-303BBA37-7CD7-39F8-B6C9-FC87F9C1FD63">NotifyOdtUpdatedL</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-765561FA-1AFA-34F2-A35F-865A6AEC9A33">ParseDocumentL</a>(<a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-98E673C5-0A84-3E1C-9EC1-3EF28FD74A25">ParseIconDeclarationL</a>(<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> &amp;, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;, <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *&amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-75861C94-A69B-35D9-93C4-4B9B048B0437">ResetL</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-41CCAEEF-3C97-3744-8182-BE2FB395600F">SetODTAsResourceL</a>(<a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Enumerations</th></tr></thead><tbody><tr><td align="right" valign="top">enum</td><td><a href="#GUID-1CBAFEE6-7C16-3A9C-AE81-361678C4832B">TInstallationType</a> { <a href="#GUID-10ED730E-1FE4-3AF6-9413-206A939970A2">EInstallationTypeNew</a> = 0, <a href="#GUID-19A61E68-61BE-3544-82F2-D8CB5DFD22AB">EInstallationTypeUpdate</a> }</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Public Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-54EC472D-949E-34A4-A9AF-0437618EA0CE.html">ChspsResult</a> *</td><td><a href="#GUID-DE7B0501-EA1A-3488-A701-38B83687160A">iResult</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td><a href="#GUID-380681F5-DBA0-354B-8432-8581D0CA60A3">iApplicationType</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-DEA618DF-D462-3B3E-A1E1-F21295AAFE78.html">CRepository</a> &amp;</td><td><a href="#GUID-BA109CA8-CCF4-34D3-A97A-A6B13C6A5D16">iCentralRepository</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsConfigurationType</a>
+				</td><td><a href="#GUID-47EF45B2-69D8-3D5D-A492-5BC8708650F0">iConfigurationType</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td><a href="#GUID-10310845-1493-3A9A-890B-BD8BE4A89782">iContent</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-2FFE489B-6BEC-3C61-AB1D-27E2D6A757C3.html">ChspsDefinitionEngineInterface</a> *</td><td><a href="#GUID-6BD64DD0-02D5-3DFE-9BE0-19EA0ADB326C">iDefEngine</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">TLanguage</a>
+				</td><td><a href="#GUID-84FC1819-98B1-34F0-A4BC-67B1C6EFA20D">iDefaultSpecification</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-030C9582-FD86-3F3D-9618-9A946C269B0A">iDefaultSpecificationSet</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-DC7EC16C-B1BA-3296-BAF3-141A4D5A074A.html">ChspsDefinitionRepository</a> &amp;</td><td><a href="#GUID-4E3EBDCD-CF78-3257-B43C-B802E7B94F63">iDefinitionRepository</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-448282CF-3E31-3A4D-B1E5-5A81E5149320">iDisableNotifications</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-73B2115B-4518-33CE-8218-5002D54B1EBF">iDtdFile</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>
+				</td><td><a href="#GUID-E0E0DF77-A217-3309-B4B6-643C6C3612A6">iFamilyMask</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-54D776ED-4A35-3A83-B023-2B4011E5C714">iFileNotFound</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html">RFs</a>
+				</td><td><a href="#GUID-7B47BC04-77EB-3846-AF00-9BF9EA75925E">iFsSession</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td><a href="#GUID-9DBE081B-0A0E-34E4-B815-FE629936F2B9">iHeaderData</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-A9BDCF9A-6A29-3329-898A-13CA8FF26510.html">CArrayPtrSeg</a>&lt; <a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &gt; &amp;</td><td><a href="#GUID-6BE2EE9C-88ED-3B04-9349-6611197B3F80">iHeaderListCache</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-81781DA8-02C4-3F4C-9D9B-1CBF8A5BEA23">iInstallFromUDAEmmc</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-A6226B44-D72E-32F6-814B-6A02A1BEF438.html">TInstallationMode</a>
+				</td><td><a href="#GUID-9AFA1996-5AD2-341A-84C9-2BF50DF81600">iInstallationMode</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsInstallationPhase</a>
+				</td><td><a href="#GUID-48528493-F091-33E3-B4A1-39EE32B9808D">iInstallationPhase</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA.html">TInstallationType</a>
+				</td><td><a href="#GUID-DC0E3717-42A2-3346-B5E8-A11CD48E2216">iInstallationType</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-92261491-0C26-3ACA-B0C0-48C341FB9E03">iLocalized</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td><a href="#GUID-3D10B495-1F6F-3544-8C51-9257FE7BA94B">iMediaType</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-78E0DEDD-C020-3174-AD0A-E4C18C4C9213.html">RMessagePtr2</a>
+				</td><td><a href="#GUID-C202A2BF-0D84-3635-9DE9-CE352ACB2609">iMessagePtr</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt32</a>
+				</td><td><a href="#GUID-5424279C-E15C-3825-96E2-C24F592861C6">iMultiInstance</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-FE20D189-801F-36CD-AC90-D30B9EEBDC2F">iMultiInstanceFound</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> *</td><td><a href="#GUID-47C3DD94-D791-34A3-B405-4C18311DF6C1">iOdt</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-69EBACE6-C547-39B1-9032-E05E65AA26C2">iPackageVerSupported</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-E253AA6B-9664-3AC7-B4B6-C33760C81CD8">iPackageVersion</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td><a href="#GUID-DD6667DF-B132-36E5-ABD4-97F862371FE2">iProviderUid</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> *</td><td><a href="#GUID-0802462A-8EEB-3F71-9992-9A44B10FA2FC">iRequestStatus</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-6155D650-4569-376C-98E8-960768B73B60.html">ChspsResource</a> *</td><td><a href="#GUID-191333D5-98C1-3CFE-BC69-0C0D773E043D">iResource</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-A9BDCF9A-6A29-3329-898A-13CA8FF26510.html">CArrayPtrSeg</a>&lt; <a href="GUID-6155D650-4569-376C-98E8-960768B73B60.html">ChspsResource</a> &gt; *</td><td><a href="#GUID-68EA2595-FD95-3990-96AC-D46439567C15">iResourceList</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td><a href="#GUID-F4F019FB-AFBF-3D94-969D-33CB28F79387">iResourceTag</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-78E993D5-A845-32B4-B41A-947ABEF16AA0.html">TBuf8</a>&lt; <a href="GUID-54D19772-4AF7-380F-BB75-36C515ED88A7.html">KMaxResultDataLength8</a> &gt;</td><td><a href="#GUID-58E2CD4F-114B-3A68-9CD8-E0F62248BFD7">iResultData</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td><a href="#GUID-8CF427EB-8072-35B6-A600-A2B62EAA9ED2">iRootUid</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-98096907-30C7-39D8-85DC-9694D52F1E11.html">ChspsSecurityEnforcer</a> &amp;</td><td><a href="#GUID-A56E71EA-8D3A-3981-A9FF-8D69D6B35E68">iSecurityEnforcer</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-A9BDCF9A-6A29-3329-898A-13CA8FF26510.html">CArrayPtrSeg</a>&lt; <a href="GUID-6155D650-4569-376C-98E8-960768B73B60.html">ChspsResource</a> &gt; *</td><td><a href="#GUID-399E97D0-97A8-3837-BB7C-DC83CABBD1E5">iTempLocalizedResourceList</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td><a href="#GUID-DB374079-0BD3-35F0-8028-17B1B36CEFA7">iThemeDesc</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-0B9C8884-6BFF-35E2-AA6F-E4057B85AFCF.html">TPath</a>
+				</td><td><a href="#GUID-8451EC4E-4856-3C77-B656-796427560535">iThemeFilePath</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-F26F4BE6-8699-3AC0-925C-C6C5F0B05A54">iThemeFullName</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-F78376A9-82E9-3EE6-842B-BE1A65DDB7F3.html">ChspsThemeServer</a> &amp;</td><td><a href="#GUID-D02EF2D4-1A91-3F83-B051-CD2AD732BF71">iThemeServer</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td><a href="#GUID-BDE13B67-875D-355F-90B7-38A1B3A4D70A">iThemeShortName</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>
+				</td><td><a href="#GUID-6DA0AA61-FC0C-320A-9AA4-120845AB8DB3">iThemeStatus</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td><a href="#GUID-04331F91-CE4C-3750-AC89-9BEF6155C0F6">iThemeUid</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td><a href="#GUID-2EDC4D2C-D70A-3D02-8F54-356FDD7613FD">iThemeVersion</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-65D1EB19-0622-3346-8C58-C15F67E0140E">iTrustedInstallation</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-8CBC59E9-3F56-3066-83DF-E01C5215AC2A">iXmlFile</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-EE37CB28-DAB4-30A9-B46E-8AE4664B28DE.html">Xml::CParser</a> *</td><td><a href="#GUID-28C435EC-5692-3B14-BE9E-330534027362">iXmlParser</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-041B7737-CA56-35B2-BFB2-5943BA0F50A5"><a name="GUID-041B7737-CA56-35B2-BFB2-5943BA0F50A5"><!-- --></a>
+		<h2 class="topictitle2">ChspsInstallationHandler(ChspsThemeServer &amp;)</h2>
+		<table class="signature"><tr><td>ChspsInstallationHandler</td><td>(</td><td><a href="GUID-F78376A9-82E9-3EE6-842B-BE1A65DDB7F3.html">ChspsThemeServer</a> &amp;</td><td>aThemeServer</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">C++ default constructor. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F78376A9-82E9-3EE6-842B-BE1A65DDB7F3.html">ChspsThemeServer</a> &amp; aThemeServer</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-27FB0FF1-9BB8-3B2B-A7C0-7053B57D461D"><a name="GUID-27FB0FF1-9BB8-3B2B-A7C0-7053B57D461D"><!-- --></a>
+		<h2 class="topictitle2">~ChspsInstallationHandler()</h2>
+		<table class="signature"><tr><td>~ChspsInstallationHandler</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Destructor. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-8868276B-96CF-3C31-9968-665480B54E61"><a name="GUID-8868276B-96CF-3C31-9968-665480B54E61"><!-- --></a>
+		<h2 class="topictitle2">ActivateThemeL()</h2>
+		<table class="signature"><tr><td>void</td><td>ActivateThemeL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">ActivateThemeL Activates the installed theme. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-F6E114B5-AC26-39F8-8ECA-E710A2B26D19"><a name="GUID-F6E114B5-AC26-39F8-8ECA-E710A2B26D19"><!-- --></a>
+		<h2 class="topictitle2">AddDtdFileL(const TDesC &amp;, const TLanguage)</h2>
+		<table class="signature"><tr><td>void</td><td>AddDtdFileL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aPath,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">TLanguage</a></td><td>aLanguage</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<p>Adds localized dtd resources from the provided subdirectory</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aPath</td><td>Path to the subdirectory where the locale specific resources can be found  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">TLanguage</a> aLanguage</td><td>Name of the subdirectory  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-82A21318-8D98-32B4-AC6E-B90047B1CAA4"><a name="GUID-82A21318-8D98-32B4-AC6E-B90047B1CAA4"><!-- --></a>
+		<h2 class="topictitle2">AddInterfaceResourcesV2L(const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>AddInterfaceResourcesV2L</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aPath</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">Finds all language specific folders and resources under the interface path in ROM or UDA drive. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0  aPath Xuikon path </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aPath</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A90EE525-B409-319C-8BD3-7AD071E83146"><a name="GUID-A90EE525-B409-319C-8BD3-7AD071E83146"><!-- --></a>
+		<h2 class="topictitle2">AddLocalesL(const TDesC &amp;, const TBool)</h2>
+		<table class="signature"><tr><td>void</td><td>AddLocalesL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aPath,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aProcessOnlyDTD</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<p>Finds locale specific subdirectories and resources and appends those into the resource array</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aPath</td><td>is a directory where the locale specific subdirectories exits  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aProcessOnlyDTD</td><td>If ETrue, then only DTD files are processed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7CC5EBB3-C7A1-3A32-BAFC-56774D18F4AD"><a name="GUID-7CC5EBB3-C7A1-3A32-BAFC-56774D18F4AD"><!-- --></a>
+		<h2 class="topictitle2">AddResourceL(CArrayPtrSeg&lt; ChspsResource &gt; &amp;, const TPtrC, const TLanguage, const ThspsResourceType, const TPtrC8, const TPtrC8)</h2>
+		<table class="signature"><tr><td>void</td><td>AddResourceL</td><td>(</td><td><a href="GUID-A9BDCF9A-6A29-3329-898A-13CA8FF26510.html">CArrayPtrSeg</a>&lt; <a href="GUID-6155D650-4569-376C-98E8-960768B73B60.html">ChspsResource</a> &gt; &amp;</td><td>aArray,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a></td><td>aFilename,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">TLanguage</a></td><td>aLanguage,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsResourceType</a></td><td>aResourceType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a></td><td>aMimetype,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a></td><td>aTag</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<div class="p">Adds parsed resource into a temporary resource list, from which the resources are applied to an ODT instance at later phase <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-A9BDCF9A-6A29-3329-898A-13CA8FF26510.html">CArrayPtrSeg</a>&lt; <a href="GUID-6155D650-4569-376C-98E8-960768B73B60.html">ChspsResource</a> &gt; &amp; aArray</td><td>is either iResourceArray or iLocalizedResourceArray instance  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a> aFilename</td><td>is full path and filename to the resource in an installation folder  </td></tr><tr><td class="parameter">const <a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">TLanguage</a> aLanguage</td><td>is language of the resource (use ELangNone if it's a common resource)  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsResourceType</a> aResourceType</td><td>is MIME type or NULL  </td></tr><tr><td class="parameter">const <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> aMimetype</td><td>(Optional)  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> aTag</td><td>(Optional)  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C65D1C8E-8A3F-314C-AD71-30B4057B68A4"><a name="GUID-C65D1C8E-8A3F-314C-AD71-30B4057B68A4"><!-- --></a>
+		<h2 class="topictitle2">AppendPluginConfigurationsL(ChspsODT &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>AppendPluginConfigurationsL</td><td>(</td><td><a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;</td><td>aAppODT</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">Parses given DOM document and appends it with a content from possible plugin DOMs. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp; aAppODT</td><td>is the ODT which should be modified  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F599CB1D-72E1-38B1-B11A-1C857652680B"><a name="GUID-F599CB1D-72E1-38B1-B11A-1C857652680B"><!-- --></a>
+		<h2 class="topictitle2">ApplyUidRangeTestsL(const TUint)</h2>
+		<table class="signature"><tr><td>void</td><td>ApplyUidRangeTestsL</td><td>(</td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aUid</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Validates provided UID value. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aUid</td><td>Value to be checked  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6B3CE8E4-97E2-3E84-AE37-D7472B8A846A"><a name="GUID-6B3CE8E4-97E2-3E84-AE37-D7472B8A846A"><!-- --></a>
+		<h2 class="topictitle2">CheckAutoInstallationValidityL()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>CheckAutoInstallationValidityL</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<div class="p">CheckAutoInstallationValidityL Checks if auto installation of a theme is permitted <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 This is server-side only function. </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-65BF4B7A-5CFE-333C-822C-DC9A39F340DB"><a name="GUID-65BF4B7A-5CFE-333C-822C-DC9A39F340DB"><!-- --></a>
+		<h2 class="topictitle2">CheckHeaderL()</h2>
+		<table class="signature"><tr><td>void</td><td>CheckHeaderL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">CheckHeaderL Checks the header information and stores it to iOdt <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-D300268C-947C-3C2F-A846-2DA0A5DC0FE4"><a name="GUID-D300268C-947C-3C2F-A846-2DA0A5DC0FE4"><!-- --></a>
+		<h2 class="topictitle2">CleanupL(const ChspsODT &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>CleanupL</td><td>(</td><td>const <a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;</td><td>aUpdateMask</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">CleanupL Executes cleaning of the target folder prior to the installation process <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp; aUpdateMask</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-72BD7689-D26D-3E7E-BE70-A573EED8B2E6"><a name="GUID-72BD7689-D26D-3E7E-BE70-A573EED8B2E6"><!-- --></a>
+		<h2 class="topictitle2">CompleteRequestL(const ThspsServiceCompletedMessage, const TDesC8 &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>CompleteRequestL</td><td>(</td><td>const <a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a></td><td>aReturnMessage,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aHeaderData = 
+							<a href="GUID-9692245D-DDBC-39F9-BFFB-EC9FFE4BB1AB.html">KNullDesC8</a>
+						</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<div class="p">CompleteRequestL Completes the request message <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a> aReturnMessage</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aHeaderData = 
+							<a href="GUID-9692245D-DDBC-39F9-BFFB-EC9FFE4BB1AB.html">KNullDesC8</a>
+						</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DD75AE3E-1454-3C15-854D-6881EE371A2E"><a name="GUID-DD75AE3E-1454-3C15-854D-6881EE371A2E"><!-- --></a>
+		<h2 class="topictitle2">ConstructL()</h2>
+		<table class="signature"><tr><td>void</td><td>ConstructL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">By default Symbian 2nd phase constructor is private. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-2309533C-1697-344E-8946-DC704446CA16"><a name="GUID-2309533C-1697-344E-8946-DC704446CA16"><!-- --></a>
+		<h2 class="topictitle2">DisableNotifications()</h2>
+		<table class="signature"><tr><td>void</td><td>DisableNotifications</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<div class="p">Disables "configuration was installed" notifications <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-8188C5EC-EB96-3DB6-8778-50458BAB9B2C"><a name="GUID-8188C5EC-EB96-3DB6-8778-50458BAB9B2C"><!-- --></a>
+		<h2 class="topictitle2">DisableUdaEmmcInstallations()</h2>
+		<table class="signature"><tr><td>void</td><td>DisableUdaEmmcInstallations</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<div class="p">Disables installation of UDA and eMMC content. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.2 </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-0223EFAA-3147-3795-A9DC-77D563AD6C06"><a name="GUID-0223EFAA-3147-3795-A9DC-77D563AD6C06"><!-- --></a>
+		<h2 class="topictitle2">DoInstallThemeL(const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>DoInstallThemeL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aManifest</td><td>)</td><td/></tr></table><div class="section"><div>
+				<div class="p">Parses the manifest file and requests installation of next phases. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.2 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aManifest</td><td>is full path of the installation script file - a manifest file  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-59C3628B-440E-3424-A1BE-06341E82AFC4"><a name="GUID-59C3628B-440E-3424-A1BE-06341E82AFC4"><!-- --></a>
+		<h2 class="topictitle2">FinalizeParsingL()</h2>
+		<table class="signature"><tr><td>void</td><td>FinalizeParsingL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">Validates manifest contents and installs files into the Plug-in Repository. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C316C0B9-98DF-374E-8F61-A109DD0D2CEE"><a name="GUID-C316C0B9-98DF-374E-8F61-A109DD0D2CEE"><!-- --></a>
+		<h2 class="topictitle2">FindResourceFilesL(const TDesC &amp;, const TBool, RArray&lt; TInt &gt; &amp;, CArrayFixFlat&lt; TInt &gt; *)</h2>
+		<table class="signature"><tr><td>void</td><td>FindResourceFilesL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aPath,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aRecursive,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;</td><td>aDriveArray,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12C65B99-553E-35CA-B36F-2F77BFC972B3.html">CArrayFixFlat</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; *</td><td>aDeviceLanguages</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<div class="p">Find resource files <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aPath</td><td>Path to files  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aRecursive</td><td>Is recursive search  </td></tr><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp; aDriveArray</td><td>Drives to search  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-12C65B99-553E-35CA-B36F-2F77BFC972B3.html">CArrayFixFlat</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; * aDeviceLanguages</td><td>Required languages  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CF32B734-D3D3-3FEE-A86D-E096808513A8"><a name="GUID-CF32B734-D3D3-3FEE-A86D-E096808513A8"><!-- --></a>
+		<h2 class="topictitle2">GetActiveAppConfsL(CArrayPtrSeg&lt; ChspsODT &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetActiveAppConfsL</td><td>(</td><td><a href="GUID-A9BDCF9A-6A29-3329-898A-13CA8FF26510.html">CArrayPtrSeg</a>&lt; <a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &gt; &amp;</td><td>aActiveAppConfs</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">Get active application configurations. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-A9BDCF9A-6A29-3329-898A-13CA8FF26510.html">CArrayPtrSeg</a>&lt; <a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &gt; &amp; aActiveAppConfs</td><td>Target list for active application configurations.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7A089003-1AE6-3265-B076-EA94418FB9AD"><a name="GUID-7A089003-1AE6-3265-B076-EA94418FB9AD"><!-- --></a>
+		<h2 class="topictitle2">GetExtendedInterface(const TInt32)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>GetExtendedInterface</td><td>(</td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt32</a></td><td>aUid</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<div class="p">GetExtendedInterface <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 This method obtains the interface matching the specified uid. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt32</a> aUid</td><td>the uid identifying the required interface.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8E4FE565-F0BB-3B3F-95C7-7253FB223DCE"><a name="GUID-8E4FE565-F0BB-3B3F-95C7-7253FB223DCE"><!-- --></a>
+		<h2 class="topictitle2">GetInterfacePath()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-0B9C8884-6BFF-35E2-AA6F-E4057B85AFCF.html">TFileName</a>
+				</td><td>GetInterfacePath</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Returns a path if V2 directory structure is in use and if an interface uid is known. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-F6162635-9E6E-3E5F-BF67-C560475C7BE9"><a name="GUID-F6162635-9E6E-3E5F-BF67-C560475C7BE9"><!-- --></a>
+		<h2 class="topictitle2">ImportPluginsL()</h2>
+		<table class="signature"><tr><td>void</td><td>ImportPluginsL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">ImportPluginsL Imports plug-in DOMs referenced by application configuration, other configuration types are ignored. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-E0DFB1DE-BDA0-3B10-AB90-67BED8344705"><a name="GUID-E0DFB1DE-BDA0-3B10-AB90-67BED8344705"><!-- --></a>
+		<h2 class="topictitle2">InstallSkeletonL(ThspsServiceCompletedMessage &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>InstallSkeletonL</td><td>(</td><td><a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a> &amp;</td><td>aReturnMsg</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">InstallOdtL Installs the theme skeleton <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a> &amp; aReturnMsg</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-672BCAD2-C4F7-3903-B985-F362C3F89E40"><a name="GUID-672BCAD2-C4F7-3903-B985-F362C3F89E40"><!-- --></a>
+		<h2 class="topictitle2">IsPluginUsedInAppConfsL()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>IsPluginUsedInAppConfsL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">Indicated whether installed plugin was instansiated in one or more application configurations. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-004803D8-D24A-3CDF-9D8D-2A18EEAEEE7F"><a name="GUID-004803D8-D24A-3CDF-9D8D-2A18EEAEEE7F"><!-- --></a>
+		<h2 class="topictitle2">NewL(ChspsThemeServer &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA.html">ChspsInstallationHandler</a> *</td><td>NewL</td><td>(</td><td><a href="GUID-F78376A9-82E9-3EE6-842B-BE1A65DDB7F3.html">ChspsThemeServer</a> &amp;</td><td>aThemeServer</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Two-phased constructor. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F78376A9-82E9-3EE6-842B-BE1A65DDB7F3.html">ChspsThemeServer</a> &amp; aThemeServer</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-88E36B4E-2E7F-3A6B-A945-76F670BF95D6"><a name="GUID-88E36B4E-2E7F-3A6B-A945-76F670BF95D6"><!-- --></a>
+		<h2 class="topictitle2">NewLC(ChspsThemeServer &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA.html">ChspsInstallationHandler</a> *</td><td>NewLC</td><td>(</td><td><a href="GUID-F78376A9-82E9-3EE6-842B-BE1A65DDB7F3.html">ChspsThemeServer</a> &amp;</td><td>aThemeServer</td><td>)</td><td>[static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F78376A9-82E9-3EE6-842B-BE1A65DDB7F3.html">ChspsThemeServer</a> &amp; aThemeServer</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-303BBA37-7CD7-39F8-B6C9-FC87F9C1FD63"><a name="GUID-303BBA37-7CD7-39F8-B6C9-FC87F9C1FD63"><!-- --></a>
+		<h2 class="topictitle2">NotifyOdtUpdatedL()</h2>
+		<table class="signature"><tr><td>void</td><td>NotifyOdtUpdatedL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">Send update notifications if necessary. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-6A3F81A2-85B1-39A0-802E-2B160DA151E8"><a name="GUID-6A3F81A2-85B1-39A0-802E-2B160DA151E8"><!-- --></a>
+		<h2 class="topictitle2">OnContentL(const TDesC8 &amp;, TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>OnContentL</td><td>(</td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aBytes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aErrorCode</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<div class="p">OnContentL <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 This method is a callback that sends the content of the element. Not all the content may be returned in one go. The data may be sent in chunks. When an OnEndElementL is received this means there is no more content to be sent. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aBytes</td><td>is the raw content data for the element. The client is responsible for converting the data to the required character set if necessary. In some instances the content may be binary and must not be converted.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aErrorCode</td><td>is the error code. If this is not KErrNone then special action may be required.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A96FF8D7-3021-3C6A-9D34-286BA3AF0DA1"><a name="GUID-A96FF8D7-3021-3C6A-9D34-286BA3AF0DA1"><!-- --></a>
+		<h2 class="topictitle2">OnEndDocumentL(TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>OnEndDocumentL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aErrorCode</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<div class="p">OnEndDocumentL <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 This method is a callback to indicate the end of the document. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aErrorCode</td><td>is the error code. If this is not KErrNone then special action may be required.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2B4BA2E2-BA5A-37A4-A8F4-F2C3D5E3D4CE"><a name="GUID-2B4BA2E2-BA5A-37A4-A8F4-F2C3D5E3D4CE"><!-- --></a>
+		<h2 class="topictitle2">OnEndElementL(const RTagInfo &amp;, TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>OnEndElementL</td><td>(</td><td>const <a href="GUID-126C8A8B-583D-3E93-B68D-E945CA174A54.html">RTagInfo</a> &amp;</td><td>aElement,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aErrorCode</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<div class="p">OnEndElementL <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 This method is a callback to indicate the end of the element has been reached. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-126C8A8B-583D-3E93-B68D-E945CA174A54.html">RTagInfo</a> &amp; aElement</td><td>is a handle to the element's details.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aErrorCode</td><td>is the error code. If this is not KErrNone then special action may be required.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-91E7BEB3-0B44-338E-B112-AA1A90815C4D"><a name="GUID-91E7BEB3-0B44-338E-B112-AA1A90815C4D"><!-- --></a>
+		<h2 class="topictitle2">OnEndPrefixMappingL(const RString &amp;, TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>OnEndPrefixMappingL</td><td>(</td><td>const <a href="GUID-86301BC4-2A98-3F9B-BAE3-A6DE8D3BD632.html">RString</a> &amp;</td><td>aPrefix,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aErrorCode</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[inline]</td></tr></table><div class="section"><div>
+				<div class="p">OnEndPrefixMappingL <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 This method is a notification of the end of the scope of a prefix-URI mapping. This method is called after the corresponding DoEndElementL method. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-86301BC4-2A98-3F9B-BAE3-A6DE8D3BD632.html">RString</a> &amp; aPrefix</td><td>is the Namespace prefix that was mapped.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aErrorCode</td><td>is the error code. If this is not KErrNone then special action may be required.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D026034D-D754-3BBD-AE16-65AF6039C38E"><a name="GUID-D026034D-D754-3BBD-AE16-65AF6039C38E"><!-- --></a>
+		<h2 class="topictitle2">OnError(TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>OnError</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aErrorCode</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<div class="p">OnError <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 This method indicates an error has occurred. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aErrorCode</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F039179B-F9C3-3B5B-9D16-44E9DACC782E"><a name="GUID-F039179B-F9C3-3B5B-9D16-44E9DACC782E"><!-- --></a>
+		<h2 class="topictitle2">OnIgnorableWhiteSpaceL(const TDesC8 &amp;, TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>OnIgnorableWhiteSpaceL</td><td>(</td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aBytes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aErrorCode</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[inline]</td></tr></table><div class="section"><div>
+				<div class="p">OnIgnorableWhiteSpaceL <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 This method is a notification of ignorable whitespace in element content. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aBytes</td><td>are the ignored bytes from the document being parsed.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aErrorCode</td><td>is the error code. If this is not KErrNone then special action may be required.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3496E207-C86B-36C7-A631-99D5233BCCD0"><a name="GUID-3496E207-C86B-36C7-A631-99D5233BCCD0"><!-- --></a>
+		<h2 class="topictitle2">OnProcessingInstructionL(const TDesC8 &amp;, const TDesC8 &amp;, TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>OnProcessingInstructionL</td><td>(</td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aTarget,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aData,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aErrorCode</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[inline]</td></tr></table><div class="section"><div>
+				<div class="p">OnProcessingInstructionL <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 This method is a receive notification of a processing instruction. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aTarget</td><td>is the processing instruction target.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aData</td><td>is the processing instruction data. If empty none was supplied.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aErrorCode</td><td>is the error code. If this is not KErrNone then special action may be required.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-21B95570-40B4-35E2-BEE8-4746CCC569C9"><a name="GUID-21B95570-40B4-35E2-BEE8-4746CCC569C9"><!-- --></a>
+		<h2 class="topictitle2">OnSkippedEntityL(const RString &amp;, TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>OnSkippedEntityL</td><td>(</td><td>const <a href="GUID-86301BC4-2A98-3F9B-BAE3-A6DE8D3BD632.html">RString</a> &amp;</td><td>aName,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aErrorCode</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[inline]</td></tr></table><div class="section"><div>
+				<div class="p">OnSkippedEntityL <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 This method is a notification of a skipped entity. If the parser encounters an external entity it does not need to expand it - it can return the entity as aName for the client to deal with. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-86301BC4-2A98-3F9B-BAE3-A6DE8D3BD632.html">RString</a> &amp; aName</td><td>is the name of the skipped entity.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aErrorCode</td><td>is the error code. If this is not KErrNone then special action may be required.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-230BC50F-1020-3CB9-9B70-B0B6CB59EDA9"><a name="GUID-230BC50F-1020-3CB9-9B70-B0B6CB59EDA9"><!-- --></a>
+		<h2 class="topictitle2">OnStartDocumentL(const RDocumentParameters &amp;, TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>OnStartDocumentL</td><td>(</td><td>const RDocumentParameters &amp;</td><td>aDocParam,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aErrorCode</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[inline]</td></tr></table><div class="section"><div>
+				<div class="p">OnStartDocumentL <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 This method is a callback to indicate the start of the document. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const RDocumentParameters &amp; aDocParam</td><td>Specifies the various parameters of the document. aDocParam.iCharacterSetName The character encoding of the document.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aErrorCode</td><td>is the error code. If this is not KErrNone then special action may be required.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F68B45B3-9709-3460-AC9B-A7BFE7709EE3"><a name="GUID-F68B45B3-9709-3460-AC9B-A7BFE7709EE3"><!-- --></a>
+		<h2 class="topictitle2">OnStartElementL(const RTagInfo &amp;, const RAttributeArray &amp;, TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>OnStartElementL</td><td>(</td><td>const <a href="GUID-126C8A8B-583D-3E93-B68D-E945CA174A54.html">RTagInfo</a> &amp;</td><td>aElement,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RAttributeArray</a> &amp;</td><td>aAttributes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aErrorCode</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<div class="p">OnStartElementL <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 This method is a callback to indicate an element has been parsed. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-126C8A8B-583D-3E93-B68D-E945CA174A54.html">RTagInfo</a> &amp; aElement</td><td>is a handle to the element's details.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RAttributeArray</a> &amp; aAttributes</td><td>contains the attributes for the element.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aErrorCode</td><td>is the error code. If this is not KErrNone then special action may be required.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8FBDD88E-FA70-3960-AF67-A818360452E0"><a name="GUID-8FBDD88E-FA70-3960-AF67-A818360452E0"><!-- --></a>
+		<h2 class="topictitle2">OnStartPrefixMappingL(const RString &amp;, const RString &amp;, TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>OnStartPrefixMappingL</td><td>(</td><td>const <a href="GUID-86301BC4-2A98-3F9B-BAE3-A6DE8D3BD632.html">RString</a> &amp;</td><td>aPrefix,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-86301BC4-2A98-3F9B-BAE3-A6DE8D3BD632.html">RString</a> &amp;</td><td>aUri,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aErrorCode</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[inline]</td></tr></table><div class="section"><div>
+				<div class="p">OnStartPrefixMappingL <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 This method is a notification of the beginning of the scope of a prefix-URI Namespace mapping. This method is always called before the corresponding OnStartElementL method. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-86301BC4-2A98-3F9B-BAE3-A6DE8D3BD632.html">RString</a> &amp; aPrefix</td><td>is the Namespace prefix being declared.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-86301BC4-2A98-3F9B-BAE3-A6DE8D3BD632.html">RString</a> &amp; aUri</td><td>is the Namespace URI the prefix is mapped to.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aErrorCode</td><td>is the error code. If this is not KErrNone then special action may be required.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-765561FA-1AFA-34F2-A35F-865A6AEC9A33"><a name="GUID-765561FA-1AFA-34F2-A35F-865A6AEC9A33"><!-- --></a>
+		<h2 class="topictitle2">ParseDocumentL(ChspsODT &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ParseDocumentL</td><td>(</td><td><a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;</td><td>aOdt</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">ParseDocumentL Calls the definition engine to create the dom <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp; aOdt</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-98E673C5-0A84-3E1C-9EC1-3EF28FD74A25"><a name="GUID-98E673C5-0A84-3E1C-9EC1-3EF28FD74A25"><!-- --></a>
+		<h2 class="topictitle2">ParseIconDeclarationL(HBufC8 &amp;, const TDesC8 &amp;, HBufC *&amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ParseIconDeclarationL</td><td>(</td><td><a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> &amp;</td><td>aValue8,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aTag,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *&amp;</td><td>aResultString</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<div class="p">Parser for the filelogo and filepreview elements in manifest files. If an icon was provided, it is added to an resource array for copying to client's private folder. Allocates heap for the result. Supported values:<ul><li><p>skin(&lt;major id&gt; &lt;minor id&gt;):mif(&lt;path&gt; &lt;bitmapid&gt; &lt;maskid&gt;)</p>
+</li>
+<li><p>mif(&lt;path&gt; &lt;bitmapid&gt; &lt;maskid&gt;)</p>
+</li>
+<li><p>uid(&lt;application uid&gt;)</p>
+</li>
+<li><p>&lt;file name&gt;=""&gt;.&lt;png/svg&gt; </p>
+</li>
+</ul>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> &amp; aValue8</td><td>Value of the element  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aTag</td><td>A tag for the file resource  </td></tr><tr><td class="parameter"><a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *&amp; aResultString</td><td>Fixed declaration with a valid path reference  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-75861C94-A69B-35D9-93C4-4B9B048B0437"><a name="GUID-75861C94-A69B-35D9-93C4-4B9B048B0437"><!-- --></a>
+		<h2 class="topictitle2">ResetL()</h2>
+		<table class="signature"><tr><td>void</td><td>ResetL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">Resets memeber variables. Used by the autoinstaller when installation handler is created only once. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-849BB2CA-EB51-37C8-BAC8-6AD7B8484F0A"><a name="GUID-849BB2CA-EB51-37C8-BAC8-6AD7B8484F0A"><!-- --></a>
+		<h2 class="topictitle2">RollBackL(ChspsODT &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>RollBackL</td><td>(</td><td><a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;</td><td>aOdt</td><td>)</td><td>[protected]</td></tr></table><div class="section"><div>
+				<div class="p">Rolls back the installation if it fails or is cancelled. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp; aOdt</td><td>The ODT of the theme  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-93B20DF2-07FF-3641-A447-D1A7BCBA84E4"><a name="GUID-93B20DF2-07FF-3641-A447-D1A7BCBA84E4"><!-- --></a>
+		<h2 class="topictitle2">ServiceInstallNextPhaseL(const RMessage2 &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ServiceInstallNextPhaseL</td><td>(</td><td>const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp;</td><td>aMessage</td><td>)</td><td/></tr></table><div class="section"><div>
+				<div class="p">ServiceInstallNextPhaseL Starts subsequent installation phases. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp; aMessage</td><td>Message from client  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-057D40F8-60B9-3A75-8F6E-7A8B7A154246"><a name="GUID-057D40F8-60B9-3A75-8F6E-7A8B7A154246"><!-- --></a>
+		<h2 class="topictitle2">ServiceInstallThemeL(const RMessage2 &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ServiceInstallThemeL</td><td>(</td><td>const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp;</td><td>aMessage</td><td>)</td><td/></tr></table><div class="section"><div>
+				<div class="p">ServiceInstallThemeL Starts the actual installation in <a href="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA.html#GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA">ChspsInstallationHandler</a>. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp; aMessage</td><td>Message from client  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-41CCAEEF-3C97-3744-8182-BE2FB395600F"><a name="GUID-41CCAEEF-3C97-3744-8182-BE2FB395600F"><!-- --></a>
+		<h2 class="topictitle2">SetODTAsResourceL(ChspsODT &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>SetODTAsResourceL</td><td>(</td><td><a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;</td><td>aOdt</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">SetODTAsResourceL Stores the given ODT as a resources on the resource list <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp; aOdt</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EA0A132D-15FC-3277-819C-4E6ED4E8A4F0"><a name="GUID-EA0A132D-15FC-3277-819C-4E6ED4E8A4F0"><!-- --></a>
+		<h2 class="topictitle2">hspsCancelInstallTheme()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a>
+				</td><td>hspsCancelInstallTheme</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>From <a href="GUID-56829E93-329C-3654-9F3F-74163747BEC3.html#GUID-56829E93-329C-3654-9F3F-74163747BEC3">MhspsInstallationService</a> hspsCancelInstallTheme</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-A3147168-410C-3D80-8F6E-F4878441DBFD"><a name="GUID-A3147168-410C-3D80-8F6E-F4878441DBFD"><!-- --></a>
+		<h2 class="topictitle2">hspsInstallNextPhaseL(TDes8 &amp;, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>hspsInstallNextPhaseL</td><td>(</td><td><a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp;</td><td>aHeaderData,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aRequestStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<div class="p">hspsInstallNextPhase <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 This is server-side only function. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp; aHeaderData</td><td>will return ODT-header of the latest installation phase in serialized (i.e. marshalled) data mode. This follows the low-level parametrization schema.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aRequestStatus</td><td>will return the status of the asynchronous request returned by installer.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AC68689B-C7D1-3513-BF04-081D8595068F"><a name="GUID-AC68689B-C7D1-3513-BF04-081D8595068F"><!-- --></a>
+		<h2 class="topictitle2">hspsInstallNextPhaseL(ChspsODT &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a>
+				</td><td>hspsInstallNextPhaseL</td><td>(</td><td><a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;</td><td/><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-56829E93-329C-3654-9F3F-74163747BEC3.html#GUID-56829E93-329C-3654-9F3F-74163747BEC3">MhspsInstallationService</a> hspsInstallNextPhaseL</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp; </td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BE99F9C5-D8E5-31B0-BD33-4B4150F15607"><a name="GUID-BE99F9C5-D8E5-31B0-BD33-4B4150F15607"><!-- --></a>
+		<h2 class="topictitle2">hspsInstallNextPhaseL(TDes8 &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a>
+				</td><td>hspsInstallNextPhaseL</td><td>(</td><td><a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp;</td><td>aHeaderData</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>From <a href="GUID-56829E93-329C-3654-9F3F-74163747BEC3.html#GUID-56829E93-329C-3654-9F3F-74163747BEC3">MhspsInstallationService</a> hspsInstallNextPhaseL</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp; aHeaderData</td><td>will return ODT-header of the latest installation phase in serialized (i.e. marshalled) data mode. This follows the low-level parametrization schema.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6A575991-87CF-301D-9D60-2F9D19488F6A"><a name="GUID-6A575991-87CF-301D-9D60-2F9D19488F6A"><!-- --></a>
+		<h2 class="topictitle2">hspsInstallTheme(const TDesC &amp;, ChspsODT &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a>
+				</td><td>hspsInstallTheme</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;</td><td/></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[inline]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-56829E93-329C-3654-9F3F-74163747BEC3.html#GUID-56829E93-329C-3654-9F3F-74163747BEC3">MhspsInstallationService</a> hspsInstallTheme</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; </td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp; </td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3F161FEA-6944-333C-BFB3-24F37853B321"><a name="GUID-3F161FEA-6944-333C-BFB3-24F37853B321"><!-- --></a>
+		<h2 class="topictitle2">hspsInstallTheme(const TDesC &amp;, TDes8 &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsServiceCompletedMessage</a>
+				</td><td>hspsInstallTheme</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aManifestFileName,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp;</td><td>aHeaderData</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>From <a href="GUID-56829E93-329C-3654-9F3F-74163747BEC3.html#GUID-56829E93-329C-3654-9F3F-74163747BEC3">MhspsInstallationService</a> hspsInstallTheme</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aManifestFileName</td><td>is full path of the installation script file - a manifest file  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-445B19E5-E2EE-32E2-8D6C-C7D6A9B3C507.html">TDes8</a> &amp; aHeaderData</td><td>will return ODT-header of the newly installed theme in serialized (i.e. marshalled) data mode. This follows the low-level parametrization schema.  </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Enumerations Documentation</h1><div class="nested1" id="GUID-1CBAFEE6-7C16-3A9C-AE81-361678C4832B"><a name="GUID-1CBAFEE6-7C16-3A9C-AE81-361678C4832B"><!-- --></a>
+		<h2 class="topictitle2">Enum TInstallationType</h2>
+		<div class="section"><div>
+				<p>Installation type. </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EInstallationTypeNew = 0</td><td> </td></tr><tr class="bg"><td valign="top">EInstallationTypeUpdate</td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-380681F5-DBA0-354B-8432-8581D0CA60A3"><a name="GUID-380681F5-DBA0-354B-8432-8581D0CA60A3"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC8 * iApplicationType</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td>iApplicationType</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-BA109CA8-CCF4-34D3-A97A-A6B13C6A5D16"><a name="GUID-BA109CA8-CCF4-34D3-A97A-A6B13C6A5D16"><!-- --></a>
+		<h2 class="topictitle2">
+					CRepository &amp; iCentralRepository</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-DEA618DF-D462-3B3E-A1E1-F21295AAFE78.html">CRepository</a> &amp;</td><td>iCentralRepository</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-47EF45B2-69D8-3D5D-A492-5BC8708650F0"><a name="GUID-47EF45B2-69D8-3D5D-A492-5BC8708650F0"><!-- --></a>
+		<h2 class="topictitle2">
+					ThspsConfigurationType
+				 iConfigurationType</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsConfigurationType</a>
+				</td><td>iConfigurationType</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-10310845-1493-3A9A-890B-BD8BE4A89782"><a name="GUID-10310845-1493-3A9A-890B-BD8BE4A89782"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC8 * iContent</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td>iContent</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-6BD64DD0-02D5-3DFE-9BE0-19EA0ADB326C"><a name="GUID-6BD64DD0-02D5-3DFE-9BE0-19EA0ADB326C"><!-- --></a>
+		<h2 class="topictitle2">
+					ChspsDefinitionEngineInterface * iDefEngine</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2FFE489B-6BEC-3C61-AB1D-27E2D6A757C3.html">ChspsDefinitionEngineInterface</a> *</td><td>iDefEngine</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-84FC1819-98B1-34F0-A4BC-67B1C6EFA20D"><a name="GUID-84FC1819-98B1-34F0-A4BC-67B1C6EFA20D"><!-- --></a>
+		<h2 class="topictitle2">
+					TLanguage
+				 iDefaultSpecification</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">TLanguage</a>
+				</td><td>iDefaultSpecification</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-030C9582-FD86-3F3D-9618-9A946C269B0A"><a name="GUID-030C9582-FD86-3F3D-9618-9A946C269B0A"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iDefaultSpecificationSet</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iDefaultSpecificationSet</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-4E3EBDCD-CF78-3257-B43C-B802E7B94F63"><a name="GUID-4E3EBDCD-CF78-3257-B43C-B802E7B94F63"><!-- --></a>
+		<h2 class="topictitle2">
+					ChspsDefinitionRepository &amp; iDefinitionRepository</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-DC7EC16C-B1BA-3296-BAF3-141A4D5A074A.html">ChspsDefinitionRepository</a> &amp;</td><td>iDefinitionRepository</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-448282CF-3E31-3A4D-B1E5-5A81E5149320"><a name="GUID-448282CF-3E31-3A4D-B1E5-5A81E5149320"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iDisableNotifications</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iDisableNotifications</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-73B2115B-4518-33CE-8218-5002D54B1EBF"><a name="GUID-73B2115B-4518-33CE-8218-5002D54B1EBF"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC * iDtdFile</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>iDtdFile</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-E0E0DF77-A217-3309-B4B6-643C6C3612A6"><a name="GUID-E0E0DF77-A217-3309-B4B6-643C6C3612A6"><!-- --></a>
+		<h2 class="topictitle2">
+					TUint32
+				 iFamilyMask</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>
+				</td><td>iFamilyMask</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-54D776ED-4A35-3A83-B023-2B4011E5C714"><a name="GUID-54D776ED-4A35-3A83-B023-2B4011E5C714"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iFileNotFound</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iFileNotFound</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-7B47BC04-77EB-3846-AF00-9BF9EA75925E"><a name="GUID-7B47BC04-77EB-3846-AF00-9BF9EA75925E"><!-- --></a>
+		<h2 class="topictitle2">
+					RFs
+				 iFsSession</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html">RFs</a>
+				</td><td>iFsSession</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-9DBE081B-0A0E-34E4-B815-FE629936F2B9"><a name="GUID-9DBE081B-0A0E-34E4-B815-FE629936F2B9"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC8 * iHeaderData</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td>iHeaderData</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-6BE2EE9C-88ED-3B04-9349-6611197B3F80"><a name="GUID-6BE2EE9C-88ED-3B04-9349-6611197B3F80"><!-- --></a>
+		<h2 class="topictitle2">
+					CArrayPtrSeg&lt; ChspsODT &gt; &amp; iHeaderListCache</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-A9BDCF9A-6A29-3329-898A-13CA8FF26510.html">CArrayPtrSeg</a>&lt; <a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &gt; &amp;</td><td>iHeaderListCache</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-81781DA8-02C4-3F4C-9D9B-1CBF8A5BEA23"><a name="GUID-81781DA8-02C4-3F4C-9D9B-1CBF8A5BEA23"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iInstallFromUDAEmmc</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iInstallFromUDAEmmc</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-9AFA1996-5AD2-341A-84C9-2BF50DF81600"><a name="GUID-9AFA1996-5AD2-341A-84C9-2BF50DF81600"><!-- --></a>
+		<h2 class="topictitle2">
+					TInstallationMode
+				 iInstallationMode</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-A6226B44-D72E-32F6-814B-6A02A1BEF438.html">TInstallationMode</a>
+				</td><td>iInstallationMode</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-48528493-F091-33E3-B4A1-39EE32B9808D"><a name="GUID-48528493-F091-33E3-B4A1-39EE32B9808D"><!-- --></a>
+		<h2 class="topictitle2">
+					ThspsInstallationPhase
+				 iInstallationPhase</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-81671F74-336F-3972-92E3-E10D5D104627.html">ThspsInstallationPhase</a>
+				</td><td>iInstallationPhase</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-DC0E3717-42A2-3346-B5E8-A11CD48E2216"><a name="GUID-DC0E3717-42A2-3346-B5E8-A11CD48E2216"><!-- --></a>
+		<h2 class="topictitle2">
+					TInstallationType
+				 iInstallationType</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-27EE1867-C09A-3696-9EAF-24EF226BBAEA.html">TInstallationType</a>
+				</td><td>iInstallationType</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-92261491-0C26-3ACA-B0C0-48C341FB9E03"><a name="GUID-92261491-0C26-3ACA-B0C0-48C341FB9E03"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iLocalized</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iLocalized</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-3D10B495-1F6F-3544-8C51-9257FE7BA94B"><a name="GUID-3D10B495-1F6F-3544-8C51-9257FE7BA94B"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC8 * iMediaType</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td>iMediaType</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-C202A2BF-0D84-3635-9DE9-CE352ACB2609"><a name="GUID-C202A2BF-0D84-3635-9DE9-CE352ACB2609"><!-- --></a>
+		<h2 class="topictitle2">
+					RMessagePtr2
+				 iMessagePtr</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-78E0DEDD-C020-3174-AD0A-E4C18C4C9213.html">RMessagePtr2</a>
+				</td><td>iMessagePtr</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-5424279C-E15C-3825-96E2-C24F592861C6"><a name="GUID-5424279C-E15C-3825-96E2-C24F592861C6"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt32
+				 iMultiInstance</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt32</a>
+				</td><td>iMultiInstance</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-FE20D189-801F-36CD-AC90-D30B9EEBDC2F"><a name="GUID-FE20D189-801F-36CD-AC90-D30B9EEBDC2F"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iMultiInstanceFound</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iMultiInstanceFound</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-47C3DD94-D791-34A3-B405-4C18311DF6C1"><a name="GUID-47C3DD94-D791-34A3-B405-4C18311DF6C1"><!-- --></a>
+		<h2 class="topictitle2">
+					ChspsODT * iOdt</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> *</td><td>iOdt</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-69EBACE6-C547-39B1-9032-E05E65AA26C2"><a name="GUID-69EBACE6-C547-39B1-9032-E05E65AA26C2"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iPackageVerSupported</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iPackageVerSupported</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-E253AA6B-9664-3AC7-B4B6-C33760C81CD8"><a name="GUID-E253AA6B-9664-3AC7-B4B6-C33760C81CD8"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC * iPackageVersion</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>iPackageVersion</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-DD6667DF-B132-36E5-ABD4-97F862371FE2"><a name="GUID-DD6667DF-B132-36E5-ABD4-97F862371FE2"><!-- --></a>
+		<h2 class="topictitle2">
+					TUint
+				 iProviderUid</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td>iProviderUid</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-0802462A-8EEB-3F71-9992-9A44B10FA2FC"><a name="GUID-0802462A-8EEB-3F71-9992-9A44B10FA2FC"><!-- --></a>
+		<h2 class="topictitle2">
+					TRequestStatus * iRequestStatus</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> *</td><td>iRequestStatus</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-191333D5-98C1-3CFE-BC69-0C0D773E043D"><a name="GUID-191333D5-98C1-3CFE-BC69-0C0D773E043D"><!-- --></a>
+		<h2 class="topictitle2">
+					ChspsResource * iResource</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-6155D650-4569-376C-98E8-960768B73B60.html">ChspsResource</a> *</td><td>iResource</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-68EA2595-FD95-3990-96AC-D46439567C15"><a name="GUID-68EA2595-FD95-3990-96AC-D46439567C15"><!-- --></a>
+		<h2 class="topictitle2">
+					CArrayPtrSeg&lt; ChspsResource &gt; * iResourceList</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-A9BDCF9A-6A29-3329-898A-13CA8FF26510.html">CArrayPtrSeg</a>&lt; <a href="GUID-6155D650-4569-376C-98E8-960768B73B60.html">ChspsResource</a> &gt; *</td><td>iResourceList</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-F4F019FB-AFBF-3D94-969D-33CB28F79387"><a name="GUID-F4F019FB-AFBF-3D94-969D-33CB28F79387"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC8 * iResourceTag</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td>iResourceTag</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-DE7B0501-EA1A-3488-A701-38B83687160A"><a name="GUID-DE7B0501-EA1A-3488-A701-38B83687160A"><!-- --></a>
+		<h2 class="topictitle2">
+					ChspsResult * iResult</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-54EC472D-949E-34A4-A9AF-0437618EA0CE.html">ChspsResult</a> *</td><td>iResult</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-58E2CD4F-114B-3A68-9CD8-E0F62248BFD7"><a name="GUID-58E2CD4F-114B-3A68-9CD8-E0F62248BFD7"><!-- --></a>
+		<h2 class="topictitle2">
+					TBuf8&lt; KMaxResultDataLength8 &gt; iResultData</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-78E993D5-A845-32B4-B41A-947ABEF16AA0.html">TBuf8</a>&lt; <a href="GUID-54D19772-4AF7-380F-BB75-36C515ED88A7.html">KMaxResultDataLength8</a> &gt;</td><td>iResultData</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-8CF427EB-8072-35B6-A600-A2B62EAA9ED2"><a name="GUID-8CF427EB-8072-35B6-A600-A2B62EAA9ED2"><!-- --></a>
+		<h2 class="topictitle2">
+					TUint
+				 iRootUid</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td>iRootUid</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-A56E71EA-8D3A-3981-A9FF-8D69D6B35E68"><a name="GUID-A56E71EA-8D3A-3981-A9FF-8D69D6B35E68"><!-- --></a>
+		<h2 class="topictitle2">
+					ChspsSecurityEnforcer &amp; iSecurityEnforcer</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-98096907-30C7-39D8-85DC-9694D52F1E11.html">ChspsSecurityEnforcer</a> &amp;</td><td>iSecurityEnforcer</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-399E97D0-97A8-3837-BB7C-DC83CABBD1E5"><a name="GUID-399E97D0-97A8-3837-BB7C-DC83CABBD1E5"><!-- --></a>
+		<h2 class="topictitle2">
+					CArrayPtrSeg&lt; ChspsResource &gt; * iTempLocalizedResourceList</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-A9BDCF9A-6A29-3329-898A-13CA8FF26510.html">CArrayPtrSeg</a>&lt; <a href="GUID-6155D650-4569-376C-98E8-960768B73B60.html">ChspsResource</a> &gt; *</td><td>iTempLocalizedResourceList</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-DB374079-0BD3-35F0-8028-17B1B36CEFA7"><a name="GUID-DB374079-0BD3-35F0-8028-17B1B36CEFA7"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC8 * iThemeDesc</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td>iThemeDesc</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-8451EC4E-4856-3C77-B656-796427560535"><a name="GUID-8451EC4E-4856-3C77-B656-796427560535"><!-- --></a>
+		<h2 class="topictitle2">
+					TPath
+				 iThemeFilePath</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-0B9C8884-6BFF-35E2-AA6F-E4057B85AFCF.html">TPath</a>
+				</td><td>iThemeFilePath</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-F26F4BE6-8699-3AC0-925C-C6C5F0B05A54"><a name="GUID-F26F4BE6-8699-3AC0-925C-C6C5F0B05A54"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC * iThemeFullName</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>iThemeFullName</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-D02EF2D4-1A91-3F83-B051-CD2AD732BF71"><a name="GUID-D02EF2D4-1A91-3F83-B051-CD2AD732BF71"><!-- --></a>
+		<h2 class="topictitle2">
+					ChspsThemeServer &amp; iThemeServer</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-F78376A9-82E9-3EE6-842B-BE1A65DDB7F3.html">ChspsThemeServer</a> &amp;</td><td>iThemeServer</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-BDE13B67-875D-355F-90B7-38A1B3A4D70A"><a name="GUID-BDE13B67-875D-355F-90B7-38A1B3A4D70A"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC8 * iThemeShortName</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td>iThemeShortName</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-6DA0AA61-FC0C-320A-9AA4-120845AB8DB3"><a name="GUID-6DA0AA61-FC0C-320A-9AA4-120845AB8DB3"><!-- --></a>
+		<h2 class="topictitle2">
+					TUint32
+				 iThemeStatus</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>
+				</td><td>iThemeStatus</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-04331F91-CE4C-3750-AC89-9BEF6155C0F6"><a name="GUID-04331F91-CE4C-3750-AC89-9BEF6155C0F6"><!-- --></a>
+		<h2 class="topictitle2">
+					TUint
+				 iThemeUid</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td>iThemeUid</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-2EDC4D2C-D70A-3D02-8F54-356FDD7613FD"><a name="GUID-2EDC4D2C-D70A-3D02-8F54-356FDD7613FD"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC8 * iThemeVersion</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td>iThemeVersion</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-65D1EB19-0622-3346-8C58-C15F67E0140E"><a name="GUID-65D1EB19-0622-3346-8C58-C15F67E0140E"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iTrustedInstallation</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iTrustedInstallation</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-8CBC59E9-3F56-3066-83DF-E01C5215AC2A"><a name="GUID-8CBC59E9-3F56-3066-83DF-E01C5215AC2A"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC * iXmlFile</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>iXmlFile</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-28C435EC-5692-3B14-BE9E-330534027362"><a name="GUID-28C435EC-5692-3B14-BE9E-330534027362"><!-- --></a>
+		<h2 class="topictitle2">
+					Xml::CParser * iXmlParser</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-EE37CB28-DAB4-30A9-B46E-8AE4664B28DE.html">Xml::CParser</a> *</td><td>iXmlParser</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

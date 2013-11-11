@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Using CActive"/>
+<meta name="abstract" content="This document describes the use of the CActive class to implement asynchronous services and requests."/>
+<meta name="description" content="This document describes the use of the CActive class to implement asynchronous services and requests."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3786D8E6-17A9-52E4-A8DF-CFCDC3039854.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B507490F-6BD3-5DF5-97E4-EFDFEA2B4EDD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Using CActive</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34"><a name="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2393224 id2393257 id2393330 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-3786D8E6-17A9-52E4-A8DF-CFCDC3039854.html">Inter Process Communication</a> &gt; <a href="GUID-B507490F-6BD3-5DF5-97E4-EFDFEA2B4EDD.html">Using Asynchronous Programming</a> &gt; <a href="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html">High Level Asynchronous Service Handling</a> &gt; </div>
+<h1 class="topictitle1">Using
+CActive</h1>
+<div><p>This document describes the use of the <samp class="codeph">CActive</samp> class
+to implement asynchronous services and requests.</p>
+
+<div class="section" id="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-A9EA0646-0C98-54B8-A88D-35E759400D55"><a name="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-A9EA0646-0C98-54B8-A88D-35E759400D55"><!-- --></a><h2 class="sectiontitle">Writing derived
+classes</h2> <p>A <samp class="codeph">CActive</samp> -derived class must fulfil a
+number of requirements, including providing a constructor and a number of
+functions.</p>
+ <p>To write a class which encapsulates an asynchronous service:</p>
+ <ul>
+<li id="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-31F66997-600E-554A-9DE2-038C419DC37D"><a name="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-31F66997-600E-554A-9DE2-038C419DC37D"><!-- --></a><p>define and implement
+a C++ constructor through which the priority of the active object can be specified.
+A typical implementation calls the <samp class="codeph">CActive</samp> constructor through
+a constructor initialization list.</p>
+ </li>
+
+<li id="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-83C464D7-2950-5C24-9469-210AE6A86A53"><a name="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-83C464D7-2950-5C24-9469-210AE6A86A53"><!-- --></a><p>define data members
+representing the asynchronous service provider; the number and meaning of
+these members depends on the services offered by the service provider</p>
+ </li>
+
+<li id="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-731C8F60-1410-5E85-99FD-CC58312A2690"><a name="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-731C8F60-1410-5E85-99FD-CC58312A2690"><!-- --></a><p>define and implement
+a second-phase <samp class="codeph">ConstructL()</samp> member function, if this is necessary
+to initialize contact with the asynchronous service provider.</p>
+ </li>
+
+<li id="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-C316327D-8C8E-515F-9E9C-CDBD208EF437"><a name="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-C316327D-8C8E-515F-9E9C-CDBD208EF437"><!-- --></a><p>define and implement
+a <samp class="codeph">DoCancel()</samp> member function to handle a cancel request to
+the service provider. This function is defined as pure virtual in <samp class="codeph">CActive</samp> and
+any class derived from <samp class="codeph">CActive</samp> must define and implement
+it.</p>
+ </li>
+
+<li id="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-413E95E4-7E2B-565B-BF49-1DC51F29BD0F"><a name="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-413E95E4-7E2B-565B-BF49-1DC51F29BD0F"><!-- --></a><p>define and implement
+one or more service request functions which forward requests to the service
+provider</p>
+ </li>
+
+</ul>
+ <p>To write a class which handles the completion of an asynchronous
+request, a <samp class="codeph">RunL()</samp> function should be provided. The function
+is defined as pure virtual in <samp class="codeph">CActive</samp> and any class derived
+from <samp class="codeph">CActive</samp> must define and implement it. <samp class="codeph">RunL()</samp>:</p>
+ <ul>
+<li id="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-274B7335-4DFF-5B22-A752-5DD1828575A8"><a name="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-274B7335-4DFF-5B22-A752-5DD1828575A8"><!-- --></a><p>handles completion of
+a request, if appropriate</p>
+ </li>
+
+<li id="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-633B97B6-2B1C-59FA-8221-C52A0B6DEEFB"><a name="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-633B97B6-2B1C-59FA-8221-C52A0B6DEEFB"><!-- --></a><p>if appropriate, renews
+the request, or initiates other requests, or decides to terminate the series
+of requests handled by the active object</p>
+ </li>
+
+</ul>
+ <p>In some cases, a derived-class's <samp class="codeph">RunL()</samp> will do
+some pre-handling of the request, and then invoke one or more appropriate
+virtual functions to handle particular types of completion. A further-derived
+class must provide virtual functions to specify the way various types of completion
+are handled.</p>
+ <p>In the general case, the derivation of a concrete active
+object from the <samp class="codeph">CActive</samp> base class may involve</p>
+ <ul>
+<li id="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-922E8B94-6EE8-550C-929F-1EACDE81C977"><a name="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-922E8B94-6EE8-550C-929F-1EACDE81C977"><!-- --></a><p>a derivation for encapsulating
+the service</p>
+ </li>
+
+<li id="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-FBE75575-543C-59D1-9830-1FE3BBE36F7A"><a name="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-FBE75575-543C-59D1-9830-1FE3BBE36F7A"><!-- --></a><p>a derivation for encapsulating
+the abstract handling of completion</p>
+ </li>
+
+<li id="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-EF3D5B9C-C3BD-5DCA-9014-D42EC7A9471F"><a name="GUID-BF796290-E9BC-5A18-AC59-9848823FBE34__GUID-EF3D5B9C-C3BD-5DCA-9014-D42EC7A9471F"><!-- --></a><p>further derivations
+for making that handling more concrete</p>
+ </li>
+
+</ul>
+ <p>Depending on the circumstances, some of these stages of derivation
+may be amalgamated into one stage; or stages may be refined into even finer
+derivation stages.</p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html">High Level Asynchronous Service Handling</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

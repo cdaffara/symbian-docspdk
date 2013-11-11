@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Creating a Source Plugin"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B58DEF65-B08F-5D0B-98E7-EB8DB7082F8B.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1DE5CDAD-8D71-5384-9E98-5665D5A4C792.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-97F83011-BE3C-512C-9599-028CBB92BD51.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B58DEF65-B08F-5D0B-98E7-EB8DB7082F8B.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Creating a Source Plugin</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9"><a name="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2405098 id2396821 id2396835 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-1DE5CDAD-8D71-5384-9E98-5665D5A4C792.html">Multimedia Guide</a> &gt; <a href="GUID-97F83011-BE3C-512C-9599-028CBB92BD51.html" title="The Multimedia Plug-ins collection facilitates a plug-in framework to handle the Multimedia audio, video and image data.">Multimedia Plug-ins Collection</a> &gt; <a href="GUID-B58DEF65-B08F-5D0B-98E7-EB8DB7082F8B.html">Multimedia Plug-in Collection Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Creating
+a Source Plugin</h1>
+<div>
+<p>A data source plugin needs to implement the pure virtual, and where appropriate
+override the virtual, <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html"><span class="apiname">MDataSource</span></a> base class mixin functions.
+This section describes how to implement the <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html"><span class="apiname">MDataSource</span></a> base
+class.</p>
+
+<p>Note that a single plugin can be both a source and a sink, i.e. derive
+from both <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html"><span class="apiname">MDataSource</span></a> and <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html"><span class="apiname">MDataSink</span></a>. </p>
+
+
+
+<p><strong> Source Plugin Instantiation</strong> </p>
+
+<p>A client application instantiates a source plugin using the <a href="GUID-9DEDFB0F-C963-3FB7-9237-DDDB276C8841.html#GUID-9DEDFB0F-C963-3FB7-9237-DDDB276C8841__GUID-7649C65D-AFF5-3216-A149-E743FB7B826C"><span class="apiname">RMMFController::AddDataSource()</span></a> method,
+passing in the UID of the source as one of the method's parameters. The controller
+framework instantiates a source via the <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-284ECE44-65BF-343A-A1D1-2B9BA0F5BE3F"><span class="apiname">MDataSource::NewSourceL()</span></a> method,
+rather than the more conventional <samp class="codeph">NewL()</samp> method. This is
+because a plugin can be both a source and a sink of multimedia data, in which
+case the instantiation methods for sources and sinks need to be distinct.
+The <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html"><span class="apiname">MDataSource</span></a> base class instantiation methods are described
+below, followed by information on how to write the instantiation methods in
+the derived class. </p>
+
+<p>The derived data source needs to implement <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-284ECE44-65BF-343A-A1D1-2B9BA0F5BE3F"><span class="apiname">MDataSource::NewSourceL()</span></a> and <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-3B28E1FD-F785-370E-A406-87E80B1B59DE"><span class="apiname">MDataSource::ConstructSourceL()</span></a> for
+instantiation. The constructor of a data source plugin needs to specify what
+type of data source it is. This is achieved by passing a type UID into the <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html"><span class="apiname">MDataSource</span></a> constructor. </p>
+
+<p>If the source has additional methods, that are not part of the base <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html"><span class="apiname">MDataSource</span></a> class,
+then a further layer of instantiation is required. For example, suppose <samp class="codeph">CAcmeDataSource</samp> has
+some extra methods that are not part of the base class, then an additional
+mxin interface for this class is required. For example:</p>
+
+<pre class="codeblock" id="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-2DCF0159-3C31-5AB0-B074-A09502D6A0F9"><a name="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-2DCF0159-3C31-5AB0-B074-A09502D6A0F9"><!-- --></a>class MAcmeDataSource : public MDataSource
+    {
+public:
+    inline static MAcmeDataSource* NewAcmeDataSourceL(TUid aImplemetationUid, const TDesC8&amp; aInitData);
+    //This allows dynamic linkage to the Class:    
+    }
+</pre>
+
+<p>The <samp class="codeph">NewAcmeDataSourceL</samp> should be implemented as follows:</p>
+
+<pre class="codeblock" id="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-94313354-6AE8-5B88-9E26-E84033D7A5F2"><a name="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-94313354-6AE8-5B88-9E26-E84033D7A5F2"><!-- --></a>MAcmeDataSource* retPtr = static_cast&lt;MAcmeDataSource*&gt;(MDataSource::NewSourceL(aImplementationUid, aInitData)); </pre>
+
+<p>The class should derive from the <samp class="codeph">MAcmeDataSource</samp> rather
+than <samp class="codeph">MDataSource</samp> as follows:</p>
+
+<pre class="codeblock" id="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-CA92EA62-9533-5576-88FA-79A6A05196DF"><a name="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-CA92EA62-9533-5576-88FA-79A6A05196DF"><!-- --></a>class CAcmeDataSource: public CBase, public MAcmeDataSource
+    {
+public: 
+    MDataSource* NewSourceL();
+</pre>
+
+
+
+<p><strong>Source Plugin Buffer Creation</strong> </p>
+
+<p>Buffers are required to transfer data between a data source and a data
+sink. These buffers can be created by the source and/or sink. The methods
+below are for source buffer creation.</p>
+
+<p>The <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-F8E0C364-A401-3EDF-B46B-55286FCEF011"><span class="apiname">MDataSource::CanCreateSourceBuffer()</span></a> method must
+be implemented by the data source plugin. Most sources should be capable of
+creating their own buffer and so would return <samp class="codeph">ETrue</samp>. Note
+that just because a source can create a source buffer, this does not guarantee
+that the framework will use the buffer created by the source. The buffer that
+is used depends on factors such as whether a null codec is used and whether
+the sink is the reference buffer, in either of these cases the source buffer
+will not be used.</p>
+
+<p>The <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-047464BF-66A3-3B42-ACB3-528F4098FA6F"><span class="apiname">MDataSource::CreateSourceBufferL()</span></a> method is called
+by the framework to create a buffer from the source. This method should create
+a buffer of length zero bytes and a maximum length of an appropriate size
+for the source. The appropriate size is determined by source specifics, such
+as whether the source data ultimately comes from hardware that supplies buffers
+of a certain size. Generally a larger buffer size means a smaller number data
+transfers between the source and sink are required. The returned buffer must
+derive from <a href="GUID-9A7A83ED-592B-3A0C-BABB-3B90099BCF7C.html"><span class="apiname">CMMFBuffer</span></a> but will be a derived buffer, for
+example <a href="GUID-AE26E6A4-C1AD-3B35-B5F7-CE0AB60169BB.html"><span class="apiname">CMMFDataBuffer</span></a> or a video frame buffer.</p>
+
+<p>The overloaded <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-047464BF-66A3-3B42-ACB3-528F4098FA6F"><span class="apiname">MDataSource::CreateSourceBufferL()</span></a> method,
+which has an additional <samp class="codeph">aSinkBuffer</samp> parameter, is optional.
+The default implementation is identical to the standard <samp class="codeph">CreateSourceBufferL</samp> above.
+This version is used where the nature of the sink buffer may impact the created
+source buffer. This method should only be overridden if the size and/or type
+of the sink buffer can influence the size and/or type of the created source
+buffer.</p>
+
+
+
+<p><strong> Data Transfer</strong> </p>
+
+<p>Data transfer methods are used by a datapath to perform the transfer of
+data between the source and the sink.</p>
+
+<p>The <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-F9457D80-0FA4-3133-BB70-1AEF18AEEC81"><span class="apiname">MDataSource::FillBufferL()</span></a> method is used to obtain
+data from the data source. It is a passive method in that an external component
+such as a datapath must ask the source to fill the buffer with data from the
+source. The <samp class="codeph">MDataSource::FillBufferL()</samp> method may operate
+either synchronous and asynchronously:</p>
+
+<ul>
+<li id="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-E50C97F2-5531-5081-94F0-8A5DBB3025CE"><a name="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-E50C97F2-5531-5081-94F0-8A5DBB3025CE"><!-- --></a><p>A synchronous source
+is one in which the mechanism for filling the source buffer is synchronous.
+That is, the source fills the buffer and calls the <samp class="codeph">BufferFilledL()</samp> method
+on the consumer of the dat, which is itself derived from <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html"><span class="apiname">MDataSink</span></a> to
+indicate that the buffer has now been filled.</p>
+ </li>
+
+<li id="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-67FEB4E0-F9DE-5F7E-B38A-44FFDA1F16D2"><a name="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-67FEB4E0-F9DE-5F7E-B38A-44FFDA1F16D2"><!-- --></a><p>An asynchronous source
+is one in which the mechanism for filling the source buffer operates asynchronously.
+The <samp class="codeph">MDataSource::FillBufferL()</samp> method will typically make
+an asynchronous request, for example via an active object, such that when
+the <samp class="codeph">FillBufferL</samp> method has returned, the buffer has not yet
+been filled. The <samp class="codeph">BufferFilledL()</samp> call back will occur some
+time later when the asynchronous request has been processed.</p>
+ </li>
+
+</ul>
+
+<p>The <samp class="codeph">MDataSink::BufferFilledL()</samp> method is the callback
+on a sink when the source has filled a buffer with source data. The source
+normally operates in a passive mode in that a sink of data will ask the source
+to fill a buffer via a call to <samp class="codeph">MDataSource::FillBufferL()</samp> above.
+However, the sink that makes the <samp class="codeph">FillBufferL()</samp> call on the
+source needs this callback to know when the buffer has been filled. This is
+applicable to a datapath which is both a sink and source of data. The actual
+sink, as seen by the controller, would normally operate passively and return <samp class="codeph">KErrNotSupported</samp> for
+this procedure.</p>
+
+<p>The <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-2B3B176E-47C3-34E6-9F12-2FB70463759D"><span class="apiname">MDataSink::EmptyBufferL()</span></a> method is used to transfer
+data to the data sink. This is a passive method in that an external component,
+such as a datapath, must send the buffer with data to the sink. This method
+may operate either synchronously or asynchronously:</p>
+
+<ul>
+<li id="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-5D31EF73-0202-5506-8333-8E75C43C140F"><a name="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-5D31EF73-0202-5506-8333-8E75C43C140F"><!-- --></a><p>A synchronous sink is
+one in which the emptying of the sink buffer is synchronous. That is, the
+sink finishes processing the buffer and then calls the <samp class="codeph">BufferEmptiedL()</samp> method
+on the data supplier.</p>
+ </li>
+
+<li id="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-6CA3D7C0-0730-5153-938A-BE3F3FF865F3"><a name="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-6CA3D7C0-0730-5153-938A-BE3F3FF865F3"><!-- --></a><p>An asynchronous sink
+is one in which the mechanism for emptying the sink buffer operates asynchronously.
+The <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-2B3B176E-47C3-34E6-9F12-2FB70463759D"><span class="apiname">MDataSink::EmptyBufferL()</span></a> method will typically make
+an asynchronous request, for example via an active object, such that when
+the <samp class="codeph">EmptyBufferL()</samp> method has returned, the buffer is not
+yet available for reuse. The <samp class="codeph">BufferEmptiedL()</samp> call back should
+occur some time later when the asynchronous request has been processed.</p>
+ </li>
+
+</ul>
+
+<p>Note that the 'Empty' in the method name does not imply that the sink really
+has to empty the buffer. The returned buffer does not have to contain no data
+and have a length of 0. The buffer passed back to the supplier by the <samp class="codeph">BufferEmptiedL()</samp> could
+be the same buffer that was passed in with the <samp class="codeph">EmptyBufferL()</samp> method,
+although it does not have to be. The buffer passed back is intended to be
+used as the next buffer passed into the subsequent call to <samp class="codeph">EmptyBufferL()</samp>.</p>
+
+<p>The <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-48568E16-4AB4-3C76-A81B-ABE2A8ECF6A2"><span class="apiname">MDataSource::BufferEmptiedL()</span></a> method is the callback
+on the source when the source asks a sink to empty a buffer that originated
+from the sink. The sink normally operates in a passive mode (will not ask
+the source to fill a buffer with data) in that a source of data will ask the
+sink to empty a buffer via a call to <samp class="codeph">EmptyBufferL()</samp> above,
+but a source can ask a sink to empty a buffer by calling <samp class="codeph">EmptyBufferL()</samp> on
+the sink. In which case the sink informs the source that it has finished with
+the buffer by calling the source's <samp class="codeph">BufferEmptiedL()</samp> method.
+Sources which only support the passive mode of operation should return <samp class="codeph">KErrNotSupported</samp>.</p>
+
+
+
+<p><strong>Source State Methods</strong> </p>
+
+<p>The <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html"><span class="apiname">MDataSource</span></a> mixin provides a number of state-related
+functions used to inform a source/sink that the data path (via the controller)
+has made a transition to a particular state. These state transition methods
+are usually called on the source/sink from the datapath and so will be called
+on the data source/sink plugin. These methods are not pure virtual and so
+it is not compulsory to implement them. </p>
+
+<p>The <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-ABDE0CD2-2FED-34A5-991C-10F7C998D377"><span class="apiname">MDataSource::SourceThreadLogon()</span></a> method indicates
+to the source that it can perform any thread specific initialisation. This
+is so that the thread in which the data source is instantiated is not necessarily
+the same thread in which the actual transfer of data between the source and
+the sink takes place. It is only necessary to provide an implementation of <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-ABDE0CD2-2FED-34A5-991C-10F7C998D377"><span class="apiname">MDataSource::SourceThreadLogon()</span></a> if
+the source has thread specific initialisation and/or can generate events during
+data transfer.</p>
+
+<p>The <a href="GUID-8512F793-107A-3166-A62F-750696D942CE.html"><span class="apiname">MAsyncEventHandler</span></a> must also be passed into the
+source in the same thread in which the source is to transfer data. If the
+source can generate events during a data transfer, then it must keep the reference
+to event handler.</p>
+
+<p>Implementation of the <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-C12C9339-F515-3A60-9CA1-DDB4F9891D71"><span class="apiname">MDataSource::SourcePrimeL()</span></a>, <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-2078F38C-DE70-3D20-BC0A-CF522AD9F39C"><span class="apiname">MDataSource::SourcePlayL()</span></a>, <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-91ED949B-9440-3E31-AAA5-D132F3F6DDC4"><span class="apiname">MDataSource::SourcePauseL()</span></a> and <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-A1A741E8-A492-3953-BD85-AFBE638F8146"><span class="apiname">MDataSource::SourceStopL()</span></a> methods is optional. They
+are called when a controller performs a transition to the corresponding state.
+For example, if the controller starts, or resumes, playing then <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-2078F38C-DE70-3D20-BC0A-CF522AD9F39C"><span class="apiname">MDataSource::SourcePlayL()</span></a> is
+called.</p>
+
+<p>Implementation of the <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-1AD10FF2-F2AD-3E1C-A132-348BD4AD7FFD"><span class="apiname">MDataSource::SouceThreadLogoff()</span></a> method
+is optional This method is called when the controller has finished with the
+data source and is called in the same thread as the data transfer. This allows
+the data source to perform any thread specific destruction such as the closure
+of handles. </p>
+
+
+
+<p><strong>Source Data Types</strong> </p>
+
+<p>The <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-FBAA4A85-0481-32A8-9ADE-325DBA8F28C8"><span class="apiname">MDataSource::SourceDataTypeCode() </span></a> method must be
+implemented by the data source. It should return the data type of the source
+for the specified media ID. Some data sources may need their data type to
+be explicitly set, via the <samp class="codeph">SetSourceDataTypeCode</samp> method or
+via negotiation with a data sink, in which case this function should either
+return a default <samp class="codeph">FourCC</samp> code, or a <samp class="codeph">NULL</samp> code,
+to indicate that the data type is not yet known.</p>
+
+<p>Implementation of the <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-7EDAC41D-630F-39A4-97B6-06384E214592"><span class="apiname">MDataSource::SetSourceDataTypeCode()</span></a> method
+is optional. It should be implemented where the source can support multiple
+data types.</p>
+
+
+
+<p><strong>Source Sink Negotiation</strong> </p>
+
+<p>In many cases a data source will need to adjust its settings and data type
+according to the settings of the data sink. The opposite is also true in that
+a data sink may need to adjust its settings and data type according to the
+data source. This process is known as negotiation. An example of negotiation
+is where the source is an audio input recording to a clip of a certain data
+type. The source audio input (such as a microphone) attempts to match its
+settings to that required by the clip. For example, if the audio input supports
+the same data type as that required by the clip to be recorded to, then the
+negotiation should set the source audio input to the same data type and settings
+as the clip sink.</p>
+
+<p>Implementation of the <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-1AD0F9E7-A7CC-3E81-8E03-D6E694767676"><span class="apiname">MDataSource::NegotiateSourceL()</span></a> method
+is optional. It needs to be implemented by a data source only if the source
+needs to configure itself in accordance with the sink.</p>
+
+<p>Implementation of the <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-022E2D1E-AFCD-3DD8-89EB-FC7E8D1F09F4"><span class="apiname">MDataSink::NegotiateL()</span></a> method
+is optional. It only needs to be implemented by a data sink if the data sink
+needs to configure itself in accordance with the source. </p>
+
+<p>Note that it is not always necessary to call both the source and sink negotiate
+functions. It is up to the controller to determine whether one, or both, are
+the most appropriate. The controller is also responsible for determining the
+sequence of the negotiate functions. For example, if an audio input data source
+is negotiating with a format sink such that the audio input needs to adjust
+it's settings to that of the sink, then there is need to perform this negotiation
+until the sink has been configured.</p>
+
+
+
+<p><strong>Source Custom Commands</strong> </p>
+
+<p>The <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-A8D195EE-795A-3EBE-A2EC-0B0321D95DBD"><span class="apiname">MDataSource::SourceCustomCommand()</span></a> method facilitates
+the use of custom commands. An example implementation is shown below:</p>
+
+<pre class="codeblock" id="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-BA1BAE27-9C99-5C78-9112-178115E4784F"><a name="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9__GUID-BA1BAE27-9C99-5C78-9112-178115E4784F"><!-- --></a>void CAcmeDataSource::SourceCustomCommand(TMMFMessage&amp; aMessage)
+    {
+    // First, check we can handle message by checking its interface id
+    if (aMessage.InterfaceId() != KUidAcmeDatasourceCustomCommandInterface)
+        {
+        aMessage.Complete(KErrNotSupported);
+        return;
+        }
+
+    // Next, dispatch the command to the appropriate method.
+    TInt error = KErrNone;
+    switch (aMessage.Function())
+        {
+    case EAcmeDatasourceCustomCommandOne:
+       error = HandleCustomCommandOne(aMessage);
+       break;
+    case EAcmeDataSourceCustomCommandTwo:
+       error = HandleCustomCommandTwo(aMessage);
+       break;
+    default:
+       error = KErrNotSupported;
+       break;
+       }
+    aMessage.Complete(error);
+    }
+</pre>
+
+<p>Use of the custom command mechanism is preferable to adding extra methods
+as it avoids extra casting as described is required for source/sink instantiation.</p>
+
+
+
+<p><strong>Source Priority Settings</strong> </p>
+
+<p>The <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html#GUID-2230F976-A798-30EB-ABA6-09C86716A4B5__GUID-71972EC3-9389-3893-A998-482C8A9B537B"><span class="apiname">MDataSource::SetSourcePrioritySettings()</span></a> method
+is optional. It is used to provide a mechanism to determine which source should
+have priority in cases where more than one client wishes to use the same physical
+source. An example might be an audio output, although several audio output
+sinks can be created, the actual hardware may only have one physical speaker.
+Therefore, if one audio output is being used to play music, and another is
+being used to play a ring tone due to an incoming call, then the latter needs
+to take precedence. <a href="GUID-AA73C7C3-5874-34D1-8879-597B0900E9F3.html"><span class="apiname">TMMFPrioritySettings</span></a> contains an <samp class="codeph">iPriority
+TInt</samp> data member, where 100 is maximum priority, 0 is normal and
+-100 is minimum priority. The <a href="GUID-AA73C7C3-5874-34D1-8879-597B0900E9F3.html#GUID-AA73C7C3-5874-34D1-8879-597B0900E9F3__GUID-3B14D763-139C-3A4E-9640-CABBC3427D6E"><span class="apiname">TMMFPrioritySettings::TMdaPriorityPreference</span></a> and <a href="GUID-AA73C7C3-5874-34D1-8879-597B0900E9F3.html#GUID-AA73C7C3-5874-34D1-8879-597B0900E9F3__GUID-A2E1FCFD-2058-3E1D-9FEF-C562F613C65D"><span class="apiname">TMMFPrioritySettings::TMMFStateA</span></a> data members provide further information which may be used if required.
+These specify whether the priority applies to recording or playing.</p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-B58DEF65-B08F-5D0B-98E7-EB8DB7082F8B.html">Multimedia Plug-in Collection Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

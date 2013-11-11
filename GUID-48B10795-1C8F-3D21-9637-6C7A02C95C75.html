@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="MWsElement"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75"/>
+
+<title>MWsElement</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75"><a name="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2545618 id2556185 id2556190 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">MWsElement Class Reference</h1>
+	<table class="signature"><tr><td>class MWsElement : public MWsObjectProvider</td></tr></table><div class="section"><div>
+			<p>This interface allows Image Sources to be associated with meta-data to define how the Image Source must be presented within a Scene.</p>
+
+			<p>For a conceptual overview of Scenes, refer to the <tt><a href="GUID-43972649-4BDE-3D93-8658-35F224915A43.html#GUID-43972649-4BDE-3D93-8658-35F224915A43">MWsScene</a></tt> Interface.</p>
+
+			<div class="p">The following aspects of Image Source presentation may be controlled: <ul><li><p>Source rectangular region </p>
+</li>
+<li><p>Destination rectangular region </p>
+</li>
+<li><p>Rotation and flipping </p>
+</li>
+<li><p>Opacity </p>
+</li>
+<li><p>Relative z-order (ordinal position) </p>
+</li>
+<li><p>Tags to descriminate the UI from other Elements</p>
+</li>
+</ul>
+All co-ordinates are pixels offsets from (0,0) representing the top level of the Image Source or Destination Target (the screen or an off-screen buffer representing the screen), moving rightwards and downwards in x and y co-ordinates respectively.</div>
+
+			<p>Elements can be marked with flags. There are two different consumers of flags: Target Renderers and Render Stage Plug-ins.</p>
+
+			<p>Target Renderers are sub-systems which actually do composition and rendering on a particular display device or off-screen buffer. The EElementTransparencySource flag tells the Target Renderer that alpha blending must use the alpha channel in the Surface connected to the Element.</p>
+
+			<p>On the other hand, Render Stage Plug-ins need flags to implement specific policies such as "UI always on top". To facilitate this, Elements have a EElementIsIndirectlyRenderedUserInterface or a EElementIsDirectlyRenderedUserInterface optionally set. This flag allows Render Stage Plug-ins to keep the relative z-order of Elements aligned to this policy.</p>
+
+			<p>To allow compatible updates to be made to flags, all Render Stage Plug-ins must preserve the flags in Elements which they do not operate upon. Target Renderers may ignore the flags in Elements which they do not operate on.</p>
+
+			<p>
+				<strong>Intial State</strong>
+			</p>
+
+			<div class="p">The initial state for an Element is: <ul><li><p>Fully opaque </p>
+</li>
+<li><p>No rotation, nor flipped </p>
+</li>
+<li><p>Not part of the Committed Scene </p>
+</li>
+<li><p>No connected Surface </p>
+</li>
+<li><p>All flags reset </p>
+</li>
+<li><p>Local error value set as KErrNone </p>
+</li>
+<li><p>Source Rectangle and Destination Rectangle is (0,0,0,0)  Destination Clipping Rectangle is (0,0,0,0)</p>
+</li>
+</ul>
+When an Image Source is connected, the initial state becomes: <ul><li><p>Source Rectangle is the extent of the Image Source </p>
+</li>
+<li><p>Destination Rectangle is set at origin (0,0), whose sized equals the Image Source size truncated the the target screen size. </p>
+</li>
+<li><p>Destination Clipping Rectangle is (0,0,0,0) to represent the entire area of the target screen.</p>
+</li>
+</ul>
+<strong>Special Rectangle Values</strong></div>
+
+			<p>Sometimes it is desirable to reset a Source, Destination, or Clipping Rectangle so that the actual value used matches the corresponding Source Image or Target Screen size. In such cases rectangle (0,0,0,0) is used to represent this.</p>
+
+			<p>
+				<strong>Extending this interface</strong>
+			</p>
+
+			<div class="p">This interface can be extended in two different ways <ul><li><p>Creating optional extension interfaces with MWsElement::MWsObjectProvider::ResolveObjectInterface() </p>
+</li>
+<li><p>Defining new TElementFlags flag settings; Render Stage Plug-ins preserve the value of these across the Render Stage Pipeline.</p>
+</li>
+</ul>
+<strong>Committed Elements versus Pending Elements</strong></div>
+
+			<p>This interface allows Elements to be modified in terms of their own flag settings, and rotation, as well as their relative position with other Elements. Queries return the pending values for such Elements. Any modifications are marked Pending, and affect the Scene according to the rules described by "Rendering" in <tt><a href="GUID-43972649-4BDE-3D93-8658-35F224915A43.html#GUID-43972649-4BDE-3D93-8658-35F224915A43">MWsScene</a></tt>.</p>
+
+			<p>
+				<strong>Order in which transformations are applied</strong>
+			</p>
+
+			<div class="p">A number of different transformations may be specified for an Element. The order in which these are applied to arrive at the view seen in the target is:<ol><li><p>SetSourceRectangle (Cropping)</p>
+</li>
+<li><p>SetSourceFlipping (Flipping)</p>
+</li>
+<li><p>SetSourceRotation (Rotation)</p>
+</li>
+<li><p>SetDestinationRectangle (Scaling and Positioning)</p>
+</li>
+<li><p>SetDestinationClippingRectangle (Scaling and Positioning)</p>
+</li>
+<li><p>SetGlobalAlpha (Blending) </p>
+</li>
+</ol>
+</div>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">MWsElement<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-A47A4139-70FD-3F76-B51E-0452A0F6A76F.html">MWsObjectProvider</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-A4D913CD-4621-37B2-9141-C96533FC9504">ConnectSurface</a>(const <a href="GUID-11F60AEB-003B-3E8D-BDB9-D97F698627DF.html">TSurfaceId</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">const <a href="GUID-11F60AEB-003B-3E8D-BDB9-D97F698627DF.html">TSurfaceId</a> &amp;</td><td><a href="#GUID-E543878C-F527-3A2E-B818-B908F32C5C2A">ConnectedSurface</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html">MWsElement</a> *</td><td><a href="#GUID-E84B18DC-23EC-333C-B221-1E03CAEC8817">ElementAbove</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html">MWsElement</a> *</td><td><a href="#GUID-96890C5C-508D-3A32-810E-5A0BFFA01162">ElementBelow</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-13CF77CF-2DC8-3762-9B0A-A126F4E490CE">GetDestinationClippingRect</a>(<a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-4EB29F1F-B3C4-32BC-904E-9517E287B8D5">GetDestinationRectangle</a>(<a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-A1E160D9-7BC9-389B-A581-7F69D401213F">GetRenderStageFlags</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-28DAF15E-221D-3A00-B3D5-7FC2CD2E3EA6">GetSourceRectangle</a>(<a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-3892D3BB-96F7-388A-9E18-96D158B53913">GetTargetRendererFlags</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-12203A85-3DD6-34DA-BEA2-95A3723972EE">GlobalAlpha</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-A5452E04-6678-34B7-BAC1-C80E4651DFC9">SetDestinationClippingRect</a>(const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-886AD689-9C77-3F9F-BFE3-49D685949EC3">SetDestinationRectangle</a>(const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-994C3184-ED6C-3B32-99D7-C8492B48F7CA">SetGlobalAlpha</a>(const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-DE125F5B-8E16-33F9-9F56-87642C321572">SetRenderStageFlags</a>(const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-829B8377-B418-3FFF-AF4D-B2ED5F99AEED">SetSourceFlipping</a>(const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-8C4B7B60-191D-32E0-B05A-2D816E0D3D74">SetSourceRectangle</a>(const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-86467AB2-6A0F-3DFF-8944-8711F28073E6">SetSourceRotation</a>(const <a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html">TElementRotation</a>)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-DA650420-CA7E-3FD8-AB94-9E23BF81EE31">SetTargetRendererFlags</a>(const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-7FFA9313-5804-3805-B154-1D5F4C28B42A">SourceFlipping</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html">TElementRotation</a>
+				</td><td><a href="#GUID-81F50568-9619-3F47-9179-5FA97F98D9DD">SourceRotation</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-A47A4139-70FD-3F76-B51E-0452A0F6A76F.html">MWsObjectProvider::ObjectInterface()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-A47A4139-70FD-3F76-B51E-0452A0F6A76F.html">MWsObjectProvider::ObjectInterface()const</a></td></tr><tr><td> </td><td><a href="GUID-A47A4139-70FD-3F76-B51E-0452A0F6A76F.html">MWsObjectProvider::ResolveObjectInterface(TUint)</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Enumerations</th></tr></thead><tbody><tr><td align="right" valign="top">enum</td><td><a href="#GUID-177E9039-2A70-3EB5-8DC6-63DEFEC45B70">TElementRenderStageFlags</a> { <a href="#GUID-4348D32B-6B17-3610-8009-805D7C91A5A8">EElementRenderStageNone</a> = 0, <a href="#GUID-E13A521A-BC9C-3781-86C0-01242D03E10D">EElementIsIndirectlyRenderedUserInterface</a> = (1 &lt;&lt; 0), <a href="#GUID-B22FBAD0-548B-34FF-98B5-20D61A5B110D">EElementIsDirectlyRenderedUserInterface</a> = (1 &lt;&lt; 1), <a href="#GUID-B7D82E4C-17B3-33D6-A23C-38D8ADF22FE7">EElementRenderStageReserved</a> = (1 &lt;&lt; 2) }</td></tr><tr class="bg"><td align="right" valign="top">enum</td><td><a href="#GUID-DBA02778-1F27-3039-A5AF-F5547C226465">TElementRotation</a> { <a href="#GUID-1A433601-4240-38FE-A115-69EC54363CB9">EElementAntiClockwise0</a> = 0, <a href="#GUID-3E78FA02-63DB-3D9E-9E32-B896BD0130BB">EElementAntiClockwise90</a> = 1, <a href="#GUID-8F42AB5D-D87D-3E6F-8DCC-EE2C6403A638">EElementAntiClockwise180</a> = 2, <a href="#GUID-28AED746-0F07-36C2-8B10-7F7F946713A6">EElementAntiClockwise270</a> = 3 }</td></tr><tr><td align="right" valign="top">enum</td><td><a href="#GUID-79ADFBD1-19CB-3179-86B3-10E7D8592120">TElementTargetRendererFlags</a> { <a href="#GUID-336112AA-F88D-3767-8F94-886253B51634">EElementTransparencyNone</a> = 0, <a href="#GUID-055029FD-2972-3407-8218-23EB1227C129">EElementTransparencyGlobalAlpha</a> = (1 &lt;&lt; 0), <a href="#GUID-E118D5D2-5B44-3A50-B9C3-96E8F0CA0CC2">EElementTransparencySource</a> = (1 &lt;&lt; 1), <a href="#GUID-C9FF5696-8D43-3180-AC0F-35ED1156F2EF">EElementTargetRendererReserved</a> = (1 &lt;&lt; 2) }</td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-A4D913CD-4621-37B2-9141-C96533FC9504"><a name="GUID-A4D913CD-4621-37B2-9141-C96533FC9504"><!-- --></a>
+		<h2 class="topictitle2">ConnectSurface(const TSurfaceId &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>ConnectSurface</td><td>(</td><td>const <a href="GUID-11F60AEB-003B-3E8D-BDB9-D97F698627DF.html">TSurfaceId</a> &amp;</td><td>aSurface</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Connect the given Surface to this Element, or re-Connect a new Surface to this Element which already has a connected Surface. The Element does not need to be in the Scene when this call is made.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>The Source Rectangle of the Element is updated to correspond to match the Source Rectangle of the Surface. Thus any prior Source Rectangle setting will be overwritten.</p>
+
+					</div>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-11F60AEB-003B-3E8D-BDB9-D97F698627DF.html">TSurfaceId</a> &amp; aSurface</td><td>Surface to connect to. If this is the Null Surface, then the Source Rectangle of the Element is set to (0,0,0,0).  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E543878C-F527-3A2E-B818-B908F32C5C2A"><a name="GUID-E543878C-F527-3A2E-B818-B908F32C5C2A"><!-- --></a>
+		<h2 class="topictitle2">ConnectedSurface()</h2>
+		<table class="signature"><tr><td>const <a href="GUID-11F60AEB-003B-3E8D-BDB9-D97F698627DF.html">TSurfaceId</a> &amp;</td><td>ConnectedSurface</td><td>(</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-E84B18DC-23EC-333C-B221-1E03CAEC8817"><a name="GUID-E84B18DC-23EC-333C-B221-1E03CAEC8817"><!-- --></a>
+		<h2 class="topictitle2">ElementAbove()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html">MWsElement</a> *</td><td>ElementAbove</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get the Element which is above this Element in the Pending Scene. If the Element is the top-most element, NULL is returned. If the Element is not in the Scene, NULL is returned.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-96890C5C-508D-3A32-810E-5A0BFFA01162"><a name="GUID-96890C5C-508D-3A32-810E-5A0BFFA01162"><!-- --></a>
+		<h2 class="topictitle2">ElementBelow()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html">MWsElement</a> *</td><td>ElementBelow</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get the Element which is below this Element in the Pending Scene. If the Element is the bottom-most element, NULL is returned. If the Element is not in the Scene, NULL is returned.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-13CF77CF-2DC8-3762-9B0A-A126F4E490CE"><a name="GUID-13CF77CF-2DC8-3762-9B0A-A126F4E490CE"><!-- --></a>
+		<h2 class="topictitle2">GetDestinationClippingRect(TRect &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>GetDestinationClippingRect</td><td>(</td><td><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aDestClipRect</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get the clipping area which limits where in the target screen the element may appear.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aDestClipRect</td><td>The clipping rectangle is updated with the current clipping area used in the target screen.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4EB29F1F-B3C4-32BC-904E-9517E287B8D5"><a name="GUID-4EB29F1F-B3C4-32BC-904E-9517E287B8D5"><!-- --></a>
+		<h2 class="topictitle2">GetDestinationRectangle(TRect &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>GetDestinationRectangle</td><td>(</td><td><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aDest</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get the target area where the Image Source would appear. The default value is at (0,0) sized to the Image Source clipped to the size of the target.</p>
+
+				<div class="p">
+					<dl class="precondition">
+						
+							<dt class="dlterm">Pre-condition</dt>
+
+							<dd>An Image Source must have been connected; </dd>
+
+						
+					</dl>
+
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html#GUID-A4D913CD-4621-37B2-9141-C96533FC9504">ConnectSurface()</a> </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aDest</td><td>The destination rectangle is updated with the current region used in the target screen.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A1E160D9-7BC9-389B-A581-7F69D401213F"><a name="GUID-A1E160D9-7BC9-389B-A581-7F69D401213F"><!-- --></a>
+		<h2 class="topictitle2">GetRenderStageFlags(TUint32 &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetRenderStageFlags</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;</td><td>aRenderStageFlags</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get the Render Stage flags associated with this Element.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>Flags which are not recognised by an implementation must be kept to allow the interface to be extended in a compatible manner. </p>
+
+					</div>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp; aRenderStageFlags</td><td>Variable to receive TElementRenderStageFlags  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-28DAF15E-221D-3A00-B3D5-7FC2CD2E3EA6"><a name="GUID-28DAF15E-221D-3A00-B3D5-7FC2CD2E3EA6"><!-- --></a>
+		<h2 class="topictitle2">GetSourceRectangle(TRect &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>GetSourceRectangle</td><td>(</td><td><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aSrc</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get the portion of the connected Image Source being used. The default value is the entire extent of the connected Image Source.</p>
+
+				<div class="p">
+					<dl class="precondition">
+						
+							<dt class="dlterm">Pre-condition</dt>
+
+							<dd>An Image Source must have been connected; </dd>
+
+						
+					</dl>
+
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html#GUID-A4D913CD-4621-37B2-9141-C96533FC9504">ConnectSurface()</a> </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aSrc</td><td>The source rectangle is updated with the current rectangular region being used within the Image Source.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3892D3BB-96F7-388A-9E18-96D158B53913"><a name="GUID-3892D3BB-96F7-388A-9E18-96D158B53913"><!-- --></a>
+		<h2 class="topictitle2">GetTargetRendererFlags(TUint32 &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetTargetRendererFlags</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;</td><td>aTargetRendererFlags</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get the Target Renderer flags associated with this Element.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>Flags which are not recognised by an implementation must be kept to allow the interface to be extended in a compatible manner. </p>
+
+					</div>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp; aTargetRendererFlags</td><td>Variable to receive TElementTargetRendererFlags  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-12203A85-3DD6-34DA-BEA2-95A3723972EE"><a name="GUID-12203A85-3DD6-34DA-BEA2-95A3723972EE"><!-- --></a>
+		<h2 class="topictitle2">GlobalAlpha(TInt &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GlobalAlpha</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aAlpha</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Gets the Global Alpha Transparency value for this Element. Elements are by default fully opaque, represented by opacity 255.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aAlpha</td><td>Variable which receives the Global Alpha Transparency value.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A5452E04-6678-34B7-BAC1-C80E4651DFC9"><a name="GUID-A5452E04-6678-34B7-BAC1-C80E4651DFC9"><!-- --></a>
+		<h2 class="topictitle2">SetDestinationClippingRect(const TRect &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SetDestinationClippingRect</td><td>(</td><td>const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aDestClipRect</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Set clipping area where the Image Source would appear. The default value is the area of the target screen.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aDestClipRect</td><td>The clipping rectangle in the target. (0,0,0,0) means the entire size of the Target Screen.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-886AD689-9C77-3F9F-BFE3-49D685949EC3"><a name="GUID-886AD689-9C77-3F9F-BFE3-49D685949EC3"><!-- --></a>
+		<h2 class="topictitle2">SetDestinationRectangle(const TRect &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SetDestinationRectangle</td><td>(</td><td>const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aDest</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Set the target area in the target screen (or off-screen buffer) where the Image Source should appear. Scaling may result if the source and destination rectangles differ. A platform specific algorithm will be used to interpolate the scaled image.</p>
+
+				<div class="p">
+					<dl class="precondition">
+						
+							<dt class="dlterm">Pre-condition</dt>
+
+							<dd>An Image Source must have been connected; </dd>
+
+						
+					</dl>
+
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html#GUID-A4D913CD-4621-37B2-9141-C96533FC9504">ConnectSurface()</a> </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aDest</td><td>The destination rectangle in the target.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-994C3184-ED6C-3B32-99D7-C8492B48F7CA"><a name="GUID-994C3184-ED6C-3B32-99D7-C8492B48F7CA"><!-- --></a>
+		<h2 class="topictitle2">SetGlobalAlpha(const TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SetGlobalAlpha</td><td>(</td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aAlpha</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Sets the Global Alpha Transparency value for this Element. Elements are by default fully opaque, represented by opacity 255. On platforms that support it, the Alpha Transparency value can be reduced down to 0 representing fully transparent. The purpose of this is to allow the fading in and fading out of Elements into the Scene.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>This setting has no effect unless the flag Target Renderer flag EElementTransparencyGlobalAlpha is set; </p>
+
+					</div>
+
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html#GUID-DA650420-CA7E-3FD8-AB94-9E23BF81EE31">SetTargetRendererFlags()</a> <div class="note"><span class="notetitle">Note:</span> <p>Out of range values are clamped silently, and do not cause error conditions. </p>
+</div>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aAlpha</td><td>The Alpha Transparency value desired. Values are clamped to be within the range [0, 255] where 0 represents fully transparent, and 255 represents fully opaque.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DE125F5B-8E16-33F9-9F56-87642C321572"><a name="GUID-DE125F5B-8E16-33F9-9F56-87642C321572"><!-- --></a>
+		<h2 class="topictitle2">SetRenderStageFlags(const TUint32 &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SetRenderStageFlags</td><td>(</td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;</td><td>aRenderStageFlags</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Set the Render Stage flags to be associated with this Element.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>Flags which are not recognised by an implementation must be kept to allow the interface to be extended in a compatible manner. </p>
+
+					</div>
+
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html#GUID-177E9039-2A70-3EB5-8DC6-63DEFEC45B70">TElementRenderStageFlags</a> </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp; aRenderStageFlags</td><td>Flags to set for Render Stage Plug-ins;  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-829B8377-B418-3FFF-AF4D-B2ED5F99AEED"><a name="GUID-829B8377-B418-3FFF-AF4D-B2ED5F99AEED"><!-- --></a>
+		<h2 class="topictitle2">SetSourceFlipping(const TBool)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SetSourceFlipping</td><td>(</td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aFlip</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Set the pending flipping setting for the connected Image Source. When flipped, the Image Source appears in the target as inverted about its horizontal centerline. This effect can be combined with rotation effects. By default, the Image Source is not flipped.</p>
+
+				<div class="p">
+					<dl class="precondition">
+						
+							<dt class="dlterm">Pre-condition</dt>
+
+							<dd>An Image Source must have been connected; </dd>
+
+						
+					</dl>
+
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html#GUID-A4D913CD-4621-37B2-9141-C96533FC9504">ConnectSurface()</a> </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aFlip</td><td>If ETrue, the connected Image is flipped, else it is not flipped.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8C4B7B60-191D-32E0-B05A-2D816E0D3D74"><a name="GUID-8C4B7B60-191D-32E0-B05A-2D816E0D3D74"><!-- --></a>
+		<h2 class="topictitle2">SetSourceRectangle(const TRect &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SetSourceRectangle</td><td>(</td><td>const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp;</td><td>aSrc</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Set which rectangular portion of the connected image source will be used when displaying this Element.</p>
+
+				<div class="p">
+					<dl class="precondition">
+						
+							<dt class="dlterm">Pre-condition</dt>
+
+							<dd>An Image Source must have been connected; </dd>
+
+						
+					</dl>
+
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html#GUID-A4D913CD-4621-37B2-9141-C96533FC9504">ConnectSurface()</a> </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a> &amp; aSrc</td><td>The source rectangle of pixels from the connected Image Source. This rectangle must not include any pixels outside the Image Source. (0,0,0,0) means the entire size of the Image Source.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-86467AB2-6A0F-3DFF-8944-8711F28073E6"><a name="GUID-86467AB2-6A0F-3DFF-8944-8711F28073E6"><!-- --></a>
+		<h2 class="topictitle2">SetSourceRotation(const TElementRotation)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SetSourceRotation</td><td>(</td><td>const <a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html">TElementRotation</a></td><td>aElementRotation</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Set the rotation which describes how the connected Image Source should be rotated to appear in the target.</p>
+
+				<div class="p">
+					<dl class="precondition">
+						
+							<dt class="dlterm">Pre-condition</dt>
+
+							<dd>An Image Source must have been connected; </dd>
+
+						
+					</dl>
+
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html#GUID-A4D913CD-4621-37B2-9141-C96533FC9504">ConnectSurface()</a> </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html">TElementRotation</a> aElementRotation</td><td>The amount of rotation in the target.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DA650420-CA7E-3FD8-AB94-9E23BF81EE31"><a name="GUID-DA650420-CA7E-3FD8-AB94-9E23BF81EE31"><!-- --></a>
+		<h2 class="topictitle2">SetTargetRendererFlags(const TUint32 &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SetTargetRendererFlags</td><td>(</td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;</td><td>aTargetRendererFlags</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Set the Target Renderer flags to be associated with this Element.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>Flags which are not recognised by an implementation must be kept to allow the interface to be extended in a compatible manner. </p>
+
+					</div>
+
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html#GUID-79ADFBD1-19CB-3179-86B3-10E7D8592120">TElementTargetRendererFlags</a> </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp; aTargetRendererFlags</td><td>Flags to set for Target Renderer;  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7FFA9313-5804-3805-B154-1D5F4C28B42A"><a name="GUID-7FFA9313-5804-3805-B154-1D5F4C28B42A"><!-- --></a>
+		<h2 class="topictitle2">SourceFlipping()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>SourceFlipping</td><td>(</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get the pending flipping setting for the connected Image Source. By default, the image is not flipped.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-81F50568-9619-3F47-9179-5FA97F98D9DD"><a name="GUID-81F50568-9619-3F47-9179-5FA97F98D9DD"><!-- --></a>
+		<h2 class="topictitle2">SourceRotation()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-48B10795-1C8F-3D21-9637-6C7A02C95C75.html">TElementRotation</a>
+				</td><td>SourceRotation</td><td>(</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Get the pending rotation setting for the connected Image Source. By default, the rotation is EElementAntiClockwise0 and this is returned if there is no connected Image Source.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Enumerations Documentation</h1><div class="nested1" id="GUID-177E9039-2A70-3EB5-8DC6-63DEFEC45B70"><a name="GUID-177E9039-2A70-3EB5-8DC6-63DEFEC45B70"><!-- --></a>
+		<h2 class="topictitle2">Enum TElementRenderStageFlags</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EElementRenderStageNone = 0</td><td>
+							<p>No flag value set for Render Stage Plug-in </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EElementIsIndirectlyRenderedUserInterface = (1 &lt;&lt; 0)</td><td>
+							<p>Indirectly Rendered <a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-C197C9A7-EA05-3F24-9854-542E984C612D">User</a> Interface, i.e. rendering via <a href="GUID-44844998-D8BF-3F2F-9BA2-FB9BB497F8C0.html#GUID-44844998-D8BF-3F2F-9BA2-FB9BB497F8C0">MWsGraphicsContext</a> calls originating from client <a href="GUID-0AEE5955-C530-35F1-A904-69183331B294.html#GUID-0AEE5955-C530-35F1-A904-69183331B294">CWindowGc</a> commands </p>
+
+						 </td></tr><tr><td valign="top">EElementIsDirectlyRenderedUserInterface = (1 &lt;&lt; 1)</td><td>
+							<p>Directly Render <a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-C197C9A7-EA05-3F24-9854-542E984C612D">User</a> Interface, i.e. rendering where Window Server does not see the graphics commands, as is the case for Direct Screen Access clients. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EElementRenderStageReserved = (1 &lt;&lt; 2)</td><td>
+							<p>Reserved values for future Render Stage Plug-in usage </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DBA02778-1F27-3039-A5AF-F5547C226465"><a name="GUID-DBA02778-1F27-3039-A5AF-F5547C226465"><!-- --></a>
+		<h2 class="topictitle2">Enum TElementRotation</h2>
+		<div class="section"><div>
+				<p>Amount of rotation of pixel data to apply to the Image Source to obtain the Target Image </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EElementAntiClockwise0 = 0</td><td> </td></tr><tr class="bg"><td valign="top">EElementAntiClockwise90 = 1</td><td>
+							<p>No rotation </p>
+
+						 </td></tr><tr><td valign="top">EElementAntiClockwise180 = 2</td><td>
+							<p>90 Degrees Anti-clockwise in target </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EElementAntiClockwise270 = 3</td><td>
+							<p>180 Degrees Anti-clockwise in target </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-79ADFBD1-19CB-3179-86B3-10E7D8592120"><a name="GUID-79ADFBD1-19CB-3179-86B3-10E7D8592120"><!-- --></a>
+		<h2 class="topictitle2">Enum TElementTargetRendererFlags</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EElementTransparencyNone = 0</td><td>
+							<p>Target renderer must treat the Element as Opaque. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EElementTransparencyGlobalAlpha = (1 &lt;&lt; 0)</td><td>
+							<p>Target renderer must use the Global Alpha Transparency value from the Element </p>
+
+						 </td></tr><tr><td valign="top">EElementTransparencySource = (1 &lt;&lt; 1)</td><td>
+							<p>Target renderer must use the Alpha Transparency Channel from the Element </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EElementTargetRendererReserved = (1 &lt;&lt; 2)</td><td>
+							<p>Reserved flag value; this must not be set. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

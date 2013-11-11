@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Object Lifetimes and Cleanup"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Object Lifetimes and Cleanup</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id1198324 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a> &gt; </div>
+<h1 class="topictitle1">Object Lifetimes and Cleanup</h1>
+<div><p>Object lifetime is a fundamental concept. This topic contains a summary of object lifetime idioms in Symbian platform C++. </p>
+ <div class="section"><h2 class="sectiontitle">Overview</h2> <p>In some operating systems, the object lifetime can be neglected, because the stack and heap are destroyed when a program terminates. On the Symbian platform, programs may run for months. It is therefore important that objects be cleaned up as soon as their lifetime ends, whether they are allocated on stack or heap, and whether their lifetime ended through normal processing or through an error condition. </p>
+ <p>On both stack and heap, objects have a lifetime that runs approximately as follows: </p>
+ <a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-0CF65C93-161A-5E6A-A41A-E3360122D8EB"><!-- --></a><ol id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-0CF65C93-161A-5E6A-A41A-E3360122D8EB"><li id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-092C9503-16F6-546F-BEBE-2B0D7BE3D13C"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-092C9503-16F6-546F-BEBE-2B0D7BE3D13C"><!-- --></a><p>allocate memory for the object [on stack or heap] </p>
+ </li>
+ <li id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-07E6B1C2-ABE4-527A-A34B-E391A79AE6DE"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-07E6B1C2-ABE4-527A-A34B-E391A79AE6DE"><!-- --></a><p>initialise: i.e., set the contents of that memory to usable values </p>
+ </li>
+ <li id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-80B1C90A-B26A-59E2-B8C1-6262DD1C1E13"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-80B1C90A-B26A-59E2-B8C1-6262DD1C1E13"><!-- --></a><p>use the object </p>
+ </li>
+ <li id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-74A5297F-CD48-5C64-BFBE-10A2A1930147"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-74A5297F-CD48-5C64-BFBE-10A2A1930147"><!-- --></a><p>clean up: i.e., free up any other resources that might have been used by that object </p>
+ </li>
+ <li id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-16D4FDD6-0E2F-57BE-A17C-E2AC31E8EE86"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-16D4FDD6-0E2F-57BE-A17C-E2AC31E8EE86"><!-- --></a><p>de-allocate memory [from stack or heap] </p>
+ </li>
+ </ol>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Lifetimes in C</h2> <p>On the C stack, an object’s lifetime, for a user of that object, might look like this: </p>
+ <pre class="codeblock" id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-B725D30E-0EF9-592A-A2B8-5B15D5E8C122"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-B725D30E-0EF9-592A-A2B8-5B15D5E8C122"><!-- --></a>#include "s.h"</pre>
+ <pre class="codeblock" id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-28EFD521-310D-5EC8-A4F1-EA56D6A74A14"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-28EFD521-310D-5EC8-A4F1-EA56D6A74A14"><!-- --></a>void foo()
+    {
+    S s;
+    sInitialize(&amp;s, p1,p2);
+    sUse(&amp;s, p3,p4);
+    sCleanup(&amp;s);
+    }</pre>
+ <p>Memory for the <samp class="codeph">S</samp> is allocated on entry to the function, and de-allocated on exit. The functions <samp class="codeph">sInitialize()</samp> and <samp class="codeph">sCleanup()</samp> have been defined as part of the API for an <samp class="codeph">S</samp>, in <span class="filepath">s.h</span> (in fact, C programmers are not always as disciplined as this, and expect the users of their objects to do their own initialisation, in an ad hoc way). The function <samp class="codeph">sUse()</samp> represents a use of the <samp class="codeph">S</samp>. Note that the <samp class="codeph">S</samp> is passed by pointer: its address must be taken whenever it is used as a function parameter. </p>
+ <p>On the C heap, an object's lifetime might look like this: </p>
+ <pre class="codeblock" id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-93293B5E-C266-529F-8237-5A3FCAF55238"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-93293B5E-C266-529F-8237-5A3FCAF55238"><!-- --></a>void foo()
+    {
+    S* s=(S*)malloc(sizeof(S));
+        // should really check this succeeded!!
+    sInitialize(s, p1,p2);
+    sUse(s, p3,p4);
+    sCleanup(s);
+    free(s);
+    }</pre>
+ <p>This time, a pointer is used to refer to the <samp class="codeph">S</samp>: as a result, the syntax of passing an <samp class="codeph">S</samp> is slightly more pleasant, because you don’t have to take its address. </p>
+ <p>On the other hand, the allocation and de-allocation of memory is done using <samp class="codeph">malloc()</samp>, whose syntax is extremely ugly, and <samp class="codeph">free()</samp>. </p>
+ <p>Mostly, the lifetime of a heap-based object would not be contained within a single function like this: it might be created from one function, used from another, and destroyed from another. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Lifetimes in C++</h2> <p>One way of looking at C++ is as a neat way to control object lifetimes. C++ allows functions to be associated directly with objects, which means that you do not need a special naming convention to indicate that a function is loosely associated with an object. Two special functions are the constructor and the destructor: the constructor is called every time the C++ system knows that an object’s lifetime begins, and the destructor is called every time the C++ system knows that an object’s lifetime ends. Finally, C++ defines <samp class="codeph">operator new()</samp>, which is much nicer than <samp class="codeph">malloc()</samp>, and <samp class="codeph">operator delete</samp>, which is somewhat nicer than <samp class="codeph">free()</samp>. </p>
+ <p>On the C++ stack, an object’s lifetime looks like this: </p>
+ <pre class="codeblock" id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-F71A9ED7-B9D4-5C23-B4C6-0A7CED45B0F1"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-F71A9ED7-B9D4-5C23-B4C6-0A7CED45B0F1"><!-- --></a>void foo()
+    {
+    S s(p1,p2); // invokes constructor
+    s.Use(p3,p4); // nice syntax!
+    } // invokes destructor</pre>
+ <p>Memory is allocated on function entry, and the constructor is invoked when processing reaches the declaration. The use of member functions makes the syntax of using everything much more pleasant: there is no need to pass a reference to the <samp class="codeph">S</samp>, because that is done implicitly. </p>
+ <p>Crucially, C++ causes the destructor to be invoked when the function terminates. There is no need for the user of the class to do anything to cause this to happen — all that’s necessary is that the provider of the class provided a destructor. </p>
+ <p>Note, though, that in some exception conditions — for instance, if the <samp class="codeph">Use()</samp> function fails in some way — the function may not return normally, and the destructor will therefore not be invoked. We will shortly discuss how the Symbian platform addresses this. </p>
+ <p>On the C++ heap, object lifetime looks like this: </p>
+ <pre class="codeblock" id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-E2998E56-C725-567A-845E-F3BD4D5AEB26"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-E2998E56-C725-567A-845E-F3BD4D5AEB26"><!-- --></a>void foo()
+    {
+    S* s=new S(p1,p2); // allocate, construct - should really check
+    s-&gt;Use(p3,p4);
+    delete s; // destruct, de-allocate
+    }</pre>
+ <p>Again, the syntax is much nicer. Only one thing cannot be provided by C++: the user of a class must still remember to delete the object at the end of its lifetime. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Lifetimes in Symbian</h2> <p>Symbian platform idioms for object lifetime on the stack look very similar to standard C++. The control of object lifetimes on the heap is, however, very different, as shown in the following code: </p>
+ <pre class="codeblock" id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-F43C60C2-DA07-56B2-9F49-35ED3AA8A9C8"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-F43C60C2-DA07-56B2-9F49-35ED3AA8A9C8"><!-- --></a>void FooL()
+    {
+    CS* s=new (Eleave) CS; // allocate and check
+    CleanupStack::PushL(s); // push, just in case
+    s-&gt;ConstructL(p1,p2);    // finish constructing - might leave
+    s-&gt;UseL(p3,p4); // use - might leave
+    CleanupStack::PopAndDestroy();    // destruct, de-allocate
+    }</pre>
+ <p>This code fragment shows four vital things: </p>
+ <ul><li id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-AB53EB00-02A6-5792-99F1-CD1936D1D4FE"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-AB53EB00-02A6-5792-99F1-CD1936D1D4FE"><!-- --></a><p>all heap-based classes have names beginning with <samp class="codeph">C</samp>: they are in fact derived from a single base class, <samp class="codeph">CBase</samp>, which exists solely to support easy cleanup </p>
+ </li>
+ <li id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-F9AE98B6-73B4-5367-8896-72E155DA3CAF"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-F9AE98B6-73B4-5367-8896-72E155DA3CAF"><!-- --></a><p>a cleanup stack is used to hold references to objects: if a leave occurs due to out-of-memory or some other error, objects held on the cleanup stack are popped from it, and destroyed. In the case of <samp class="codeph">CBase*</samp> objects pushed to the stack, they are destroyed by calling their C++ destructor. The <samp class="codeph">CBase</samp> class has a virtual destructor (<samp class="codeph">CBase::~CBase()</samp>) which makes this possible. </p>
+ </li>
+ <li id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-3D6958DA-9B6C-5E31-BE3A-A6A53A6F3E5A"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-3D6958DA-9B6C-5E31-BE3A-A6A53A6F3E5A"><!-- --></a><p>any function which might leave is designated by a trailing <samp class="codeph">L</samp> in its name. When you see a function that might leave, you must <em>always</em> ask what would happen if it did leave, and what would happen if it did not. The operating system provides all the program infrastructure required to allow objects to be de-allocated even when a leave occurs, but without burdening the programmer. </p>
+ </li>
+ <li id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-AE0B0553-E708-5172-A0B8-A5D366EDAF5D"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-AE0B0553-E708-5172-A0B8-A5D366EDAF5D"><!-- --></a><p> <samp class="codeph">new (ELeave)</samp> is an overloaded <samp class="codeph">operator
+                new()</samp> function, which will leave if it fails to allocate the required memory. It never returns a null pointer. </p>
+ </li>
+ </ul>
+ <p>Two other things are worthy of note: </p>
+ <ul><li id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-36F6B5B6-0772-5656-8C6F-04DD9477F53F"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-36F6B5B6-0772-5656-8C6F-04DD9477F53F"><!-- --></a><p>since the cleanup stack itself requires memory allocation for each stack frame, a push might leave. The <samp class="codeph">PushL()</samp> function reflects this in its name. The cleanup stack is guaranteed to have a free slot before a <samp class="codeph">CleanupStack::PushL()</samp>, so that the object reference will always be successfully stored on the stack. If a leave occurs when allocating the next stack frame, the object will be popped and destroyed as normal. </p>
+ </li>
+ <li id="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-2825BDD3-28BB-5005-8216-9B3617289326"><a name="GUID-1FFE4ED5-7B2E-58A0-9D08-A096F53F37AB__GUID-2825BDD3-28BB-5005-8216-9B3617289326"><!-- --></a><p> <em>the C++ constructor must not leave</em>. For objects whose construction requires resource allocation or any other operation that might fail, this means that construction must be separated into a C++ constructor that does not leave, and another initialisation function that might leave, which is conventionally called <samp class="codeph">ConstructL()</samp>. </p>
+ </li>
+ </ul>
+ <p>The cleanup stack, <samp class="codeph">CBase</samp>, and two-phase construction, are at the heart of the operating system. A very few rules govern cleanup stack programming, and they are relatively easy to learn. See <a href="GUID-E7D29464-05E1-5039-8A02-62CB27B5FF21.html" title="Provides tutorials and an introduction to the Cleanup Stack.">Cleanup Stack Basics</a> for more on this. </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

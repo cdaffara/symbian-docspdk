@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Personality Layer Design"/>
+<meta name="abstract" content="Provides some guidelines for the design of a personality layer for real time Applications for the Kernel."/>
+<meta name="description" content="Provides some guidelines for the design of a personality layer for real time Applications for the Kernel."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2700AAC8-A034-5E7D-B0E0-26B49E68BB18.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Personality Layer Design</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2399880 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html" title="Describes the architecture and technology features of the Kernel that are important for a base port.">Concepts</a> &gt; </div>
+<h1 class="topictitle1">Personality
+Layer Design</h1>
+<div><p>Provides some guidelines for the design of a personality layer
+for real time Applications for the Kernel.</p>
+
+<div class="section" id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-A0EC87BF-170D-46B4-AEFF-F21D7483149B"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-A0EC87BF-170D-46B4-AEFF-F21D7483149B"><!-- --></a><h2 class="sectiontitle">Memory management</h2> <p>The personality layer assumes
+that the RTA will run in a single flat address space in which there is neither
+protection between different parts of the application nor protection of any
+hardware or CPU resource from any part of the application. For example, any
+part of the application code can access any I/O port, and can disable interrupts. </p>
+ <p>To
+get this behaviour under the Kernel Architecture 2, the RTA must run in supervisor
+mode in the kernel address space. The obvious way to do this is to make the
+RTA together with the personality layer a kernel extension. This also ensures
+that it is started automatically early on in the boot process. </p>
+ <p>In
+general the RTA will have its own memory management strategy and will not
+wish to use the standard Symbian platform memory management system. To achieve
+this, the personality layer will allocate a certain fixed amount of RAM for
+use by the real time application at boot time. For a telephony stack this
+will be around 128K - 256K. This can be done either by including it in the
+kernel extension's <span class="filepath">.bss</span> section, or by making a one-time
+allocation on the kernel heap at boot time. Depending on the RTA requirements,
+the personality layer can manage this area of RAM (if the RTOS being emulated
+provides memory management primitives) or the RTA can manage it. </p>
+ </div>
+
+<div class="section" id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-FAA30849-282F-4E2D-ABDA-63E130A2D2FB"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-FAA30849-282F-4E2D-ABDA-63E130A2D2FB"><!-- --></a><h2 class="sectiontitle">Threads and mapping thread priorities</h2> <p>A nanokernel
+thread will be used for each RTOS thread </p>
+ <p>A priority mapping scheme
+will be required to map RTOS priorities, of which there are typically 64 to
+256 distinct values, to nanokernel priorities. As long as the RTA does not
+use more than 35 threads running simultaneously, which is usually the case,
+it should be possible to produce a mapping scheme that allows each thread
+to have a distinct priority, if needed. If this limit is exceeded, it will
+be necessary to fold some priorities together. </p>
+ <p>Note that any attempt
+to increase the number of priorities supported by both the nanokernel and
+the Symbian platform kernel would be <em>prohibitively</em> expensive in terms
+of RAM usage. </p>
+ </div>
+
+<div class="section" id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-169604BD-A22A-5B56-8279-13F875AB4AB6"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-169604BD-A22A-5B56-8279-13F875AB4AB6"><!-- --></a><h2 class="sectiontitle">Communication
+between Symbian platform and the RTOS Environments</h2> <p>To allow the
+functionality of the RTA to be available to Symbian platform applications,
+it is necessary that a mechanism exist by which Symbian platform code and
+the RTA may communicate with each other. In practice this means: </p>
+ <ul>
+<li id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-DC8AF97D-EA8A-5852-96FF-CCA19D69F614"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-DC8AF97D-EA8A-5852-96FF-CCA19D69F614"><!-- --></a><p>it must be possible
+for a Symbian platform thread to cause an RTOS thread to be scheduled and
+vice-versa </p>
+ </li>
+
+<li id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-EF671D7A-28B6-505D-823C-5B51C378225E"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-EF671D7A-28B6-505D-823C-5B51C378225E"><!-- --></a><p>it must be possible
+for data to be transferred between Symbian platform and RTOS threads in both
+directions. </p>
+ </li>
+
+</ul>
+ <p>It will usually be possible for a Symbian platform thread to make
+standard personality layer calls (the same calls that RTOS threads would make)
+in order to cause an RTOS thread to be scheduled. This is because the nanokernel
+underlies both types of thread and most 'signal' type operations (i.e. those
+that make threads ready rather than blocking them) can be implemented using
+operations which make no reference to the calling thread, and which are therefore
+not sensitive to which type of thread they are called from. </p>
+ <p>The standard
+personality layer calls will not work in the other direction, since it will
+not be possible for a Symbian platform thread to wait on a personality layer
+wait object. The most straightforward way for RTOS threads to trigger scheduling
+of a Symbian platform thread would be to enque a DFC on a queue operated by
+a Symbian platform thread. Another possibility would be for the Symbian platform
+thread to wait on a fast semaphore which could then be signalled by the RTOS
+thread. However the DFC method fits better with the way device drivers are
+generally written. A device driver will be necessary to mediate communication
+between Symbian platform user mode processes and the RTA since the latter
+runs kernel side. </p>
+ <p>All data transfer between the two environments must
+occur kernel side. It will not be possible for any RTOS thread to access normal
+user side memory since the functions provided for doing so access parts of
+the <a href="GUID-38D1534C-AA01-33AF-9937-CDD818A85F97.html"><span class="apiname">DThread</span></a> structure representing the Symbian platform
+calling thread, for example to perform exception trapping. Some possibilities
+for the data transfer mechanism are: </p>
+ <ul>
+<li id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-96A247AA-BA1C-50E5-8400-5487DFF5991D"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-96A247AA-BA1C-50E5-8400-5487DFF5991D"><!-- --></a><p>A fairly common architecture
+for real time applications involves a fixed block size memory manager and
+message queues for inter-thread communication. The memory manager supports
+allocation and freeing of memory in constant time. The sending thread allocates
+a memory block, places data in it and posts it to the receiving thread's message
+queue. The receiving thread then processes the data and frees the memory block,
+or possibly passes the block to yet another thread. It would be a simple proposition
+to produce such a system in which the memory manager could be used by any
+thread. In that case a Symbian platform thread could pass messages to RTOS
+threads in the same way as other RTOS threads. Passing data back would involve
+a special type of message queue implemented in the personality layer. When
+a message was sent to a Symbian platform thread a DFC would be enqueued. That
+DFC would then process the message data and free the memory block as usual.
+This scheme combines the data transfer and scheduling aspects of communication. </p>
+ </li>
+
+<li id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-1D2B6085-7B3A-51EF-BFF6-865D4AF94E5A"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-1D2B6085-7B3A-51EF-BFF6-865D4AF94E5A"><!-- --></a><p>Any standard buffering
+arrangement could be used between the RTA and the device driver (e.g. circular
+buffers). Contention between threads could be prevented using nanokernel fast
+mutexes, on which any thread can wait, or by the simpler means of disabling
+preemption or disabling interrupts. It will also be possible for RTOS threads
+to make use of shared I/O buffers for transfer direct to user mode clients,
+provided that these buffers are set up by the Symbian platform device driver
+thread. This may be useful as a way to reduce copying overhead if bulk data
+transfer is necessary between the two domains. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-09CC8168-50FD-49ED-8376-05C00C3243FA"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-09CC8168-50FD-49ED-8376-05C00C3243FA"><!-- --></a><h2 class="sectiontitle">Synchronisation/communication primitives</h2> <p>The nanokernel
+does not support most of the synchronisation and communication primitives
+provided by a standard RTOS. Any such primitives required by the RTA will
+have to be implemented in the personality layer. This means that the personality
+layer needs to define new types of object on which threads can wait. This
+in turn means that new nanokernel thread states (N-state) must be defined
+to signify that a thread is waiting on an object of the new type. In general,
+each new type of wait object requires an accompanying new nanokernel thread
+state. </p>
+ <p><strong>Blocking
+a thread on a wait object</strong> </p>
+ <p>To make a thread block on a new type
+of wait object, call the nanokernel function <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-72F2E4E0-B498-32D2-BB24-E79AC66EFDDB"><span class="apiname">Kern::NanoBlock()</span></a>,
+passing the maximum time for which the thread should block, the new N-state
+value, and a pointer to the wait object. </p>
+ <p>Use the <samp class="codeph">TPriListLink</samp> base
+class of <a href="GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC.html"><span class="apiname">NThreadBase</span></a> to attach the thread to a list of
+threads waiting on the object. Note that this must be done after calling <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-72F2E4E0-B498-32D2-BB24-E79AC66EFDDB"><span class="apiname">Kern::NanoBlock()</span></a>.
+As preemption is disabled before this function is called, a reschedule will
+not occur immediately, but will be deferred until preemption is reenabled. </p>
+ <p id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-5017FB0A-5C1E-5C88-9315-E12C12D9639F"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-5017FB0A-5C1E-5C88-9315-E12C12D9639F"><!-- --></a><strong>State handler</strong> </p>
+ <p>Every
+thread that can use a new type of wait object, must have a nanokernel state
+handler installed to handle operations on that thread when it is waiting on
+that wait object. A nanokernel state handler is a function that has the following
+signature: </p>
+ <pre class="codeblock" id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-31E807F7-250B-552D-8480-5F282C151565"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-31E807F7-250B-552D-8480-5F282C151565"><!-- --></a>void StateHandler(NThread* aThread, TInt aOp, TInt aParam);</pre>
+ <ul>
+<li id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-B8ECADB3-0345-56CB-8C7A-6D4E8CE15726"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-B8ECADB3-0345-56CB-8C7A-6D4E8CE15726"><!-- --></a><p> <samp class="codeph"> aThread</samp> is
+a pointer to the thread involved. </p>
+ </li>
+
+<li id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-711957A1-4D01-5F8B-BF67-70EB8F39D20B"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-711957A1-4D01-5F8B-BF67-70EB8F39D20B"><!-- --></a><p> <samp class="codeph"> aOp</samp> is
+one of the <a href="GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC.html#GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC__GUID-FF52640A-87C9-319B-B4C6-F6B860171229"><span class="apiname">NThreadBase::NThreadOperation</span></a> values that indicates
+which operation is being performed on the thread. </p>
+ </li>
+
+<li id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-FF54386A-D163-5F53-B230-296BE402C9E6"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-FF54386A-D163-5F53-B230-296BE402C9E6"><!-- --></a><p> <samp class="codeph"> aParam</samp> is
+a parameter that depends on <samp class="codeph">aOp</samp>. </p>
+ </li>
+
+</ul>
+ <p>Note that the state handler is always called with preemption disabled. </p>
+ <p>The
+possible values of <samp class="codeph">aOp</samp> are: </p>
+ 
+<div class="tablenoborder"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-F4372C47-F491-55E2-B06E-2C68628B5BC5"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-F4372C47-F491-55E2-B06E-2C68628B5BC5" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">aOp</samp> value </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Description </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">ESuspend</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Called if the thread is suspended while not in a critical section
+and not holding a fast mutex. Called in whichever context <a href="GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC.html#GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC__GUID-FF94D458-C2D0-3D20-ADD6-AAE68A3296C3"><span class="apiname">NThreadBase::Suspend()</span></a> is
+called from. </p>
+ <p> <samp class="codeph">aParam</samp> contains the requested suspension
+count. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">EResume</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Called if the thread is resumed while actually suspended, and the
+last suspension has been removed. Called in whichever context <a href="GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC.html#GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC__GUID-C0A6E734-7DE6-37B9-AAB2-A2A0E2664731"><span class="apiname">NThreadBase::Resume()</span></a> is
+called from. </p>
+ <p> <samp class="codeph">aParam</samp> contains no additional information. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">EForceResume</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Called if the thread has all suspensions cancelled while actually
+suspended. Called in whichever context <a href="GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC.html#GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC__GUID-BE92FBC3-A7D9-3576-A1A9-7BBA6EE64226"><span class="apiname">NThreadBase::ForceResume()</span></a> is
+called from. </p>
+ <p> <samp class="codeph">aParam</samp> contains no additional information. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">ERelease</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Called if the thread is released from its wait. This call should
+make the thread ready if necessary. Called in whichever context <a href="GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC.html#GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC__GUID-1B24AC4E-C4A1-32AE-BC6E-DC3131116EF8"><span class="apiname">NThreadBase::Release()</span></a> was
+called from. </p>
+ <p> <samp class="codeph">aParam</samp> is the value passed into <a href="GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC.html#GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC__GUID-1B24AC4E-C4A1-32AE-BC6E-DC3131116EF8"><span class="apiname">NThreadBase::Release()</span></a> to
+be used as a return code. </p>
+ <p>If <samp class="codeph">aParam</samp> is non-negative,
+this indicates normal termination of the wait condition. </p>
+ <p>If <samp class="codeph">aParam</samp> is
+negative, it indicates early or abnormal termination of the wait; in this
+case the wait object should be rolled back as if the wait had never occurred.
+For example, a semaphore's count needs to be incremented if <samp class="codeph">aParam</samp> is
+negative, since in that case the waiting thread never acquired the semaphore. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">EChangePriority</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Called if the thread's priority is changed. Called in whichever
+context <a href="GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC.html#GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC__GUID-A92E7B01-C1D0-3997-B3E1-2E54229FFA75"><span class="apiname">NThreadBase::SetPriority()</span></a> is called from. This
+function should set the <samp class="codeph">iPriority</samp> field of the thread, after
+doing any necessary priority queue manipulations. </p>
+ <p> <samp class="codeph">aParam</samp> contains
+the new priority. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">ELeaveCS</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Called in the context of the thread concerned if the thread calls <a href="GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02.html#GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02__GUID-2C897BA5-2BD7-3ABA-9F2B-F0B1AC14D1AE"><span class="apiname">NKern::ThreadLeaveCS()</span></a> with
+an unknown <samp class="codeph">iCsFunction</samp> that is negative but not equal to <samp class="codeph">ECsExitPending</samp>. </p>
+ <p>aParam
+contains the value of <samp class="codeph">iCsFunction</samp>. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <samp class="codeph">ETimeout</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Called if the thread's wait time-out expires and no time-out handler
+is defined for that thread. Called in the context of the nanokernel timer
+thread (DfcThread1). This should cancel the wait and arrange for an appropriate
+error code to be returned. The handler for this condition will usually do
+the same thing as the handler for <samp class="codeph">ERelease</samp> with a parameter
+of <a href="GUID-BAC2386E-8168-3CDB-9F9F-180319EF6920.html"><span class="apiname">KErrTimedOut</span></a>. </p>
+ <p> <samp class="codeph">aParam</samp> contains
+no additional information. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p>See the code in <span class="filepath">...\e32\personality\example\...</span> for
+practical examples. </p>
+ <p><strong>Releasing
+the thread</strong> </p>
+ <p>When a thread's wait condition is resolved, the nanokernel
+function <a href="GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC.html#GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC__GUID-1B24AC4E-C4A1-32AE-BC6E-DC3131116EF8"><span class="apiname">NThreadBase::Release()</span></a> should be called. This
+takes a single <a href="GUID-7A2A43EC-6125-3BFE-834B-23C37F7B40D5.html"><span class="apiname">TInt</span></a> parameter. </p>
+ <p>The parameter is
+usually <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a>, if the wait condition is resolved normally.
+A typical example is where the semaphore on which the thread is waiting, is
+signalled. A negative parameter value is used for an abnormal termination,
+and in this case, the wait object may need to be rolled back. </p>
+ <p> <a href="GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC.html#GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC__GUID-1B24AC4E-C4A1-32AE-BC6E-DC3131116EF8"><span class="apiname">NThreadBase::Release()</span></a> should
+be called with preemption disabled. It performs the following actions: </p>
+ <ul>
+<li id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-6697024F-ED05-5C5A-A834-EA89402AE173"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-6697024F-ED05-5C5A-A834-EA89402AE173"><!-- --></a><p>sets the <samp class="codeph">NThreadBase::iWaitObj</samp> field
+to NULL </p>
+ </li>
+
+<li id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-C1DF3120-4FD3-5B6C-90F8-6D8C7CAD0B88"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-C1DF3120-4FD3-5B6C-90F8-6D8C7CAD0B88"><!-- --></a><p>cancels the wait timer
+if it is still running </p>
+ </li>
+
+<li id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-6E346E2B-4F94-56FB-8372-8260BCC4CA8C"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-6E346E2B-4F94-56FB-8372-8260BCC4CA8C"><!-- --></a><p>stores the supplied
+return code in <samp class="codeph">NThreadBase::iReturnCode</samp>  </p>
+ </li>
+
+<li id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-3AF577DB-41A9-553E-9EFD-6F0DA2FADCEA"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-3AF577DB-41A9-553E-9EFD-6F0DA2FADCEA"><!-- --></a><p>calls the <a href="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC.html#GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-5017FB0A-5C1E-5C88-9315-E12C12D9639F">state handler</a> passing <samp class="codeph">ERelease</samp> and the return code.
+If the return code is negative this should remove the thread from any wait
+queues and roll back the state of the wait object. In any case it should call <a href="GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC.html#GUID-379D9320-AC3C-3206-8A5D-EE6E5983EBDC__GUID-82E43D79-721D-31A9-B9ED-1277F2300914"><span class="apiname">NThreadBase::CheckSuspendThenReady()</span></a> to
+make the thread ready again if necessary. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-1FF1CFE8-41E3-4912-AE28-39D289442BB7"><a name="GUID-42F8FA5A-BBE4-50DE-917E-D05755019FEC__GUID-1FF1CFE8-41E3-4912-AE28-39D289442BB7"><!-- --></a><h2 class="sectiontitle">Thread scheduling following a hardware interrupt</h2> <p>Most
+RTOS allow interrupt service routines (ISRs) to perform operations such as
+semaphore signal, queue post, set event flag directly, usually using the same
+API as would be used in a thread context. The Kernel Architecture 2 nanokernel
+does not allow this; ISRs can only queue an IDFC or DFC. </p>
+ <p>The way to
+get round this limitation is to incorporate an IDFC into each personality
+layer wait object. The personality layer API involved then needs to check
+whether it is being invoked from an ISR or a thread and, in the first case,
+it queues the IDFC. It may need to save some other information for use by
+the IDFC, for example, it may need to maintain a list of messages queued from
+ISRs, a count of semaphore signals from ISRs or a bit mask of event flags
+set by ISRs. Checking for invocation from an ISR can be done either by using <a href="GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02.html#GUID-3A3C08F3-3D33-3D9E-80E7-7855C7B21E02__GUID-9542588A-2920-3CB0-A2C0-A55FA6BC29A2"><span class="apiname">NKern::CurrentContext()</span></a>,
+or by checking the CPSR directly; if doing the latter note that any mode other
+than USR or SVC on the ARM counts as interrupt context. </p>
+ <p>Hardware interrupts
+serviced by the RTA will need to conform to the same pattern as those serviced
+by Symbian platform extensions or device drivers. This means that the standard
+preamble must run before the actual service routine and the nanokernel interrupt
+postamble must run after the service routine to enable reschedules to occur
+if necessary. This can be done by calling <samp class="codeph">Interrupt::Bind()</samp> as
+provided by the base port during RTA initialisation (possibly via a personality
+layer call if it must be called from C code). See also <a href="GUID-3C34724F-B476-5329-B0B1-6D5A34294979.html" title="Describes how to implement the Interrupt Dispatcher part of the ASSP/Variant.">Interrupt
+Dispatcher Tutorial</a>. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html" title="Describes the architecture and technology features of the Kernel that are important for a base port.">Concepts</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-5B1D8D9C-90EF-5FCC-8D7D-01B13D6C2E68.html" title="The nanokernel is the core of the Kernel, and is a small real-time operating system (RTOS) designed to run Symbian platform.">Nanokernel</a></div>
+<div><a href="GUID-2700AAC8-A034-5E7D-B0E0-26B49E68BB18.html" title="A base port can add a software layer called a personality layer to the Kernel to provide an emulation of a real time operating system (RTOS)">Personality
+Layer for Real                 Time Applications</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

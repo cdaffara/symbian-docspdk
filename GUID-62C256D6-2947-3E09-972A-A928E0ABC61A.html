@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CSysApLightControlPlugin"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-62C256D6-2947-3E09-972A-A928E0ABC61A"/>
+
+<title>CSysApLightControlPlugin</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-62C256D6-2947-3E09-972A-A928E0ABC61A"><a name="GUID-62C256D6-2947-3E09-972A-A928E0ABC61A"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2483429 id2486128 id2486637 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CSysApLightControlPlugin Class Reference</h1>
+	<table class="signature"><tr><td>class CSysApLightControlPlugin : public CBase</td></tr></table><div class="section"><div>
+			<p>Base class for System Application Light Control plugin implementation.</p>
+
+			<p>A plugin that inherits this base class is able to implement customized system light control.</p>
+
+			<p>Plugin will receive light events and commands via interface methods.</p>
+
+			<p>Light event is signaled when such a system state change occurs that System Application is about to change state of lights.</p>
+
+			<p>A light event is followed by one or several light commands. Light command's purpose is to inform the plug-in about the light controlling measure System Application is about to take. Plugin can then either allow or deny the action with the return value of the notification method.</p>
+
+			<p>Below is an example how plugin can alter System Application's way of handling lights. In this scenario the plugin wishes to blink lights three times every time when an accessory is connected. In order to achieve this plugin monitors EAccessoryConnection light event for setting internal state variable. When the consequential light command is notified, plugin uses HWRM Light API for setting the lights to blink and gives a response to System Application that it must not execute light commands related to this event.</p>
+
+			<div class="p">
+				<pre class="codeblock">       void CSysApTestLightPluginAccDemo::LightEventL( TInt aEvent, const TDesC8&amp; aData )
+           {
+           switch ( aEvent )
+               {
+               case SysApLightExtension::EAccessoryConnection:
+                   {
+                   TPckgBuf&lt;TBool&gt; connected;
+                   connected.Copy( aData );
+                   iConnected = connected(); // blink if accessory is just connected    
+                   }
+                   break;
+                    
+               default:
+                   iConnected = EFalse;
+                   break;
+               }
+           }
+
+       TInt CSysApTestLightPluginAccDemo::HandleLightCommandL( TInt aCommand, const TDesC8&amp; aData )
+           {
+           TInt retval( SysApLightExtension::ECommandNotHandled );
+            
+           // Blink lights only in case System Application would set lights on when an accessory is connected
+           if ( aCommand == SysApLightExtension::ELightCommandOn &amp;&amp; iConnected )
+               {
+               CHWRMLight* lightApi = CHWRMLight::NewLC();
+                
+               lightApi-&gt;LightOnL( CHWRMLight::ESystemTarget ); // ensure that lights are on after blinking
+
+               lightApi-&gt;LightBlinkL( CHWRMLight::ESystemTarget, // blink lights for three times
+                                      1200, // ms
+                                      200, // ms
+                                      200, // ms
+                                      KHWRMDefaultIntensity );
+                
+               CleanupStack::PopAndDestroy( lightApi );
+
+               retval = SysApLightExtension::ECommandHandled;
+               }
+            
+           return retval;
+           }</pre>
+
+			</div>
+
+			<div class="p">
+				<dl class="since">
+					
+						<dt class="dlterm">Since</dt>
+
+						<dd>S60 3.2  None. </dd>
+
+					
+				</dl>
+
+			</div>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CSysApLightControlPlugin<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-E4861B15-66A9-3354-957E-C35BEFFEFB7B">~CSysApLightControlPlugin</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-A917AB16-A01C-30D2-8235-D9C5AA89A657">HandleLightCommandL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-8CE00997-AD60-3A24-B4E1-EF0F56E0D6F7">LightEventL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-62C256D6-2947-3E09-972A-A928E0ABC61A.html">CSysApLightControlPlugin</a> *</td><td><a href="#GUID-ADD8F09A-642B-3C96-BCEA-683299A3A87A">NewL</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>
+				</td><td><a href="#GUID-F55680DB-EB3F-3086-B008-275F06C798DC">iDestructorIDKey</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-E4861B15-66A9-3354-957E-C35BEFFEFB7B"><a name="GUID-E4861B15-66A9-3354-957E-C35BEFFEFB7B"><!-- --></a>
+		<h2 class="topictitle2">~CSysApLightControlPlugin()</h2>
+		<table class="signature"><tr><td>~CSysApLightControlPlugin</td><td>(</td><td>)</td><td>[inline, virtual]</td></tr></table><div class="section"><div>
+				<p>Destructor </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-A917AB16-A01C-30D2-8235-D9C5AA89A657"><a name="GUID-A917AB16-A01C-30D2-8235-D9C5AA89A657"><!-- --></a>
+		<h2 class="topictitle2">HandleLightCommandL(TInt, const TDesC8 &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>HandleLightCommandL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aCommand,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aData</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>A light command is about to be executed by System Application.</p>
+
+				<p>A light commad is the concrete light controlling action (on, off or blink) that System Application will take after a light event. This method is called with a special value (ELightCommandNoAction) also in case the light status should not be changed due to a light event.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 3.2</dd>
+
+						
+					</dl>
+TLightCommand TLightCommandResponse<dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>a Symbian error code. Leaves are not propagated. If a leave occurs, System Application will continue light processing as it had received return value ECommandHandled. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aCommand</td><td>the light command (defined in TLightCommand).  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aData</td><td>data related to the command. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8CE00997-AD60-3A24-B4E1-EF0F56E0D6F7"><a name="GUID-8CE00997-AD60-3A24-B4E1-EF0F56E0D6F7"><!-- --></a>
+		<h2 class="topictitle2">LightEventL(TInt, const TDesC8 &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>LightEventL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aEvent,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aData</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>A light event has occurred.</p>
+
+				<p>A light event is a system state change relevant to System Application light control, for example user activity or accessory connection.</p>
+
+				<p>Plugin can use information received via this method for preparing its internal state before the actual light command is notified.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 3.2 </dd>
+
+						
+					</dl>
+TLightEvent<dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>a Symbian error code. Leaves are not propagated. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aEvent</td><td>event to be handled (defined in TLightEvent).  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aData</td><td>data related to the event. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-ADD8F09A-642B-3C96-BCEA-683299A3A87A"><a name="GUID-ADD8F09A-642B-3C96-BCEA-683299A3A87A"><!-- --></a>
+		<h2 class="topictitle2">NewL()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-62C256D6-2947-3E09-972A-A928E0ABC61A.html">CSysApLightControlPlugin</a> *</td><td>NewL</td><td>(</td><td>)</td><td>[static, inline]</td></tr></table><div class="section"><div>
+				<p>Symbian two-phased constructor.</p>
+
+				<p>This method uses ECom for finding and creating the instance of the plugin.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v3.2 </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Standard Symbian leaves. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-F55680DB-EB3F-3086-B008-275F06C798DC"><a name="GUID-F55680DB-EB3F-3086-B008-275F06C798DC"><!-- --></a>
+		<h2 class="topictitle2">
+					TUid
+				 iDestructorIDKey</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>
+				</td><td>iDestructorIDKey</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Destructor identifier to be used with ECom framework. </p>
+
+			</div></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

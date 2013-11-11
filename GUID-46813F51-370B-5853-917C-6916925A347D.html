@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Rendering to an RWindow Tutorial"/>
+<meta name="abstract" content="This tutorial describes the high level steps that you need to take when writing applications using EGL to create a window surface for on-screen rendering. The code snippets use C style conventions. To avoid unnecessary complexity, they do not contain complete error handling."/>
+<meta name="description" content="This tutorial describes the high level steps that you need to take when writing applications using EGL to create a window surface for on-screen rendering. The code snippets use C style conventions. To avoid unnecessary complexity, they do not contain complete error handling."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D252E75C-C8CA-5C51-8DA3-95B937A1295C.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8C6D4350-A38D-57A1-8C8D-C777EA7E8A3E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D252E75C-C8CA-5C51-8DA3-95B937A1295C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A5914CFF-6F86-53E8-9928-36D3379835B1.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-894AB487-C127-532D-852B-37CB0DEA1440.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-46813F51-370B-5853-917C-6916925A347D"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Rendering to an RWindow Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-46813F51-370B-5853-917C-6916925A347D"><a name="GUID-46813F51-370B-5853-917C-6916925A347D"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2384330 id2386999 id2387013 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html">Graphics Guide</a> &gt; <a href="GUID-8C6D4350-A38D-57A1-8C8D-C777EA7E8A3E.html" title="The components within the EGL collection provide access to EGL on the Symbian platform. EGL, an open standard developed by the Khronos Group, provides an interface between rendering APIs such as OpenGL ES or OpenVG and an underlying native platform window system.">EGL Collection</a> &gt; <a href="GUID-D252E75C-C8CA-5C51-8DA3-95B937A1295C.html" title="The EGL Interface component provides a consistent interface to EGL on the Symbian platform, enabling cross-device compatibility. The component includes the Khronos-released header files (which incorporate some minor changes, such as to the in-source comments). It also provides some Symbian-specific header files and some other files (such as LIB, DEF and MMP files) and UIDs. It does not provide any implementations of the APIs.">EGL Interface Component</a> &gt; </div>
+<h1 class="topictitle1">Rendering
+to an RWindow Tutorial</h1>
+<div><p>This tutorial describes the high level steps that you need to take
+when writing applications using EGL to create a window surface for on-screen
+rendering. The code snippets use C style conventions. To avoid unnecessary
+complexity, they do not contain complete error handling. </p>
+
+<div class="section" id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-2ACDC160-AB4B-42D0-9F05-ED2048D1C3F6"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-2ACDC160-AB4B-42D0-9F05-ED2048D1C3F6"><!-- --></a><h2 class="sectiontitle">Required background</h2> <p>This tutorial assumes a background
+knowledge of the following: </p>
+ <ul>
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-134D7EED-0E51-5197-BE4F-2F6EF72C61B4"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-134D7EED-0E51-5197-BE4F-2F6EF72C61B4"><!-- --></a><a href="GUID-DC8BFEF5-DA50-52DA-8CE2-5729A4A005F6.html" title="EGL is an interface between EGL client APIs (such as OpenGL ES and OpenVG) and an underlying native platform window system. EGL is independent of definitions and concepts specific to any native window system or rendering API.">EGL
+Collection Overview</a></li>
+
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-ADC0E050-7602-5B71-AAB4-B26D7C5B1313"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-ADC0E050-7602-5B71-AAB4-B26D7C5B1313"><!-- --></a> <a href="GUID-A5914CFF-6F86-53E8-9928-36D3379835B1.html" title="The EGL Interface component defines the interface to EGL on the Symbian platform. The component standardizes the source and binary interfaces by providing header and LIB/DSO files for EGL users as well as DEF files for EGL implementers.">EGL
+Interface Overview</a></li>
+
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-E7DFA26B-CDA3-545C-B01F-A5BBE383D6CF"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-E7DFA26B-CDA3-545C-B01F-A5BBE383D6CF"><!-- --></a> <a href="GUID-894AB487-C127-532D-852B-37CB0DEA1440.html" title="This topic provides information about the points that the EGL specification explicitly states are platform-specific. This information is aimed at both users and implementers of EGL on the Symbian platform.">Symbian-Specific
+EGL Behavior</a></li>
+
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-71D99620-55D7-519D-996D-35A2962D9F84"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-71D99620-55D7-519D-996D-35A2962D9F84"><!-- --></a> <a href="GUID-04D917A1-E1A0-5149-9660-80A1146D0984.html" title="OpenGL ES is a cross-platform API for 2D and 3D graphics on embedded systems. It consists of a subset of desktop OpenGL, which is a widely adopted 2D and 3D graphics API, creating a low-level interface between software and graphics acceleration. OpenGL ES includes profiles for floating-point and fixed-point systems and the EGL specification for portably binding to native windowing systems.">OpenGL
+ES</a></li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-F95DA0B0-1DC8-4F8C-BF04-66004DA8B2DB"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-F95DA0B0-1DC8-4F8C-BF04-66004DA8B2DB"><!-- --></a><h2 class="sectiontitle">Procedure</h2> <a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-9678FE93-DB7E-5BB2-A386-4E663F93F87A"><!-- --></a><ol id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-9678FE93-DB7E-5BB2-A386-4E663F93F87A">
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-4795FDF0-C603-5664-87D9-8BDC987CF424"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-4795FDF0-C603-5664-87D9-8BDC987CF424"><!-- --></a><p>You must get and initialize
+the <samp class="codeph">EGLDisplay</samp> prior to calling most other EGL or client
+API functions. You only need to do this once. </p>
+ <pre class="codeblock" id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-72B8ADB6-2D10-52AE-9E35-C5F1CE6AB024"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-72B8ADB6-2D10-52AE-9E35-C5F1CE6AB024"><!-- --></a>EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+eglInitialize(display, NULL, NULL); 
+</pre>
+ </li>
+
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-00811F4A-48D9-5A82-A81C-A3DD82C22FCC"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-00811F4A-48D9-5A82-A81C-A3DD82C22FCC"><!-- --></a><p>EGL has the concept
+of <strong>current rendering API</strong>. To make one of the EGL client APIs the current
+rendering API for the thread, call <samp class="codeph">eglBindAPI()</samp> passing <samp class="codeph">EGL_OPENVG_API</samp> or <samp class="codeph">EGL_OPENGLES_API</samp> as
+required. For example: </p>
+ <pre class="codeblock" id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-684E7CFF-9C43-596E-B948-FA4BEED09F41"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-684E7CFF-9C43-596E-B948-FA4BEED09F41"><!-- --></a>// Set OpenGL ES as the current rendering API for the thread
+eglBindAPI(EGL_OPENGLES_API); 
+</pre>
+ </li>
+
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-9947988E-9F8D-5003-8814-4AAC53D83D39"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-9947988E-9F8D-5003-8814-4AAC53D83D39"><!-- --></a><p>Use the <a href="GUID-2923A42C-1C0E-553D-8563-7B9FC51F153F.html#GUID-2923A42C-1C0E-553D-8563-7B9FC51F153F__GUID-7FC7E115-F659-5EA0-9BD0-AFFA717C2C00">eglChooseConfig()</a> method to get the <samp class="codeph">EGLConfig</samp> that
+matches a list of attributes. In order to render to an <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a>,
+these must include the <samp class="codeph">EGL_WINDOW_BIT</samp>. </p>
+ <pre class="codeblock" id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-7FD2D6BD-C86A-5F4D-BB4F-A395FB4C5190"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-7FD2D6BD-C86A-5F4D-BB4F-A395FB4C5190"><!-- --></a>// List of attributes to pass to eglChooseConfig.
+const EGLint    KColorRGB565AttribList[] =
+    {
+    EGL_RED_SIZE,         5,
+    EGL_GREEN_SIZE,       6,
+    EGL_BLUE_SIZE,        5,
+    EGL_SURFACE_TYPE,     EGL_WINDOW_BIT,
+    EGL_RENDERABLE_TYPE,  EGL_OPENGL_ES_BIT,
+    EGL_NONE
+    };
+    
+EGLint numConfigs;
+EGLConfig chosenConfig = 0;
+    
+// Get the config to use.
+eglChooseConfig(display, KColorRGB565AttribList, &amp;chosenConfig, 1, &amp;numConfigs);
+    
+if (numConfigs == 0)
+    {
+    RDebug::Printf("No matching configs found");
+    User::Leave(KErrNotSupported);
+    }</pre>
+<p><em>Note:</em> By default the <samp class="codeph">EGL_SURFACE_TYPE</samp> has
+the <samp class="codeph">EGL_SWAP_BEHAVIOR_PRESERVED_BIT</samp> set for window surfaces
+in order to support the preserve buffer option. You can set this explicitly
+like this: </p>
+<pre class="codeblock">EGL_SURFACE_TYPE,     EGL_WINDOW_BIT|EGL_SWAP_BEHAVIOR_PRESERVED_BIT,</pre>
+ </li>
+
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-AC10CA88-95F3-5335-9EA4-E77DC54344B3"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-AC10CA88-95F3-5335-9EA4-E77DC54344B3"><!-- --></a><p>To create an on-screen
+rendering surface, you first need to create a Symbian Window Server window
+(<a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a>). This window is then passed as the third argument
+to <samp class="codeph">eglCreateWindowSurface()</samp> along with an <samp class="codeph">EGLConfig</samp> that
+has the <samp class="codeph">EGL_WINDOW_BIT</samp> set. </p>
+ <pre class="codeblock" id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-3CB64FD0-2D1C-5983-B885-AFE210612220"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-3CB64FD0-2D1C-5983-B885-AFE210612220"><!-- --></a>// Create a window surface to draw to.
+winSurface = eglCreateWindowSurface(display, chosenConfig, &amp;iWindow, NULL);</pre>
+ </li>
+
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-3C5CE6E3-753E-4C9C-860E-0F1B8908349E"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-3C5CE6E3-753E-4C9C-860E-0F1B8908349E"><!-- --></a><p>Set the surface attribute <samp class="codeph">EGL_SWAP_BEHAVIOR
+to EGL_BUFFER_PRESERVED</samp>. This step is only required if you want to
+enable the preserve buffer option.</p>
+<pre class="codeblock">EGLBoolean queryResult = eglSurfaceAttrib(display, winSurface, EGL_SWAP_BEHAVIOR, EGL_BUFFER_PRESERVED);</pre>
+</li>
+
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-C4B3E5FA-E0BF-5923-AB10-32BE18BD3B59"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-C4B3E5FA-E0BF-5923-AB10-32BE18BD3B59"><!-- --></a><p>To create a rendering
+context for the current rendering API, call the <samp class="codeph">eglCreateContext()</samp> with
+the <samp class="codeph">share_context</samp> parameter set to <samp class="codeph">EGL_NO_CONTEXT</samp>.
+If this method succeeds, it initializes the context to the initial state defined
+for the current rendering API, and returns a handle to it. </p>
+ <pre class="codeblock" id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-9DB529FE-3DFB-5E8F-9B83-89E3EB17C4FF"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-9DB529FE-3DFB-5E8F-9B83-89E3EB17C4FF"><!-- --></a>// Create a context to store the current rendering API settings.
+contextGL = eglCreateContext(display, chosenConfig, EGL_NO_CONTEXT, NULL);</pre>
+ </li>
+
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-A5A3E17B-CB73-53E6-AFA3-3098F96B0AE7"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-A5A3E17B-CB73-53E6-AFA3-3098F96B0AE7"><!-- --></a><p>In order to allow the
+context to render to a given surface, you need to call <samp class="codeph">eglMakeCurrent()</samp>.
+After doing this you can call EGL client functions, which need a current surface
+and context. </p>
+ <pre class="codeblock" id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-DF027C4F-D0A5-5B2D-A1E9-2910D0D1E77C"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-DF027C4F-D0A5-5B2D-A1E9-2910D0D1E77C"><!-- --></a>// Make the context current on the surface and the display
+eglMakeCurrent(display, winSurface, winSurface, contextGL); 
+</pre>
+ </li>
+
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-2F5A701F-8D0C-5C11-9DAD-297FE8D01888"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-2F5A701F-8D0C-5C11-9DAD-297FE8D01888"><!-- --></a><p>You are now ready to
+perform your OpenGL ES drawing commands. </p>
+ <p>The main thing to understand
+is that the EGL window surface is double-buffered. This means that the drawing
+commands are drawn into a back buffer and you need to call <samp class="codeph">eglSwapBuffers()</samp> in
+order to make the drawing appear on the screen in the window. This mechanism
+has the advantage that it stops flicker. </p>
+ <pre class="codeblock" id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-C5190E0A-7B93-5041-9CC0-6DDF7519571B"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-C5190E0A-7B93-5041-9CC0-6DDF7519571B"><!-- --></a>eglSwapBuffers(display, winSurface);</pre>
+<p>Because you enabled the preserve buffer option in step 5, the <samp class="codeph">eglSwapBuffers()</samp> promotes
+the back buffer to the front for display as usual, and also copies the content
+to the new back buffer. This means the client application can provide incremental
+drawing commands instead of creating the entire new scene.</p>
+</li>
+
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-3944687A-E53A-503F-8CCC-7B0C11698341"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-3944687A-E53A-503F-8CCC-7B0C11698341"><!-- --></a><p>To release the current
+context and surface without assigning a new one, set the context parameter
+to <samp class="codeph">EGL_NO_CONTEXT</samp> and set the draw and read surfaces to <samp class="codeph">EGL_NO_SURFACE</samp>.
+This flushes the current context for the current rendering API and marks it
+as no longer current. The current rendering API does not have a current context
+after <samp class="codeph">eglMakeCurrent()</samp> returns. </p>
+ <pre class="codeblock" id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-5AB57D6A-DC82-5092-8F81-8E9A61939988"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-5AB57D6A-DC82-5092-8F81-8E9A61939988"><!-- --></a>eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);</pre>
+ </li>
+
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-F1D7FCF5-8DB3-5C9F-A5F3-89AD110ED3BB"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-F1D7FCF5-8DB3-5C9F-A5F3-89AD110ED3BB"><!-- --></a><p>You destroy the rendering
+context by calling <samp class="codeph">eglDestroyContext()</samp>. All resources associated
+with the context are marked for deletion as soon as possible. If the context
+is current to any thread, resources are not actually released while the context
+remains current. </p>
+ <pre class="codeblock" id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-45F64C22-608E-57D7-B607-1D04FD20F0F3"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-45F64C22-608E-57D7-B607-1D04FD20F0F3"><!-- --></a>eglDestroyContext(display, contextGL); 
+</pre>
+ </li>
+
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-139B4B87-5B83-57ED-A5A0-001475450D2B"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-139B4B87-5B83-57ED-A5A0-001475450D2B"><!-- --></a><p>You destroy the <samp class="codeph">EGLSurface</samp> by
+calling <samp class="codeph">eglDestroySurface()</samp>. All resources associated with
+the surface are marked for deletion as soon as possible. If the surface is
+current to any thread, the resources are not actually released while the surface
+remains current. </p>
+ <pre class="codeblock" id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-D9E034F1-F6F5-5C8A-A5D5-D34CCE813340"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-D9E034F1-F6F5-5C8A-A5D5-D34CCE813340"><!-- --></a>eglDestroySurface(display, winSurface); 
+</pre>
+ </li>
+
+<li id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-EFEF57E1-49CC-5689-8A90-2208CC62322E"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-EFEF57E1-49CC-5689-8A90-2208CC62322E"><!-- --></a><p>Perform final cleanup
+by first terminating the <samp class="codeph">EGLDisplay</samp> using <samp class="codeph">eglTerminate()</samp> and
+then releasing any resources still held by EGL by calling <samp class="codeph">eglReleaseThread()</samp>. </p>
+ <pre class="codeblock" id="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-DB4DB0EF-B8B3-516E-9641-CC412C2F221B"><a name="GUID-46813F51-370B-5853-917C-6916925A347D__GUID-DB4DB0EF-B8B3-516E-9641-CC412C2F221B"><!-- --></a>eglTerminate(display);
+eglReleaseThread();</pre>
+ </li>
+
+</ol>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-D252E75C-C8CA-5C51-8DA3-95B937A1295C.html" title="The EGL Interface component provides a consistent interface to EGL on the Symbian platform, enabling cross-device compatibility. The component includes the Khronos-released header files (which incorporate some minor changes, such as to the in-source comments). It also provides some Symbian-specific header files and some other files (such as LIB, DEF and MMP files) and UIDs. It does not provide any implementations of the APIs.">EGL Interface Component</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-A5914CFF-6F86-53E8-9928-36D3379835B1.html" title="The EGL Interface component defines the interface to EGL on the Symbian platform. The component standardizes the source and binary interfaces by providing header and LIB/DSO files for EGL users as well as DEF files for EGL implementers.">EGL Interface
+Overview</a></div>
+<div><a href="GUID-894AB487-C127-532D-852B-37CB0DEA1440.html" title="This topic provides information about the points that the EGL specification explicitly states are platform-specific. This information is aimed at both users and implementers of EGL on the Symbian platform.">Symbian-Specific
+Behavior</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="Writing an Active Backup Client Tutorial"/>
+<meta name="abstract" content="A backup client application is often referred to as a data owner as it owns the data. This section describes how to write an active backup client which works with the Backup Engine and the Backup Server for data backup and restore."/>
+<meta name="description" content="A backup client application is often referred to as a data owner as it owns the data. This section describes how to write an active backup client which works with the Backup Engine and the Backup Server for data backup and restore."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-743D2832-E73A-5184-A85D-306B2A6FFACC.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-94215E49-605B-51BA-B215-10BDA1A0C013.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-743D2832-E73A-5184-A85D-306B2A6FFACC.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Writing an Active Backup Client Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381979 id2381993 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-94215E49-605B-51BA-B215-10BDA1A0C013.html">Generic Services</a> &gt; <a href="GUID-743D2832-E73A-5184-A85D-306B2A6FFACC.html">Active Backup Client</a> &gt; </div>
+<h1 class="topictitle1">Writing
+an Active Backup Client Tutorial</h1>
+<div><p>A backup client application is often referred to as a data owner
+as it owns the data. This section describes how to write an active backup
+client which works with the Backup Engine and the Backup Server for data backup
+and restore. </p>
+
+<div class="p" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-B83C3258-BE3B-597F-A8EB-5598F059E2E3"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-B83C3258-BE3B-597F-A8EB-5598F059E2E3"><!-- --></a><p>Before you start,
+you must understand: </p>
+ <ul>
+<li id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-909ACEA0-363B-585F-AAC7-D85706158930"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-909ACEA0-363B-585F-AAC7-D85706158930"><!-- --></a><p><a href="GUID-7FDD9FEC-5017-5E5D-A50A-5F343A3C7F6C.html">Backup
+Engine Concepts</a> introduce the backup and restore types. </p>
+ </li>
+
+<li id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-DB7C6BE8-A9A5-592F-BFD2-131FA7139BE2"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-DB7C6BE8-A9A5-592F-BFD2-131FA7139BE2"><!-- --></a><p><a href="GUID-5CA933B9-7987-5DDE-AE12-B0D5AFD31451.html">Symbian
+Backup and Restore architecture</a> describes the two ways of data backup
+and restore. </p>
+ </li>
+
+<li id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-E1A1DC99-39BC-59AD-A2A9-0261D6E689EB"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-E1A1DC99-39BC-59AD-A2A9-0261D6E689EB"><!-- --></a><p><a href="GUID-937C3D70-2DCC-5084-AC87-3B1E5865A827.html">Active
+Backup Client Architecture</a> describes the components involved to do
+active data backup and restore. </p>
+ </li>
+
+<li id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-1FA3D484-3460-5A81-BD1E-52810746ECD8"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-1FA3D484-3460-5A81-BD1E-52810746ECD8"><!-- --></a><p><a href="GUID-A81C65CF-CF4E-571C-8080-9D387F46AAD6.html" title="This section explains the publish and subscribe concepts.">Symbian
+Publish and Subscribe</a> describes how to publish and subscribe events
+using properties. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-06AB41B7-201A-5EB9-AFF2-1CF231B06118"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-06AB41B7-201A-5EB9-AFF2-1CF231B06118"><!-- --></a><p>In an active backup
+and restore, the Backup Engine calls the active backup client to supply the
+data for the backup. Writing an active backup client means to: </p>
+ <ul>
+<li id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-FAAB2D8E-14AD-5866-9D13-26D1DD39EBBC"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-FAAB2D8E-14AD-5866-9D13-26D1DD39EBBC"><!-- --></a><p>Create a user defined
+class that has a data member pointer to <a href="GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2.html#GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2__GUID-17E48B80-2421-3256-B8B4-A0FED424D54A"><span class="apiname">conn::CActiveBackupClient</span></a>. </p>
+ </li>
+
+<li id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-BB8DB868-66D9-5CE4-8CBD-0D9201365522"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-BB8DB868-66D9-5CE4-8CBD-0D9201365522"><!-- --></a><p>Implement the <a href="GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2.html#GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2__GUID-DB245BC3-2ADA-311D-8024-B40335D22822"><span class="apiname">conn::MActiveBackupDataClient</span></a> interface. </p>
+ </li>
+
+</ul>
+ </div>
+
+<a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-7D9E4BEE-5BBB-55B1-AB2C-C47E176B0CE7"><!-- --></a><ol id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-7D9E4BEE-5BBB-55B1-AB2C-C47E176B0CE7"><li class="stepexpand" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-95BE7D7F-D355-5CC9-9A02-3351FBC8E709"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-95BE7D7F-D355-5CC9-9A02-3351FBC8E709"><!-- --></a><span/><br/>
+ Write an active backup client (data owner) class which must subscribe
+for the <samp class="codeph">KUidBackupRestoreKey</samp> property published by the backup
+server. 
+ When a backup server receives a request from a client (a host PC) for
+a backup or a restore, it reads backup registration files for a list of data
+owners (refer to step 3). It then calls the <samp class="codeph">CSBEClient::SetBURModeL()</samp> function
+with the registered types (base or incremental, full or partial). This function
+signals start or completion of a backup or restore to all data owners. Data
+owners must subscribe the following publish and subscribe property: 
+<a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-29550A41-94C4-5F36-9175-B0FDF2E55483"><!-- --></a><ol type="a" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-29550A41-94C4-5F36-9175-B0FDF2E55483">
+<li class="substepexpand" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-E291A40F-9573-52D7-833D-DDCA3F194B59"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-E291A40F-9573-52D7-833D-DDCA3F194B59"><!-- --></a><span/><br/>
+ Key–<samp class="codeph">KUidBackupRestoreKey</samp> defined in the <span class="filepath">epoc32\include\connect\sbdefs.h</span> header
+file. This key belongs to the <samp class="codeph">KUidSystemCategoryValue</samp> category. 
+</li>
+
+<li class="substepexpand" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-774E7565-EB05-5302-B7C7-BD25F6CAFAE0"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-774E7565-EB05-5302-B7C7-BD25F6CAFAE0"><!-- --></a><span/><br/>
+ Value–<samp class="codeph">TBURPartType</samp> or <samp class="codeph">TBackupIncType</samp>. 
+</li>
+
+</ol>
+
+ The backup client must check the value of the property (flag) on startup,
+in case the device is already in a backup or restore mode. A <a href="GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2.html#GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2__GUID-17E48B80-2421-3256-B8B4-A0FED424D54A"><span class="apiname">conn::CActiveBackupClient</span></a> object
+can only be created once the publish and subscribe flag has transitioned into
+a backup or restore mode. The backup client can be deleted once the backup
+or restore operation has finished. This releases valuable system resources. 
+  <samp class="codeph">CActiveBackupClient::ConfirmReadyForBURL()</samp> is called
+to indicate that the backup client is ready for the data supply to the Backup
+Engine. 
+ <pre class="codeblock" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-179BD485-939F-5D89-A123-55FDB8815140"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-179BD485-939F-5D89-A123-55FDB8815140"><!-- --></a>class CReferenceActiveDataOwner : public CActive
+    {
+    // Methods
+public:
+    static CReferenceActiveDataOwner* NewL();
+    ~CReferenceActiveDataOwner();
+    
+    // From CActive
+    void RunL();
+    TInt RunError(TInt aError);
+    void DoCancel();
+
+private:
+    CReferenceActiveDataOwner() 
+    void ConstructL();
+    void SubscribeToPSFlag();
+    void ProcessBackupStateL(TInt aBackupStateValue);
+
+    // Attributes
+private:
+    //Active Backup Client
+    CActiveBackupClient* iActiveBackupClient;
+    
+    //The publish and subscribe flag from the Backup Engine
+    RProperty iProperty;
+    
+    //Pointer to the callback implementation
+    CReferenceCallbackImplementation* iCallbackImpl;
+    };
+    
+/** Subscribe to the publish and subscribe flag.
+    Call RunL() when the flag changes.
+*/
+void CReferenceActiveDataOwner::SubscribeToPSFlag()
+    {
+    iStatus = KRequestPending;
+    iProperty.Subscribe(iStatus);
+    SetActive();
+    }
+
+/** Check the flag in case the data owner has been started for a backup or restore, 
+    or in case the publish and subscribe transition is missed.
+*/
+void CReferenceActiveDataOwner::ConstructL()
+    {
+    // Set up the property to catch the flag.
+    TInt backupStateValue = 0;
+    iProperty.Attach(KUidSystemCategory, KUidBackupRestoreKey);
+
+    // Process the mode change accordingly
+    iProperty.Get(backupStateValue);
+    ProcessBackupStateL(backupStateValue);
+
+    // Add to the active scheduler
+    CActiveScheduler::Add(this);
+
+    // Subscribe to the flag to catch transitions
+    SubscribeToPSFlag();    
+}
+
+/** Create the CActiveBackupClient and the callback implementation
+    based on the flag.
+@param aBackupStateValue the new backup state value
+*/
+void CReferenceActiveDataOwner::ProcessBackupStateL(TInt aBackupStateValue)
+    {
+    TInt type = aBackupStateValue &amp; KBURPartTypeMask;
+    
+    // Create the the CActiveBackupClient and the callback implementation if
+    // the device is in a backup or a restore mode.
+    if (type == EBURBackupFull || type == EBURRestoreFull ||
+        type == EBURBackupPartial || type == EBURRestorePartial)
+        if (iCallbackImpl == NULL)
+            {
+            iCallbackImpl = CReferenceCallbackImplementation::NewL();
+            }
+        if (iActiveBackupClient == NULL)
+            {
+            iActiveBackupClient = 
+                      CActiveBackupClient::NewL(iCallbackImpl);
+            }
+        }
+
+    // Confirm the readiness of the active backup client.
+    if ((type == EBURBackupFull || type == EBURRestoreFull) ||
+        ((type == EBURBackupPartial || type == EBURRestorePartial) &amp;&amp;
+         iActiveBackupClient-&gt;DoesPartialBURAffectMeL()))
+        {
+
+         .... // Things handled by a device vendor.
+
+        //Inform the Backup Engine that the client is ready for data supply.
+        iActiveBackupClient-&gt;ConfirmReadyForBURL(KErrNone);
+        }
+    else        
+        {
+        // CActiveBackupClient and the callback implementation 
+        // if it is not an active backup.
+        if (iActiveBackupClient != NULL)
+            {
+            delete iActiveBackupClient;
+            iActiveBackupClient = NULL;
+            }
+
+        // The callback implementation must be deleted after 
+        // the CActiveBackupClient is deleted.
+        if (iCallbackImpl != NULL)
+            {
+            delete iCallbackImpl;
+            iCallbackImpl = NULL;
+            }
+        }
+    }
+
+/** When the flag changes, RunL() is called.
+*/
+void CReferenceActiveDataOwner::RunL()
+    {
+ 
+    TInt backupStateValue = 0;   // re-set the flag value
+
+    // re-subscribe to the flag to monitor future changes
+    SubscribeToPSFlag();
+
+    iProperty.Get(backupStateValue);
+
+    // Process the mode change accordingly
+    ProcessBackupStateL(backupStateValue);
+    }
+
+...
+</pre>
+ 
+</li>
+<li class="stepexpand" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-E17042E5-A5FE-56DF-A36C-594B4B5451B2"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-E17042E5-A5FE-56DF-A36C-594B4B5451B2"><!-- --></a><span/><br/>
+ Implement <a href="GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2.html#GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2__GUID-DB245BC3-2ADA-311D-8024-B40335D22822"><span class="apiname">conn::MActiveBackupDataClient</span></a> to write
+a callback handler. 
+ The callback handler prepares the data to the Backup Engine for a backup
+or a restore. For more information about each function, refer to the <a href="GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2.html#GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2__GUID-DB245BC3-2ADA-311D-8024-B40335D22822"><span class="apiname">conn::MActiveBackupDataClient</span></a> API
+reference. The callback implementation must fulfill the following requirements: 
+<a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-90CAC68A-4EDF-5B09-865B-DDDA5128780A"><!-- --></a><ol type="a" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-90CAC68A-4EDF-5B09-865B-DDDA5128780A">
+<li class="substepexpand" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-30B4E7CC-C5E2-5E37-B8B8-C110953D88FF"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-30B4E7CC-C5E2-5E37-B8B8-C110953D88FF"><!-- --></a><span/><br/>
+ The Initialise function is usually called before the actual backup or
+restore function is called. For example, <samp class="codeph">InitialiseGetBackupDataL()</samp> is
+called before <samp class="codeph">GetBackupDataSectionL()</samp>. The Initialise function
+gives a chance to a device vendor to prepare the data before the actual data
+supply. 
+</li>
+
+<li class="substepexpand" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-661B4417-F1E4-5000-AA64-13BAFDB43234"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-661B4417-F1E4-5000-AA64-13BAFDB43234"><!-- --></a><span/><br/>
+ In an incremental backup or restore, a snapshot is the dataset after
+each incremental backup or restore. If <samp class="codeph">MActiveBackupDataClient::AllSnapshotsSuppliedL()</samp> is
+called, it means that all snapshots have been supplied to the <a href="GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2.html#GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2__GUID-17E48B80-2421-3256-B8B4-A0FED424D54A"><span class="apiname">conn::CActiveBackupClient</span></a>.
+If <a href="GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2.html#GUID-169BB4E2-5B0E-3719-A7B8-A3C0AAA602E2__GUID-17E48B80-2421-3256-B8B4-A0FED424D54A"><span class="apiname">conn::CActiveBackupClient</span></a> does not receive a snapshot,
+it performs a base backup. 
+</li>
+
+<li class="substepexpand" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-03A009F5-7E05-5FBE-867A-13F8B93E66E5"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-03A009F5-7E05-5FBE-867A-13F8B93E66E5"><!-- --></a><span/><br/>
+ For a backup function, a <a href="GUID-4B942C06-1BAC-3A21-B3B1-89FB5C51ADA0.html"><span class="apiname">TBool</span></a> reference parameter
+named <samp class="codeph">aFinished</samp> is passed as an argument. This indicates
+to the Backup Engine if all of the data for a backup is supplied. Setting
+this to <a href="GUID-A759CA2D-8327-348F-9337-4886E619D920.html"><span class="apiname">EFalse</span></a> causes the Backup Engine to repeatedly call
+the backup function for more data. 
+</li>
+
+<li class="substepexpand" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-174C6057-A621-542E-A1C2-0F3879B4291D"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-174C6057-A621-542E-A1C2-0F3879B4291D"><!-- --></a><span/><br/>
+ For a restore function, <samp class="codeph">aFinished</samp> is passed from the
+Backup Engine to indicate to the data owner if all of the restore data is
+supplied. The Backup Engine sets <samp class="codeph">aFinished</samp> to <a href="GUID-781E8158-805B-3784-8FED-D7A191822FC3.html"><span class="apiname">ETrue</span></a> after
+the final call of the restore function. 
+</li>
+
+<li class="substepexpand" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-26C220A3-2B91-575F-BA73-C19AD7A836E0"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-26C220A3-2B91-575F-BA73-C19AD7A836E0"><!-- --></a><span/><br/>
+ Any leaves in the callback are propagated over Inter-Processor Communications
+(IPC) to the Backup Engine and potentially to the PC as errors. For this reason,
+any internal calls must be trapped in the callback. 
+</li>
+
+</ol>
+
+ <pre class="codeblock" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-E20C5B20-8956-50AB-98A8-3FAF1B98B925"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-E20C5B20-8956-50AB-98A8-3FAF1B98B925"><!-- --></a>class CReferenceCallbackImplementation :
+    public CBase,
+    public MActiveBackupDataClient
+    {
+    // Methods
+public:
+    static CReferenceCallbackImplementation* NewL();
+    ~CReferenceCallbackImplementation();
+
+    // The following functions are from the MActiveBackupDataClient  
+    void AllSnapshotsSuppliedL();
+    void ReceiveSnapshotDataL(TDriveNumber aDrive, TDesC8&amp; aBuffer, 
+                                TBool aLastSection);
+    TUint GetExpectedDataSize(TDriveNumber aDrive);
+    void GetSnapshotDataL(TDriveNumber aDrive, TPtr8&amp; aBuffer, 
+                            TBool&amp; aFinished);
+    void InitialiseGetBackupDataL(TDriveNumber aDrive);
+    void GetBackupDataSectionL(TPtr8&amp; aBuffer, TBool&amp; aFinished);
+    void InitialiseRestoreBaseDataL(TDriveNumber aDrive);
+    void RestoreBaseDataSectionL(TDesC8&amp; aBuffer, TBool aFinished);
+    void InitialiseRestoreIncrementDataL(TDriveNumber aDrive);
+    void RestoreIncrementDataSectionL(TDesC8&amp; aBuffer, TBool aFinished);
+    void RestoreComplete(TDriveNumber aDrive);
+    void TerminateMultiStageOperation();
+    TUint GetDataChecksum(TDriveNumber aDrive);
+
+    //The following two functions are for the proxy backup client only and 
+    // Symbian provides a default implementation for each function.
+    void InitialiseGetProxyBackupDataL(TSecureId aSID, TDriveNumber aDrive);
+    void InitialiseRestoreProxyBaseDataL(TSecureId aSID, TDriveNumber aDrive);
+    
+private:
+    CReferenceCallbackImplementation() {}        
+    CMyABData* iSnapshot;
+    CMyABData* iData;
+    TBool iProxy;
+    TInt iOffset;
+    TInt iSourceSize;
+    TUint iFillChar;
+    TSecureId iID;
+    };
+
+void CReferenceCallbackImplementation::AllSnapshotsSuppliedL()
+    {
+    __LOG1("[0x%08x]: CReferenceCallbackImplementation::AllSnapshotsSuppliedL()", 
+         iID.iId);
+    }
+    
+void CReferenceCallbackImplementation::ReceiveSnapshotDataL(
+                                           TDriveNumber aDrive, 
+                                           TDesC8&amp; aBuffer,
+                                           TBool /*aLastSection*/)
+    {
+    __LOG1("[0x%08x]: CReferenceCallbackImplementation::ReceiveSnapshotDataL()", iID.iId);
+    // Create or append a buffer containing the snapshot
+    if (!iSnapshot)
+        {
+        iSnapshot = CMyABData::NewL(aDrive);
+        }
+
+    iSnapshot-&gt;AddDataL(aBuffer);
+    }
+    
+TUint CReferenceCallbackImplementation::GetExpectedDataSize(TDriveNumber /*aDrive*/)
+    {
+    __LOG1("[0x%08x]: CReferenceCallbackImplementation::GetExpectedDataSize()", iID.iId);
+        
+    return iSourceSize;
+    }
+    
+void CReferenceCallbackImplementation::GetSnapshotDataL(
+                                           TDriveNumber /*aDrive*/,
+                                           TPtr8&amp; aBuffer,
+                                           TBool&amp; aFinished)
+    {
+    __LOG1("[0x%08x]: CReferenceCallbackImplementation::GetSnapshotDataL()", iID.iId);
+    aBuffer.Append(KABTestSnapshot());
+    
+    aFinished = ETrue;
+    }
+    
+void CReferenceCallbackImplementation::InitialiseGetBackupDataL(TDriveNumber /*aDrive*/)
+    {
+    __LOG1("[0x%08x]: CReferenceCallbackImplementation::InitialiseGetBackupData()", iID.iId);
+    iOffset = 0;
+
+    if (!iSnapshot)
+        {
+        iFillChar = 66;
+        }
+    else
+        {
+        iFillChar = 73;
+        }
+    }
+    
+void CReferenceCallbackImplementation::GetBackupDataSectionL(
+                                            TPtr8&amp; aBuffer,
+                                            TBool&amp; aFinished)
+    {
+    __LOG1("[0x%08x]: CReferenceCallbackImplementation::GetBackupDataSectionL()", iID.iId);
+    
+    FillBuffer(aBuffer, aFinished);
+    }
+    
+void CReferenceCallbackImplementation::InitialiseRestoreBaseDataL(TDriveNumber aDrive)
+    {
+    __LOG("CReferenceCallbackImplementation::InitialiseRestoreBaseDataL()");
+
+    iData = CMyABData::NewL(aDrive);
+    }
+    
+void CReferenceCallbackImplementation::RestoreBaseDataSectionL(
+                                           TDesC8&amp; aBuffer,
+                                           TBool aFinished)
+    {
+    __LOG1("[0x%08x]: CReferenceCallbackImplementation::RestoreBaseDataSectionL()", iID.iId);
+
+    // append a buffer containing the base data
+    iData-&gt;AddDataL(aBuffer);
+    
+    if (aFinished)
+        {
+        ValidateRestoredData();
+    
+        delete iData;
+        iData = NULL;
+        }
+    }
+    
+void CReferenceCallbackImplementation::InitialiseRestoreIncrementDataL(TDriveNumber aDrive)
+    {
+    __LOG1("[0x%08x]: CReferenceCallbackImplementation::InitialiseRestoreIncrementDataL()", iID.iId);
+    if (!iSnapshot)
+        {
+        User::Leave(KErrCorrupt);
+        }
+
+    if (!iData)
+        {
+        iData = CMyABData::NewL(aDrive);
+        }
+    }
+    
+void CReferenceCallbackImplementation::RestoreIncrementDataSectionL(
+                                           TDesC8&amp; aBuffer,
+                                           TBool aFinished)
+    {
+    __LOG1("[0x%08x]: CReferenceCallbackImplementation::RestoreIncrementDataSectionL()", iID.iId);
+
+    iData-&gt;AddDataL(aBuffer);
+    
+    if (aFinished)
+        {
+        ValidateRestoredData();
+    
+        delete iData;
+        iData = NULL;
+        }
+    }
+    
+void CReferenceCallbackImplementation::RestoreComplete(TDriveNumber /*aDrive*/)
+    {
+    __LOG1("[0x%08x]: CReferenceCallbackImplementation::RestoreComplete()", iID.iId);
+    }
+    
+void CReferenceCallbackImplementation::TerminateMultiStageOperation()
+    {
+    __LOG1("[0x%08x]: CReferenceCallbackImplementation::TerminateMultiStageOperation()", iID.iId);
+    // We also don't do anything here until we start testing multipart?
+    }
+    
+TUint CReferenceCallbackImplementation::GetDataChecksum(TDriveNumber /*aDrive*/)
+    {
+    __LOG1("[0x%08x]: CReferenceCallbackImplementation::GetDataChecksum()", iID.iId);
+    return 0;
+    }
+
+void CReferenceCallbackImplementation::InitialiseGetProxyBackupDataL(
+                                           TSecureId aSID, 
+                                           TDriveNumber /*aDrive*/)
+    {
+    __LOG1("[0x%08x]: CReferenceCallbackImplementation::InitialiseGetProxyBackupDataL()", iID.iId);
+    __LOG2("[0x%08x]: Proxy data about to be requested for SID 0x%08x", iID.iId, aSID.iId);
+    iProxy = ETrue;
+    iOffset = 0;
+    
+    iFillChar = 80;        // 'P'
+    }
+
+void CReferenceCallbackImplementation::InitialiseRestoreProxyBaseDataL(
+                                            TSecureId aSID, 
+                                            TDriveNumber aDrive)
+    {
+    __LOG1("[0x%08x]: CReferenceCallbackImplementation::InitialiseRestoreProxyBaseDataL()", iID.iId);
+    __LOG2("[0x%08x]: Proxy data about to be restored for SID 0x%08x", iID.iId, aSID.iId);
+    iProxy = ETrue;
+    iData = CMyABData::NewL(aDrive);
+    }
+...</pre>
+ 
+</li>
+<li class="stepexpand" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-FBC19F0B-1763-595C-BF4E-F6289AD6EFCA"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-FBC19F0B-1763-595C-BF4E-F6289AD6EFCA"><!-- --></a><span/><br/>
+ Create a backup registration file to set attribute values for the data
+owner application. 
+ The Backup Engine parses backup registration files to get the data own
+list. The list includes details of data owners and data for backup and restore. 
+ Create the file using a text editor and save it as <span class="filepath">backup_registration.xml</span> under
+the private folder of the data owner application on the Symbian device. Refer
+to <a href="GUID-9A6273D8-7797-5190-AFEC-1AD113980B84.html">Backup Registration
+Files</a> for more information. 
+<a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-08064C91-CC63-502F-807C-D1932C0D05DB"><!-- --></a><ol type="a" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-08064C91-CC63-502F-807C-D1932C0D05DB">
+<li class="substepexpand" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-D2C54ED8-54C5-564A-B5DF-66CC60F85630"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-D2C54ED8-54C5-564A-B5DF-66CC60F85630"><!-- --></a><span/><br/>
+  <samp class="codeph"> process_name</samp> is the name of the data owner application. 
+</li>
+
+<li class="substepexpand" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-20E42C15-0B8C-5302-8927-1ADB9231AC33"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-20E42C15-0B8C-5302-8927-1ADB9231AC33"><!-- --></a><span/><br/>
+  <samp class="codeph">active_type is set</samp> to <samp class="codeph">activeonly</samp> for
+an active backup. 
+</li>
+
+<li class="substepexpand" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-595FE2CF-06C4-599F-9E70-B9B9CD6A71B5"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-595FE2CF-06C4-599F-9E70-B9B9CD6A71B5"><!-- --></a><span/><br/>
+  <samp class="codeph">supports_incremental</samp> can be set to <samp class="codeph">false</samp> to
+disable the incremental backup support from the active backup client. 
+</li>
+
+</ol>
+
+ <pre class="codeblock" id="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-0A5E0FBC-16FD-568A-8530-368101B28EBF"><a name="GUID-DFF9DFC5-1BE0-5CA2-A2B9-27FA2DECFF59__GUID-0A5E0FBC-16FD-568A-8530-368101B28EBF"><!-- --></a>&lt;!-- backup_registration.xml file for referencetestdataowner.exe --&gt;
+
+&lt;?xml version="1.0" standalone="yes"?&gt;
+
+&lt;backup_registration version="1.0"&gt;
+    &lt;active_backup process_name = "referencetestdataowner.exe"
+             active_type = "activeonly"
+                   requires_delay_to_prepare_data = "yes" &lt;!--deprecated--&gt;
+                   supports_incremental = "yes"&gt; 
+    &lt;/active_backup&gt;
+
+    &lt;restore requires_reboot = "no"/&gt;  &lt;!--Currently only support no--&gt;
+&lt;/backup_registration&gt;
+</pre>
+<p>Finally, test the data owner application. The logging information
+appends to the <span class="filepath">securebackup.txt</span> log file. To enable the
+log generation, the <span class="filepath">C:\logs\connect</span> directory must be
+created on the device. </p>
+ 
+</li>
+</ol>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-743D2832-E73A-5184-A85D-306B2A6FFACC.html">Active Backup Client</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

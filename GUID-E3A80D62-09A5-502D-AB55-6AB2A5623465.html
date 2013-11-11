@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="Cleaning-up Memory"/>
+<meta name="abstract" content="To ensure the plug-in framework unloads the plug-in DLLs when they are no longer required and releases associated memory, the clients should follow an explicit memory cleanup procedure. The main purpose is to release memory and close handles held on unused plug-in implementations and their associated DLLs. The memory clean-up should be performed after all instantiated interface objects have been deleted."/>
+<meta name="description" content="To ensure the plug-in framework unloads the plug-in DLLs when they are no longer required and releases associated memory, the clients should follow an explicit memory cleanup procedure. The main purpose is to release memory and close handles held on unused plug-in implementations and their associated DLLs. The memory clean-up should be performed after all instantiated interface objects have been deleted."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DE9CB4F7-5129-5450-A6D6-9B0BA253FC81.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-324107D1-6E0B-56DD-BDC0-7296F688A9CF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9E92EE30-F2E2-5F28-BB2A-391C09EC69D2.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-110A0151-5719-51BC-8506-C18BE57FB400.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DE9CB4F7-5129-5450-A6D6-9B0BA253FC81.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-E3A80D62-09A5-502D-AB55-6AB2A5623465"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Cleaning-up Memory</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-E3A80D62-09A5-502D-AB55-6AB2A5623465"><a name="GUID-E3A80D62-09A5-502D-AB55-6AB2A5623465"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2383459 id2383473 id2383529 id2383641 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-324107D1-6E0B-56DD-BDC0-7296F688A9CF.html">Low Level Libraries and Frameworks</a> &gt; <a href="GUID-9E92EE30-F2E2-5F28-BB2A-391C09EC69D2.html">Plug-in Framework</a> &gt; <a href="GUID-110A0151-5719-51BC-8506-C18BE57FB400.html">Plug-in Framework Tutorials</a> &gt; <a href="GUID-DE9CB4F7-5129-5450-A6D6-9B0BA253FC81.html">Plug-in User's Tutorial</a> &gt; </div>
+<h1 class="topictitle1">Cleaning-up
+Memory</h1>
+<div><p>To ensure the plug-in framework unloads the plug-in DLLs when they
+are no longer required and releases associated memory, the clients should
+follow an explicit memory cleanup procedure. The main purpose is to release
+memory and close handles held on unused plug-in implementations and their
+associated DLLs. The memory clean-up should be performed after all instantiated
+interface objects have been deleted. </p>
+
+<div class="section"><div class="p">The plug-in framework client-side library implements a deferred
+cleanup mechanism in the client process to handle destroyed plug-ins. Following
+a call to <a href="GUID-1344F049-81C4-3D17-AF46-8B5584680ADB.html#GUID-1344F049-81C4-3D17-AF46-8B5584680ADB__GUID-8BA69111-0451-34CA-A1E8-C83513C4D29D"><span class="apiname">REComSession::DestroyedImplementation()</span></a> in the
+destructor, the plug-in’s reference count is decremented to zero and the client-side
+library has a “last destroyed last plug-in” garbage pointer. The internal
+framework memory associated with the garbage plug-in is released. The handles
+on the DLL are closed at the beginning of the next call to <a href="GUID-1344F049-81C4-3D17-AF46-8B5584680ADB.html#GUID-1344F049-81C4-3D17-AF46-8B5584680ADB__GUID-8BA69111-0451-34CA-A1E8-C83513C4D29D"><span class="apiname">REComSession::DestroyedImplementation()</span></a>.
+This chain of deferred cleanup in the client thread requires the final plug-in
+in the garbage queue to be released. Hence there is a requirement for explicit
+memory clean-up. The memory clean-up is performed by the clients of the plug-in
+framework. <div class="note"><span class="notetitle">Note:</span>  The destructor of the interface implementation deletes the
+instantiated objects obtained from an interface when they are no longer required
+by calling the static function <a href="GUID-1344F049-81C4-3D17-AF46-8B5584680ADB.html#GUID-1344F049-81C4-3D17-AF46-8B5584680ADB__GUID-8BA69111-0451-34CA-A1E8-C83513C4D29D"><span class="apiname">REComSession::DestroyedImplementation()</span></a>. <pre class="codeblock">inline CExampleInterfaceDefinition::~CExampleInterfaceDefinition()
+    {
+    REComSession::DestroyedImplementation(iDtor_ID_Key);
+    }</pre>
+</div>
+</div>
+ </div>
+
+<a name="GUID-E3A80D62-09A5-502D-AB55-6AB2A5623465__GUID-31FD83CA-3EC3-5EA2-8297-21165CC16335"><!-- --></a><ol id="GUID-E3A80D62-09A5-502D-AB55-6AB2A5623465__GUID-31FD83CA-3EC3-5EA2-8297-21165CC16335"><li class="stepexpand" id="GUID-E3A80D62-09A5-502D-AB55-6AB2A5623465__GUID-BB4A525E-4D43-59F0-8D45-136D31258FDA"><a name="GUID-E3A80D62-09A5-502D-AB55-6AB2A5623465__GUID-BB4A525E-4D43-59F0-8D45-136D31258FDA"><!-- --></a><span/><br/>
+ Call <a href="GUID-1344F049-81C4-3D17-AF46-8B5584680ADB.html#GUID-1344F049-81C4-3D17-AF46-8B5584680ADB__GUID-1AACEF53-2CAD-34EC-A485-CE49BC8B9BD8"><span class="apiname">REComSession::FinalClose()</span></a> before shut down
+to ensure the plug-in framework executes the final cleanup steps. 
+  Note:  <a href="GUID-1344F049-81C4-3D17-AF46-8B5584680ADB.html#GUID-1344F049-81C4-3D17-AF46-8B5584680ADB__GUID-1AACEF53-2CAD-34EC-A485-CE49BC8B9BD8"><span class="apiname">REComSession::FinalClose()</span></a> should not be
+called from a plug-in implementation class destructor, especially following
+a <a href="GUID-1344F049-81C4-3D17-AF46-8B5584680ADB.html#GUID-1344F049-81C4-3D17-AF46-8B5584680ADB__GUID-8BA69111-0451-34CA-A1E8-C83513C4D29D"><span class="apiname">REComSession::DestroyedImplementation()</span></a>. There is a risk
+that the plug-in's supporting DLL may immediately be unloaded by the Kernel
+due to the closure of RLibrary handles. It can result in a KERN-EXEC if the
+destructor call stack is still inside the DLL that is unloaded. 
+</li>
+<li class="stepexpand" id="GUID-E3A80D62-09A5-502D-AB55-6AB2A5623465__GUID-AA4796C3-0F56-5AE2-A278-08CA615C4157"><a name="GUID-E3A80D62-09A5-502D-AB55-6AB2A5623465__GUID-AA4796C3-0F56-5AE2-A278-08CA615C4157"><!-- --></a><span/><br/>
+ If the plug-in framework is used in a library, then <a href="GUID-1344F049-81C4-3D17-AF46-8B5584680ADB.html#GUID-1344F049-81C4-3D17-AF46-8B5584680ADB__GUID-1AACEF53-2CAD-34EC-A485-CE49BC8B9BD8"><span class="apiname">REComSession::FinalClose()</span></a> should
+be invoked within the library's shutdown function. This makes the library's
+use of plug-in framework transparent to the clients. 
+ It is not an error if both the library and client call <a href="GUID-1344F049-81C4-3D17-AF46-8B5584680ADB.html#GUID-1344F049-81C4-3D17-AF46-8B5584680ADB__GUID-1AACEF53-2CAD-34EC-A485-CE49BC8B9BD8"><span class="apiname">REComSession::FinalClose()</span></a>. 
+</li>
+</ol>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-DE9CB4F7-5129-5450-A6D6-9B0BA253FC81.html">Plug-in User's Tutorial</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

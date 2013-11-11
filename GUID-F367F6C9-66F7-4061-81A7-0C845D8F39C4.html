@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Cancellation of Asynchronous Requests"/>
+<meta name="abstract" content="This document describes how a device driver cancels an asynchronous request."/>
+<meta name="description" content="This document describes how a device driver cancels an asynchronous request."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CFE0A4EB-845C-43B6-A732-AA155AFD99D6.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CFE0A4EB-845C-43B6-A732-AA155AFD99D6.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-F367F6C9-66F7-4061-81A7-0C845D8F39C4"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Cancellation of Asynchronous Requests</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-F367F6C9-66F7-4061-81A7-0C845D8F39C4"><a name="GUID-F367F6C9-66F7-4061-81A7-0C845D8F39C4"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 id2388267 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; <a href="GUID-CFE0A4EB-845C-43B6-A732-AA155AFD99D6.html" title="This document introduces user requests and synchronisation methods used by device drivers.">User Requests and Synchronisation</a> &gt; </div>
+<h1 class="topictitle1">Cancellation
+of Asynchronous Requests</h1>
+<div><p>This document describes how a device driver cancels an asynchronous
+request.</p>
+
+<p>Any outstanding asynchronous request can be cancelled. <a href="GUID-675860FB-AA37-3467-AF52-7D1B17FEE0A6.html"><span class="apiname">DoCancel()</span></a> is
+implemented to handle cancel requests. Cancel requests are either explicitly
+made by the user or made when there is a close message. Any pending requests
+and queued DFCs are cancelled and the request is completed with <a href="GUID-6F4A88DA-F54E-3848-9C32-942D6F5F4F3E.html"><span class="apiname">KErrCancel</span></a>. </p>
+
+<pre class="codeblock" id="GUID-F367F6C9-66F7-4061-81A7-0C845D8F39C4__GUID-AEE32663-E6E2-50CC-A756-10CAC0CA503D"><a name="GUID-F367F6C9-66F7-4061-81A7-0C845D8F39C4__GUID-AEE32663-E6E2-50CC-A756-10CAC0CA503D"><!-- --></a>/** 
+ Cancel Asynchronous Requests. This is called from HandleMsg() to 
+ cancel pending asynchronous requests. This function determines which    
+ operation is to be cancelled and tidies up the resources specific to 
+ the request being cancelled, any outstanding DFCs, and timers, and   
+ signals the client that the operation is completed.
+ 
+ @param aMask
+ Mask containing the request number that has to be cancelled 
+ */
+void DExDriverLogicalChannel::DoCancel(TUint aMask)
+    {
+    ...
+    // Any pending asynchronous operation can be 
+    // cancelled. Check a valid asynchronous request 
+    // to cancel has been specified.
+    //
+    if(aMask&amp;(1&lt;&lt;RExDriverChannel::ERequestTransmitData))
+        {
+        if (iTxDataStatus)
+            {
+            // If it is a Transmit request, cancel the Transmit DFC. 
+            // TDfc::Cancel() cancels the DFC if it is already 
+            // queued. It does nothing if the DFC is not queued.
+            //
+            iTxDfc.Cancel();
+
+            // Notify the client (iClient) that the request is 
+            // completed. The TRequestStatus object is updated with the 
+            // status and the completion code is provided to the
+            // client. KErrCancel indicates that the request has been 
+            // cancelled. Typically, a client thread, waiting on 
+            // User::WaitForRequest(TRequestStatus &amp;aStatus) or using
+            // the active object framework, is unblocked and notified. 
+            // Then the client may read the request status from the 
+            // TRequestStatus object. 
+            //                                              
+            Kern::RequestComplete(iClient,iTxDataStatus,KErrCancel);
+            }
+        }
+    ...
+    }</pre>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-CFE0A4EB-845C-43B6-A732-AA155AFD99D6.html" title="This document introduces user requests and synchronisation methods used by device drivers.">User Requests and Synchronisation</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to construct and manipulate a doubly linked list"/>
+<meta name="abstract" content="This document describes how to construct and use a doubly linked list."/>
+<meta name="description" content="This document describes how to construct and use a doubly linked list."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F45EA14E-F857-5D59-BFBA-E2F563287359.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2E085BAD-AAD7-5D1A-89A7-287EE42D1069.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F45EA14E-F857-5D59-BFBA-E2F563287359.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to construct and manipulate a doubly linked list</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2392089 id2392134 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-2E085BAD-AAD7-5D1A-89A7-287EE42D1069.html">Arrays And Lists</a> &gt; <a href="GUID-F45EA14E-F857-5D59-BFBA-E2F563287359.html" title="These documents describe how to use doubly linked lists.">Using Doubly Linked Lists</a> &gt; </div>
+<h1 class="topictitle1">How to
+construct and manipulate a doubly linked list</h1>
+<div><p>This document describes how to construct and use a doubly linked
+list.</p>
+
+<p>The following code fragments show how a doubly linked list can be constructed
+and manipulated. The list consists of <samp class="codeph">CItem</samp> objects. In this
+example, a <samp class="codeph">CItem</samp> object can contain an item of text implemented
+as an <samp class="codeph">HBufC</samp>. The <samp class="codeph">CItem</samp> objects can form
+elements of a doubly linked list using the <samp class="codeph">iDlink</samp> data member
+as the link object. </p>
+
+<p>The class is declared as:</p>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-F98B0D2C-486A-59C5-B487-A0F1D7D022FD"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-F98B0D2C-486A-59C5-B487-A0F1D7D022FD"><!-- --></a>class CItem : public CBase
+    {
+public  :
+    static CItem* NewL(const TDesC&amp; aText);
+    static CItem* NewLC(const TDesC&amp; aText); 
+    virtual       ~CItem();
+public   :
+    static const  TInt iOffset;
+private  :
+    void          ConstructL(const TDesC&amp; aText);
+private  :
+    TDblQueLink  iDlink;
+    HBufC*       iText;
+    friend class CXy;
+    };</pre>
+
+<p>The <samp class="codeph">CItem</samp> member functions are implemented as:</p>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-1DAC73DB-A599-5BAC-AAB5-707BA89B8382"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-1DAC73DB-A599-5BAC-AAB5-707BA89B8382"><!-- --></a>const TInt CItem::iOffset = _FOFF(CItem,iDlink);</pre>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-6FEA34D4-0937-56E3-ACA5-3912E1595511"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-6FEA34D4-0937-56E3-ACA5-3912E1595511"><!-- --></a>CItem* CItem::NewLC(const TDesC&amp; aText)
+    {
+    CItem* self = new (ELeave) CItem;
+    CleanupStack::PushL(self);
+    self-&gt;ConstructL(aText);
+    return self;
+    }</pre>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-75110620-3EDC-5B4D-84EB-C4D6C78BF2F9"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-75110620-3EDC-5B4D-84EB-C4D6C78BF2F9"><!-- --></a>CItem* CItem::NewL(const TDesC&amp; aText)
+    {
+    CItem* self = CItem::NewLC(aText);
+    CleanupStack::Pop();
+    return self;
+    }</pre>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-8EABC406-6C95-5139-9A97-AB467D526019"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-8EABC406-6C95-5139-9A97-AB467D526019"><!-- --></a>void CItem::ConstructL(const TDesC&amp; aText)
+    {
+    iText    = aText.AllocL();
+    }</pre>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-235AC477-3C7E-52E2-B85B-57C404C8BC08"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-235AC477-3C7E-52E2-B85B-57C404C8BC08"><!-- --></a>CItem::~CItem()
+    {
+    delete (iText);
+    }</pre>
+
+<p>As part of its construction process, a <samp class="codeph">CItem</samp> constructs
+an <samp class="codeph">HBufC</samp> of the correct length and copies the content of
+the descriptor parameter into it.</p>
+
+<p>A <samp class="codeph">CXy</samp> object maintains the list by:</p>
+
+<ul>
+<li id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-048EFEF6-B2EC-5333-A835-BC735C334220"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-048EFEF6-B2EC-5333-A835-BC735C334220"><!-- --></a><p> creating <samp class="codeph">CItem</samp> objects
+and adding them into the list</p>
+ </li>
+
+<li id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-310AB703-85C5-5DFC-8AB6-2A0938095134"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-310AB703-85C5-5DFC-8AB6-2A0938095134"><!-- --></a><p>removing <samp class="codeph">CItem</samp> objects
+from the list and then destroying them</p>
+ </li>
+
+</ul>
+
+<p>The class is declared as:</p>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-F5CF044D-650A-5446-9713-BE84362FD793"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-F5CF044D-650A-5446-9713-BE84362FD793"><!-- --></a>class CXy : public CBase
+    {
+public :
+    CXy();
+    virtual ~CXy();
+    void    DoItems();
+    TBool   AddItem(const TDesC&amp; anItem,TItemPos aPos);
+private :
+    TDblQue&lt;CItem&gt;     iHdr; 
+    TDblQueIter&lt;CItem&gt; iIter;
+    };</pre>
+
+<p>Here, the list header, <samp class="codeph">iHdr</samp>, and the iterator, <samp class="codeph">iIter</samp>,
+are declared as data members of the class and are constructed when the <samp class="codeph">CXy</samp> object
+is constructed. A C++ constructor must be supplied so that <samp class="codeph">iIter</samp> can
+be properly constructed. (<samp class="codeph">TDblQueIter</samp> has no default constructor).</p>
+
+<p>Specifically:</p>
+
+<ul>
+<li id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-36B75BBC-B6EA-5717-9E88-8C1FFB4F9119"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-36B75BBC-B6EA-5717-9E88-8C1FFB4F9119"><!-- --></a><p><samp class="codeph">AddItem()</samp> constructs
+a new <samp class="codeph">CItem</samp> and adds it to the list, either after the current
+item or at the end of the list.</p>
+ </li>
+
+<li id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-B85DEE50-218E-5CC9-B60D-D6EA2176643F"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-B85DEE50-218E-5CC9-B60D-D6EA2176643F"><!-- --></a><p><samp class="codeph">DoItems()</samp> scans
+through the list, removing and destroying each element from the list.</p>
+ </li>
+
+</ul>
+
+<p>The <samp class="codeph">CXy</samp> member functions are implemented as:</p>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-910891C0-DBEF-592F-8CA3-FC354DE16B3E"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-910891C0-DBEF-592F-8CA3-FC354DE16B3E"><!-- --></a>CXy::CXy()
+    : iHdr(CItem::iOffset),iIter(iHdr) //construct header &amp; iterator
+    {}</pre>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-C471B1FC-05A6-56AD-B3D6-C65FB045B864"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-C471B1FC-05A6-56AD-B3D6-C65FB045B864"><!-- --></a>CXy::~CXy()
+    {
+    CItem*  anyitem;
+    
+    iIter.SetToFirst();
+    while ((anyitem = iIter++) != NULL)
+        {
+        anyitem-&gt;iDlink.Deque();
+        delete anyitem;
+        };
+    }</pre>
+
+<p>Before destroying a <samp class="codeph">CXy</samp> object, the list is destroyed.
+This is achieved using the iterator. The iterator pointer is set to point
+to each element in turn, removing that element from the list before destroying
+it.</p>
+
+<p>Once the iterator has reached the end of the list, the operator<samp class="codeph">++</samp> returns <samp class="codeph">NULL</samp>.</p>
+
+<p>The destruction process is safe if the list is empty; the statement <samp class="codeph">iter.SetToFirst()</samp> is
+harmless, the operator<samp class="codeph">++</samp> returns <samp class="codeph">NULL</samp> and
+execution of the body of the <samp class="codeph">while</samp> loop never happens.</p>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-8E2FD32B-B8FF-5F37-9C66-20695B296079"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-8E2FD32B-B8FF-5F37-9C66-20695B296079"><!-- --></a>TBool CXy::AddItem(const TDesC&amp; aText,TItemPos aPos)
+    {
+    CItem* newitem;
+    
+    TRAPD(leavecode,newitem = CItem::NewL(aText));
+    if (leavecode != KErrNone)
+        return EFalse;              // Cannot create a CItem</pre>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-6A38CF3D-9547-562D-BB4C-F53938943D15"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-6A38CF3D-9547-562D-BB4C-F53938943D15"><!-- --></a>    switch (aPos)
+        {
+    case EAtEnd:
+        iHdr.AddLast(*newitem);     // Add at back of list
+        return ETrue;
+
+    case EAfterCurrent:
+        CItem* currentitem = iIter; 
+        if (currentitem)
+            {
+            newitem-&gt;iDlink.Enque(&amp;currentitem-&gt;iDlink);
+            iIter.Set(*newitem);
+            }
+        else
+            {
+            iHdr.AddFirst(*newitem);
+            iIter.SetToFirst();    
+            }
+        return ETrue;
+        }
+                
+    return EFalse;
+        }</pre>
+
+<p>This member function creates a new <samp class="codeph">CItem</samp> and then, depending
+on the value of <samp class="codeph">aPos</samp>, either adds it at the back of the list
+or after the current element. <samp class="codeph">TItemPos</samp> is just an enumeration
+taking the enumerators <samp class="codeph">EAtEnd</samp> and <samp class="codeph">EAfterCurrent</samp>.</p>
+
+<p>The statement:</p>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-FBCE5C8F-D42A-50E6-BA1E-A6B2887AF0C1"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-FBCE5C8F-D42A-50E6-BA1E-A6B2887AF0C1"><!-- --></a>newitem-&gt;iDlink.Enque(&amp;currentitem-&gt;iDlink);</pre>
+
+<p>inserts the newly created <samp class="codeph">CItem</samp> with pointer <samp class="codeph">newitem</samp>, <em>after</em> the
+existing item with pointer <samp class="codeph">currentitem</samp>.</p>
+
+<p>Note also that the statement:</p>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-F875FA76-2768-5713-8462-44610B17F35A"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-F875FA76-2768-5713-8462-44610B17F35A"><!-- --></a>CItem* currentitem = iIter; 
+</pre>
+
+<p>implicitly uses the conversion operator <samp class="codeph">T*()</samp> where, in
+general, <samp class="codeph">T</samp> is the class forming elements of the list. In
+this specific example, the conversion operator returns a pointer to the current
+element, of type <samp class="codeph">CItem</samp>, in the list. Immediately after construction
+of the iterator <samp class="codeph">iIter</samp>, the value of <samp class="codeph">currentitem</samp> is <samp class="codeph">NULL</samp>.</p>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-96C01CEC-29F5-537B-9E44-531A313D8796"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-96C01CEC-29F5-537B-9E44-531A313D8796"><!-- --></a>void CXy::DoItems()
+    {
+    CItem* currentitem;
+
+    iIter.SetToFirst();
+
+    while((currentitem = iIter++) != NULL)
+        {
+        // do something with the text;
+        currentitem-&gt;iDlink.Deque();
+        delete currentitem;
+        };
+    }</pre>
+
+<p>The <samp class="codeph">DoItems()</samp> member function iterates through the whole
+list, removing each <samp class="codeph">CItem</samp> object in turn before destroying
+it. This member function could be modified to include extra functionality
+before the removal and destruction of the <samp class="codeph">CItem</samp> element.</p>
+
+<p>If the list is empty on entry to this function, the <samp class="codeph">iter.SetToFirst()</samp> statement
+is safe, <samp class="codeph">currentitem</samp> is <samp class="codeph">NULL</samp> on the first
+execution of the <samp class="codeph">while</samp> condition and the body of the <samp class="codeph">while</samp> loop
+is never executed.</p>
+
+<p>Executing the code:</p>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-081282AE-93D7-59FB-93A7-93D7E1F2080C"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-081282AE-93D7-59FB-93A7-93D7E1F2080C"><!-- --></a>    {
+    _LIT(KTxtOne,"one");
+    _LIT(KTxtTwo,"two");
+    _LIT(KTxtThree",three");
+    _LIT(KTxtFour,"four");
+    _LIT(KTxtFive,"five");
+    _LIT(KTxtSix,"six");
+
+    CXy* items;
+
+    items = new CXy;
+
+    items-&gt;AddItem(KTxtone,EAfterCurrent);
+    items-&gt;AddItem(KTxttwo,EAtEnd);
+    items-&gt;AddItem(KTxtthree,EAfterCurrent);
+    items-&gt;AddItem(KTxtfour,EAtEnd);
+    items-&gt;AddItem(KTxtfive,EAfterCurrent);
+    items-&gt;AddItem(KTxtsix,EAtEnd);
+    ...
+</pre>
+
+<p>results in the construction of a doubly linked list of <samp class="codeph">CItem</samp> objects
+each containing a pointer to an <samp class="codeph">HBufC</samp> descriptor containing
+the text as shown:</p>
+
+<div class="fignone" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-10DC05B0-64A2-52D0-ABC6-ACD231F402C4"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-10DC05B0-64A2-52D0-ABC6-ACD231F402C4"><!-- --></a><span class="figcap">Figure 1. </span>
+
+<img src="GUID-03AC137D-173A-558C-A2F3-9522870AC43C_d0e319796_href.png"/>
+</div>
+
+<p>The following code destroys the list elements and the <samp class="codeph">CXy</samp> object
+containing the list header and iterator:</p>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-37EF4182-834F-51BF-9250-61B479BFD3D1"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-37EF4182-834F-51BF-9250-61B479BFD3D1"><!-- --></a>    ...
+    items-&gt;DoItems();
+    delete items;
+    }</pre>
+
+<p>There are a number of other possible ways to proceed, depending on the
+precise needs of an application. In the previous example, the list header
+and the iterator are declared as members of the class.</p>
+
+<p>Some situations may demand that a list be created, used and destroyed within
+the scope of a member function. Because list headers and iterators are “<samp class="codeph">T</samp> ”
+types, they can be declared on the stack; for example:</p>
+
+<pre class="codeblock" id="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-E29EDC0D-C7DE-5E35-B39F-DA63110DF630"><a name="GUID-B1D63E7B-81EB-5F75-96C3-789E5C3E4C03__GUID-E29EDC0D-C7DE-5E35-B39F-DA63110DF630"><!-- --></a>void CXy::SomeFunction();
+    {
+    TDblQue&lt;CItem&gt;     iHdr(CItem::iOffset); 
+    TDblQueIter&lt;CItem&gt; iIter(iHdr);
+
+    // the body of the function
+    //
+
+    }
+</pre>
+
+<p>The list header and the iterator go out of scope at the end of the function
+and are destroyed. Unless the list elements themselves are “<samp class="codeph">T</samp> ”
+types and exist on the stack, make sure that they are explicitly destroyed
+before the function terminates.</p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-F45EA14E-F857-5D59-BFBA-E2F563287359.html" title="These documents describe how to use doubly linked lists.">Using Doubly Linked Lists</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Off-Screen Rendering with DirectGDI Tutorial"/>
+<meta name="abstract" content="This tutorial shows how to create an image as a target for off-screen DirectGDI rendering, create a DirectGDI graphics context and use it to issue draw commands to the image and finally display the image in a Window Server window."/>
+<meta name="description" content="This tutorial shows how to create an image as a target for off-screen DirectGDI rendering, create a DirectGDI graphics context and use it to issue draw commands to the image and finally display the image in a Window Server window."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A2E07A3C-B3A8-50B9-BD60-F1F01795FA24.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E89F034F-C807-5FF9-B06B-F7CCD2441041.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A2E07A3C-B3A8-50B9-BD60-F1F01795FA24.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-59C9EF92-8207-5FA5-AA20-0DB00C211BF1.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-29C7FBFB-2F33-58CA-86BE-978E3187E4D6.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CD4B8ECA-AFE7-593C-B095-5D642EA2EC61.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Off-Screen Rendering with DirectGDI Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2384330 id2385294 id2386774 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html">Graphics Guide</a> &gt; <a href="GUID-E89F034F-C807-5FF9-B06B-F7CCD2441041.html" title="The Graphics Device Interface (GDI) collection provides important functionality within the Graphics subsystem. The functionality includes graphics device abstraction, linear digital differential analysis, font description and information, printer devices abstraction, line breaking and text rendering.">Graphics Device Interface (GDI) Collection</a> &gt; <a href="GUID-A2E07A3C-B3A8-50B9-BD60-F1F01795FA24.html" title="The DirectGDI component provides a graphics context that can be hardware accelerated, and allows an asynchronous interface.">DirectGDI Component</a> &gt; </div>
+<h1 class="topictitle1">Off-Screen
+Rendering with DirectGDI Tutorial</h1>
+<div><p>This tutorial shows how to create an image as a target for off-screen
+DirectGDI rendering, create a DirectGDI graphics context and use it to issue
+draw commands to the image and finally display the image in a Window Server
+window. </p>
+
+<p> <strong>Target audience</strong>: Device creators. </p>
+
+<div class="note"><span class="notetitle">Note:</span> DirectGDI is deprecated in Symbian^3.</div>
+
+<div class="section" id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-CF10022D-6CA1-43DC-8483-8FD62432885D"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-CF10022D-6CA1-43DC-8483-8FD62432885D"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p>In early versions of Symbian, off-screen
+rendering was always performed by using <a href="GUID-EAAD1719-C02C-5705-A5C3-993E36441BE6.html">BitGDI</a>.
+This had the disadvantage that the rendering could not be hardware accelerated.
+Later versions of Symbian introduced <a href="GUID-AB93B01C-B6C2-5B24-ADEF-95706584D625.html" title="The components within the OpenGLES collection provide access to OpenGL ES on the Symbian platform. OpenGL ES, an open standard developed by the Khronos Group, provides an API for 2D and 3D graphics on embedded systems, such as smartphones.">OpenGL
+ES</a> (in v8.1) and <a href="GUID-1B1C6D35-FFDF-55B3-BCE2-DD0295858E49.html" title="The components within the OpenVG collection provide access to OpenVG on the Symbian platform. OpenVG, an open standard developed by the Khronos Group, provides an API for hardware accelerated two-dimensional (2D) vector and raster graphics.">OpenVG</a> (in
+v9.4), which provide alternative mechanisms for off-screen rendering that
+can be hardware accelerated. However, these APIs are very different to the
+BitGDI API. Therefore porting legacy code from BitGDI to OpenGL ES or OpenVG
+in order to take advantage of graphics acceleration hardware is a considerable
+task. </p>
+ <p>DirectGDI can take advantage of graphics acceleration hardware
+if it is available and (unlike OpenGL ES and OpenVG) provides an API that
+is very similar to BitGDI. This means that porting legacy code to DirectGDI
+is much easier than porting it to OpenGL ES or OpenVG. In addition, you typically
+need to port legacy code only if it does off-screen rendering. Legacy code
+that does on-screen rendering using <a href="GUID-FF93C803-8E07-3753-BBA8-C9267D686C85.html"><span class="apiname">CWindowGc</span></a> will
+automatically be hardware accelerated if the Window Server's <a href="GUID-3A2785D4-6185-50C3-8D7E-5D94CD2B7C98.html" title="This section provides information about the render stage framework in ScreenPlay. This framework enables device creators to change the lower layers of the rendering pipeline without changing the Window Server code.">render
+stage plug-in(s)</a> are hardware accelerated. </p>
+ <p>This tutorial shows
+you how to perform off-screen rendering using DirectGDI. </p>
+ </div>
+
+<div class="section" id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-F43861F5-F52F-43C3-BD34-C7255E81461A"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-F43861F5-F52F-43C3-BD34-C7255E81461A"><!-- --></a><h2 class="sectiontitle">Required background</h2> <p>This tutorial assumes a background
+knowledge of the following: </p>
+ <ul>
+<li id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-EB26018E-E6AC-5482-9569-CA7143770446"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-EB26018E-E6AC-5482-9569-CA7143770446"><!-- --></a><p><a href="GUID-CD4B8ECA-AFE7-593C-B095-5D642EA2EC61.html" title="This topic provides an introduction to the DirectGDI component. DirectGDI provides a graphics context that can be hardware accelerated, and allows an asynchronous interface.">DirectGDI</a>  </p>
+ </li>
+
+<li id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-C14490E6-D646-5697-B0E9-77A63F6BC8DD"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-C14490E6-D646-5697-B0E9-77A63F6BC8DD"><!-- --></a><p><a href="GUID-59C9EF92-8207-5FA5-AA20-0DB00C211BF1.html" title="This topic provides an introduction to the Graphics Resource Services collection.">Graphics
+Resource Component</a>  </p>
+ </li>
+
+<li id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-CF71C104-6418-5902-A122-3A3F0E665853"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-CF71C104-6418-5902-A122-3A3F0E665853"><!-- --></a><p><a href="GUID-0C4B86B5-530A-5839-86C1-46E7ABE281E0.html" title="The Window Server component manages the use of the screen by applications and handles key and pointer events.">Window
+Server</a>. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-5C530A85-85E9-49A1-A36A-6031B05D7D5A"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-5C530A85-85E9-49A1-A36A-6031B05D7D5A"><!-- --></a><h2 class="sectiontitle"> Procedure</h2> <p><strong>1. Create the image to store the
+results </strong> </p>
+ <p>The first step is to create the image (<a href="GUID-EDC0E03F-37F6-3BEC-8FF3-D03C3CDB949C.html"><span class="apiname">RSgImage</span></a>)
+that we will use to store the results of the off-screen rendering. For example: </p>
+ <pre class="codeblock" id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-8AA4CD71-A476-558C-BD31-CAF9484D592E"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-8AA4CD71-A476-558C-BD31-CAF9484D592E"><!-- --></a>// Create an image for off-screen DirectGDI rendering.
+TSgImageInfo info;
+info.iSizeInPixels = TSize(KWidth, KHeight); 
+info.iPixelFormat = EUidPixelFormatARGB_8888_PRE;
+
+// Usage is (1) to store results of DirectGDI rendering and 
+// (2) display on screen through the Window Server.
+info.iUsage = ESgUsageWindowGcSource | ESgUsageDirectGdiTarget; 
+
+info.iShareable = ETrue; // Must be shared with the Window Server.
+RSgImage image;
+err = image.Create(info, NULL, 0); // Undefined initial contents.
+User::LeaveIfError(err);</pre>
+ <p>Notice that the <a href="GUID-EDC0E03F-37F6-3BEC-8FF3-D03C3CDB949C.html"><span class="apiname">Create()</span></a> function
+takes a <a href="GUID-FE0BB820-00B3-3E13-907A-FAFB2D20D43B.html"><span class="apiname">TSgImageInfo</span></a> structure as an argument.
+This specifies the pixel format and image usage. There are two ways to choose
+the pixel format: </p>
+ <ul>
+<li id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-16B2727E-1A63-5BCD-BDD9-D2CB7E5F876C"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-16B2727E-1A63-5BCD-BDD9-D2CB7E5F876C"><!-- --></a><p>Look up the document <a href="GUID-29C7FBFB-2F33-58CA-86BE-978E3187E4D6.html">image compatibility guarantees</a> and
+select an appropriate one. This is the approach that we use here. </p>
+ </li>
+
+<li id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-C80BC79F-A583-504D-AEF3-14C8E985D519"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-C80BC79F-A583-504D-AEF3-14C8E985D519"><!-- --></a><p>Call the static <a href="GUID-EDC0E03F-37F6-3BEC-8FF3-D03C3CDB949C.html#GUID-EDC0E03F-37F6-3BEC-8FF3-D03C3CDB949C__GUID-3A431525-E5D7-323B-95B4-1A910A0585D7"><span class="apiname">RSgImage::GetPixelFormats()</span></a> function to find out at runtime
+which pixel formats are supported by the platform. </p>
+ </li>
+
+</ul>
+ <p>Notice that we specify the usage not only as a target for DirectGDI
+rendering but also as a source for the Window Server, because ultimately we
+want to display the results on the screen. </p>
+ <p> </p>
+ <p><strong>2. Draw using
+DirectGDI </strong> </p>
+ <p>Now we have created the image, we need to set the image
+as the target for DirectGDI rendering and then create a DirectGDI graphics
+context and use it to draw to the image. Here are the steps: </p>
+ <a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-B30F723D-5893-5D8E-BE41-C2B7BBA239A3"><!-- --></a><ol id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-B30F723D-5893-5D8E-BE41-C2B7BBA239A3">
+<li id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-5F233DE0-D770-5D5E-9E0E-EF01E47F50D8"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-5F233DE0-D770-5D5E-9E0E-EF01E47F50D8"><!-- --></a><p>Open the DirectGDI driver
+for use in this thread: </p>
+ <pre class="codeblock" id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-B06B6A61-544D-5A0D-99FE-279980B527CB"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-B06B6A61-544D-5A0D-99FE-279980B527CB"><!-- --></a>err = CDirectGdiDriver::Open();
+User::LeaveIfError(err);
+CDirectGdiDriver* driver = CDirectGdiDriver::Static();</pre>
+ </li>
+
+<li id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-83648812-B494-5E0D-9767-86E7D87AC84C"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-83648812-B494-5E0D-9767-86E7D87AC84C"><!-- --></a><p>Create the DirectGDI
+rendering target using the image that we created earlier: </p>
+ <pre class="codeblock" id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-06DFFE10-550B-5DE4-8F45-064ADEA31C21"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-06DFFE10-550B-5DE4-8F45-064ADEA31C21"><!-- --></a>RDirectGdiImageTarget target(*driver);
+err = target.Create(image);
+User::LeaveIfError(err);</pre>
+ </li>
+
+<li id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-4D65C671-85AC-5D97-9A6B-814B3B4D524A"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-4D65C671-85AC-5D97-9A6B-814B3B4D524A"><!-- --></a><p>Create a DirectGDI context
+and call <a href="GUID-EDC0E03F-37F6-3BEC-8FF3-D03C3CDB949C.html"><span class="apiname">Activate()</span></a> to bind our off-screen
+rendering target with it: </p>
+ <pre class="codeblock" id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-50BDCA46-3672-5FB1-9B11-334E2EE76E4C"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-50BDCA46-3672-5FB1-9B11-334E2EE76E4C"><!-- --></a>CDirectGdiContext* context = CDirectGdiContext::NewL(*driver);
+err = context-&gt;Activate(target);
+User::LeaveIfError(err);</pre>
+ </li>
+
+<li id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-778AE617-7100-5E53-B710-5F90BCE81C9D"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-778AE617-7100-5E53-B710-5F90BCE81C9D"><!-- --></a><p>Use the DirectGDI context's
+draw commands to draw to our off-screen rendering target: </p>
+ <pre class="codeblock" id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-8A0D3B1F-022D-5AAC-B8EE-DADA1DD7F561"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-8A0D3B1F-022D-5AAC-B8EE-DADA1DD7F561"><!-- --></a>context-&gt;SetBrushColor(KRgbWhite);
+context-&gt;SetDrawMode(DirectGdi::EDrawModeWriteAlpha);
+context-&gt;Clear();
+context-&gt;SetDrawMode(DirectGdi::EDrawModePEN);
+context-&gt;SetPenColor(KRgbBlue);
+context-&gt;SetPenStyle(DirectGdi::EDottedPen);
+context-&gt;DrawEllipse(KEllipseRect);</pre>
+ </li>
+
+<li id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-C2B1474C-8EA5-5ACF-8388-33619DE0BD0E"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-C2B1474C-8EA5-5ACF-8388-33619DE0BD0E"><!-- --></a><p>Call <a href="GUID-0C7CD826-95FD-3DD2-9394-3A20316C9C61.html#GUID-0C7CD826-95FD-3DD2-9394-3A20316C9C61__GUID-619EE303-1D26-33FD-AFEB-C767E8BDD71F"><span class="apiname">CDirectGdiDriver::Finish()</span></a> to
+ensure that all of the drawing commands have been processed: </p>
+ <pre class="codeblock" id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-5391B93E-C8AA-5665-B39E-24AB2D49BF15"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-5391B93E-C8AA-5665-B39E-24AB2D49BF15"><!-- --></a>driver-&gt;Finish();</pre>
+ </li>
+
+</ol>
+ <p><strong>3. Display the results on the screen </strong> </p>
+ <p>The final stage
+is to display the image that we have used as our off-screen rendering target
+on the screen. We do this by drawing the image to a Window Server window,
+like this: </p>
+ <a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-8C268931-8505-5AAA-BA95-269F7899B659"><!-- --></a><ol id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-8C268931-8505-5AAA-BA95-269F7899B659">
+<li id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-42C8F3B6-2500-5519-9126-7B629C3BEAE4"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-42C8F3B6-2500-5519-9126-7B629C3BEAE4"><!-- --></a><p>Prepare the image for
+use as a source in a Window Server context: </p>
+ <pre class="codeblock" id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-69D359B5-C904-5FDE-B412-721C421FAD8D"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-69D359B5-C904-5FDE-B412-721C421FAD8D"><!-- --></a>RWsSession&amp; wsSession = GetMyWsSession();
+RWsDrawableSource source(wsSession);
+err = source.Create(image, screenNumber);
+User::LeaveIfError(err);</pre>
+ </li>
+
+<li id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-ABCEF123-7786-5BE0-B7D2-748896379A75"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-ABCEF123-7786-5BE0-B7D2-748896379A75"><!-- --></a><p>Use the Window Server
+context to draw the image in a window: </p>
+ <pre class="codeblock" id="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-B29FEDA0-5316-56E3-8929-54C8574D7285"><a name="GUID-E2A886E1-39FD-517F-870E-3B1BCD49E8CD__GUID-B29FEDA0-5316-56E3-8929-54C8574D7285"><!-- --></a>CWindowGc* windowContext = ActivateMyWindowContext();
+windowContext-&gt;DrawResource(TPoint(0, 0), source);</pre>
+ </li>
+
+</ol>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-A2E07A3C-B3A8-50B9-BD60-F1F01795FA24.html" title="The DirectGDI component provides a graphics context that can be hardware accelerated, and allows an asynchronous interface.">DirectGDI Component</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-59C9EF92-8207-5FA5-AA20-0DB00C211BF1.html" title="This topic provides an introduction to the Graphics Resource Services collection.">Graphics
+Resource Overview</a></div>
+<div><a href="GUID-29C7FBFB-2F33-58CA-86BE-978E3187E4D6.html">Image Compatibility
+Guarantees</a></div>
+<div><a href="GUID-CD4B8ECA-AFE7-593C-B095-5D642EA2EC61.html" title="This topic provides an introduction to the DirectGDI component. DirectGDI provides a graphics context that can be hardware accelerated, and allows an asynchronous interface."> DirectGDI
+Overview</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

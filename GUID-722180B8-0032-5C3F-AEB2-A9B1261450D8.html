@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="Starting a Socket Server connection: Tutorial"/>
+<meta name="abstract" content="This tutorial describes how to start an RConnection connection. Each connection must be started to link the connection with the network interface hardware."/>
+<meta name="description" content="This tutorial describes how to start an RConnection connection. Each connection must be started to link the connection with the network interface hardware."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2139B04C-6ED6-599B-A018-D92451B8353E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-61E0CD76-A2E3-5066-84A8-146EECA8ADCD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-722180B8-0032-5C3F-AEB2-A9B1261450D8"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Starting a Socket Server connection: Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-722180B8-0032-5C3F-AEB2-A9B1261450D8"><a name="GUID-722180B8-0032-5C3F-AEB2-A9B1261450D8"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2682451 id2518388 id2518454 id2518515 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html" title="The Communications Framework is the base for all communications, network and telephony services that Symbian platform provides. The Communications Framework manages the communications threads and the flow of information between those threads. The Framework also manages and stores the communications related settings.">Communications Framework Guide</a> &gt; <a href="GUID-2139B04C-6ED6-599B-A018-D92451B8353E.html">Data Communications Server</a> &gt; <a href="GUID-61E0CD76-A2E3-5066-84A8-146EECA8ADCD.html">Socket Server</a> &gt; <a href="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html">Socket Server Tutorials</a> &gt; </div>
+<h1 class="topictitle1"> Starting
+a Socket Server connection: Tutorial</h1>
+<div><p>This tutorial describes how to start an <samp class="codeph">RConnection</samp> connection.
+Each connection must be started to link the connection with the network interface
+hardware. </p>
+
+<div class="section" id="GUID-722180B8-0032-5C3F-AEB2-A9B1261450D8__GUID-62356291-EB29-4139-93A9-CB0F8F81F078"><a name="GUID-722180B8-0032-5C3F-AEB2-A9B1261450D8__GUID-62356291-EB29-4139-93A9-CB0F8F81F078"><!-- --></a><p><strong>Implicit Connection Startup</strong></p>
+<p>In the following example,
+the application is unaware of the connection and does not have an instance
+of <a href="GUID-BED8A733-2ED7-31AD-A911-C1F4707C67FD.html"><span class="apiname">RConnection</span></a>. This might be used if an application tries
+to connect a socket or resolve a name and the socket server detects that a
+connection has not been started. This example does not differ from previous
+versions of the Symbian platform.</p>
+<p>Note: Error handling is not included
+to aid clarity.  </p>
+<pre class="codeblock">RSocketServ ss;
+RSocket sock;
+TRequestStatus status;
+
+// Connect to the socket server
+ss.Connect();
+
+// Open a TCP socket 
+sock.Open(ss, KAfInet, KSockStream, KProtocolInetTcp);
+_LIT(KRasAddr,"10.159.24.13");
+const TInt KEchoPort = 7;
+TInetAddr destAddr;
+destAddr.Input(KRasAddr);
+destAddr.SetPort(KEchoPort);
+
+// Request the Socket to connect to the destination (implicit Connection)
+sock.Connect(destAddr, status);
+</pre>
+</div>
+
+<div class="example"><h2 class="sectiontitle">Explicit Connection Startup</h2> <p>The following example
+shows how an application can start a connection explicitly via an <samp class="codeph">RConnection</samp> instance,
+and tie an <samp class="codeph">RHostResolver</samp> and <samp class="codeph">RSocket</samp> to
+the connection started. </p>
+ <p>The application is able to override the connection
+preference settings in CommDb allowing it to specify the Network, IAP, ISP
+and bearer used. Code examples are given for the cases with and without overrides. </p>
+ <p>See <a href="GUID-739117F6-9559-3274-8E00-B2B653C0A8B6.html"><span class="apiname">TCommDbConnPref</span></a> for
+information about how to set up the connection. </p>
+ <pre class="codeblock" id="GUID-722180B8-0032-5C3F-AEB2-A9B1261450D8__GUID-1B9252B9-B731-55A0-A379-E51D94ACF768"><a name="GUID-722180B8-0032-5C3F-AEB2-A9B1261450D8__GUID-1B9252B9-B731-55A0-A379-E51D94ACF768"><!-- --></a>
+RSocketServ ss;
+TRequestStatus status;
+RConnection conn;
+
+_LIT(KRasAddr,"10.159.24.13");
+const TInt KEchoPort = 7;
+
+TInetAddr destAddr;
+destAddr.Input(KRasAddr);
+destAddr.SetPort(KEchoPort);
+
+// Connect to the socket server
+ss.Connect();
+
+// Open an RConnection object. Note that you must provide the RSocketServ object
+conn.Open(ss);
+
+// Create overrides
+TCommDbConnPref prefs;
+prefs. SetDialogPreference(ECommDbDialogPrefDoNotPrompt);
+prefs.SetDirection(ECommDbConnectionDirectionOutgoing);
+prefs.SetIapId(4);
+
+// Start an Outgoing Connection with overrides
+conn.Start(prefs);
+
+// Open a Host Resolver associated with the connection
+RHostResolver hr;
+hr.Open(ss, KAfInet, KProtocolInetTcp, conn);
+
+// Open a Socket associated with the connection
+RSocket sock;
+sock.Open(ss, KAfInet, KSockStream, KProtocolInetTcp, conn);
+
+// Request the Socket to connect to the destination
+sock.Connect(destAddr, status);
+</pre>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html">Socket Server Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

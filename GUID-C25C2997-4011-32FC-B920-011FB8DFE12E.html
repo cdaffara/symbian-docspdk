@@ -1,0 +1,777 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CMTPParserRouter"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E"/>
+
+<title>CMTPParserRouter</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E"><a name="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CMTPParserRouter Class Reference</h1>
+	<table class="signature"><tr><td>class CMTPParserRouter : public CBase</td></tr></table><div class="section"><div>
+			<p>Implements the MTP framework parser/router singleton.</p>
+
+			<p>The MTP framework parser/router singleton is responsible for directing received MTP operation request (and event) datasets to the appropriate data provider(s) for processing, and performs the following major functions:</p>
+
+			<p>1. Parses received operation request and event datasets to extract and coarse grain validate routing data (<a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html#GUID-AD5CD30E-C6A0-3397-8684-82AF178B2955">ParseOperationRequestL</a>). 2. Executes one or more routing algorithms to select the set of data provider targets able to service the operation or event (<a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html#GUID-6A716FFF-36FA-356E-B07F-D9E1D71E8E7B">RouteOperationRequestL</a>). 3. (Optionally) dispatches the request or event (<a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html#GUID-0018455A-930B-370C-BB83-7723C28B19DE">ProcessRequestL</a>).There are two basic scenarios which the parser/router must handle, and a different set of APIs is provided for each. These scenarios are:</p>
+
+			<p>1. The initial routing of operations as they are first received. This routing is initiated by the MTP framework using the <a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html#GUID-0018455A-930B-370C-BB83-7723C28B19DE">ProcessRequestL</a> API. This API executes all three of the functions identified above. 2. The secondary routing of those operations which cannot be dispatched directly. Either because they require the combined processing capabilities of multiple data providers to produce an aggregated response, or; because they cannot be routed using data available during the operation request phase and can only be routed to their final target using data available during the operation data phase. This secondary routing is performed by the MTP framework's proxy data provider using the <a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html#GUID-AD5CD30E-C6A0-3397-8684-82AF178B2955">ParseOperationRequestL</a> and <a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html#GUID-6A716FFF-36FA-356E-B07F-D9E1D71E8E7B">RouteOperationRequestL</a> APIs. These APIs respectively execute the first two functions identified above, which are separated in order to allow additional information to be added to the routing data by the proxy data provider. The third function identified above is not executed in this scenario, since a very different dispatching mechanism must be used by the proxy data provider.The parser/router implements a number of different routing algorithm types, some of which are further decomposed into sub-types to achieve a finer level of routing granularity and control. In combination these algorithms support the following general routing mechanisms:</p>
+
+			<p>1. Device - A subset of device oriented MTP operations are always dispatched to the device data provider. 2. Proxy - A subset of MTP operations cannot be dispatched directly. Either they require the combined processing capabilities of multiple data providers to produce an aggregated response, or cannot be routed using data available from the operation dataset alone. These operations are dispatched to the proxy data provider for additional processing. 3. Object Handle - MTP object handles generated by the MTP framework are encoded with a data provider identifier to efficiently route those MTP operations which supply an object handle as a parameter. 4. StorageID - MTP storage identifiers generated by the MTP framework are encoded with a data provider identifier to efficiently route those MTP operations which supply a storage identifier as a parameter. 5. Operation Parameter - On being loaded each data provider supplies a set of configuration data (MTP operation codes, event codes, object property codes, device property codes, and storage system types) which collectively define the set of MTP operation requests that it wishes to receive. 6. Request Registration - Data providers may optionally register MTP operation request datasets with the framework which, when subsequently matched, will be routed to them. This mechanism is used to route those MTP operation types which are paired to complete over two transaction cycles (e.g. SendObjectInfo/SendObject). It may also be used to route vendor extension operation requests.</p>
+
+			<p>The following routing algorithm types are implemeted:</p>
+
+			<p>1. Operation Parameter Routing</p>
+
+			<p>Operation parameter routing is the primary routing mechanism and by default is enabled for both initial and secondary proxy routing scenarios. Operation parameter routing involves selecting one or more data provider targets using routing data obtained from or related to the supplied operation dataset parameters using one of the following sub-types:</p>
+
+			<p>o Parameter lookup routing sub-types, which match operation dataset parameter data with the set of supported capabilities registered by each data provider on being loaded, or; o Parameter decode routing sub-types, which extract data provider target identifiers encoded into the parameter data itself.</p>
+
+			<p>The parameter lookup routing sub-types are table driven and utilise binary search techniques to minimise processing overhead. The following parameter lookup routing sub-types (tables) are implemented, each characterised by the combination of parameters they require to map to a routing target:</p>
+
+			<p>o DevicePropCode o ObjectPropCode o OperationCode o StorageType o FormatCode + FormatSubcode o FormatCode + OperationCode o StorageType + OperationCode o FormatCode + FormatSubcode + StorageType</p>
+
+			<p>These routing tables may be further characterised by modifier flags which e.g. allow or disallow duplicate entries, or specify ascending or descending sort orders which in turn can manipulate the order in which proxy targets are processed.</p>
+
+			<p>The parameter decode routing sub-types extract routing target identifiers directly from the operation dataset parameter data itself. The following parameter decode routing sub-types are implemented:</p>
+
+			<p>o Object Handle o StorageID</p>
+
+			<p>2. Framework Routing</p>
+
+			<p>By default, framework routing is enabled during initial operation routing only and not during secondary proxy routing. Framework routing directs a sub-set of MTP operations to one or other of the framework data providers. Using one of the following routing sub-types:</p>
+
+			<p>o Device DP. A fixed sub-set of MTP operations are always dispatched to the device data provider. o Proxy DP. A fixed sub-set of MTP operations are always dispatched to the proxy data provider. In addition, any operations which yield multiple routing targets will also be routed to the proxy data provider.</p>
+
+			<p>3. Request Registration Routing</p>
+
+			<p>By default, request registration routing is enabled during initial operation routing only and not during secondary proxy routing. Data providers may optionally register MTP operation request datasets with the framework which, when subsequently matched, will be routed to them. This mechanism is used to process those MTP operation types which are paired to complete over two transaction cycles (e.g. SendObjectInfo/SendObject). It may also be used to route vendor extension operation requests.</p>
+
+			<p>Request registration routing does not implement any routing sub-types.</p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CMTPParserRouter<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section nested"><h2 class="sectiontitle">Nested Classes and Structures</h2><ul><li><a href="GUID-1A8281F3-77F3-3DB0-B4A2-8D26AFA99A53.html">CMTPParserRouter::CMap</a></li><li><a href="GUID-7B7FC99E-8F56-3A32-9744-DD89CE17F36A.html">CMTPParserRouter::TMap</a></li><li><a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">CMTPParserRouter::TRoutingParameters</a></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-98899478-CE46-349C-868F-D535FEC739B9">~CMTPParserRouter</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-B4834592-C49E-3519-9E27-5FC45BC14B1B">ConfigureL</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html">CMTPParserRouter</a> *</td><td><a href="#GUID-59D39FF9-5AAF-3AD5-A62E-45F34AB51B07">NewL</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-DA895F64-32F2-3BB4-B2ED-409625F54AC0">OperationSupportedL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint16</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-AD5CD30E-C6A0-3397-8684-82AF178B2955">ParseOperationRequestL</a>(<a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-007493C4-85B7-3740-8C7F-55FF71BCCD16">ProcessEventL</a>(const <a href="GUID-22FA2C54-7FC1-3973-AE71-A43386D44D9A.html">TMTPTypeEvent</a> &amp;, <a href="GUID-74748CB4-D13A-378F-BBD9-EE5784DD025C.html">CMTPConnection</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-0018455A-930B-370C-BB83-7723C28B19DE">ProcessRequestL</a>(const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp;, <a href="GUID-74748CB4-D13A-378F-BBD9-EE5784DD025C.html">CMTPConnection</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-6A716FFF-36FA-356E-B07F-D9E1D71E8E7B">RouteOperationRequestL</a>(const <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-F2F756E2-4AA8-3CB5-B696-9BCF39310BDB">RouteRequestRegisterL</a>(const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp;, <a href="GUID-31C19FDD-10EE-38A5-B5A3-26B86F09EA6E.html">MMTPConnection</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-E68E8F3D-CCF8-3B8A-828D-A9CB20F855A8">RouteRequestRegisteredL</a>(const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp;, <a href="GUID-31C19FDD-10EE-38A5-B5A3-26B86F09EA6E.html">MMTPConnection</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-C3CF7211-4910-37FB-A594-78E863269A53">RouteRequestUnregisterL</a>(const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp;, <a href="GUID-31C19FDD-10EE-38A5-B5A3-26B86F09EA6E.html">MMTPConnection</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-CC484A97-9EC0-308A-B5C2-6C097920F42C">CMTPParserRouter</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-62023106-C1AB-38F7-906F-872080167E69">Configure1ParameterMapL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-47D2CD7A-BD5E-3CC2-94A1-A837E48C1697">Configure2ParameterMapL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-C62D92FA-8142-3A80-8790-6EB17361AAFB">Configure3ParameterMapL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-2041EB4F-FD8D-3C52-8B45-63D657ED2E3A">ConstructL</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td><a href="#GUID-68DE7741-21DA-3ADB-A981-06DA81983EE7">Flags</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-5D9C9A66-FD70-3216-A7C6-A5213F518CA4">GetConfigParametersL</a>(const <a href="GUID-28931CA1-03A9-3440-A3EB-D503AC08B0DB.html">CMTPDataProvider</a> &amp;, const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-0520F0B6-652F-312D-98BD-C44CECD53944">GetMapParameterIdsL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-4F382F86-CEC8-337A-9031-70D3EAB52651">GetRoutingSubTypesCopyMoveRequestL</a>(<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-1C32D475-3B29-3DB5-8C41-A7B0810585ED">GetRoutingSubTypesDeleteObjectPropListL</a>(<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-363A7464-FD29-333B-83BB-F8C118C31042">GetRoutingSubTypesDeleteRequestL</a>(<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-F950BACF-D8CE-3383-B3D1-148A7EC6B10F">GetRoutingSubTypesGetFormatCapabilitiesL</a>(<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-0CDE32B5-50C7-3282-8B65-C26E7E882813">GetRoutingSubTypesGetObjectPropListRequestL</a>(<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-3B013B63-C331-31BD-8566-B5BEBE3CFB53">GetRoutingSubTypesL</a>(<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-59E49853-3175-335D-9A6F-F69B3F9B2872">GetRoutingSubTypesSendObjectPropListRequestL</a>(<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td><a href="#GUID-6BA05607-FDFF-3222-A4A1-B49EDD5A7F9F">Index</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td><a href="#GUID-B89CE658-F513-35BB-8249-0BC7E85C3EBC">Params</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td><a href="#GUID-2FA97658-2F68-3734-A7F1-B9EFED6BD1AC">ParamsCount</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-7EFCEDEE-4D48-3037-9B75-05A71E5CE1A6">ParseOperationRequestParameterL</a>(<a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest::TElements</a>, <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters::TParameterType</a>, <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-DEECF3E4-4796-3133-8EBB-DB1E34AACE04">RouteOperationRequest0ParametersL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, const <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-9F20AA46-3950-3341-91D5-555F2350C55A">RouteOperationRequestNParametersL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, const <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td><a href="#GUID-2AA365EB-133E-3AE6-9763-D4B2BBE1502C">RoutingTargetL</a>(const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp;, <a href="GUID-74748CB4-D13A-378F-BBD9-EE5784DD025C.html">CMTPConnection</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-B38EC52F-D247-3066-A716-4A127CE2FD6E">SelectSubTypeRoutingL</a>(<a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html">TRoutingSubType</a>, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-54A13A64-6B3D-39C4-BB09-228C6DD54CA0">SelectSubTypeValidationL</a>(<a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html">TRoutingSubType</a>, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-0E72D140-8F50-3D23-A126-CD47897F8FEA">SelectTargetL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td><a href="#GUID-F79322FC-386F-3183-9290-92990F074CF6">SubType</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-05986408-2A4C-370C-AA6C-D374B048D966">ValidateOperationRequestParametersL</a>(<a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-54DA112F-E1ED-380D-9702-DD7A4FE9BB5E">ValidateTargetsL</a>(const <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp;, const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Enumerations</th></tr></thead><tbody><tr><td align="right" valign="top">enum</td><td><a href="#GUID-1196F7E7-8AAA-3742-90B6-D7029731932D">TRoutingParams</a> { <a href="#GUID-1591F2DE-CCD0-371A-90C3-C97F7B4AD148">EParam1</a> = 0, <a href="#GUID-4B5B9834-506D-334E-AAA9-9CC211877E47">EParam2</a> = 1, <a href="#GUID-FC5B60A7-5784-301B-9A42-50547600185A">EParam3</a> = 2 }</td></tr><tr class="bg"><td align="right" valign="top">enum</td><td><a href="#GUID-E7B5D573-BBE3-3626-86E1-67272CFC27C7">TRoutingSubType</a> { <br/><a href="#GUID-1A06F72B-A1EE-3594-AF9D-CA15548F94FE">ESubTypeIndexMask</a> = 0x0000FFFF, <a href="#GUID-0586F788-A138-3030-931F-42FA1F5AC31D">ESubTypeFlagMask</a> = 0x00FF0000, <a href="#GUID-EACE72B8-B164-3199-B806-F75CB84A6D4B">ESubTypeFlagNone</a> = 0x00000000, <a href="#GUID-F5E91DEB-7598-3026-9B6E-352492CF98E8">ESubTypeFlagEnableDuplicates</a> = 0x00010000, <a href="#GUID-10E4964D-EC36-3F99-9AAE-195EEA9780B4">ESubTypeFlagOrderDescending</a> = 0x00020000, <a href="#GUID-30BB9217-77F8-3E51-B213-1E0CD197E646">ESubTypeParamsMask</a> = 0xFF000000, <a href="#GUID-E804EEDB-B096-3974-9562-88179C264FA5">ESubTypeParams0</a> = 0x00000000, <a href="#GUID-D5D564BB-E532-3F7A-87FD-5846057E23F0">ESubTypeParams1</a> = 0x01000000, <a href="#GUID-7C3C8F69-84A4-38DE-BA9C-285818095844">ESubTypeParams2</a> = 0x02000000, <a href="#GUID-FD26B41D-7D7E-3AC9-BA6E-3B19E6695D77">ESubTypeParams3</a> = 0x03000000, <a href="#GUID-AC6E68E5-F763-33DA-830F-B98A2F9056ED">ESubTypeDevicePropCode</a> = (0x00000000 | ESubTypeParams1 | ESubTypeFlagNone), <a href="#GUID-AF694085-8ACD-3DCE-A073-E21E3191FEDC">ESubTypeObjectPropCode</a> = (0x00000001 | ESubTypeParams1 | ESubTypeFlagEnableDuplicates), <a href="#GUID-C4BBB330-677B-3E13-9A71-488DC1C56859">ESubTypeOperationCode</a> = (0x00000002 | ESubTypeParams1 | ESubTypeFlagEnableDuplicates), <a href="#GUID-B05F404D-F77C-3AB3-9415-EB24617179F6">ESubTypeStorageType</a> = (0x00000003 | ESubTypeParams1 | ESubTypeFlagEnableDuplicates), <a href="#GUID-FE1558A3-7FDA-3A4E-BF9C-D209D61C6D0E">ESubTypeFormatCodeFormatSubcode</a> = (0x00000004 | ESubTypeParams2 | (ESubTypeFlagEnableDuplicates | ESubTypeFlagOrderDescending)), <a href="#GUID-F241ECA1-BB8D-32BA-9FD5-3A4B74957562">ESubTypeFormatCodeOperationCode</a> = (0x00000005 | ESubTypeParams2 | ESubTypeFlagEnableDuplicates), <a href="#GUID-C785FEEA-84AD-36BB-8D47-35185F5623A2">ESubTypeStorageTypeOperationCode</a> = (0x00000006 | ESubTypeParams2 | ESubTypeFlagEnableDuplicates), <a href="#GUID-AB8582A6-0033-329F-8BD8-4D07DC99BB96">ESubTypeFormatCodeFormatSubcodeStorageType</a> = (0x00000007 | ESubTypeParams3 | ESubTypeFlagNone), <a href="#GUID-2F8647CD-EC84-3053-8697-4DBD8D0DE476">ESubTypeServiceIDOperationCode</a> = (0x00000008 | ESubTypeParams1 | ESubTypeFlagNone), <a href="#GUID-984D393D-FEB7-3F0D-93CC-4B6471F76795">ESubTypeDpDevice</a> = (0x00000009 | ESubTypeParams0 | ESubTypeFlagNone), <a href="#GUID-A5155716-51F7-39BB-AAAE-056D2C9F24F0">ESubTypeDpProxy</a> = (0x0000000A | ESubTypeParams0 | ESubTypeFlagNone), <a href="#GUID-C8989933-15F3-3107-9243-E4459A73EBC9">ESubTypeOwnerObject</a> = (0x0000000B | ESubTypeParams0 | ESubTypeFlagNone), <a href="#GUID-33E072DF-7C24-3735-85D1-C25EDB960BE6">ESubTypeOwnerStorage</a> = (0x0000000C | ESubTypeParams0 | ESubTypeFlagNone), <a href="#GUID-42C8EC71-6201-3FE6-8C04-F57ED3D97121">ESubTypeRequestRegistration</a> = (0x0000000D | ESubTypeParams0 | ESubTypeFlagNone)<br/> }</td></tr><tr><td align="right" valign="top">enum</td><td><a href="#GUID-284DC90B-8D8E-3600-8B3D-24B30B8F6EA8">TRoutingType</a> { <br/><a href="#GUID-E5F1EB1E-FAE5-3B6E-9F17-B29583E0F968">ETypeFlagMask</a> = 0xFF000000, <a href="#GUID-05EE8EC8-1922-3EBD-B178-7C35431E98FF">ETypeFlagSingleTarget</a> = 0x01000000, <a href="#GUID-40990BDE-0512-3289-9DA5-9B17BFC5DE63">ETypeMask</a> = 0x0000FFFF, <a href="#GUID-C30CF4D9-F549-3C26-9C7F-1526EFAD4A2B">ETypeFramework</a> = 0x00000001, <a href="#GUID-858EA6C6-6958-30E2-8AEB-7F5CE944C94F">ETypeOperationParameter</a> = 0x00000002, <a href="#GUID-50D130E9-504D-35AE-9B7C-BE63C2DDF7D7">ETypeRequestRegistration</a> = 0x00000004<br/> }</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top"/><td><a href="#GUID-8271A8B7-C490-33EE-B8D2-492BCA05AB1B">__FLOG_DECLARATION_MEMBER_MUTABLE</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-1A8281F3-77F3-3DB0-B4A2-8D26AFA99A53.html">CMap</a> &gt;</td><td><a href="#GUID-61F27C3E-7CE8-317C-8E0C-5AA91D4DEC8E">iMaps</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-B4AE6D20-81D0-310D-B19F-5075D6C28A48.html">RMTPFramework</a>
+				</td><td><a href="#GUID-E607F71C-FCBB-32D3-A637-1F6A40124AA7">iSingletons</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-CC484A97-9EC0-308A-B5C2-6C097920F42C"><a name="GUID-CC484A97-9EC0-308A-B5C2-6C097920F42C"><!-- --></a>
+		<h2 class="topictitle2">CMTPParserRouter()</h2>
+		<table class="signature"><tr><td>CMTPParserRouter</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Constructor. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-98899478-CE46-349C-868F-D535FEC739B9"><a name="GUID-98899478-CE46-349C-868F-D535FEC739B9"><!-- --></a>
+		<h2 class="topictitle2">~CMTPParserRouter()</h2>
+		<table class="signature"><tr><td>~CMTPParserRouter</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Destructor </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-62023106-C1AB-38F7-906F-872080167E69"><a name="GUID-62023106-C1AB-38F7-906F-872080167E69"><!-- --></a>
+		<h2 class="topictitle2">Configure1ParameterMapL(TUint, const RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>Configure1ParameterMapL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aSubType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aP1Codes</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<div class="p">Configures (loads) the specified one lookup parameter routing sub-type map. The map is constructed by interrogating each data provider in turn and building a set of map table entries which resolve each supported <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> code to its data provider (target) identifier. <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> codes which comprise the first lookup parameter. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aSubType</td><td>The routing sub-type identifier.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aP1Codes</td><td>The set of  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-47D2CD7A-BD5E-3CC2-94A1-A837E48C1697"><a name="GUID-47D2CD7A-BD5E-3CC2-94A1-A837E48C1697"><!-- --></a>
+		<h2 class="topictitle2">Configure2ParameterMapL(TUint, const RArray&lt; TUint &gt; &amp;, const RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>Configure2ParameterMapL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aSubType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aP1Codes,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aP2Codes</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<div class="p">Configures (loads) the specified two lookup parameter routing sub-type map. The map is constructed by interrogating each data provider in turn and building a set of map table entries which resolve each combination of supported <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> codes to its data provider (target) identifier. <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> codes which comprise the first lookup parameter. <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> codes which comprise the second lookup parameter. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aSubType</td><td>The routing sub-type identifier.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aP1Codes</td><td>The set of  </td></tr><tr><td class="parameter">const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aP2Codes</td><td>The set of  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C62D92FA-8142-3A80-8790-6EB17361AAFB"><a name="GUID-C62D92FA-8142-3A80-8790-6EB17361AAFB"><!-- --></a>
+		<h2 class="topictitle2">Configure3ParameterMapL(TUint, const RArray&lt; TUint &gt; &amp;, const RArray&lt; TUint &gt; &amp;, const RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>Configure3ParameterMapL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aSubType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aP1Codes,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aP2Codes,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aP3Codes</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<div class="p">Configures (loads) the specified three lookup parameter routing sub-type map. The map is constructed by interrogating each data provider in turn and building a set of map table entries which resolve each combination of supported <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> codes to its data provider (target) identifier. <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> codes which comprise the first lookup parameter. <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> codes which comprise the second lookup parameter. <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> codes which comprise the third lookup parameter. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aSubType</td><td>The routing sub-type identifier.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aP1Codes</td><td>The set of  </td></tr><tr><td class="parameter">const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aP2Codes</td><td>The set of  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aP3Codes</td><td>The set of  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B4834592-C49E-3519-9E27-5FC45BC14B1B"><a name="GUID-B4834592-C49E-3519-9E27-5FC45BC14B1B"><!-- --></a>
+		<h2 class="topictitle2">ConfigureL()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ConfigureL</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<div class="p">Configures the parser/router. This processing primarily involves retrieving each data provider's set of supported category codes and using them to build up the operation parameter lookup routing sub-type tables. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a processing failure occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-2041EB4F-FD8D-3C52-8B45-63D657ED2E3A"><a name="GUID-2041EB4F-FD8D-3C52-8B45-63D657ED2E3A"><!-- --></a>
+		<h2 class="topictitle2">ConstructL()</h2>
+		<table class="signature"><tr><td>void</td><td>ConstructL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Second-phase constructor. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-68DE7741-21DA-3ADB-A981-06DA81983EE7"><a name="GUID-68DE7741-21DA-3ADB-A981-06DA81983EE7"><!-- --></a>
+		<h2 class="topictitle2">Flags(TUint)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td>Flags</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aSubType</td><td>)</td><td>[private, static]</td></tr></table><div class="section"><div>
+				<p>Provides the routing sub-type modifier flags of the specified routing sub-type. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aSubType</td><td>The routing sub-type identifier.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5D9C9A66-FD70-3216-A7C6-A5213F518CA4"><a name="GUID-5D9C9A66-FD70-3216-A7C6-A5213F518CA4"><!-- --></a>
+		<h2 class="topictitle2">GetConfigParametersL(const CMTPDataProvider &amp;, const RArray&lt; TUint &gt; &amp;, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetConfigParametersL</td><td>(</td><td>const <a href="GUID-28931CA1-03A9-3440-A3EB-D503AC08B0DB.html">CMTPDataProvider</a> &amp;</td><td>aDp,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aCodes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aParams</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<div class="p">Obtains the set of supported <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> code parameter values supported by the specified data provider. <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> codes which comprise the parameter. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-28931CA1-03A9-3440-A3EB-D503AC08B0DB.html">CMTPDataProvider</a> &amp; aDp</td><td>The data provider.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aCodes</td><td>The set of  </td></tr><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aParams</td><td>On exit, the set of supported parameter values.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0520F0B6-652F-312D-98BD-C44CECD53944"><a name="GUID-0520F0B6-652F-312D-98BD-C44CECD53944"><!-- --></a>
+		<h2 class="topictitle2">GetMapParameterIdsL(TUint, RArray&lt; TUint &gt; &amp;, RArray&lt; TUint &gt; &amp;, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetMapParameterIdsL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aSubType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aP1Codes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aP2Codes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aP3Codes</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"><div>
+				<div class="p">Provides the set of <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> codes which comprise each of the lookup parameters for the specified routing sub-type (routing map). <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> codes which comprise the first lookup parameter. This set will be empty if the routing sub-type implements fewer than one parameter. <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> codes which comprise the second lookup parameter. This set will be empty if the routing sub-type implements fewer than two parameters. <a href="GUID-61D7E3D5-EC7F-3338-8291-368F852184CF.html#GUID-C3EC2F12-ABC3-36B9-B752-E9FD3966E1C3">TMTPSupportCategory</a> codes which comprise the third lookup parameter. This set will be empty if the routing sub-type implements fewer than three parameters. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aSubType</td><td>The routing sub-type identifier.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aP1Codes</td><td>On exit, the set of  </td></tr><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aP2Codes</td><td>On exit, the set of  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aP3Codes</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4F382F86-CEC8-337A-9031-70D3EAB52651"><a name="GUID-4F382F86-CEC8-337A-9031-70D3EAB52651"><!-- --></a>
+		<h2 class="topictitle2">GetRoutingSubTypesCopyMoveRequestL(RArray&lt; TRoutingParameters &gt; &amp;, RArray&lt; TUint &gt; &amp;, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetRoutingSubTypesCopyMoveRequestL</td><td>(</td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;</td><td>aParams,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aRoutingSubTypes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aValidationSubTypes</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<div class="p">Provides the set of operation parameter routing and validation sub-types to be executed against each of the specified MTP CopyObject and MoveObject operation routing parameter data. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp; aParams</td><td>The set of operation routing parameter data.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aRoutingSubTypes</td><td>On exit, the set of routing sub-types to be executed.  </td></tr><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aValidationSubTypes</td><td>On exit, the set of validation sub-types to be executed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1C32D475-3B29-3DB5-8C41-A7B0810585ED"><a name="GUID-1C32D475-3B29-3DB5-8C41-A7B0810585ED"><!-- --></a>
+		<h2 class="topictitle2">GetRoutingSubTypesDeleteObjectPropListL(RArray&lt; TRoutingParameters &gt; &amp;, RArray&lt; TUint &gt; &amp;, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetRoutingSubTypesDeleteObjectPropListL</td><td>(</td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;</td><td>aParams,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aRoutingSubTypes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aValidationSubTypes</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp; aParams</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aRoutingSubTypes</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aValidationSubTypes</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-363A7464-FD29-333B-83BB-F8C118C31042"><a name="GUID-363A7464-FD29-333B-83BB-F8C118C31042"><!-- --></a>
+		<h2 class="topictitle2">GetRoutingSubTypesDeleteRequestL(RArray&lt; TRoutingParameters &gt; &amp;, RArray&lt; TUint &gt; &amp;, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetRoutingSubTypesDeleteRequestL</td><td>(</td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;</td><td>aParams,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aRoutingSubTypes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aValidationSubTypes</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<div class="p">Provides the set of operation parameter routing and validation sub-types to be executed against each of the specified MTP DeleteObject operation routing parameter data. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp; aParams</td><td>The set of operation routing parameter data.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aRoutingSubTypes</td><td>On exit, the set of routing sub-types to be executed.  </td></tr><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aValidationSubTypes</td><td>On exit, the set of validation sub-types to be executed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F950BACF-D8CE-3383-B3D1-148A7EC6B10F"><a name="GUID-F950BACF-D8CE-3383-B3D1-148A7EC6B10F"><!-- --></a>
+		<h2 class="topictitle2">GetRoutingSubTypesGetFormatCapabilitiesL(RArray&lt; TRoutingParameters &gt; &amp;, RArray&lt; TUint &gt; &amp;, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetRoutingSubTypesGetFormatCapabilitiesL</td><td>(</td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;</td><td>aParams,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aRoutingSubTypes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aValidationSubTypes</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp; aParams</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aRoutingSubTypes</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aValidationSubTypes</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0CDE32B5-50C7-3282-8B65-C26E7E882813"><a name="GUID-0CDE32B5-50C7-3282-8B65-C26E7E882813"><!-- --></a>
+		<h2 class="topictitle2">GetRoutingSubTypesGetObjectPropListRequestL(RArray&lt; TRoutingParameters &gt; &amp;, RArray&lt; TUint &gt; &amp;, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetRoutingSubTypesGetObjectPropListRequestL</td><td>(</td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;</td><td>aParams,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aRoutingSubTypes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aValidationSubTypes</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<div class="p">Provides the set of operation parameter routing and validation sub-types to be executed against each of the specified MTP GetObjectPropList operation routing parameter data. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp; aParams</td><td>The set of operation routing parameter data.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aRoutingSubTypes</td><td>On exit, the set of routing sub-types to be executed.  </td></tr><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aValidationSubTypes</td><td>On exit, the set of validation sub-types to be executed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3B013B63-C331-31BD-8566-B5BEBE3CFB53"><a name="GUID-3B013B63-C331-31BD-8566-B5BEBE3CFB53"><!-- --></a>
+		<h2 class="topictitle2">GetRoutingSubTypesL(RArray&lt; TRoutingParameters &gt; &amp;, RArray&lt; TUint &gt; &amp;, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetRoutingSubTypesL</td><td>(</td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;</td><td>aParams,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aRoutingSubTypes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aValidationSubTypes</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<div class="p">Provides the set of operation parameter routing and validation sub-types to be executed against each of the specified operation routing parameter data. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp; aParams</td><td>The set of operation routing parameter data.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aRoutingSubTypes</td><td>On exit, the set of routing sub-types to be executed.  </td></tr><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aValidationSubTypes</td><td>On exit, the set of validation sub-types to be executed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-59E49853-3175-335D-9A6F-F69B3F9B2872"><a name="GUID-59E49853-3175-335D-9A6F-F69B3F9B2872"><!-- --></a>
+		<h2 class="topictitle2">GetRoutingSubTypesSendObjectPropListRequestL(RArray&lt; TRoutingParameters &gt; &amp;, RArray&lt; TUint &gt; &amp;, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetRoutingSubTypesSendObjectPropListRequestL</td><td>(</td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;</td><td>aParams,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aRoutingSubTypes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aValidationSubTypes</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<div class="p">Provides the set of operation parameter routing and validation sub-types to be executed against each of the specified MTP SendObjectPropList operation routing parameter data. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp; aParams</td><td>The set of operation routing parameter data.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aRoutingSubTypes</td><td>On exit, the set of routing sub-types to be executed.  </td></tr><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aValidationSubTypes</td><td>On exit, the set of validation sub-types to be executed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6BA05607-FDFF-3222-A4A1-B49EDD5A7F9F"><a name="GUID-6BA05607-FDFF-3222-A4A1-B49EDD5A7F9F"><!-- --></a>
+		<h2 class="topictitle2">Index(TUint)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td>Index</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aSubType</td><td>)</td><td>[private, static]</td></tr></table><div class="section"><div>
+				<p>Provides the routing sub-type (map) index of the specified routing sub-type. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aSubType</td><td>The routing sub-type identifier.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-59D39FF9-5AAF-3AD5-A62E-45F34AB51B07"><a name="GUID-59D39FF9-5AAF-3AD5-A62E-45F34AB51B07"><!-- --></a>
+		<h2 class="topictitle2">NewL()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html">CMTPParserRouter</a> *</td><td>NewL</td><td>(</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<div class="p">
+					<a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html#GUID-C25C2997-4011-32FC-B920-011FB8DFE12E">CMTPParserRouter</a> factory method. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes if a processing failure occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-DA895F64-32F2-3BB4-B2ED-409625F54AC0"><a name="GUID-DA895F64-32F2-3BB4-B2ED-409625F54AC0"><!-- --></a>
+		<h2 class="topictitle2">OperationSupportedL(TUint16)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>OperationSupportedL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint16</a></td><td>aOperation</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<div class="p">Indicates if the specified MTP operation code is supported by any of the set of loaded data providers. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a processing failure occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint16</a> aOperation</td><td>The MTP operation code.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B89CE658-F513-35BB-8249-0BC7E85C3EBC"><a name="GUID-B89CE658-F513-35BB-8249-0BC7E85C3EBC"><!-- --></a>
+		<h2 class="topictitle2">Params(TUint)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td>Params</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aSubType</td><td>)</td><td>[private, static]</td></tr></table><div class="section"><div>
+				<p>Provides the routing sub-type parameter count type of the specified routing sub-type. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aSubType</td><td>The routing sub-type identifier.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2FA97658-2F68-3734-A7F1-B9EFED6BD1AC"><a name="GUID-2FA97658-2F68-3734-A7F1-B9EFED6BD1AC"><!-- --></a>
+		<h2 class="topictitle2">ParamsCount(TUint)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td>ParamsCount</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aSubType</td><td>)</td><td>[private, static]</td></tr></table><div class="section"><div>
+				<p>Provides the routing sub-type parameter count of the specified routing sub-type. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aSubType</td><td>The routing sub-type identifier.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AD5CD30E-C6A0-3397-8684-82AF178B2955"><a name="GUID-AD5CD30E-C6A0-3397-8684-82AF178B2955"><!-- --></a>
+		<h2 class="topictitle2">ParseOperationRequestL(TRoutingParameters &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ParseOperationRequestL</td><td>(</td><td><a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp;</td><td>aParams</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Parses the operation dataset supplied in the specified routing parameters object which encapsulates all information required to route the operation. The parsing process involves:</p>
+
+				<p>1. Extracting all relevant routing information from the received operation dataset. Note that not all parameter data is extracted, only that which is required to route the operation. 2. Coarse grain validating the parsed data. Specifically this involves validating that any MTP StorageID or Object Handle parameter data refers to valid entities that exist on the device. 3. Extracting additional meta-data related to specific data objects and/or storages referred to in the operation dataset and which is required to route the operation.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>One of the system wide error codes if a processing failure occurs, </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp; aParams</td><td>The routing parameters object. On entry this contains the operation dataset to be parsed and the handle of the MTP connection on which it was received. On exit this contains all information required to route the operation.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7EFCEDEE-4D48-3037-9B75-05A71E5CE1A6"><a name="GUID-7EFCEDEE-4D48-3037-9B75-05A71E5CE1A6"><!-- --></a>
+		<h2 class="topictitle2">ParseOperationRequestParameterL(TMTPTypeRequest::TElements, TRoutingParameters::TParameterType, TRoutingParameters &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ParseOperationRequestParameterL</td><td>(</td><td><a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest::TElements</a></td><td>aParam,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters::TParameterType</a></td><td>aType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp;</td><td>aParams</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<div class="p">Parses the specified MTP operation request dataset to extract the specified parameter value together with any applicable meta-data. The parameter value will be extracted only if not null (0x00000000). <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest::TElements</a> aParam</td><td>The operation request dataset parameter identifier.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters::TParameterType</a> aType</td><td>The operation request dataset parameter type.  </td></tr><tr><td class="parameter"><a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp; aParams</td><td>The operation routing parameter data, updated on exit with the parameter value together with any associated meta-data.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-007493C4-85B7-3740-8C7F-55FF71BCCD16"><a name="GUID-007493C4-85B7-3740-8C7F-55FF71BCCD16"><!-- --></a>
+		<h2 class="topictitle2">ProcessEventL(const TMTPTypeEvent &amp;, CMTPConnection &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ProcessEventL</td><td>(</td><td>const <a href="GUID-22FA2C54-7FC1-3973-AE71-A43386D44D9A.html">TMTPTypeEvent</a> &amp;</td><td>aEvent,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-74748CB4-D13A-378F-BBD9-EE5784DD025C.html">CMTPConnection</a> &amp;</td><td>aConnection</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<div class="p">Routes and dispatches the specified MTP event dataset. The only valid event that is accepted is CancelTransaction, all other event types are discarded. Events are routed to the same target to which the currently active operation was dispatched. If there is no active transaction in progress then the event will be discarded. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a processing failure occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-22FA2C54-7FC1-3973-AE71-A43386D44D9A.html">TMTPTypeEvent</a> &amp; aEvent</td><td>The MTP event dataset.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-74748CB4-D13A-378F-BBD9-EE5784DD025C.html">CMTPConnection</a> &amp; aConnection</td><td>The MTP connection on which the event was received.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0018455A-930B-370C-BB83-7723C28B19DE"><a name="GUID-0018455A-930B-370C-BB83-7723C28B19DE"><!-- --></a>
+		<h2 class="topictitle2">ProcessRequestL(const TMTPTypeRequest &amp;, CMTPConnection &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ProcessRequestL</td><td>(</td><td>const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp;</td><td>aRequest,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-74748CB4-D13A-378F-BBD9-EE5784DD025C.html">CMTPConnection</a> &amp;</td><td>aConnection</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<div class="p">Routes and dispatches the specified MTP operation (request) dataset. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a processing failure occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp; aRequest</td><td>The MTP operation (request) dataset.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-74748CB4-D13A-378F-BBD9-EE5784DD025C.html">CMTPConnection</a> &amp; aConnection</td><td>The MTP connection on which the event was received.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-DEECF3E4-4796-3133-8EBB-DB1E34AACE04"><a name="GUID-DEECF3E4-4796-3133-8EBB-DB1E34AACE04"><!-- --></a>
+		<h2 class="topictitle2">RouteOperationRequest0ParametersL(TUint, const TRoutingParameters &amp;, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>RouteOperationRequest0ParametersL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aRoutingSubType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp;</td><td>aParams,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aTargets</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<div class="p">Resolves set of zero or more routing targets using the specified parameterless routing sub-type. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aRoutingSubType</td><td>The routing sub-type.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp; aParams</td><td>The operation routing parameter data.  </td></tr><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aTargets</td><td>On exit, the seto of resolved routing targets.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6A716FFF-36FA-356E-B07F-D9E1D71E8E7B"><a name="GUID-6A716FFF-36FA-356E-B07F-D9E1D71E8E7B"><!-- --></a>
+		<h2 class="topictitle2">RouteOperationRequestL(const TRoutingParameters &amp;, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RouteOperationRequestL</td><td>(</td><td>const <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp;</td><td>aParams,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aTargets</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<div class="p">Routes an MTP operation using the specified routing parameters. By default only operation parameter routing is performed. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes if a processing failure occurs, </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp; aParams</td><td>The routing parameters.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aTargets</td><td>One exit, the set of data provider targets to which the operation should be dispatched.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9F20AA46-3950-3341-91D5-555F2350C55A"><a name="GUID-9F20AA46-3950-3341-91D5-555F2350C55A"><!-- --></a>
+		<h2 class="topictitle2">RouteOperationRequestNParametersL(TUint, const TRoutingParameters &amp;, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>RouteOperationRequestNParametersL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aRoutingSubType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp;</td><td>aParams,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aTargets</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<div class="p">Resolves set of zero or more routing targets using the specified lookup parameter based routing sub-type. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aRoutingSubType</td><td>The routing sub-type.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp; aParams</td><td>The operation routing parameter data.  </td></tr><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aTargets</td><td>On exit, the seto of resolved routing targets.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F2F756E2-4AA8-3CB5-B696-9BCF39310BDB"><a name="GUID-F2F756E2-4AA8-3CB5-B696-9BCF39310BDB"><!-- --></a>
+		<h2 class="topictitle2">RouteRequestRegisterL(const TMTPTypeRequest &amp;, MMTPConnection &amp;, TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>RouteRequestRegisterL</td><td>(</td><td>const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp;</td><td>aRequest,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-31C19FDD-10EE-38A5-B5A3-26B86F09EA6E.html">MMTPConnection</a> &amp;</td><td>aConnection,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aId</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<div class="p">Registers the calling data provider to receive one or more occurrences of the specified request dataset that are received on the specified connection. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a processing failure occurs. </dd>
+</dl>
+<a href="GUID-C3E0D6CA-56AC-322D-8681-D40B6B96018F.html#GUID-0BEB5934-6825-3762-B118-AAACDFEC0E54">MMTPDataProviderFramework::RouteRequestRegisterL</a> </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp; aRequest</td><td>The operation request dataset being registered.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-31C19FDD-10EE-38A5-B5A3-26B86F09EA6E.html">MMTPConnection</a> &amp; aConnection</td><td>The handle of the MTP connection on which the operation request is expected to be received.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aId</td><td>The data provider identifier.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E68E8F3D-CCF8-3B8A-828D-A9CB20F855A8"><a name="GUID-E68E8F3D-CCF8-3B8A-828D-A9CB20F855A8"><!-- --></a>
+		<h2 class="topictitle2">RouteRequestRegisteredL(const TMTPTypeRequest &amp;, MMTPConnection &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>RouteRequestRegisteredL</td><td>(</td><td>const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp;</td><td>aRequest,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-31C19FDD-10EE-38A5-B5A3-26B86F09EA6E.html">MMTPConnection</a> &amp;</td><td>aConnection</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<div class="p">Indicates if a routing request with the specified MTP operation code is registered on the specified session. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a processing failure occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp; aRequest</td><td>The MTP operation requesty dataset specifying MTP operation code and session.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-31C19FDD-10EE-38A5-B5A3-26B86F09EA6E.html">MMTPConnection</a> &amp; aConnection</td><td>The handle of the MTP connection on which the operation request is expected to be received.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C3CF7211-4910-37FB-A594-78E863269A53"><a name="GUID-C3CF7211-4910-37FB-A594-78E863269A53"><!-- --></a>
+		<h2 class="topictitle2">RouteRequestUnregisterL(const TMTPTypeRequest &amp;, MMTPConnection &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>RouteRequestUnregisterL</td><td>(</td><td>const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp;</td><td>aRequest,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-31C19FDD-10EE-38A5-B5A3-26B86F09EA6E.html">MMTPConnection</a> &amp;</td><td>aConnection</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<div class="p">Cancels a pending RouteRequestRegisterL registration. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+<a href="GUID-C3E0D6CA-56AC-322D-8681-D40B6B96018F.html#GUID-E3A89F62-0DA9-3BC5-B3BB-671E989C1CF6">MMTPDataProviderFramework::RouteRequestUnregisterL</a> </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp; aRequest</td><td>The registered operation request dataset.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-31C19FDD-10EE-38A5-B5A3-26B86F09EA6E.html">MMTPConnection</a> &amp; aConnection</td><td>The handle of the MTP connection for which the operation request was registered.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2AA365EB-133E-3AE6-9763-D4B2BBE1502C"><a name="GUID-2AA365EB-133E-3AE6-9763-D4B2BBE1502C"><!-- --></a>
+		<h2 class="topictitle2">RoutingTargetL(const TMTPTypeRequest &amp;, CMTPConnection &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td>RoutingTargetL</td><td>(</td><td>const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp;</td><td>aRequest,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-74748CB4-D13A-378F-BBD9-EE5784DD025C.html">CMTPConnection</a> &amp;</td><td>aConnection</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<p>Provides a single suitable routing target for the specified request. A target is selected such that:</p>
+
+				<p>1. Any request that resolves to multiple targets will always be directed to the proxy data provider. 2. Any request that cannot be resolved to at least one target will always be directed to the device data provider.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-E6DEAAFF-8F6D-3AED-AD94-ECF4B0C72E89.html">TMTPTypeRequest</a> &amp; aRequest</td><td>The operation request dataset of the MTP operation to be routed.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-74748CB4-D13A-378F-BBD9-EE5784DD025C.html">CMTPConnection</a> &amp; aConnection</td><td>The MTP connection on which the operation request is being processed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B38EC52F-D247-3066-A716-4A127CE2FD6E"><a name="GUID-B38EC52F-D247-3066-A716-4A127CE2FD6E"><!-- --></a>
+		<h2 class="topictitle2">SelectSubTypeRoutingL(TRoutingSubType, RArray&lt; TUint &gt; &amp;, RArray&lt; TUint &gt; &amp;, RArray&lt; TRoutingParameters &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>SelectSubTypeRoutingL</td><td>(</td><td><a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html">TRoutingSubType</a></td><td>aSubType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aRoutingSubTypes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aValidationSubTypes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp;</td><td>aParams</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<div class="p">Selects the specified routing sub-type together with any applicable validation sub-types. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html">TRoutingSubType</a> aSubType</td><td>The selected routing sub-type.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aRoutingSubTypes</td><td>The set of selected routing sub-types, updated on exit.  </td></tr><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aValidationSubTypes</td><td>The set of selected validation sub-types, potentially updated on exit.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &gt; &amp; aParams</td><td>The set of operation routing parameter data.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-54A13A64-6B3D-39C4-BB09-228C6DD54CA0"><a name="GUID-54A13A64-6B3D-39C4-BB09-228C6DD54CA0"><!-- --></a>
+		<h2 class="topictitle2">SelectSubTypeValidationL(TRoutingSubType, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>SelectSubTypeValidationL</td><td>(</td><td><a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html">TRoutingSubType</a></td><td>aSubType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aValidationSubTypes</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<div class="p">Selects the specified validation sub-type. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C25C2997-4011-32FC-B920-011FB8DFE12E.html">TRoutingSubType</a> aSubType</td><td>The selected validation sub-type.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aValidationSubTypes</td><td>The set of selected validation sub-types, updated on exit.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0E72D140-8F50-3D23-A126-CD47897F8FEA"><a name="GUID-0E72D140-8F50-3D23-A126-CD47897F8FEA"><!-- --></a>
+		<h2 class="topictitle2">SelectTargetL(TUint, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>SelectTargetL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aTarget,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aTargets</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"><div>
+				<div class="p">Selects the specified data provider target identifier by appending it to the set of selected targets. Each target identifier may only appear once in the set of selected targets. A selected target which is already a member of the selected set will be replaced to ensure that targets are dispatched in order of most recent selection. <dl class="user"><dt class="dlterm"><strong>leave</strong></dt>
+<dd>One of the system wide error codes, if a general processing error occurs. </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aTarget</td><td>The data provider target identifier.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aTargets</td><td>The set of selected targets.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F79322FC-386F-3183-9290-92990F074CF6"><a name="GUID-F79322FC-386F-3183-9290-92990F074CF6"><!-- --></a>
+		<h2 class="topictitle2">SubType(TUint, TUint, TUint)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td>SubType</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aFlags,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aParamsCount</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"><div>
+				<p>Encodes a routing sub-type identifier using the specified sub-field values. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aIndex</td><td>The routing sub-type (map) index.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aFlags</td><td>The routing sub-type modifier flags.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aParamsCount</td><td>The routing sub-type parameter count.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-05986408-2A4C-370C-AA6C-D374B048D966"><a name="GUID-05986408-2A4C-370C-AA6C-D374B048D966"><!-- --></a>
+		<h2 class="topictitle2">ValidateOperationRequestParametersL(TRoutingParameters &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ValidateOperationRequestParametersL</td><td>(</td><td><a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp;</td><td>aParams</td><td>)</td><td>const [private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp; aParams</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-54DA112F-E1ED-380D-9702-DD7A4FE9BB5E"><a name="GUID-54DA112F-E1ED-380D-9702-DD7A4FE9BB5E"><!-- --></a>
+		<h2 class="topictitle2">ValidateTargetsL(const TRoutingParameters &amp;, const RArray&lt; TUint &gt; &amp;, RArray&lt; TUint &gt; &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ValidateTargetsL</td><td>(</td><td>const <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp;</td><td>aParams,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aValidationSubTypes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp;</td><td>aTargets</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<p>Validates the specified set of routing targets. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-9B082731-4424-300E-A705-7C07382E25D8.html">TRoutingParameters</a> &amp; aParams</td><td>The operation routing parameter data.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aValidationSubTypes</td><td>The set of validation sub-types.  </td></tr><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &gt; &amp; aTargets</td><td>The set of data provider targets to be validated. Invalid targets are removed from this set.  </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Enumerations Documentation</h1><div class="nested1" id="GUID-1196F7E7-8AAA-3742-90B6-D7029731932D"><a name="GUID-1196F7E7-8AAA-3742-90B6-D7029731932D"><!-- --></a>
+		<h2 class="topictitle2">Enum TRoutingParams</h2>
+		<div class="section"><div>
+				<p>Defines the routing parameter IDs. </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EParam1 = 0</td><td>
+							<p>The first parameter. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EParam2 = 1</td><td>
+							<p>The second parameter. </p>
+
+						 </td></tr><tr><td valign="top">EParam3 = 2</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E7B5D573-BBE3-3626-86E1-67272CFC27C7"><a name="GUID-E7B5D573-BBE3-3626-86E1-67272CFC27C7"><!-- --></a>
+		<h2 class="topictitle2">Enum TRoutingSubType</h2>
+		<div class="section"><div>
+				<p>Defines the routing sub-type codes. These codes are partitioned into two sub-fields as follows:</p>
+
+				<p>1. Bits 0-15 - routing sub-type (map) index. 2. Bits 16-23 - routing sub-type modifier flags. 3. Bits 24-31 - routing sub-type parameter count type. </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">ESubTypeIndexMask = 0x0000FFFF</td><td>
+							<p>The routing sub-type identifier (table index) mask. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESubTypeFlagMask = 0x00FF0000</td><td>
+							<p>The routing sub-type modifier bit flags mask. </p>
+
+						 </td></tr><tr><td valign="top">ESubTypeFlagNone = 0x00000000</td><td>
+							<p>The null flag bits. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESubTypeFlagEnableDuplicates = 0x00010000</td><td>
+							<p>The duplicates enabled flag bits. When set this flag indicates that duplicate routing table entries are permitted. </p>
+
+						 </td></tr><tr><td valign="top">ESubTypeFlagOrderDescending = 0x00020000</td><td>
+							<p>The order descending flag bits. When set this flag indicates that routing table entries are to be arranged in descending rather than ascending order. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESubTypeParamsMask = 0xFF000000</td><td>
+							<p>The routing sub-type parameter count mask. </p>
+
+						 </td></tr><tr><td valign="top">ESubTypeParams0 = 0x00000000</td><td>
+							<p>The zero parameter count code. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESubTypeParams1 = 0x01000000</td><td>
+							<p>The one parameter count code. </p>
+
+						 </td></tr><tr><td valign="top">ESubTypeParams2 = 0x02000000</td><td>
+							<p>The two parameter count code. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESubTypeParams3 = 0x03000000</td><td>
+							<p>The three parameter count code. </p>
+
+						 </td></tr><tr><td valign="top">ESubTypeDevicePropCode = (0x00000000 | ESubTypeParams1 | ESubTypeFlagNone)</td><td>
+							<p>The DevicePropCode operation parameter lookup routing sub-type. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESubTypeObjectPropCode = (0x00000001 | ESubTypeParams1 | ESubTypeFlagEnableDuplicates)</td><td>
+							<p>The ObjectPropCode operation parameter lookup routing sub-type. </p>
+
+						 </td></tr><tr><td valign="top">ESubTypeOperationCode = (0x00000002 | ESubTypeParams1 | ESubTypeFlagEnableDuplicates)</td><td>
+							<p>The OperationCode operation parameter lookup routing sub-type. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESubTypeStorageType = (0x00000003 | ESubTypeParams1 | ESubTypeFlagEnableDuplicates)</td><td>
+							<p>The StorageType operation parameter lookup routing sub-type. </p>
+
+						 </td></tr><tr><td valign="top">ESubTypeFormatCodeFormatSubcode = (0x00000004 | ESubTypeParams2 | (ESubTypeFlagEnableDuplicates | ESubTypeFlagOrderDescending))</td><td>
+							<p>The FormatCode + FormatSubcode operation parameter lookup routing sub-type. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESubTypeFormatCodeOperationCode = (0x00000005 | ESubTypeParams2 | ESubTypeFlagEnableDuplicates)</td><td>
+							<p>The FormatCode + OperationCode operation parameter lookup routing sub-type. </p>
+
+						 </td></tr><tr><td valign="top">ESubTypeStorageTypeOperationCode = (0x00000006 | ESubTypeParams2 | ESubTypeFlagEnableDuplicates)</td><td>
+							<p>The StorageType + OperationCode operation parameter lookup routing sub-type. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESubTypeFormatCodeFormatSubcodeStorageType = (0x00000007 | ESubTypeParams3 | ESubTypeFlagNone)</td><td>
+							<p>The FormatCode + FormatSubcode + StorageType operation parameter lookup routing sub-type. </p>
+
+						 </td></tr><tr><td valign="top">ESubTypeServiceIDOperationCode = (0x00000008 | ESubTypeParams1 | ESubTypeFlagNone)</td><td>
+							<p>The ServiceID operation parameter lookup routing sub-type. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESubTypeDpDevice = (0x00000009 | ESubTypeParams0 | ESubTypeFlagNone)</td><td>
+							<p>The device DP framework routing sub-type. </p>
+
+						 </td></tr><tr><td valign="top">ESubTypeDpProxy = (0x0000000A | ESubTypeParams0 | ESubTypeFlagNone)</td><td>
+							<p>The proxy DP framework routing sub-type. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESubTypeOwnerObject = (0x0000000B | ESubTypeParams0 | ESubTypeFlagNone)</td><td>
+							<p>The object owner operation parameter decode routing sub-type. </p>
+
+						 </td></tr><tr><td valign="top">ESubTypeOwnerStorage = (0x0000000C | ESubTypeParams0 | ESubTypeFlagNone)</td><td>
+							<p>The storage owner operation parameter decode routing sub-type. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESubTypeRequestRegistration = (0x0000000D | ESubTypeParams0 | ESubTypeFlagNone)</td><td>
+							<p>The default request registration routing sub-type. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-284DC90B-8D8E-3600-8B3D-24B30B8F6EA8"><a name="GUID-284DC90B-8D8E-3600-8B3D-24B30B8F6EA8"><!-- --></a>
+		<h2 class="topictitle2">Enum TRoutingType</h2>
+		<div class="section"><div>
+				<p>Defines the routing type codes. These codes are partitioned into two sub-fields as follows:</p>
+
+				<p>1. Bits 0-15 - routing type identifier. 2. Bits 16-23 - unused. 3. Bits 24-31 - routing type modifier flags. </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">ETypeFlagMask = 0xFF000000</td><td>
+							<p>The routing type modifier flags mask. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ETypeFlagSingleTarget = 0x01000000</td><td>
+							<p>The single target flag. When set this flag will result in at most one eligible routing target being selected. If multiple eligible targets exists then the first eligible target will be selected. </p>
+
+						 </td></tr><tr><td valign="top">ETypeMask = 0x0000FFFF</td><td>
+							<p>The routing type identifier mask. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ETypeFramework = 0x00000001</td><td>
+							<p>The framework routing type identifier. </p>
+
+						 </td></tr><tr><td valign="top">ETypeOperationParameter = 0x00000002</td><td>
+							<p>The operation parameter routing type identifier. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ETypeRequestRegistration = 0x00000004</td><td>
+							<p>The request registration routing type identifier. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-8271A8B7-C490-33EE-B8D2-492BCA05AB1B"><a name="GUID-8271A8B7-C490-33EE-B8D2-492BCA05AB1B"><!-- --></a>
+		<h2 class="topictitle2"> __FLOG_DECLARATION_MEMBER_MUTABLE</h2>
+		<table class="signature"><tr><td/><td>__FLOG_DECLARATION_MEMBER_MUTABLE</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>FLOGGER debug trace member variable. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-61F27C3E-7CE8-317C-8E0C-5AA91D4DEC8E"><a name="GUID-61F27C3E-7CE8-317C-8E0C-5AA91D4DEC8E"><!-- --></a>
+		<h2 class="topictitle2">
+					RPointerArray&lt; CMap &gt; iMaps</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RPointerArray</a>&lt; <a href="GUID-1A8281F3-77F3-3DB0-B4A2-8D26AFA99A53.html">CMap</a> &gt;</td><td>iMaps</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>The operation parameter routing sub-type map tables. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-E607F71C-FCBB-32D3-A637-1F6A40124AA7"><a name="GUID-E607F71C-FCBB-32D3-A637-1F6A40124AA7"><!-- --></a>
+		<h2 class="topictitle2">
+					RMTPFramework
+				 iSingletons</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-B4AE6D20-81D0-310D-B19F-5075D6C28A48.html">RMTPFramework</a>
+				</td><td>iSingletons</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>The framework singletons. </p>
+
+			</div></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

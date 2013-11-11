@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Porting Notifiers to Secure Platform"/>
+<meta name="abstract" content="This page describes how to migrate notifiers to Symbian OS v9.1."/>
+<meta name="description" content="This page describes how to migrate notifiers to Symbian OS v9.1."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4CC3CA3-8C02-5F73-A482-4F849DD08111.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-58035B49-2EAE-5144-B226-28AF2EDD62E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-58CA15F8-D984-5D07-8C00-161FA16A8FD3.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1578590A-FC00-5C3B-8BF9-F6E43CA9D9A0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D2E19490-4179-548F-9DA8-9AE637FAC9E2.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4CC3CA3-8C02-5F73-A482-4F849DD08111.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E049772D-A96F-592F-AF59-C9B69E8D24C1-GENID-1-12-1-4-1-1-4-1-4-1.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Porting Notifiers to Secure Platform</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD"><a name="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2520040 id2520048 id2520063 id2520123 id2520201 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-58035B49-2EAE-5144-B226-28AF2EDD62E7.html">Generic Application Support Guide</a> &gt; <a href="GUID-58CA15F8-D984-5D07-8C00-161FA16A8FD3.html">Application Framework</a> &gt; <a href="GUID-1578590A-FC00-5C3B-8BF9-F6E43CA9D9A0.html">Application Architecture</a> &gt; <a href="GUID-D2E19490-4179-548F-9DA8-9AE637FAC9E2.html">Application Architecture Tutorials</a> &gt; <a href="GUID-C4CC3CA3-8C02-5F73-A482-4F849DD08111.html">Porting Tutorial</a> &gt; </div>
+<h1 class="topictitle1">Porting Notifiers to Secure Platform</h1>
+<div><p>This page describes how to migrate notifiers to Symbian OS v9.1. </p>
+<div class="section" id="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-EC370F04-02A3-57D6-8B5A-C085950FAFCD"><a name="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-EC370F04-02A3-57D6-8B5A-C085950FAFCD"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p>Notifier plug-in DLLs ("notifiers") allow components with no direct UI linkage to interact with the user through a UI element; for example, a dialog box. </p>
+ <p>You can migrate notifiers to Symbian OS v9.1 without major changes. Any notifier classes derived from <samp class="codeph">MEikSrvNotifierBase</samp> must now derive from <a href="GUID-DE445C4B-22EF-3A1F-8A69-57CB703BFAD0.html"><span class="apiname">MEikSrvNotifierBase2</span></a>. An enumeration is used to define an ECom-based notifier plug-in interface. This acts as a primary key to separate ECom-based notifier plug-ins from other types. </p>
+ <p> <strong> Note:</strong> The Symbian platform architecture still supports old-style (non-ECom-based) plug-ins. </p>
+ <p>Notifiers have the following features: </p>
+ <ul><li id="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-FC1E274F-203B-5DE9-A382-762C3C97BFE3"><a name="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-FC1E274F-203B-5DE9-A382-762C3C97BFE3"><!-- --></a><p>They can be installed in ROM (<span class="filepath">Z:</span>), RAM (<span class="filepath">C:</span>), or on a memory card (for example, <span class="filepath">E:</span>). </p>
+ </li>
+ <li id="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-E36D43EE-B2EC-5219-B969-FC2CCEE50868"><a name="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-E36D43EE-B2EC-5219-B969-FC2CCEE50868"><!-- --></a><p>They can be installed and un-installed using SIS files. </p>
+ </li>
+ <li id="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-784483E3-D297-5228-8BDA-0C93018DD640"><a name="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-784483E3-D297-5228-8BDA-0C93018DD640"><!-- --></a><p>A single plug-in DLL can provide multiple notifiers. The plug-in DLL returns an array of <a href="GUID-DE445C4B-22EF-3A1F-8A69-57CB703BFAD0.html"><span class="apiname">MEikSrvNotifierBase2</span></a> class pointers through ECom. </p>
+ </li>
+ <li id="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-D9D6A40E-D26F-5448-9E50-6D81544B9F7D"><a name="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-D9D6A40E-D26F-5448-9E50-6D81544B9F7D"><!-- --></a><p>Each notifier can have multiple implementations. </p>
+ </li>
+ </ul>
+ </div>
+ <div class="section" id="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-A53A1B64-4250-53B9-BD0F-32AFE2F34E5F"><a name="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-A53A1B64-4250-53B9-BD0F-32AFE2F34E5F"><!-- --></a><h2 class="sectiontitle">Notifier source code example</h2> <p>ECom defines standard framework functions that plug-ins implement. Here is an example of the required notifier source code: </p>
+ <pre class="codeblock" id="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-CD591744-90C4-57B5-918B-ABE3B41CBA00"><a name="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-CD591744-90C4-57B5-918B-ABE3B41CBA00"><!-- --></a>EXPORT_C CArrayPtr&lt;MEikSrvNotifierBase2&gt;* NotifierArray1()
+// Lib main entry point
+      {...}
+ 
+EXPORT_C CArrayPtr&lt;MEikSrvNotifierBase2&gt;* NotifierArray2()
+// Lib main entry point
+      {...}
+ 
+// Adding ECom support
+#include &lt;ImplementationProxy.h&gt;
+const TImplementationProxy ImplementationTable[] =
+      {
+      IMPLEMENTATION_PROXY_ENTRY(0x10022238,NotifierArray1),
+      IMPLEMENTATION_PROXY_ENTRY(0x10022237,NotifierArray2)
+      }; 
+EXPORT_C const TImplementationProxy* ImplementationGroupProxy(TInt&amp; aTableCount)
+      {
+      aTableCount = sizeof(ImplementationTable)/sizeof(TImplementationProxy);
+      return ImplementationTable;
+       }</pre>
+ </div>
+ <div class="section" id="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-3F83B740-F999-55F1-A244-83C97F240883"><a name="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-3F83B740-F999-55F1-A244-83C97F240883"><!-- --></a><h2 class="sectiontitle">Resource file example</h2> <p>ECom uses resource files to define the main elements of application GUIs. Resource file names must have the format: <span class="filepath">&lt;dll_uid&gt;.rss</span>. </p>
+ <p>The following UIDs may appear in the resource file. </p>
+ 
+<div class="tablenoborder"><a name="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-8A60EEFE-E0FB-559C-B864-CB37EC324AD4"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-8A60EEFE-E0FB-559C-B864-CB37EC324AD4" frame="border" border="1" rules="all"><tbody><tr><td class="cellrowborder" valign="top"><p> <strong>UID Name</strong>  </p>
+ </td>
+ <td class="cellrowborder" valign="top"><p> <strong>Description</strong>  </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top"><p> <samp class="codeph">dll_uid</samp>  </p>
+ </td>
+ <td class="cellrowborder" valign="top"><p>The UID of the notifier plug-in DLL. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top"><p> <samp class="codeph"> interface_uid</samp>  </p>
+ </td>
+ <td class="cellrowborder" valign="top"><p>The interface UID for all notifiers, which is defined in <span class="filepath">uikon.hrh</span> as: </p>
+ <pre class="codeblock" id="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-E664FEB0-AD66-5598-BD88-C72F068372C6"><a name="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-E664FEB0-AD66-5598-BD88-C72F068372C6"><!-- --></a>#define KUikonUidpluginInterfaceNotifiers    0x101fdfae.</pre>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top"><p> <samp class="codeph"> implementation_uid</samp>  </p>
+ </td>
+ <td class="cellrowborder" valign="top"><p>This is implementation-specific. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top"><p>plug-in_UID </p>
+ </td>
+ <td class="cellrowborder" valign="top"><p>The notifier’s UID. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top"><p>channel_UID </p>
+ </td>
+ <td class="cellrowborder" valign="top"><p>The channel for a notifier (for example, a screen or LED). </p>
+ </td>
+ </tr>
+ </tbody>
+ </table>
+</div>
+ <p>Together, the <samp class="codeph">plug-in_UID</samp> and <samp class="codeph">channel_UID</samp> uniquely identify the notifier plug-in. </p>
+ <p>The following resource file corresponds to the C++ <a href="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD.html#GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-A53A1B64-4250-53B9-BD0F-32AFE2F34E5F">Source code</a>, above. It defines two implementations of the notifier interface. </p>
+ <pre class="codeblock" id="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-D0D2F679-5196-5150-988E-ED5EB30668E2"><a name="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-D0D2F679-5196-5150-988E-ED5EB30668E2"><!-- --></a>// 10021239.rss
+//
+
+#include "RegistryInfo.rh"
+#include "Uikon.hrh"
+
+RESOURCE REGISTRY_INFO theInfo
+   {
+      dll_uid = 0x10021239;
+      interfaces =
+      {
+      INTERFACE_INFO
+            {
+            interface_uid = KUikonUidPluginInterfaceNotifiers;
+            implementations =
+                  {
+                  IMPLEMENTATION_INFO
+                        {
+                        implementation_uid = 0x10022237;
+                        version_no = 1;
+                        display_name = "TTNOTIFY2V2 Plugin 1";
+                        default_data = "TTNOTIFY2V2";
+                        opaque_data     = "0";
+                        },
+                  IMPLEMENTATION_INFO
+                        {
+                        implementation_uid = 0x10022238;
+                        version_no = 1;
+                        display_name = "TTNOTIFY2V2 Plugin 2";
+                        default_data = "TTNOTIFY2V2";
+                        opaque_data     = "0";
+                        }
+                  };
+            }
+      };
+}</pre>
+ </div>
+ <div class="section" id="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-8E585844-E5B3-5909-9B48-A288D89E621F"><a name="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-8E585844-E5B3-5909-9B48-A288D89E621F"><!-- --></a><h2 class="sectiontitle">MMP file example</h2> <p>This is an example project specification (<span class="filepath">.mmp</span>) file for the notifier: </p>
+ <pre class="codeblock" id="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-2316985A-2B7D-5255-ACD0-1A4E72026232"><a name="GUID-B861091F-DFD7-5BDD-B73C-52833F972CBD__GUID-2316985A-2B7D-5255-ACD0-1A4E72026232"><!-- --></a>
+target            TESTNOTIFIER.DLL 
+targettype        PLUGIN 
+capability         TrustedUI ProtServ 
+UID                0x10009D8D 0x10021239 
+sourcepath        ...
+userinclude        ... 
+systeminclude    \epoc32\include \epoc32\include\techview 
+lang                SC 
+
+start resource    10021239.rss  
+target            TESTNOTIFIER.rsc  
+
+start resource    TNOTDIAL.RSS 
+targetpath        \private\10003a4a 
+header 
+end 
+source            filename.cpp 
+library            ECOM.LIB</pre>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C4CC3CA3-8C02-5F73-A482-4F849DD08111.html">Porting Tutorial</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-E049772D-A96F-592F-AF59-C9B69E8D24C1-GENID-1-12-1-4-1-1-4-1-4-1.html">Using the extended notifier
+                framework</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

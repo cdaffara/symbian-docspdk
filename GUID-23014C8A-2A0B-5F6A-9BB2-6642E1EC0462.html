@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Using Content Processor"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-82AF5F49-EE25-54C7-AEE9-D1F41BD5190F.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A25E730C-F34D-5464-BE78-650B3DEA4A88.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AF28D930-6BD1-5DC5-9BE5-7512241E90CD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-23014C8A-2A0B-5F6A-9BB2-6642E1EC0462"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Using Content Processor</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-23014C8A-2A0B-5F6A-9BB2-6642E1EC0462"><a name="GUID-23014C8A-2A0B-5F6A-9BB2-6642E1EC0462"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2436889 id2436897 id2436992 id2437012 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-82AF5F49-EE25-54C7-AEE9-D1F41BD5190F.html">XML Services Guide</a> &gt; <a href="GUID-A25E730C-F34D-5464-BE78-650B3DEA4A88.html">XML</a> &gt; <a href="GUID-AF28D930-6BD1-5DC5-9BE5-7512241E90CD.html">XML Framework</a> &gt; <a href="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html">XML Framework Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Using
+Content Processor</h1>
+<div>
+<p>This section explains how to implement the <samp class="codeph">MContentProcessor</samp> interface
+to parse, validate and autocorrect an XML document. </p>
+
+<div class="section"><h2 class="sectiontitle">Introduction</h2> <p>The parsed document can also be validated
+against a specification and auto-corrected for spelling errors in the validated
+text. This can be done by writing three applications - a parser, a validator
+and an autocorrector. These applications must implement the <a href="GUID-7942EDC6-6571-3423-8ECA-D3DB68A78CB6.html"><span class="apiname">MContentProcessor</span></a> interface. </p>
+ <p>Writing
+a content processor is similar to writing a content handler as explained in <a href="GUID-AF937B6E-7BC0-5B7D-818E-93F7CAFD8808.html">Parsing an XML Document</a>. <a href="GUID-7942EDC6-6571-3423-8ECA-D3DB68A78CB6.html"><span class="apiname">MContentProcessor</span></a> is
+an extension of <a href="GUID-A6B8386B-29F6-3BEC-9D77-D8E0900DEAC2.html"><span class="apiname">MContentHandler</span></a>. Each application is writen
+by implementing the callback functions of <a href="GUID-A6B8386B-29F6-3BEC-9D77-D8E0900DEAC2.html"><span class="apiname">MContentHandler</span></a>.
+The only difference is that <a href="GUID-7942EDC6-6571-3423-8ECA-D3DB68A78CB6.html"><span class="apiname">MContentProcessor</span></a> has a mechanism
+for directing output, so that the output of the parser is the input to the
+validator, and the output of the validator is the input to the autocorrector. </p>
+ <p>Direct
+output of a content processor by implementing the <a href="GUID-DCF5D3DD-C7FC-3ED0-86E8-63C5E85795B8.html"><span class="apiname">SetContentSink()</span></a> function,
+so that the parser outputs to the validator and the validator outputs to the
+autocorrector. A sequence of several applications linked in this way is called
+a <strong>Plug-in Chain</strong>. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Procedure</h2> <a name="GUID-23014C8A-2A0B-5F6A-9BB2-6642E1EC0462__GUID-F18654E9-0325-5111-9D00-5196196BD0D5"><!-- --></a><ol id="GUID-23014C8A-2A0B-5F6A-9BB2-6642E1EC0462__GUID-F18654E9-0325-5111-9D00-5196196BD0D5">
+<li id="GUID-23014C8A-2A0B-5F6A-9BB2-6642E1EC0462__GUID-324DEAF3-690F-5DA0-9DD0-C16533114B0E"><a name="GUID-23014C8A-2A0B-5F6A-9BB2-6642E1EC0462__GUID-324DEAF3-690F-5DA0-9DD0-C16533114B0E"><!-- --></a><p>Implement the <samp class="codeph">MContentProcessor</samp> interface. </p>
+ </li>
+
+<li id="GUID-23014C8A-2A0B-5F6A-9BB2-6642E1EC0462__GUID-97B4EA3B-3CF1-582E-864C-73EF0FA1A1EC"><a name="GUID-23014C8A-2A0B-5F6A-9BB2-6642E1EC0462__GUID-97B4EA3B-3CF1-582E-864C-73EF0FA1A1EC"><!-- --></a><p>Implement the <a href="GUID-7942EDC6-6571-3423-8ECA-D3DB68A78CB6.html#GUID-7942EDC6-6571-3423-8ECA-D3DB68A78CB6__GUID-F33A8F75-B1FB-30DF-B829-DFC6D2CD29E1"><span class="apiname">MContentProcessor::SetContentSink()</span></a> function. </p>
+ </li>
+
+<li id="GUID-23014C8A-2A0B-5F6A-9BB2-6642E1EC0462__GUID-6A95E431-C203-5442-BDD8-AEF0FD19AE72"><a name="GUID-23014C8A-2A0B-5F6A-9BB2-6642E1EC0462__GUID-6A95E431-C203-5442-BDD8-AEF0FD19AE72"><!-- --></a><p>Perform the actual parsing. </p>
+ <p>Use
+a <samp class="codeph">CParser</samp> object as explained in <a href="GUID-E16070E5-379A-5818-81CC-B00059A40084.html">Choosing
+a Parser Plug-in</a>. To ensure that parsing is followed by validation
+and autocorrection, associate the <samp class="codeph">CParser</samp> object with the
+plug-in chain. This can be done by calling <a href="GUID-667DBD60-ABF3-326B-8FF9-86BC7DC7662F.html"><span class="apiname">SetProcessorChainL()</span></a> function
+of the <samp class="codeph">CParser</samp> object with a list of the items in the plugin
+chain as a parameter. </p>
+ <p>The following code illustrates how to validate
+and autocorrect the parsed document: </p>
+ <pre class="codeblock" id="GUID-23014C8A-2A0B-5F6A-9BB2-6642E1EC0462__GUID-39142F60-28D0-55FF-B9B3-DB5149638C2C"><a name="GUID-23014C8A-2A0B-5F6A-9BB2-6642E1EC0462__GUID-39142F60-28D0-55FF-B9B3-DB5149638C2C"><!-- --></a>RFs fs;
+User::LeaveIfError( fs.Connect() );
+CleanupClosePushL( fs );
+
+_LIT8( KXmlMimeType, "text/xml" );
+TSimpleContentHandler sax; // You’ll have to implement this class…
+
+CParser* parser = CParser::NewLC( KXmlMimeType, sax );
+
+RContentProcessorUids uids;
+uids.Append( KValidatorUid ); // The ECOM implementation UID of a validator plug-in
+CleanupClosePushL( uids );
+
+// Sets up the chain of call-back events from the parser through to the
+// validating plug-in and then the client.
+parser-&gt;SetProcessorChainL( uids );
+
+parser-&gt;ParseFileL( fs, KMyFile );
+
+CleanupStack::PopAndDestroy( 3 );</pre>
+ </li>
+
+</ol>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-4A9255D1-42A4-57FA-A4B4-42C552964047.html">XML Framework Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

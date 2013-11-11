@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Creating an Extended Bitmap Rasterizer"/>
+<meta name="abstract" content="An extended bitmap rasterizer is a DLL that decompresses extended bitmaps in order that they can be drawn by using the legacy BitGDI API."/>
+<meta name="description" content="An extended bitmap rasterizer is a DLL that decompresses extended bitmaps in order that they can be drawn by using the legacy BitGDI API."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A03FB1BF-F67B-519D-A904-74CA3F8375D9.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A03FB1BF-F67B-519D-A904-74CA3F8375D9.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D76C7759-739D-5C98-B718-7297687FE630.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-71DADA82-3ABC-52D2-8360-33FAEB2E5DE9.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Creating an Extended Bitmap Rasterizer</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2384330 id2385242 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html">Graphics Guide</a> &gt; <a href="GUID-A03FB1BF-F67B-519D-A904-74CA3F8375D9.html" title="The Font and Bitmap Server collection contains only one component—the Font and Bitmap Server. As its name suggests, the Font and Bitmap Server manages fonts and bitmaps.">Font and Bitmap Server Collection</a> &gt; </div>
+<h1 class="topictitle1">Creating an Extended Bitmap Rasterizer</h1>
+<div><p>An extended bitmap rasterizer is a DLL that decompresses extended bitmaps in order that they can be drawn by using the legacy BitGDI API. </p>
+<p> <strong>Variant</strong>: <a href="GUID-D93978BE-11A3-5CE3-B110-1DEAA5AD566C.html" title="This topic provides an introduction to ScreenPlay and its architecture. ScreenPlay is a new graphics architecture, introduced in Symbian^3 (S^3). ScreenPlay enables device creators to take advantage of improved software performance, hardware acceleration and third party graphics engines. ScreenPlay is sometimes known as the New Graphics Architecture (NGA).">ScreenPlay</a> and <a href="GUID-F64E6551-670E-5E12-8103-DE504D3EC94F.html" title="ScreenPlay provides improved support for graphics hardware acceleration and some other new features. However, it is possible to use the Symbian platform without enabling ScreenPlay. This is called the non-ScreenPlay variant (sometimes referred to as the non-NGA variant). This topic provides an introduction to the graphics architecture when ScreenPlay is not enabled.">non-ScreenPlay</a>. <strong>Target audience</strong>: Device creators. </p>
+ <p>This topic assumes an understanding of the material covered in <a href="GUID-D76C7759-739D-5C98-B718-7297687FE630.html" title="The Font and Bitmap Server provides a framework for device creators to add support for their own types of bitmap compression. Bitmaps that use compression formats that are provided by device creators are known as extended bitmaps.">Extended Bitmaps</a>. </p>
+ <div class="section"><h2 class="sectiontitle">Introduction</h2> <p>The standard <a href="GUID-71DADA82-3ABC-52D2-8360-33FAEB2E5DE9.html" title="The Font and Bitmap Server (FBServ) provides a memory efficient way of using bitmaps and fonts. It stores a single instance of each bitmap in either a shared heap or in eXecute In Place (XIP) ROM and provides clients with read and (when appropriate) write access.">Font and Bitmap Server</a> client library (<span class="filepath">fbscli.dll</span>) dynamically links against the extended bitmap rasterizer DLL. </p>
+ <p>When an application calls <a href="GUID-E5B29AC0-4953-385F-84C5-13EE6CB77D46.html#GUID-E5B29AC0-4953-385F-84C5-13EE6CB77D46__GUID-2CFBA1CE-BD31-3AC8-BA6B-14263FE26545"><span class="apiname">RFbsSession::Connect()</span></a> to create a session with the Font and Bitmap Server, an instance of the extended bitmap rasterizer DLL is instantiated in the context of the application thread. This extended bitmap rasterizer DLL instance is used by the thread in which it is created and it is destroyed when the <a href="GUID-E5B29AC0-4953-385F-84C5-13EE6CB77D46.html"><span class="apiname">RFbsSession</span></a> is closed. Multiple threads across the system can simultaneously use their own extended bitmap rasterizer DLL instances. </p>
+ <p>BitGDI uses the extended bitmap rasterizer DLL through the Font and Bitmap Server client-side library to obtain scan lines from extended bitmaps as if they are compressed bitmaps. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Implementing the CFbsRasterizer interface</h2> <p>An extended bitmap rasterizer DLL must provide an implementation of the <a href="GUID-FFA11F49-C802-3476-BDF6-41222A800F80.html"><span class="apiname">CFbsRasterizer</span></a> interface. This interface provides BitGDI with APIs for rasterizing extended bitmaps and retrieving scan lines from them. The following table provides a brief description of the key functions. For more detailed documentation, see <a href="GUID-FFA11F49-C802-3476-BDF6-41222A800F80.html"><span class="apiname">CFbsRasterizer</span></a>. </p>
+ 
+<div class="tablenoborder"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-95F0E9E6-28CE-5E6E-BE0E-27CF1BE38046"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-95F0E9E6-28CE-5E6E-BE0E-27CF1BE38046" frame="border" border="1" rules="all"><thead align="left"><tr><th class="cellrowborder" valign="top" id="d2068439e111">Function</th>
+ <th class="cellrowborder" valign="top" id="d2068439e114">Description</th>
+ </tr>
+ </thead>
+ <tbody><tr><td class="cellrowborder" valign="top" headers="d2068439e111 "><p> <samp class="codeph">New()</samp>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d2068439e114 "><p>Returns a new instance of the extended bitmap rasterizer DLL for use by the calling thread. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d2068439e111 "><p> <samp class="codeph">BeginBitmap()</samp>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d2068439e114 "><p>Registers an extended bitmap with the extended bitmap rasterizer DLL so that scan line requests can be made on that bitmap. <samp class="codeph">BeginBitmap()</samp> is a signal to the extended bitmap rasterizer DLL that scan lines are about to be requested for a particular extended bitmap. It is therefore an opportunity for the extended bitmap rasterizer DLL to pre-rasterize all of the extended bitmap or the requested region of it. This makes it possible to return a portion of the pre-rasterized bitmap quickly when <samp class="codeph">ScanLine()</samp> is subsequently called. Because <samp class="codeph">ScanLine()</samp> is often called repeatedly, pre-rasterizing the bitmap at the <samp class="codeph">BeginBitmap()</samp> stage can improve performance considerably. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d2068439e111 "><p> <samp class="codeph">EndBitmap()</samp>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d2068439e114 "><p>Unregisters an extended bitmap that was previously registered using <samp class="codeph">BeginBitmap()</samp>. <samp class="codeph">EndBitmap()</samp> allows any resources that were allocated for the extended bitmap to be released. However, you may want to implement a cache of the most recently used extended bitmaps. This can improve performance of applications that make multiple calls to <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-D24300BA-20D7-34E6-BD23-ED281A0D957E"><span class="apiname">CFbsBitmap::GetScanLine()</span></a>, <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-838CF3C5-C513-33B7-9C81-0EBCE075F6B7"><span class="apiname">CFbsBitmap::GetPixel()</span></a> or <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-57BC8EB1-B9F4-39A9-A18B-594CFB7786B6"><span class="apiname">CFbsBitmap::GetVerticalScanLine()</span></a>. See <a href="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2.html#GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-A1A50E3D-5037-5558-9099-8CD8C28B9FBC">Performance considerations</a> below for more information. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d2068439e111 "><p> <samp class="codeph">ScanLine()</samp>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d2068439e114 "><p>Returns a scan line of pixels for a particular extended bitmap. The scan lines must be 32-bit aligned. Although an x-coordinate and length are passed in, <samp class="codeph">ScanLine()</samp> must return a pointer to the start of the whole scan line. However, only the portion defined by the x-coordinate and the length need to contain correct data. </p>
+ <p>The first call to <samp class="codeph">ScanLine()</samp> from BitGDI for an extended bitmap is always preceded by a call to <samp class="codeph">BeginBitmap()</samp>. </p>
+ </td>
+ </tr>
+ <tr><td class="cellrowborder" valign="top" headers="d2068439e111 "><p> <samp class="codeph">GetInterface()</samp>  </p>
+ </td>
+ <td class="cellrowborder" valign="top" headers="d2068439e114 "><p>Returns a pointer to an extension interface. This provides a mechanism for extending the <a href="GUID-FFA11F49-C802-3476-BDF6-41222A800F80.html"><span class="apiname">CFbsRasterizer</span></a> interface without breaking existing implementations. If the extended bitmap rasterizer DLL does not support any extended interfaces, this function must return <samp class="codeph">KErrExtensionNotSupported</samp>. </p>
+ </td>
+ </tr>
+ </tbody>
+ </table>
+</div>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Error handling</h2> <p>It is important that your extended bitmap rasterizer DLL is robust and does not cause any exceptions or panics, because a copy is loaded for each Font and Bitmap Server session. When the extended bitmap rasterizer DLL encounters an error, it must fail silently in order to avoid causing a system failure. </p>
+ <p>When testing your extended bitmap rasterizer DLL using the <a href="GUID-4A501086-7EFF-376D-8901-6D9B2EB4EFF2.html"><span class="apiname">CFbsBitGc</span></a> blitting and drawing operations, you will see a white rectangle drawn if an error occurs in the extended bitmap rasterizer DLL. BitGDI draws a white scan line when a scan line cannot be retrieved from the extended bitmap rasterizer DLL. </p>
+ </div>
+ <div class="section" id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-A1A50E3D-5037-5558-9099-8CD8C28B9FBC"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-A1A50E3D-5037-5558-9099-8CD8C28B9FBC"><!-- --></a><h2 class="sectiontitle">Performance considerations</h2> <p><strong>Caching </strong> </p>
+ <p>Adding a cache of previously rasterized extended bitmaps to your extended bitmap rasterizer DLL might improve performance significantly, especially for applications that make repeated calls to <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-D24300BA-20D7-34E6-BD23-ED281A0D957E"><span class="apiname">CFbsBitmap::GetScanLine()</span></a>, <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-838CF3C5-C513-33B7-9C81-0EBCE075F6B7"><span class="apiname">CFbsBitmap::GetPixel()</span></a> or <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-57BC8EB1-B9F4-39A9-A18B-594CFB7786B6"><span class="apiname">CFbsBitmap::GetVerticalScanLine()</span></a>. The following pseudocode shows what happens when an application calls <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-D24300BA-20D7-34E6-BD23-ED281A0D957E"><span class="apiname">CFbsBitmap::GetScanLine()</span></a> repeatedly for an extended bitmap: </p>
+ <pre class="codeblock" id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-1C00C5A6-79CB-52D5-A0A8-618A2E421F7B"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-1C00C5A6-79CB-52D5-A0A8-618A2E421F7B"><!-- --></a>for each (scanline)
+    {
+    BeginBitmap() 
+    ScanLine()
+    EndBitmap()
+    }
+</pre>
+ <p>In contrast, when drawing an extended bitmap using <a href="GUID-4A501086-7EFF-376D-8901-6D9B2EB4EFF2.html#GUID-4A501086-7EFF-376D-8901-6D9B2EB4EFF2__GUID-F9B06D87-AB42-3A94-AF00-8879D28A866B"><span class="apiname">CFbsBitGc::BitBlt()</span></a> or <a href="GUID-4A501086-7EFF-376D-8901-6D9B2EB4EFF2.html#GUID-4A501086-7EFF-376D-8901-6D9B2EB4EFF2__GUID-24606804-DE19-3F87-8A45-0FC031F4300E"><span class="apiname">CFbsBitGc::DrawBitmap()</span></a>, the sequence is as follows: </p>
+ <pre class="codeblock" id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-545102E0-5C88-5627-96F2-EDC392635464"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-545102E0-5C88-5627-96F2-EDC392635464"><!-- --></a>BeginBitmap()
+for each (scanline)
+    {
+    ScanLine()
+    }
+EndBitmap()
+</pre>
+ <p>If the extended bitmap rasterizer DLL has a cache of previously rasterized extended bitmaps, calls to <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-D24300BA-20D7-34E6-BD23-ED281A0D957E"><span class="apiname">CFbsBitmap::GetScanLine()</span></a>, <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-838CF3C5-C513-33B7-9C81-0EBCE075F6B7"><span class="apiname">CFbsBitmap::GetPixel()</span></a> and <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-57BC8EB1-B9F4-39A9-A18B-594CFB7786B6"><span class="apiname">CFbsBitmap::GetVerticalScanLine()</span></a> do not need to rasterize the bitmap for each call, which can improve performance dramatically. </p>
+ <p>An extended bitmap rasterizer DLL cache contains the previously rasterized content for the most recently used extended bitmaps. Typically the extended bitmap rasterizer DLL adds new bitmaps to the cache when <a href="GUID-FFA11F49-C802-3476-BDF6-41222A800F80.html#GUID-FFA11F49-C802-3476-BDF6-41222A800F80__GUID-64CF1808-1B05-3403-AB3F-D002F3A4AAFC"><span class="apiname">CFbsRasterizer::BeginBitmap()</span></a> is called (if they are not already in the cache) and does not automatically remove bitmaps from the cache when <a href="GUID-FFA11F49-C802-3476-BDF6-41222A800F80.html#GUID-FFA11F49-C802-3476-BDF6-41222A800F80__GUID-23EB43C0-1694-39BE-AEFF-1E4ADA30E765"><span class="apiname">CFbsRasterizer::EndBitmap()</span></a> is called. </p>
+ <p>It is possible for an extended bitmap to be deleted before its cached information is deleted from the cache. It is therefore important that the cache does not store pointers to the data that was used to create the pre-rasterized content. </p>
+ <p>There are two approaches that can be used to manage the cache: </p>
+ <ul><li id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-7233E700-FF1D-5FD9-985C-F0FB40643003"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-7233E700-FF1D-5FD9-985C-F0FB40643003"><!-- --></a><p>Remove the oldest items when a maximum cache size is reached. </p>
+ </li>
+ <li id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-AA32ADA2-6AED-51F2-B7CB-39DA24288F6D"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-AA32ADA2-6AED-51F2-B7CB-39DA24288F6D"><!-- --></a><p>Associate the extended bitmap rasterizer DLL with a <a href="GUID-6EAFEB3B-D5F1-3CAE-A9F3-5955F891F122.html"><span class="apiname">CIdle</span></a> active object and remove all of the items during idle times. </p>
+ </li>
+ </ul>
+ <p>It is recommended that you use both mechanisms in order to optimize memory usage. The example extended bitmap rasterizer DLL does this. It maintains a list of recently used bitmaps, with the most recently used one being first in the list. If the size of the cache exceeds the set maximum, the oldest bitmaps are removed until the size is within limits again. The example extended bitmap rasterizer DLL also uses a <a href="GUID-6EAFEB3B-D5F1-3CAE-A9F3-5955F891F122.html"><span class="apiname">CIdle</span></a> object that clears the cache during idle times. </p>
+ <p><strong>Memory </strong> </p>
+ <p>The example extended bitmap rasterizer DLL allocates and frees memory during <a href="GUID-FFA11F49-C802-3476-BDF6-41222A800F80.html#GUID-FFA11F49-C802-3476-BDF6-41222A800F80__GUID-64CF1808-1B05-3403-AB3F-D002F3A4AAFC"><span class="apiname">CFbsRasterizer::BeginBitmap()</span></a> and <a href="GUID-FFA11F49-C802-3476-BDF6-41222A800F80.html#GUID-FFA11F49-C802-3476-BDF6-41222A800F80__GUID-23EB43C0-1694-39BE-AEFF-1E4ADA30E765"><span class="apiname">CFbsRasterizer::EndBitmap()</span></a>, respectively. This approach may be slow if frequent allocation and freeing of large amounts of memory is required. </p>
+ <p>A possible solution is to pre-allocate a memory pool from which the extended bitmap rasterizer DLL can use areas of memory. This reduces the number of allocations. However, this solution may be unsuitable for some scenarios, such as when memory usage is more important than performance. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Example extended bitmap rasterizer</h2> <p>The Symbian platform provides a simple example extended bitmap rasterizer, which you can use as a reference when you are creating your own. The source code is located in the <span class="filepath">os\graphics\fbs\fontandbitmapserver\trasterizer\src</span> folder. It is built as <span class="filepath">fbsrasterizer_test.dll</span> when you build the test code for the Font and Bitmap Server component. </p>
+ <p>This extended bitmap rasterizer DLL handles a tricolor flag. The data comprises the flag's three colors and the direction (horizontal or vertical) of the stripes as shown in the following picture. </p>
+ <div class="fignone" id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-1EEEB83A-984C-528A-BC5D-5B17836EAA29"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-1EEEB83A-984C-528A-BC5D-5B17836EAA29"><!-- --></a><span class="figcap">Figure 1. 
+             Tricolor flag with horizontal and vertical stripes 
+          </span> <img src="GUID-538302A3-F4B2-539C-8048-39E6028CB2A2_d0e262853_href.png"/></div>
+ <ul><li id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-01B79E41-BC48-5BCD-B613-D220BCCF0F48"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-01B79E41-BC48-5BCD-B613-D220BCCF0F48"><!-- --></a><p>When <a href="GUID-FFA11F49-C802-3476-BDF6-41222A800F80.html#GUID-FFA11F49-C802-3476-BDF6-41222A800F80__GUID-64CF1808-1B05-3403-AB3F-D002F3A4AAFC"><span class="apiname">CFbsRasterizer::BeginBitmap()</span></a> is called for this type of extended bitmap, the extended bitmap rasterizer DLL creates a pixel buffer the size of the whole flag and draws the flag into it. If BitGDI specifies a region, the extended bitmap rasterizer DLL draws only the region and otherwise it draws the whole flag. For some extended bitmap rasterizers it may be faster to ignore the region and draw the whole bitmap area. </p>
+ </li>
+ <li id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-9E19CB56-56E4-58FD-A4BD-F3F03305C4AE"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-9E19CB56-56E4-58FD-A4BD-F3F03305C4AE"><!-- --></a><p>Calls to <a href="GUID-FFA11F49-C802-3476-BDF6-41222A800F80.html#GUID-FFA11F49-C802-3476-BDF6-41222A800F80__GUID-6C2BF4A4-86D1-3489-BA3D-2145E0077705"><span class="apiname">CFbsRasterizer::ScanLine()</span></a> return a pointer to the appropriate place in the pre-rasterized buffer. </p>
+ </li>
+ <li id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-E336F19A-3172-5E7C-82C1-E65968D5F4FB"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-E336F19A-3172-5E7C-82C1-E65968D5F4FB"><!-- --></a><p>Calling <a href="GUID-FFA11F49-C802-3476-BDF6-41222A800F80.html#GUID-FFA11F49-C802-3476-BDF6-41222A800F80__GUID-23EB43C0-1694-39BE-AEFF-1E4ADA30E765"><span class="apiname">CFbsRasterizer::EndBitmap()</span></a> causes the pre-rasterized buffer to be stored in the cache or deleted. </p>
+ </li>
+ </ul>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Packaging the DLL</h2> <p>Because an extended bitmap rasterizer DLL is optional, there is a stub implementation for platform security reasons. When a functional extended bitmap rasterizer DLL is not present, the stub implementation is compiled into a DLL and is installed in the ROM in order to prevent a SIS file installing a rogue DLL with the same name. </p>
+ <p><strong>The MMP file </strong> </p>
+ <ul><li id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-36A2ABAB-C2B6-519E-85CC-155D56A0E985"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-36A2ABAB-C2B6-519E-85CC-155D56A0E985"><!-- --></a><p>The DLL must have the name <span class="filepath">fbsrasterizer.dll</span>. If the DLL is renamed during the build process, use the <samp class="codeph">LINKAS</samp> keyword in the MMP file to indicate that this is the final name of the DLL. See <a href="GUID-946E64D6-3E5D-5264-AD5D-29D3AD296543.html" title="The Graphics package contains a number of adaptation and customization components. These are called adaptations in this topic. Symbian provides implementations of these components. However, device creators can create their own implementations—for example, to take advantage of the specific hardware that is available in a particular device. This topic describes how to select adaptations for inclusion in a ROM.">Selection of Adaptations</a> for more information. </p>
+ </li>
+ <li id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-5A5D9A8A-60BD-53F0-B8EB-1CAA1E841C88"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-5A5D9A8A-60BD-53F0-B8EB-1CAA1E841C88"><!-- --></a><p>Use UIDs 0x1000008D (which indicates a static interface DLL) and 0x10285EAE (which is a unique identifier that indicates that this is an extended bitmap rasterizer DLL). </p>
+ </li>
+ <li id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-0BDEDB09-7118-5822-A27C-4391EB04FA26"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-0BDEDB09-7118-5822-A27C-4391EB04FA26"><!-- --></a><p>The DLL must have all capabilities except TCB (Trusted Computing Base). </p>
+ </li>
+ <li id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-B32F0BA1-5832-57C6-A864-32405357B5C4"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-B32F0BA1-5832-57C6-A864-32405357B5C4"><!-- --></a><p>Use the <samp class="codeph">NOEXPORTLIBRARY</samp> keyword to prevent the generation of LIB/DSO files during the build process. </p>
+ </li>
+ </ul>
+ <p>Here is a snippet from the stub implementation's MMP file: </p>
+ <pre class="codeblock" id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-9A970A60-4DE3-58F7-A353-F86777929181"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-9A970A60-4DE3-58F7-A353-F86777929181"><!-- --></a>TARGET fbsrasterizer_stub.dll
+TARGETTYPE DLL
+CAPABILITY All -Tcb
+UID 0x1000008D 0x10285EAE
+LINKAS fbsrasterizer.dll
+NOEXPORTLIBRARY</pre>
+ <p><strong>ROM building </strong> </p>
+ <p>Building a ROM image for a target platform involves using IBY files. By default the stub implementation is included using the standard mechanism for selecting graphics adaptation components. This is described in <a href="GUID-946E64D6-3E5D-5264-AD5D-29D3AD296543.html" title="The Graphics package contains a number of adaptation and customization components. These are called adaptations in this topic. Symbian provides implementations of these components. However, device creators can create their own implementations—for example, to take advantage of the specific hardware that is available in a particular device. This topic describes how to select adaptations for inclusion in a ROM.">Selection of Adaptations</a>. </p>
+ <p>There is no generic IBY file for the extended bitmap rasterizer. Instead it is included in the main <span class="filepath">fbserv.iby</span> file like this: </p>
+ <pre class="codeblock" id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-9D326323-7148-573E-A792-FD3517047CED"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-9D326323-7148-573E-A792-FD3517047CED"><!-- --></a>// FBSERV_IBY
+    
+#ifndef __FBSERV_IBY__
+#define __FBSERV_IBY__
+    
+REM FBSERV - Font and Bitmap Server
+    
+...
+    
+// Extended bitmap rasterizer DLL
+#include &lt;graphics_adaptation.hby&gt;
+#include FBSRASTERIZER_DRV
+      
+#endif //__FBSERV_IBY__</pre>
+ <p>You must create an implementation-specific IBY file. This should have a unique name of the form <span class="filepath">fbsrasterizer_vendor.iby</span>, where <span class="filepath">vendor</span> is the vendor's name, the format of the proprietary data or some other identifying feature of the extended bitmap rasterizer DLL. Here is an example of an implementation-specific IBY file: </p>
+ <pre class="codeblock" id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-0D7FF35E-91E1-591F-BC32-3138D969A8AF"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-0D7FF35E-91E1-591F-BC32-3138D969A8AF"><!-- --></a>// FBSRASTERIZER_VENDOR_IBY
+    
+#ifndef FBSRASTERIZER_VENDOR_IBY
+#define FBSRASTERIZER_VENDOR_IBY
+    
+file=ABI_DIR\BUILD_DIR\fbsrasterizer_vendor.dll \sys\bin\fbsrasterizer.dll
+    
+#endif // FBSRASTERIZER_VENDOR_IBY
+</pre>
+ <p>This IBY file must be exported to the <span class="filepath">/epoc32/rom/include/core/os/</span> folder. </p>
+ <p>You can include this implementation-specific IBY file in a device ROM configuration file by adding the following line to a top-level OBY file like this: </p>
+ <pre class="codeblock" id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-DAA65C8C-301B-5CDB-B804-90FC35AB4711"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-DAA65C8C-301B-5CDB-B804-90FC35AB4711"><!-- --></a>#define FBSRASTERIZER_DRV &lt;fbsrasterizer_vendor.iby&gt;</pre>
+ <p>This is the preferred method. However, an alternative is to specify the IBY on the BUILDROM command line like this: </p>
+ <pre class="codeblock" id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-42C88366-7CB9-55F3-BBB7-0A0EA4B46DA8"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-42C88366-7CB9-55F3-BBB7-0A0EA4B46DA8"><!-- --></a>BUILDROM ... –DFBSRASTERIZER_DRV="^&lt;"fbsrasterizer_vendor.iby"^&gt;" ... 
+</pre>
+ <p>Notice that the ^ character is used as an escape character for the &lt; and &gt; characters. </p>
+ <p>See <a href="GUID-946E64D6-3E5D-5264-AD5D-29D3AD296543.html" title="The Graphics package contains a number of adaptation and customization components. These are called adaptations in this topic. Symbian provides implementations of these components. However, device creators can create their own implementations—for example, to take advantage of the specific hardware that is available in a particular device. This topic describes how to select adaptations for inclusion in a ROM.">Selection of Adaptations</a> for more information. </p>
+ <p><strong>The emulator </strong> </p>
+ <p>By default, an extended bitmap rasterizer DLL is not included on the emulator (WINSCW). To include your extended bitmap rasterizer DLL for testing on the emulator add the following line to your <span class="filepath">epoc.ini</span> file: </p>
+ <pre class="codeblock" id="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-A56861AB-AF5E-52AD-A961-2D454EA548B8"><a name="GUID-E6E6A439-B3CC-5FEA-9148-2DB5F37003F2__GUID-A56861AB-AF5E-52AD-A961-2D454EA548B8"><!-- --></a>FBSRASTERIZER_DLL &lt;your_rasterizer_dll_name&gt;</pre>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-A03FB1BF-F67B-519D-A904-74CA3F8375D9.html" title="The Font and Bitmap Server collection contains only one component—the Font and Bitmap Server. As its name suggests, the Font and Bitmap Server manages fonts and bitmaps.">Font and Bitmap Server Collection</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-D76C7759-739D-5C98-B718-7297687FE630.html" title="The Font and Bitmap Server provides a framework for device creators to add support for their own types of bitmap compression. Bitmaps that use compression formats that are provided by device creators are known as extended bitmaps.">Extended Bitmaps</a></div>
+<div><a href="GUID-71DADA82-3ABC-52D2-8360-33FAEB2E5DE9.html" title="The Font and Bitmap Server (FBServ) provides a memory efficient way of using bitmaps and fonts. It stores a single instance of each bitmap in either a shared heap or in eXecute In Place (XIP) ROM and provides clients with read and (when appropriate) write access.">Font and Bitmap Server Overview</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Porting the Power Resource Manager"/>
+<meta name="abstract" content="This tutorial describes how to port the Platform Specific Layer (PSL) of the Power Resource Manager (PRM) and how to modify clients, such as device drivers, to use the PRM framework."/>
+<meta name="description" content="This tutorial describes how to port the Platform Specific Layer (PSL) of the Power Resource Manager (PRM) and how to modify clients, such as device drivers, to use the PRM framework."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4804B6E0-9199-5F3E-984A-4B00B3984E45.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4804B6E0-9199-5F3E-984A-4B00B3984E45.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6E1DE1E4-1B09-541C-8708-9126E69B42CE.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Porting the Power Resource Manager</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2400380 id2400389 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html" title="This topic describes how to implement a power controller in a base port.">Power Management Tutorials</a> &gt; <a href="GUID-4804B6E0-9199-5F3E-984A-4B00B3984E45.html" title="This tutorial describes the steps needed to successfully port the PRM for a particular device.">Porting the Power Resource Manager</a> &gt; </div>
+<h1 class="topictitle1">Porting the Power Resource Manager</h1>
+<div><p>This tutorial describes how to port the Platform Specific
+Layer (PSL) of the Power Resource Manager (<span class="keyword">PRM</span>)
+and how to modify clients, such as device drivers, to use the PRM
+framework.</p>
+
+<div class="section" id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-97905214-40EC-44A1-95D6-7F2C1636C638"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-97905214-40EC-44A1-95D6-7F2C1636C638"><!-- --></a><h2 class="sectiontitle">Purpose</h2> <p>The PRM is a framework for managing system power resources. This
+framework improves portability across different platforms and reduces
+device driver complexity. </p>
+ <p>The PRM framework is split into
+two layers: </p>
+ <ul>
+<li id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-17F4DFA5-2848-5CA9-BE5D-F7F52BB1705F"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-17F4DFA5-2848-5CA9-BE5D-F7F52BB1705F"><!-- --></a><p>Platform Independent
+Layer - the PIL is a generic software layer that is implemented by
+Symbian. This is the base virtual class for the Power Resource Controller
+(<a href="GUID-46F2174F-0206-345B-8C5D-F8B5763652E0.html"><span class="apiname">DPowerResourceController</span></a>), </p>
+ </li>
+
+<li id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-B6499506-0B33-588F-BEFC-12A4D9FDF239"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-B6499506-0B33-588F-BEFC-12A4D9FDF239"><!-- --></a><p>Platform Specific
+Layer - the PSL is developed specifically to interface with the target
+hardware by licensees. This is the class derived from <samp class="codeph">DPowerResourceController</samp>. </p>
+ </li>
+
+</ul>
+ <p>Other acronyms used in this document set: </p>
+ <ul>
+<li id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-97B58DBF-51DA-5982-A2D2-BF3453B062F2"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-97B58DBF-51DA-5982-A2D2-BF3453B062F2"><!-- --></a><p>LDD - Logical
+Device Driver. The higher layer of abstraction within the Symbian
+platform device driver framework which implements common functionality
+among differing pieces of hardware of one type, </p>
+ </li>
+
+<li id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-547FA744-0D75-516A-954A-E9D1DBCBAC87"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-547FA744-0D75-516A-954A-E9D1DBCBAC87"><!-- --></a><p>PDD - Physical
+Device Driver. The lower layer of abstraction within the Symbian platform
+device driver framework which implements functionality that is specific
+to a particular piece of hardware. </p>
+ </li>
+
+</ul>
+ <p><strong>Intended audience</strong> </p>
+ <p>This document is intended
+to be used by Symbian platform device creators. </p>
+ <p><strong>Required
+background</strong> </p>
+ <p>The reader of this document is assumed to have
+knowledge of the Symbian platform device driver model and <span class="keyword">base port</span> layering and components. </p>
+ <ul>
+<li id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-611721D2-17C4-56F4-9101-6088B062BB2C"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-611721D2-17C4-56F4-9101-6088B062BB2C"><!-- --></a><p> <a href="GUID-8D80AA51-5108-5D4B-B6B9-7FA47570AB89.html">Device Driver Concepts</a>, </p>
+ </li>
+
+</ul>
+ <p><strong>Introduction</strong> </p>
+ <p>The PRM provides a unique place
+where all the current power states for resources can be obtained at
+any time. The sum of all internal and external power states defines
+the current system-wide power state. </p>
+ <p id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-0F328055-DBCE-5B2B-A1EB-77F73BA1FC82"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-0F328055-DBCE-5B2B-A1EB-77F73BA1FC82"><!-- --></a><strong>Setup and configuration
+requirements</strong> </p>
+ <p>The PRM component is implemented as a kernel
+extension with an exported public interface that is accessible to
+kernel side components through statically linking against its export
+library. The export library is built from the resource manager and
+the resource manager libraries. </p>
+ <p>There are two versions available: </p>
+ <ul>
+<li id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-982137EB-A7C2-5420-8279-477AC52D5350"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-982137EB-A7C2-5420-8279-477AC52D5350"><!-- --></a><p>basic resource
+manager - provides essential or required functionality for static
+resources. </p>
+ <p>The basic version of the PIL layer is compiled
+into <span class="filepath">resmanpsl.lib</span>. This kernel library must
+be included by the PSL to produce the kernel extension. </p>
+ </li>
+
+<li id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-0F8863B3-044C-5B5A-831D-DB20B72459C8"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-0F8863B3-044C-5B5A-831D-DB20B72459C8"><!-- --></a><p>extended resource
+manager - provides additional support for dynamic resources and resource
+dependencies. </p>
+ <p>The extended version of the PIL layer is complied
+into <span class="filepath">resmanextenedpsl.lib</span>. This kernel library
+must be included by the PSL to produce the kernel extension. </p>
+ </li>
+
+</ul>
+ <p>Device drivers that require the use of the PRM should link
+against the appropriate library. <span class="filepath">resman.lib</span> to
+use the basic version and <span class="filepath">resmanextended.lib</span> to
+use the extended version of the PRM. </p>
+ <p><strong>Building the PRM for
+the target platform</strong> </p>
+ <p>The PRM is an early extension, so
+the <samp class="codeph">targettype</samp> in the <span class="keyword">mmp</span> file
+must be set to <samp class="codeph">kext</samp>. If the PRM is implemented as
+a PDD the <samp class="codeph">targettype</samp> in the mmp file should be should
+be <samp class="codeph">pdd</samp>. </p>
+ <p><strong>Boot sequence</strong> </p>
+ <p>The
+PRM cannot be used to operate on power resources until later in the
+boot sequence when the kernel allows the scheduling of other threads.
+During this time it is not possible to read or change the state of
+resources, but <a href="GUID-46F2174F-0206-345B-8C5D-F8B5763652E0.html#GUID-46F2174F-0206-345B-8C5D-F8B5763652E0__GUID-9D07A9C1-C0AE-36E9-8438-3BF71D3CBB0C"><span class="apiname">DPowerResourceController::PostBootLevel()</span></a> can be used to specify the state of specific resources and the PRM
+can change the state of resources to appropriate levels before the
+PRM is fully initialised. </p>
+ <p> <samp class="codeph">PostBootLevel()</samp> is used within the extension entry point, during this time PRM is
+not fully initialised. <strong>Note</strong>: This function can only be used
+for static resources and static resources with dependencies. </p>
+ <pre class="codeblock" id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-F8E2125A-0DA8-5991-8FED-BF6DA48EC79D"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-F8E2125A-0DA8-5991-8FED-BF6DA48EC79D"><!-- --></a>static TInt PostBootLevel(TUint aResId, TInt aLevel);</pre>
+ <p> <samp class="codeph">PostBootLevel()</samp> takes the resource ID and the
+post boot level that the level a resource needs to be after it is
+initialised. Typically the post boot level is only known to the PSL.
+However kernel extensions (and the variant) may request a post boot
+level. </p>
+ <p>If a kernel extension needs to know if certain resources
+have reached the post boot state in order to complete its own initialisation
+then the kernel extension should queue resource state change notifications
+for the resource when first registering as clients with the PRM. <strong>Note</strong>: notification requests are accepted before the PRM is fully
+initialised. </p>
+ <p>Variants or kernel extensions can register static
+resources before the PRM is fully initialised with <a href="GUID-46F2174F-0206-345B-8C5D-F8B5763652E0.html#GUID-46F2174F-0206-345B-8C5D-F8B5763652E0__GUID-6F74C10F-5055-37D2-968D-FCAB7D0F8FDF"><span class="apiname">DPowerResourceController::RegisterStaticResource()</span></a>. This API can only be used by static resources and not by static
+resource that support dependency. See <a href="GUID-66FD040B-133E-57CF-80DD-9369F62709C6.html#GUID-66FD040B-133E-57CF-80DD-9369F62709C6__GUID-61471315-14E1-5A0F-A164-92CF928C3604">DoRegisterStaticResources()</a>. </p>
+ </div>
+
+<div class="section" id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-EBBEF707-27E5-4E10-ADCA-A02C119EB075"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-EBBEF707-27E5-4E10-ADCA-A02C119EB075"><!-- --></a><h2 class="sectiontitle">Using
+the Power Resource Manager</h2> <p>Porting the PRM consists of
+implementing the PSL layer for a given hardware platform and modifying
+clients, such as device drivers, to use the PRM framework. </p>
+ <p>The following tasks are covered in this tutorial: </p>
+ <ul>
+<li id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-21093CEB-845E-528F-81DF-BD21084E3A27"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-21093CEB-845E-528F-81DF-BD21084E3A27"><!-- --></a><p> <a href="GUID-B1CE51BC-B452-5FC9-9C00-35447AF40671.html" title="This document describes how to write and use power resources."> Implement the controllable
+power resources</a>, </p>
+ </li>
+
+<li id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-93B8B5A9-D7EE-56A0-B96B-BA2FC8DE1CE7"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-93B8B5A9-D7EE-56A0-B96B-BA2FC8DE1CE7"><!-- --></a><p> <a href="GUID-66FD040B-133E-57CF-80DD-9369F62709C6.html" title="This document describes how to implement the Platform Specific Layer for the Power Resource Manager."> Implement the PSL
+for the target</a>, </p>
+ </li>
+
+<li id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-417CE38C-66CC-5186-B833-B1A6E8CE21B8"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-417CE38C-66CC-5186-B833-B1A6E8CE21B8"><!-- --></a><p> <a href="GUID-E7F91A65-235D-589C-9A8C-0B207D19A24B.html" title="This document describes how to port client drivers to use the PRM."> Port the client
+drivers to use the PRM</a> (to control the implemented resources), </p>
+ </li>
+
+<li id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-1420B749-8618-5FF3-93E3-F1A5E4579061"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-1420B749-8618-5FF3-93E3-F1A5E4579061"><!-- --></a><p> <a href="GUID-C8DF0CB0-92F4-5F9E-A8F1-7DE50954C4F1.html" title="This document describes how to debug the PRM using internal macros.">Debugging the PRM</a>, </p>
+ </li>
+
+<li id="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-4EEEC53B-C162-5E3F-B047-ABD4951F9C46"><a name="GUID-2ECF13A1-9D56-5740-A09F-8267E6A45DD9__GUID-4EEEC53B-C162-5E3F-B047-ABD4951F9C46"><!-- --></a><p> <a href="GUID-66E5F769-1156-54CA-94BC-8912159A1240.html" title="This document describes using the test suite for the PRM."> Testing the PRM
+PSL</a>. </p>
+ </li>
+
+</ul>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-4804B6E0-9199-5F3E-984A-4B00B3984E45.html" title="This tutorial describes the steps needed to successfully port the PRM for a particular device.">Porting the Power Resource Manager</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-6E1DE1E4-1B09-541C-8708-9126E69B42CE.html" title="Describes the Power Resource Manager.">Power
+Resource Manager (PRM)</a></div>
+<div><a href="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html" title="This topic describes how to implement a power controller in a base port.">Power
+Management Tutorials</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

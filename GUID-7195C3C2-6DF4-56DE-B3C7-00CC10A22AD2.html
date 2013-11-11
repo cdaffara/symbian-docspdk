@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Writing Trace Data to Buffers Tutorial"/>
+<meta name="abstract" content="Explains how to use the kernel trace tool API to write trace data to buffers."/>
+<meta name="description" content="Explains how to use the kernel trace tool API to write trace data to buffers."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4237DA8E-225A-58C7-B136-3AF7C3D92CF9.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-52371DAB-A231-558C-B3E6-220DAAEE566B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3F8D9A3F-FA9E-5CFB-A58A-D71CA3686900.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4237DA8E-225A-58C7-B136-3AF7C3D92CF9.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Writing Trace Data to Buffers Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2400778 id2401942 id2401957 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-52371DAB-A231-558C-B3E6-220DAAEE566B.html" title="Provides software components that implement the interface between Symbian platform and peripherals.">Logical Device Drivers</a> &gt; <a href="GUID-3F8D9A3F-FA9E-5CFB-A58A-D71CA3686900.html" title="The Kernel Trace Tool allows developers to trace Kernel commands.">Kernel Trace Tool</a> &gt; <a href="GUID-4237DA8E-225A-58C7-B136-3AF7C3D92CF9.html" title="Provides information about the Kernel Trace Tool.">Kernel Trace Tool Guide</a> &gt; </div>
+<h1 class="topictitle1">Writing
+Trace Data to Buffers Tutorial</h1>
+<div><p>Explains how to use the kernel trace tool API to write trace data
+to buffers. </p>
+
+<div class="section" id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-D09695E0-895C-4D92-9DC3-67190BD18937"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-D09695E0-895C-4D92-9DC3-67190BD18937"><!-- --></a><h2 class="sectiontitle">Purpose</h2> <p>The
+kernel trace tool API can write kernel side trace data to user side buffers
+for use by applications such as the command line kernel trace tool. </p>
+</div>
+
+<div class="section" id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-EDC7E992-AE8A-4640-89DE-071686680377"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-EDC7E992-AE8A-4640-89DE-071686680377"><!-- --></a><h2 class="sectiontitle">Intended audience</h2><p>This document is intended for
+application developers writing a trace tool using the kernel trace tool component. </p>
+</div>
+
+<div class="section" id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-DE19BC36-5D0D-4C55-8107-A8F8B8A397F3"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-DE19BC36-5D0D-4C55-8107-A8F8B8A397F3"><!-- --></a><h2 class="sectiontitle">Required background</h2> <p>The trace filters defined in
+EUser. The kernel trace tool component in general. </p>
+</div>
+
+<div class="section" id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-CEBA6B48-D8E2-46C0-AE67-3B229A37B5CA"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-CEBA6B48-D8E2-46C0-AE67-3B229A37B5CA"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p>Writing trace data to buffers is a
+short task which is performed in combination with related tasks as explained
+in <a href="GUID-55C05441-33B5-5057-971D-4200345E941E.html" title="Describes how to use the kernel trace tool component.">Kernel Trace Tool
+Tutorial</a>. </p>
+</div>
+
+<div class="section" id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-E95361F5-FB68-431E-BF70-0CAA084BF78B"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-E95361F5-FB68-431E-BF70-0CAA084BF78B"><!-- --></a><h2 class="sectiontitle">Using Kernel
+Trace Tool to Write Trace Data to Buffers </h2> <p>The following tasks
+will be covered in this tutorial: </p>
+ <ul>
+<li id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-F8B50DE2-E675-5D5C-A6A7-7C134A345DEF"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-F8B50DE2-E675-5D5C-A6A7-7C134A345DEF"><!-- --></a><p>Writing trace data to
+buffers. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-6BA65C01-B5FF-474A-913E-EBF6AC88FD49"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-6BA65C01-B5FF-474A-913E-EBF6AC88FD49"><!-- --></a><h2 class="sectiontitle">Basic procedure</h2> <p>The high level steps to writing
+trace data to buffers are shown here: </p>
+ <a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-EA6F7E84-91F6-5739-AFC3-FB9B42B0A063"><!-- --></a><ol id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-EA6F7E84-91F6-5739-AFC3-FB9B42B0A063">
+<li id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-5D47FA7A-1AB5-5D1C-A94D-C059AF27A386"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-5D47FA7A-1AB5-5D1C-A94D-C059AF27A386"><!-- --></a><p>Read the data chunk
+by chunk until it is exhausted. </p>
+ </li>
+
+<li id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-B191EAD7-1370-506F-82E1-AB9924116A81"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-B191EAD7-1370-506F-82E1-AB9924116A81"><!-- --></a><p>When each chunk is read,
+mark it as read. </p>
+ </li>
+
+</ol>
+ </div>
+
+<div class="section" id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-8BC6056B-FAD8-47B4-BC76-A64074F3C44F"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-8BC6056B-FAD8-47B4-BC76-A64074F3C44F"><!-- --></a><h2 class="sectiontitle">Using the API</h2> <p>These
+are the function calls required to </p>
+ <a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-8579706E-5C74-583D-A01E-8747F66C1FBC"><!-- --></a><ol id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-8579706E-5C74-583D-A01E-8747F66C1FBC">
+<li id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-96084312-5D5A-58A8-8447-2A943D30C2E7"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-96084312-5D5A-58A8-8447-2A943D30C2E7"><!-- --></a><p>Set up a loop which
+terminates when the data is exhausted. </p>
+ </li>
+
+<li id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-8C4C276E-0C31-555A-9F00-26A95EFCA376"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-8C4C276E-0C31-555A-9F00-26A95EFCA376"><!-- --></a><p>Within the loop call
+the <a href="GUID-85D1AC02-37F3-32B6-BE61-E700EB3C2023.html"><span class="apiname">GetData()</span></a> function of the <a href="GUID-9E859841-E8A3-37D5-9A19-BCAA3C700922.html"><span class="apiname">RBTrace</span></a> object. </p>
+ </li>
+
+<li id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-41C89085-BFED-5B66-B96D-DABF4AA9BD51"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-41C89085-BFED-5B66-B96D-DABF4AA9BD51"><!-- --></a><p>The data is now in a
+buffer, the <a href="GUID-A04C62AA-963F-34A8-932B-F8666789BE49.html"><span class="apiname">data</span></a> argument of <a href="GUID-85D1AC02-37F3-32B6-BE61-E700EB3C2023.html"><span class="apiname">GetData()</span></a>,
+and available for further processing. </p>
+ </li>
+
+<li id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-268CC254-90B4-5C14-9D2E-2C1FABAE3F73"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-268CC254-90B4-5C14-9D2E-2C1FABAE3F73"><!-- --></a><p>Still within the loop
+call the <a href="GUID-5F9823E8-2EF6-34DA-BB4D-5161AD2AEC01.html"><span class="apiname">DataUsed()</span></a> function of the <a href="GUID-9E859841-E8A3-37D5-9A19-BCAA3C700922.html"><span class="apiname">RBTrace</span></a> object.
+You must do this for each call to <a href="GUID-85D1AC02-37F3-32B6-BE61-E700EB3C2023.html"><span class="apiname">GetData()</span></a> to remove used
+data from the buffer. </p>
+ </li>
+
+</ol>
+ <pre class="codeblock" id="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-66A84361-4D52-5992-8750-6E312555EC99"><a name="GUID-7195C3C2-6DF4-56DE-B3C7-00CC10A22AD2__GUID-66A84361-4D52-5992-8750-6E312555EC99"><!-- --></a>
+         RBTrace trace;
+   ...
+            while((size=trace.GetData(data))!=0)
+                {
+                ProcessTheTraceData(data,size);
+                trace.DataUsed();
+                }
+</pre>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-4237DA8E-225A-58C7-B136-3AF7C3D92CF9.html" title="Provides information about the Kernel Trace Tool.">Kernel Trace Tool Guide</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

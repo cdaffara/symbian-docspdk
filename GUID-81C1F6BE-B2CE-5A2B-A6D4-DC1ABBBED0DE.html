@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to pre-expand a buffer"/>
+<meta name="abstract" content="Explains how to use the Expand() function in buffers."/>
+<meta name="description" content="Explains how to use the Expand() function in buffers."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-112AAFA5-B4C9-5B62-A106-FB5097C13A0E.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DBF88873-21B1-5493-8EBF-C9071D314A09.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-112AAFA5-B4C9-5B62-A106-FB5097C13A0E.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-81C1F6BE-B2CE-5A2B-A6D4-DC1ABBBED0DE"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to pre-expand a buffer</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-81C1F6BE-B2CE-5A2B-A6D4-DC1ABBBED0DE"><a name="GUID-81C1F6BE-B2CE-5A2B-A6D4-DC1ABBBED0DE"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2392600 id2392898 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-DBF88873-21B1-5493-8EBF-C9071D314A09.html" title="Links to documents that describe buffers and strings.">Buffers And Strings</a> &gt; <a href="GUID-112AAFA5-B4C9-5B62-A106-FB5097C13A0E.html" title="Topics related to the dynamic buffers and how to use them.">Using Dynamic Buffers</a> &gt; </div>
+<h1 class="topictitle1">How to
+pre-expand a buffer</h1>
+<div><p>Explains how to use the <samp class="codeph">Expand()</samp> function in buffers.</p>
+
+<p>The <samp class="codeph">InsertL()</samp> function provides a means of writing data
+into a buffer, and expanding it as necessary. When the kind of data to be
+inserted cannot be predicted in advance, this is the best technique to use.
+An example of this situation would be entering characters into a word processor
+document in response to user keystrokes.</p>
+
+<p>In cases where the data to be inserted into a buffer is known in advance
+— typically, when restoring from a file or stream store — it is better to
+pre-expand the buffer to be able to contain the data, and then <samp class="codeph">Write()</samp> into
+the expanded region of the buffer:</p>
+
+<p>In the following example the buffer is allocated and primed with some data.
+Then <samp class="codeph">ExpandL()</samp> is used to insert 16 uninitialised bytes into
+the buffer after position 6. The buffer is now 28 bytes long. Then, data is
+written into this gap using <samp class="codeph">Write()</samp>, which cannot leave.</p>
+
+<pre class="codeblock" id="GUID-81C1F6BE-B2CE-5A2B-A6D4-DC1ABBBED0DE__GUID-70600A2B-F559-5F5C-99C7-0EFA79047571"><a name="GUID-81C1F6BE-B2CE-5A2B-A6D4-DC1ABBBED0DE__GUID-70600A2B-F559-5F5C-99C7-0EFA79047571"><!-- --></a>//
+// Allocate buffer
+//
+CBufBase* buf=CBufSeg::NewL(4);
+CleanupStack::PushL(buf);
+
+//
+// Put some text in
+//
+_LIT8(KHelloWorld,"Hello world!");
+buf-&gt;InsertL(0,KHelloWorld);
+
+//
+// Reserve space for 16 X 8-bit chars
+//
+buf-&gt;ExpandL(6,16);            // &lt;- this can fail
+writeBuf(buf);
+
+//
+// Now insert only 16 characters
+//
+TText8 c='a';                  // character to insert
+for (TInt i=0; i&lt;16; i++, c++)
+ {
+ buf-&gt;Write(i+6, &amp;c, 1);   // write a char in - cannot fail
+ }
+writeBuf(buf);
+
+//
+// Now adjust size down to 18
+//
+buf-&gt;ResizeL(18);
+writeBuf(buf);
+
+//
+// Destroy buffer
+//
+CleanupStack::PopAndDestroy();</pre>
+
+<p>There are two advantages to replacing a large number of <samp class="codeph">InsertL()</samp> operations
+with a single <samp class="codeph">ExpandL()</samp> followed by many <samp class="codeph">Write()</samp> operations:</p>
+
+<ul>
+<li id="GUID-81C1F6BE-B2CE-5A2B-A6D4-DC1ABBBED0DE__GUID-E8B09B4A-FB3C-52E2-B1DE-AD96DF175081"><a name="GUID-81C1F6BE-B2CE-5A2B-A6D4-DC1ABBBED0DE__GUID-E8B09B4A-FB3C-52E2-B1DE-AD96DF175081"><!-- --></a><p>each <samp class="codeph">InsertL()</samp> may
+call the allocator to expand the dynamic buffer, and may cause data beyond
+the insertion point to be shuffled up: using a single <samp class="codeph">ExpandL()</samp> results
+in minimal calls to the allocator, and only a single shuffle</p>
+ </li>
+
+<li id="GUID-81C1F6BE-B2CE-5A2B-A6D4-DC1ABBBED0DE__GUID-A35ECB22-A81E-547C-9D55-2DF23785E5AE"><a name="GUID-81C1F6BE-B2CE-5A2B-A6D4-DC1ABBBED0DE__GUID-A35ECB22-A81E-547C-9D55-2DF23785E5AE"><!-- --></a><p>the <samp class="codeph">Write()</samp> operations
+cannot leave: therefore, once a buffer has been successfully expanded to the
+right size, the writes are guaranteed to work: this is useful in some circumstances.</p>
+ </li>
+
+</ul>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-112AAFA5-B4C9-5B62-A106-FB5097C13A0E.html" title="Topics related to the dynamic buffers and how to use them.">Using Dynamic Buffers</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

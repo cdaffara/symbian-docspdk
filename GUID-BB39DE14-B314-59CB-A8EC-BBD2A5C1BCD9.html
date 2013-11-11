@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="GUI App: Porting an Engine for Use in a Symbian Application"/>
+<meta name="abstract" content="This section describes the steps to port an engine for use in a Symbian application."/>
+<meta name="description" content="This section describes the steps to port an engine for use in a Symbian application."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F51062B0-90BB-5659-9F23-2FF25116D78A.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-440FDF7D-B9A0-5767-9FF8-412803C0D2A9.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F7C9824F-0598-56A1-AC2B-24904E997588.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F51062B0-90BB-5659-9F23-2FF25116D78A.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4A56B285-790E-5171-88F3-8C40B2AA9699.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>GUI App: Porting an Engine for Use in a Symbian Application</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9"><a name="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381193 id2381831 id2381898 id2381907 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html">Generic Open Libraries</a> &gt; <a href="GUID-440FDF7D-B9A0-5767-9FF8-412803C0D2A9.html">C Standard Library</a> &gt; <a href="GUID-F7C9824F-0598-56A1-AC2B-24904E997588.html" title="This section lists the tasks that can be performed using C Standard Library.">C Standard Library Tutorials</a> &gt; <a href="GUID-F51062B0-90BB-5659-9F23-2FF25116D78A.html">Porting Tutorials</a> &gt; </div>
+<h1 class="topictitle1">GUI
+App: Porting an Engine for Use in a Symbian Application</h1>
+<div><p>This section describes the steps to port an engine for
+use in a Symbian 		application.</p>
+
+<p>The application uses the FreeBSD <samp class="codeph">cksum</samp> utility
+as its 		  engine. The checksum example is an application with a user
+interface and an 		  engine written in C.</p>
+
+<p>The first stage in porting this program is to split the project
+into 	   the engine (GUIAppEng) and the application (GUIApp).</p>
+
+<div class="section" id="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9__SECTION_1B097EC0E8EC43BE82B88BE0D04DC5F8"><a name="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9__SECTION_1B097EC0E8EC43BE82B88BE0D04DC5F8"><!-- --></a><h2 class="sectiontitle">The
+engine</h2> <p>The engine is written in C. At its core is the <samp class="codeph">crc()</samp> 			 function. This function accepts a file descriptor
+and returns the checksum and 			 the file size.</p>
+ <p>The engine's
+project specification file (<span class="filepath">GUIAppEng.mmp</span>) 			
+is as follows:</p>
+<pre class="codeblock">TARGET		GUIAppEng.dll
+TARGETTYPE	dll
+UID             0x1000008d 0x01000a02
+VENDORID 0x70000001
+SOURCEPATH	.
+SOURCE		crc.c
+SYSTEMINCLUDE	\epoc32\include\libc \epoc32\include
+LIBRARY		estlib.lib euser.lib 
+
+#if defined(WINS)
+    deffile GuiAppEngWINS.def
+#else if defined(ARM)
+    deffile GuiAppEngARM.def
+#endif
+nostrictdef</pre>
+ <p> 			 The output file is <span class="filepath">GUIAppEng.dll</span>, whose import library 			 will be included by the UI.  		  </p>
+ 
+		  <p> 	 	 The first UID specified (<samp class="codeph">0x1000008d</samp>)
+is the standard UID 			 for an interface DLL. The second UID (<samp class="codeph">0x01100a02</samp>) is unique to the 			 <span class="filepath">GUIApp</span> project.  		  </p>
+  		  <p>  		 Splitting the project into engine
+and UI means that the definition of  		 <samp class="codeph">crc()</samp> in <span class="filepath">crc.c</span> must be marked <samp class="codeph">EXPORT_C</samp>  		 because
+this function will be exported from the engine's DLL.  		  </p>
+  		
+ <p> 			 For more information on DLLs, see <a href="GUID-4A56B285-790E-5171-88F3-8C40B2AA9699.html" title="Topics related to Dynamically loading link libraries.">DLLs</a>.  		
+ </p>
+  </div>
+
+<div class="section" id="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9__GUID-52000200-5CFD-4FE1-B80E-0A5F4C7E050D"><a name="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9__GUID-52000200-5CFD-4FE1-B80E-0A5F4C7E050D"><!-- --></a><h2 class="sectiontitle">Porting
+checksum - the GUI app</h2>  <p> 			 The implementation of checksum
+(<span class="filepath">GUIApp.app</span>) limits the 			 user to the selection
+of a single file at a time and uses the default algorithm 			 <samp class="codeph">crc()</samp>, defined in <span class="filepath">crc.c</span>, to produce
+a 32-bit value.  		  </p>
+  		  <p> 			 The user interface provides
+two main menu commands; <samp class="codeph">Calculate 			 checksum</samp> (invokes
+a file selection dialog) and <samp class="codeph">View  		 checksums</samp>.
+When a file is selected and <samp class="codeph">OK</samp> is pressed, the 			
+selected file name is retrieved and opened as shown in the following
+code:  		  </p>
+  		  <pre class="codeblock">const TUint16* fn = iFileName-&gt;PtrZ();
+int fd = wopen( ( const wchar_t* )fn, O_RDONLY, 0 ); </pre>
+ 
+		  <p>  		 This code fragment is taken from 			 <span class="filepath">examples\stdlib\GUIApp.cpp.</span>  		  </p>
+  		  <p> 			 <samp class="codeph">open()</samp> returns a file descriptor
+which the engine's 			 <samp class="codeph">crc()</samp> function uses to identify
+the file. The checksum is 			 calculated (unless an error occurred
+in attempting to open or read the file), 			 and is displayed. The
+file is closed.  		  </p>
+  		  <p> 			 The file name and checksum
+are appended to an array, the contents of 			 which may be viewed
+by selecting <samp class="codeph">View checksums</samp>.  		  </p>
+ </div>
+
+<div class="section" id="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9__SECTION_7A8BA355A42C45C3A14EDF1756AB1126"><a name="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9__SECTION_7A8BA355A42C45C3A14EDF1756AB1126"><!-- --></a><h2 class="sectiontitle">Linking to STDLIB - The project specification</h2> 		   		  <p> 			
+The application program includes several STDLIB header files, located
+			 in <span class="filepath">\epoc32\include\libc\</span>. At link time, the
+program includes 			 <span class="filepath">estlib.lib</span> and the engine
+DLL's <span class="filepath">.lib</span> 			 (<span class="filepath">GUIAppEng.lib</span>). Unlike the previous examples, this application 			 does not link
+to <span class="filepath">ecrt0.lib</span>. In this application there is no
+			 <samp class="codeph">main()</samp> and the Symbian platform provides its
+own 			 <samp class="codeph">E32Main()</samp>.  		  </p>
+  		   		</div>
+
+<div class="section" id="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9__GUID-39A0C47A-38DC-4487-981D-D8BBC50D6DCF"><a name="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9__GUID-39A0C47A-38DC-4487-981D-D8BBC50D6DCF"><!-- --></a><h2 class="sectiontitle">Some potential issues</h2> 		 <a name="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9__UL_632D231449CE4474996ACD148CB9754D"><!-- --></a><ul id="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9__UL_632D231449CE4474996ACD148CB9754D">
+<li> <p><strong>Removing writeable static</strong></p>
+         <p> 			 The PETRAN
+stage of building may report a message similar to the 			 following:
+ 		  </p>
+  		  <pre class="codeblock">WARNING: Dll 'SLSUMENG[0x01000a02].DLL' has initialised data.</pre>
+  		  <p> 			 This warning, which is not reported when building for
+the Emulator, 			 indicates that the DLL contains non-const static
+data. This is not allowed in 			 ARM builds. If it is not obvious
+where the problem occurs, the associated 			 <span class="filepath">.map</span> file 			 (<span class="filepath">epoc32\release\&lt;target&gt;\urel\&lt;dllname&gt;.map</span>) contains 			 information which can help to track down the source
+file involved. A search for 			 <samp class="codeph">from *(.bss)</samp> (to
+find uninitialised data) or <samp class="codeph">from 			 *(.data)</samp> (to
+find initialised data) in <span class="filepath">GUIAPPEng.map</span> will
+			 reveal the file in which the problem occurs, and the names of
+the offending 			 variables, although static variables will not be
+named.  		  </p>
+  </li>
+
+<li id="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9__LI_BAD062FD16EC4CC8A11F13D0ACEE8378"><a name="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9__LI_BAD062FD16EC4CC8A11F13D0ACEE8378"><!-- --></a><p><strong>Include file clashes</strong></p>
+ <p>  		 In C++ source files which use STDLIB routines, the Symbian
+platform 		  C++ include files must be included before any of the
+STDLIB files. Failure to 			 do this will result in the following
+warning:  		  </p>
+  		  <pre class="codeblock">'NULL' : macro redefinition"</pre>
+  </li>
+
+<li> <p><strong>Mixing C and C++</strong></p>
+ <p> 			 C and C++ have different
+views about the names of functions. If you 			 refer to a C function
+from C++, ensure that its prototype is declared as 			 <samp class="codeph">extern
+"C"</samp>. If there are several such function declarations, it
+			 may be more convenient to enclose them within the following: 
+		  </p>
+  		  <pre class="codeblock">#ifdef __cplusplus
+extern "C" 
+    {
+    #endif
+    ...
+    #ifdef __cplusplus
+    }
+#endif</pre>
+  		  <p> 			 See for example <span class="filepath">examples\stdlib\GUIApp\extern.h</span>.  		  </p>
+  </li>
+
+<li id="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9__LI_68EE8B3B25594B48864D5183BA8155AB"><a name="GUID-BB39DE14-B314-59CB-A8EC-BBD2A5C1BCD9__LI_68EE8B3B25594B48864D5183BA8155AB"><!-- --></a> <p><strong>Stack usage</strong></p>
+ <p>  		 Some programs produce the following error:  		  </p>
+  		  <pre class="codeblock">unresolved external symbol __chkstk</pre>
+ 
+		  <p> 			 unless the amount of stack they use is reduced. Symbian
+threads have 			 only 8k stack by default.  		  </p>
+  </li>
+
+<li> <p><strong>Resource cleanup</strong></p>
+ <p> 			The Symbian platform has
+a requirement that all resources which were 			 allocated by an application
+must be cleaned up by the time the program 			 terminates. On the
+Emulator, in debug builds, failure to do this will cause a 			 panic
+from the <samp class="codeph">__UHEAP_MARKEND</samp> macro.  		  </p>
+  		  <p> 			 Because the data allocated in the thread-local storage for STDLIB's
+			 DLL (the <samp class="codeph">_reent</samp> structure) is not automatically
+cleaned up when 			 the environment is destroyed, it must be cleaned
+up by the user of STDLIB.  		  </p>
+  		  <p> 			 The function to achieve
+this is <samp class="codeph">CloseSTDLIB()</samp>. To use 			 this function,
+file <span class="filepath">epoc32\include\libc\sys\reent.h</span> must be
+			 included in the project. Call <samp class="codeph">CloseSTDLIB()</samp> after
+the point at 			 which it is known that code in STDLIB's DLL will
+no longer be called and its 			 thread-local storage no longer needed.
+ 		  </p>
+  	   <p> 			 For example, see the destructor for <samp class="codeph">CExampleDocument</samp> in 			 <span class="filepath">examples\stdlib\GUIApp\GUIApp.cpp</span>.  		  </p>
+   </li>
+
+</ul>
+  		   		</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-F51062B0-90BB-5659-9F23-2FF25116D78A.html">Porting Tutorials</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-4A56B285-790E-5171-88F3-8C40B2AA9699.html" title="Topics related to Dynamically loading link libraries.">DLLs</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

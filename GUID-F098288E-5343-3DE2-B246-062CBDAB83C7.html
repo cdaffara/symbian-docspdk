@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="MhspsClientRequestService"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-F098288E-5343-3DE2-B246-062CBDAB83C7"/>
+
+<title>MhspsClientRequestService</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-F098288E-5343-3DE2-B246-062CBDAB83C7"><a name="GUID-F098288E-5343-3DE2-B246-062CBDAB83C7"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2886779 id2887013 id2887018 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">MhspsClientRequestService Class Reference</h1>
+	<table class="signature"><tr><td>class MhspsClientRequestService</td></tr></table><div class="section"><div>
+			<p>Part of HSPS Plugin Configuration Management Service APIs. <a href="GUID-F098288E-5343-3DE2-B246-062CBDAB83C7.html#GUID-F098288E-5343-3DE2-B246-062CBDAB83C7">MhspsClientRequestService</a>. HSPS Client Request Service API-definition. HSPS Client Request Service is intended to serve Rendering Engines with Application Themes and their associated resources. Implementation of this interface will provide access to HSPS Plugin Configuration database maintained by HSPS Definition Repository aka Plugin Registry. Definition Repository maintains plugin configurations in ChspsODT-objects. Themes can have resources like bitmaps etc. Resources can be accessed through this API also. Every individual resource has corresponding ChspsResource-object. Resource-objects are delivered to the client side in a resource list which is associated to its theme. Resource list exist only if there is any resources belonging to a theme. There can be only one theme activated for a specific application at one time. The information of activation of themes is stored in Symbian Central Repository -object. The Central Repository is requested on every theme request that Rendering Engine commences.</p>
+
+			<p>To initaite theme usage, Rendering Engine must call <a href="GUID-F098288E-5343-3DE2-B246-062CBDAB83C7.html#GUID-CA0916AF-03B5-3F7F-BFB3-BE61258AFDB3">hspsGetODT()</a>. There is no high-level or low-level parametrization used, however, API supports two parametrization mode; retrieving a theme with or without resources. The cases of retrieving a theme without resources are currently rare, but with partial theme update cases to be implemented with OTA Push and DM-cases, it will be quite applicable.</p>
+
+			<div class="p">
+				<a href="GUID-F098288E-5343-3DE2-B246-062CBDAB83C7.html#GUID-CA0916AF-03B5-3F7F-BFB3-BE61258AFDB3">hspsGetODT()</a> returns one of the following codes:<ul><li><p>EhspsGetODTSuccess. Theme was received successfully. Client can start its rendering.</p>
+</li>
+<li><p>EhspsGetODTFailed. Theme was not received. Check Additional Return Code (not yet implemented) for the exact reason. Theme load can fail for e.g. for missing rights.</p>
+</li>
+<li><p>EhspsGetODTLowMemoryStrategy. Possible memory low to create memory chunk. Something must do to free memory and then try again.</p>
+</li>
+</ul>
+</div>
+
+			<div class="p">After receiving the theme, Rendering Engine may subscribe the theme related events. These events may concern the changes of the theme status (meaning that some other theme is activated), or that the theme is updated. In both cases, client should reload the theme and do the rendering again. To act as a subscriber of these events, client must implement the interface <a href="GUID-E8BF2B3C-E055-30ED-B212-333019E12DA5.html#GUID-E8BF2B3C-E055-30ED-B212-333019E12DA5">MhspsClientRequestServiceObserver</a>. Subscription is applied by calling <a href="GUID-F098288E-5343-3DE2-B246-062CBDAB83C7.html#GUID-9AE84AFA-A515-3181-B837-14B273280542">hspsGetODTUpdate()</a>. This function returns immediately one of the following codes:<ul><li><p>EhspsGetODTUpdateSuccess - The subscription of the theme updates and/or status changes was successful. The cient must start observe the server events.</p>
+</li>
+<li><p>EhspsGetODTUpdateFailed - The subscription of the theme updates and status changes was failed.</p>
+</li>
+</ul>
+</div>
+
+			<p>Once success-response was received, the observation of the Client Request Service events can return one of the following codes:</p>
+
+			<div class="p">
+				<ul>
+					<li>
+						<p>EhspsGetODTUpdateStatus - Theme status was changed. Client must reset rendering and request theme again.</p>
+
+					</li>
+
+					<li>
+						<p>EhspsGetODTUpdateHot - Theme was updated. Client should reload the theme and then do the theme rendering again.</p>
+
+					</li>
+
+				</ul>
+
+			</div>
+
+			<div class="p">Rendering Engine can get information of the theme resources through the ChspsResource-objects delivered on Resource List. When ChspsODT-object's DOM-document has a reference to some URL, the access method to the URL-related resource can be found in ChspsResource-object. When access-method is clear, client should call <a href="GUID-F098288E-5343-3DE2-B246-062CBDAB83C7.html#GUID-FA049F6F-453C-3B69-B46D-0103C9A58B2B">hspsAccessResourceFile()</a> function with resource file path and empty RFile-handle. In successful cases, valid file handle to the associated resource file is returned. This functionality is arranged by the means of Symbian 9.0 EKA2 Kernel's support for Platform Security Concept. The return code can be one of the following:<ul><li><p>EhspsAccessResourceFileSuccess - request to get access to a theme resource file was successful.</p>
+</li>
+<li><p>EhspsAccessResourceFileFailed - request to get access to a theme resource file was unsuccessful possible in due to a security fault.</p>
+</li>
+</ul>
+</div>
+
+			<div class="p">Client Request Service functions may also return one of the following codes:<ul><li><p>EhspsServiceRequestSheduled, or</p>
+</li>
+<li><p>EhspsServiceRequestError.</p>
+</li>
+</ul>
+</div>
+
+			<p>For explanation of the meanings of these messages, see ThspsServiceCompletedMessage-documentation.</p>
+
+			<div class="p">
+				<dl class="since">
+					
+						<dt class="dlterm">Since</dt>
+
+						<dd>S60 5.0 </dd>
+
+					
+				</dl>
+
+			</div>
+
+		</div></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">
+					<a href="GUID-D988810C-58CB-31C6-901C-F08C7A067456.html">ThspsServiceCompletedMessage</a>
+				</td><td><a href="#GUID-FA049F6F-453C-3B69-B46D-0103C9A58B2B">hspsAccessResourceFile</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-6D7E90CB-E58D-345B-B3A5-12E650FC0C54.html">ThspsConfiguration</a> &amp;, <a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html">RFile</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-D988810C-58CB-31C6-901C-F08C7A067456.html">ThspsServiceCompletedMessage</a>
+				</td><td><a href="#GUID-14AB9EC5-B562-31C7-8BF6-3D86B974D387">hspsCancelGetODTUpdate</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-D988810C-58CB-31C6-901C-F08C7A067456.html">ThspsServiceCompletedMessage</a>
+				</td><td><a href="#GUID-CA0916AF-03B5-3F7F-BFB3-BE61258AFDB3">hspsGetODT</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-D988810C-58CB-31C6-901C-F08C7A067456.html">ThspsServiceCompletedMessage</a>
+				</td><td><a href="#GUID-9AE84AFA-A515-3181-B837-14B273280542">hspsGetODTUpdate</a>()</td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-FA049F6F-453C-3B69-B46D-0103C9A58B2B"><a name="GUID-FA049F6F-453C-3B69-B46D-0103C9A58B2B"><!-- --></a>
+		<h2 class="topictitle2">hspsAccessResourceFile(const TDesC &amp;, const ThspsConfiguration &amp;, RFile &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-D988810C-58CB-31C6-901C-F08C7A067456.html">ThspsServiceCompletedMessage</a>
+				</td><td>hspsAccessResourceFile</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aResourceFileName,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-6D7E90CB-E58D-345B-B3A5-12E650FC0C54.html">ThspsConfiguration</a> &amp;</td><td>aConfiguration,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html">RFile</a> &amp;</td><td>aFile</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>hspsAccessResourceFile</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aResourceFileName</td><td>is the path for resource file to requested. Resource file name is given in every ChspsResource-object listed on the resource list.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-6D7E90CB-E58D-345B-B3A5-12E650FC0C54.html">ThspsConfiguration</a> &amp; aConfiguration</td><td>identifies the application or interface from which the theme is to be found  </td></tr><tr><td class="parameter"><a href="GUID-BE0804F6-4375-3C8A-8C83-968F510466E0.html">RFile</a> &amp; aFile</td><td>is an empty RFile object which a valid file handle to the resourec file will be placed on return. The file access is arranged by means of Symbian 9.0 EKA2 Platform Security file handle sharing concept.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-14AB9EC5-B562-31C7-8BF6-3D86B974D387"><a name="GUID-14AB9EC5-B562-31C7-8BF6-3D86B974D387"><!-- --></a>
+		<h2 class="topictitle2">hspsCancelGetODTUpdate()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-D988810C-58CB-31C6-901C-F08C7A067456.html">ThspsServiceCompletedMessage</a>
+				</td><td>hspsCancelGetODTUpdate</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>hspsCancelGetODTUpdate</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-CA0916AF-03B5-3F7F-BFB3-BE61258AFDB3"><a name="GUID-CA0916AF-03B5-3F7F-BFB3-BE61258AFDB3"><!-- --></a>
+		<h2 class="topictitle2">hspsGetODT(TInt, ChspsODT &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-D988810C-58CB-31C6-901C-F08C7A067456.html">ThspsServiceCompletedMessage</a>
+				</td><td>hspsGetODT</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aAppUid,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp;</td><td>aODT</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>hspsGetODT</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aAppUid</td><td>is the UID of the application for which the theme is requested for.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-268AB2C8-9E61-362E-97CF-4E00B9184A14.html">ChspsODT</a> &amp; aODT</td><td>is an empty ChspsODT-object in where the theme is expected to be placed when the call returns.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9AE84AFA-A515-3181-B837-14B273280542"><a name="GUID-9AE84AFA-A515-3181-B837-14B273280542"><!-- --></a>
+		<h2 class="topictitle2">hspsGetODTUpdate()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-D988810C-58CB-31C6-901C-F08C7A067456.html">ThspsServiceCompletedMessage</a>
+				</td><td>hspsGetODTUpdate</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>hspsGetODTUpdate</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

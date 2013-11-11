@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="eap_timer_queue_c"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-4F339520-22A2-3041-9982-F8F61469A920"/>
+
+<title>eap_timer_queue_c</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-4F339520-22A2-3041-9982-F8F61469A920"><a name="GUID-4F339520-22A2-3041-9982-F8F61469A920"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">eap_timer_queue_c Class Reference</h1>
+	<table class="signature"><tr><td>class eap_timer_queue_c</td></tr></table><div class="section"><div>
+			<p>
+				<a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-C197C9A7-EA05-3F24-9854-542E984C612D">User</a> of the timer queue must be inherited from <a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html#GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46">abs_eap_base_timer_c</a>. The <a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html#GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46">abs_eap_base_timer_c</a> class is the call back interface from timer queue to the user. Note the timer queue interface is used through <a href="GUID-4FD0ECE2-8614-3C94-B931-F78836959475.html#GUID-4FD0ECE2-8614-3C94-B931-F78836959475">abs_eap_am_tools_c</a>. Functions are <a href="GUID-4FD0ECE2-8614-3C94-B931-F78836959475.html#GUID-C944F43A-FABE-3A20-8779-99DDAED8E0DB">abs_eap_am_tools_c::get_timer_resolution_ms()</a>, abs_eap_am_tools_c::set_timer(), abs_eap_am_tools_c::cancel_timer(), abs_eap_am_tools_c::cancel_all_timers() and <a href="GUID-4FD0ECE2-8614-3C94-B931-F78836959475.html#GUID-BBEC94B6-4D56-33EC-876C-B631B9A91472">abs_eap_am_tools_c::pulse_timer()</a>In the following figure m_timer_queue is pointer to the first timer event in the list. The timer list is horizontal list right from m_timer_queue. Each timer event in the list represents one time segment that must elapse to zero before event is active. Timer event - the square box in the figure - is type of <a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html#GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80">eap_timer_queue_event_c</a>. Each time segment includes list of the same time values, the vertical lists.</p>
+
+			<p>Place for new timer event is found by stepping the the horizontal timer list and adding the time values sum until the list ends or time sum is equal or greater than time of the new timer event. If time sum is equal to the time of the new timer event, the new timer event is added to the second in the vertical list. If time sum is greater than the time of the new timer event, the new timer event is added before the existing time event. In this case a new vertical list is created. If the list ends the new time event is added to the end of the timer queue.</p>
+
+			<div class="p">
+				<pre class="codeblock">                  +---------------+  +---------------+  +---------------+
+   m_timer_queue-&gt;| m_time_ms 0   |-&gt;| m_time_ms 2000|-&gt;| m_time_ms 500 | // This horizontal list is the timer queue.
+                  +---------------+  +---------------+  +---------------+
+                          |                  |                  |        
+                          V                  V                  V        
+                  +---------------+  +---------------+  +---------------+
+                  | m_time_ms 0   |  | m_time_ms 0   |  | m_time_ms 0   |
+                  +---------------+  +---------------+  +---------------+
+                          |                  |                           
+                          V                  V                           
+                  +---------------+  +---------------+                   
+                  | m_time_ms 0   |  | m_time_ms 0   |                   
+                  +---------------+  +---------------+                   
+                                             |                           
+                                             V                           
+                                     +---------------+                   
+                                     | m_time_ms 0   |                   
+                                     +---------------+                   
+   // Each vertical list includes the timer events that have the same time.</pre>
+ </div>
+
+		</div></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-D4028382-03C2-3C2E-A9BE-93C21F4718CA">eap_timer_queue_c</a>(<a href="GUID-4FD0ECE2-8614-3C94-B931-F78836959475.html">abs_eap_am_tools_c</a> *const , const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>)</td></tr><tr class="bg"><td align="right" class="code"/><td><a href="#GUID-B2F421CD-A3B3-32E7-BC81-59F4B6E35FFB">~eap_timer_queue_c</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td><a href="#GUID-FB9F9019-3F6E-38A6-9B1F-A4FD23397D9F">cancel_all_timers</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td><a href="#GUID-A0D3611E-B027-3A65-A5E3-4AAF32762D6F">cancel_timer</a>(<a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const , const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>)</td></tr><tr><td align="right" class="code">bool</td><td><a href="#GUID-D119A67C-EE2F-3735-919B-85C7E9CE50B4">get_is_valid</a>()</td></tr><tr class="bg"><td align="right" class="code">bool</td><td><a href="#GUID-2BE451DC-519B-3C01-B92E-9D4202444614">get_timer_queue_is_empty</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>
+				</td><td><a href="#GUID-4E74AAE0-2CD7-3BE8-A55C-EDF9F6BBD5F7">get_timer_resolution_ms</a>()</td></tr><tr class="bg"><td align="right" class="code">bool</td><td><a href="#GUID-80C48977-6825-37C1-9E01-C2B12CB45E0C">get_use_eap_milli_second_timer</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>
+				</td><td><a href="#GUID-A5912083-AAA8-3727-BD66-C6758D237DCF">pulse_timer</a>(const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>, const bool)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td><a href="#GUID-E4F6B78A-8A6B-3ADC-AB1E-621A1D32A381">re_activate_timer_queue</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td><a href="#GUID-A8D15186-092D-3A24-BEAD-3010AD8161A1">set_timer</a>(<a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const , const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>, void *const , const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-B14283A6-8DF3-3519-ACD5-E6293F11F2D9">set_timer_resolution_ms</a>(const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-15BC847B-3D44-339D-BF8F-954C4E63D701">set_use_eap_milli_second_timer</a>(const bool)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">void</td><td><a href="#GUID-1B5313F2-F0F6-3C16-8B37-ECE5B3E9BC6E">add_end_of_vertical_list</a>(<a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *, <a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td><a href="#GUID-66C9B727-76FA-3E4B-A407-76330031701C">add_hash_of_timer_event</a>(<a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *const , const <a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const , const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td><a href="#GUID-388A5D56-FDCE-3EF2-B80B-BCE61085267E">add_new_pending_timer</a>(<a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td><a href="#GUID-B17FB4E6-F620-34E3-80A6-698B2E2F0A39">add_pending_timer</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td><a href="#GUID-D1DCC096-096C-3523-A831-A90CD7A43BF5">add_timer</a>(<a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td><a href="#GUID-92F56232-6FB2-302A-A419-773BD46B8A8E">cancel_pending_timer</a>(<a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const , const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-3D664767-B427-3872-B11A-3A815B1B3C5B">deactivate_timer_queue</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *</td><td><a href="#GUID-450C0089-3D6E-3310-A8CC-08609D632CF0">get_hashed_timer_event</a>(const <a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const , const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>
+				</td><td><a href="#GUID-886D7BB4-7DA4-32B9-A8B5-0B2B4B0E6045">hash</a>(const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>, const <a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const , const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td><a href="#GUID-5C68B0F1-A36A-3B4A-8272-A9D7456402A0">remove_hash_of_timer_event</a>(<a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *const )</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-E0BF5FDC-27BC-35EC-8C1C-5544F8C15F58">trace_timer</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-3375E74A-9956-36C4-8512-C5C883F30146">trace_timer_event</a>(const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">eap_const_string</a>, const <a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *const )</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-4FD0ECE2-8614-3C94-B931-F78836959475.html">abs_eap_am_tools_c</a> *const</td><td><a href="#GUID-1E440A1A-A5EE-3149-9F91-25ED4DE63588">m_am_tools</a></td></tr><tr class="bg"><td align="right" valign="top">bool</td><td><a href="#GUID-1EE8D13B-5D78-359F-91AA-C5BE6211688A">m_is_active</a></td></tr><tr><td align="right" valign="top">bool</td><td><a href="#GUID-28C2AFF6-FBF6-36C5-9598-1F5E77380717">m_is_valid</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-8A180C9C-14E4-3409-93EB-21DD2F00CA06.html">eap_timer_queue_hash_c</a> *</td><td><a href="#GUID-F46C0BE2-0941-3D2E-A4A4-BA88D93D8129">m_map</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *</td><td><a href="#GUID-51744823-6DD5-3F0E-9329-14B069A2F460">m_new_event_begin</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *</td><td><a href="#GUID-618147AE-3376-31EB-99B1-F2024E817AE1">m_new_event_end</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *</td><td><a href="#GUID-2644570A-2D9F-3D22-A4A1-6386FE954504">m_timer_queue</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>
+				</td><td><a href="#GUID-1D22DCC8-83DF-35ED-8DC7-9F37B662A445">m_timer_resolution_ms</a></td></tr><tr><td align="right" valign="top">bool</td><td><a href="#GUID-E74BF276-D32F-3C72-A175-FF8674548A08">m_use_eap_millisecond_timer</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-D4028382-03C2-3C2E-A9BE-93C21F4718CA"><a name="GUID-D4028382-03C2-3C2E-A9BE-93C21F4718CA"><!-- --></a>
+		<h2 class="topictitle2">eap_timer_queue_c(abs_eap_am_tools_c *const, const u32_t)</h2>
+		<table class="signature"><tr><td>eap_timer_queue_c</td><td>(</td><td><a href="GUID-4FD0ECE2-8614-3C94-B931-F78836959475.html">abs_eap_am_tools_c</a> *const </td><td>tools,</td></tr><tr><td colspan="2"> </td><td>const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a></td><td>timer_resolution_ms</td></tr><tr><td colspan="1"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Constructor initializes the timer queue. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-4FD0ECE2-8614-3C94-B931-F78836959475.html">abs_eap_am_tools_c</a> *const  tools</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a> timer_resolution_ms</td><td>is the resolution in milli seconds of this timer. The pulse() member function is assumed to be called using timer_resolution_ms interval.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B2F421CD-A3B3-32E7-BC81-59F4B6E35FFB"><a name="GUID-B2F421CD-A3B3-32E7-BC81-59F4B6E35FFB"><!-- --></a>
+		<h2 class="topictitle2">~eap_timer_queue_c()</h2>
+		<table class="signature"><tr><td>~eap_timer_queue_c</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Destructor does nothing special. Note user is assumed to call <a href="GUID-4F339520-22A2-3041-9982-F8F61469A920.html#GUID-FB9F9019-3F6E-38A6-9B1F-A4FD23397D9F">cancel_all_timers()</a> before timer queue is deleted. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-1B5313F2-F0F6-3C16-8B37-ECE5B3E9BC6E"><a name="GUID-1B5313F2-F0F6-3C16-8B37-ECE5B3E9BC6E"><!-- --></a>
+		<h2 class="topictitle2">add_end_of_vertical_list(eap_timer_queue_event_c *, eap_timer_queue_event_c *)</h2>
+		<table class="signature"><tr><td>void</td><td>add_end_of_vertical_list</td><td>(</td><td><a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *</td><td>begin,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *</td><td>event</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> * begin</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> * event</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-66C9B727-76FA-3E4B-A407-76330031701C"><a name="GUID-66C9B727-76FA-3E4B-A407-76330031701C"><!-- --></a>
+		<h2 class="topictitle2">add_hash_of_timer_event(eap_timer_queue_event_c *const, const abs_eap_base_timer_c *const, const u32_t)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td>add_hash_of_timer_event</td><td>(</td><td><a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *const </td><td>event,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const </td><td>initializer,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a></td><td>id</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *const  event</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const  initializer</td><td> </td></tr><tr><td class="parameter">const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a> id</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-388A5D56-FDCE-3EF2-B80B-BCE61085267E"><a name="GUID-388A5D56-FDCE-3EF2-B80B-BCE61085267E"><!-- --></a>
+		<h2 class="topictitle2">add_new_pending_timer(eap_timer_queue_event_c *)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td>add_new_pending_timer</td><td>(</td><td><a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *</td><td>event</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> * event</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B17FB4E6-F620-34E3-80A6-698B2E2F0A39"><a name="GUID-B17FB4E6-F620-34E3-80A6-698B2E2F0A39"><!-- --></a>
+		<h2 class="topictitle2">add_pending_timer()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td>add_pending_timer</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>New timer events are added with this function because the next pulse might be very long, and the long pulse will cause the new event expire immediately. By using this function the shortest timer events in the timer queue are handled and after that the new timer events are added to timer queue. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-D1DCC096-096C-3523-A831-A90CD7A43BF5"><a name="GUID-D1DCC096-096C-3523-A831-A90CD7A43BF5"><!-- --></a>
+		<h2 class="topictitle2">add_timer(eap_timer_queue_event_c *)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td>add_timer</td><td>(</td><td><a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *</td><td>event</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>This function adds the timer event immediately to timer queue. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> * event</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-FB9F9019-3F6E-38A6-9B1F-A4FD23397D9F"><a name="GUID-FB9F9019-3F6E-38A6-9B1F-A4FD23397D9F"><!-- --></a>
+		<h2 class="topictitle2">cancel_all_timers()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td>cancel_all_timers</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This function cancels all timer events from this timer queue. This is called before the timer queue is deleted. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-92F56232-6FB2-302A-A419-773BD46B8A8E"><a name="GUID-92F56232-6FB2-302A-A419-773BD46B8A8E"><!-- --></a>
+		<h2 class="topictitle2">cancel_pending_timer(abs_eap_base_timer_c *const, const u32_t)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td>cancel_pending_timer</td><td>(</td><td><a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const </td><td>initializer,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a></td><td>id</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<p>This function cancels all pending timer events. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const  initializer</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a> id</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A0D3611E-B027-3A65-A5E3-4AAF32762D6F"><a name="GUID-A0D3611E-B027-3A65-A5E3-4AAF32762D6F"><!-- --></a>
+		<h2 class="topictitle2">cancel_timer(abs_eap_base_timer_c *const, const u32_t)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td>cancel_timer</td><td>(</td><td><a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const </td><td>initializer,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a></td><td>id</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>This function cancels the timer event. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const  initializer</td><td>is the caller of this function. Call backs are directed to initializer.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a> id</td><td>is selected by caller. Caller could separate timer events by this value.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3D664767-B427-3872-B11A-3A815B1B3C5B"><a name="GUID-3D664767-B427-3872-B11A-3A815B1B3C5B"><!-- --></a>
+		<h2 class="topictitle2">deactivate_timer_queue()</h2>
+		<table class="signature"><tr><td>void</td><td>deactivate_timer_queue</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>This function deactivate this timer queue. This is called before the timer queue is deleted. Inactive timer queue does not accept new timer events. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-450C0089-3D6E-3310-A8CC-08609D632CF0"><a name="GUID-450C0089-3D6E-3310-A8CC-08609D632CF0"><!-- --></a>
+		<h2 class="topictitle2">get_hashed_timer_event(const abs_eap_base_timer_c *const, const u32_t)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *</td><td>get_hashed_timer_event</td><td>(</td><td>const <a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const </td><td>initializer,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a></td><td>id</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const  initializer</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a> id</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D119A67C-EE2F-3735-919B-85C7E9CE50B4"><a name="GUID-D119A67C-EE2F-3735-919B-85C7E9CE50B4"><!-- --></a>
+		<h2 class="topictitle2">get_is_valid()</h2>
+		<table class="signature"><tr><td>bool</td><td>get_is_valid</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>The <a href="GUID-4F339520-22A2-3041-9982-F8F61469A920.html#GUID-D119A67C-EE2F-3735-919B-85C7E9CE50B4">get_is_valid()</a> function returns the status of the eap_core object. True indicates the object is initialized succesfully. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-2BE451DC-519B-3C01-B92E-9D4202444614"><a name="GUID-2BE451DC-519B-3C01-B92E-9D4202444614"><!-- --></a>
+		<h2 class="topictitle2">get_timer_queue_is_empty()</h2>
+		<table class="signature"><tr><td>bool</td><td>get_timer_queue_is_empty</td><td>(</td><td>)</td><td/></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-4E74AAE0-2CD7-3BE8-A55C-EDF9F6BBD5F7"><a name="GUID-4E74AAE0-2CD7-3BE8-A55C-EDF9F6BBD5F7"><!-- --></a>
+		<h2 class="topictitle2">get_timer_resolution_ms()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>
+				</td><td>get_timer_resolution_ms</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-80C48977-6825-37C1-9E01-C2B12CB45E0C"><a name="GUID-80C48977-6825-37C1-9E01-C2B12CB45E0C"><!-- --></a>
+		<h2 class="topictitle2">get_use_eap_milli_second_timer()</h2>
+		<table class="signature"><tr><td>bool</td><td>get_use_eap_milli_second_timer</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This function returns flag whether millisecond timer is in use (true) or not (false). </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-886D7BB4-7DA4-32B9-A8B5-0B2B4B0E6045"><a name="GUID-886D7BB4-7DA4-32B9-A8B5-0B2B4B0E6045"><!-- --></a>
+		<h2 class="topictitle2">hash(const u32_t, const abs_eap_base_timer_c *const, const u32_t)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>
+				</td><td>hash</td><td>(</td><td>const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a></td><td>size,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const </td><td>initializer,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a></td><td>id</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a> size</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const  initializer</td><td> </td></tr><tr><td class="parameter">const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a> id</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A5912083-AAA8-3727-BD66-C6758D237DCF"><a name="GUID-A5912083-AAA8-3727-BD66-C6758D237DCF"><!-- --></a>
+		<h2 class="topictitle2">pulse_timer(const u32_t, const bool)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>
+				</td><td>pulse_timer</td><td>(</td><td>const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a></td><td>elapsed_time_in_ms,</td></tr><tr><td colspan="3"> </td><td>const bool</td><td>can_call_timer_expired_when_true</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>The pulse() member function is assumed to be called using timer_resolution_ms interval. This function decreases the remaining time of the first timer event. When remaining time reaches zero the timer queue calls the timer_expired() function. Function returns the next sleep time in milli seconds. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a> elapsed_time_in_ms</td><td> </td></tr><tr class="bg"><td class="parameter">const bool can_call_timer_expired_when_true</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E4F6B78A-8A6B-3ADC-AB1E-621A1D32A381"><a name="GUID-E4F6B78A-8A6B-3ADC-AB1E-621A1D32A381"><!-- --></a>
+		<h2 class="topictitle2">re_activate_timer_queue()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td>re_activate_timer_queue</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This function re-activates timer queue. Symbian AM call this function when AM-tools object is re-used. This can be called after <a href="GUID-4F339520-22A2-3041-9982-F8F61469A920.html#GUID-FB9F9019-3F6E-38A6-9B1F-A4FD23397D9F">cancel_all_timers()</a> function. <a href="GUID-4F339520-22A2-3041-9982-F8F61469A920.html#GUID-FB9F9019-3F6E-38A6-9B1F-A4FD23397D9F">cancel_all_timers()</a> function de-activated timer queue. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-5C68B0F1-A36A-3B4A-8272-A9D7456402A0"><a name="GUID-5C68B0F1-A36A-3B4A-8272-A9D7456402A0"><!-- --></a>
+		<h2 class="topictitle2">remove_hash_of_timer_event(eap_timer_queue_event_c *const)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td>remove_hash_of_timer_event</td><td>(</td><td><a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *const </td><td>event</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *const  event</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A8D15186-092D-3A24-BEAD-3010AD8161A1"><a name="GUID-A8D15186-092D-3A24-BEAD-3010AD8161A1"><!-- --></a>
+		<h2 class="topictitle2">set_timer(abs_eap_base_timer_c *const, const u32_t, void *const, const u32_t)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-4998AF84-1AC6-3CD1-AFB9-DF1047FAA087.html">eap_status_e</a>
+				</td><td>set_timer</td><td>(</td><td><a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const </td><td>initializer,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a></td><td>id,</td></tr><tr><td colspan="3"> </td><td>void *const </td><td>data,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a></td><td>time_ms</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>This function initializes a new timer event. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F7FAF85D-F16C-34CB-8957-D98788B54E46.html">abs_eap_base_timer_c</a> *const  initializer</td><td>is the caller of this function. Call backs are directed to initializer.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a> id</td><td>is selected by caller. Caller could separate timer events by this value.  </td></tr><tr><td class="parameter">void *const  data</td><td>is pointer to any data. After timer is alapsed or cancelled timer queue calls timer_delete_data() function. The initializer could delete possible allocated data.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a> time_ms</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B14283A6-8DF3-3519-ACD5-E6293F11F2D9"><a name="GUID-B14283A6-8DF3-3519-ACD5-E6293F11F2D9"><!-- --></a>
+		<h2 class="topictitle2">set_timer_resolution_ms(const u32_t)</h2>
+		<table class="signature"><tr><td>void</td><td>set_timer_resolution_ms</td><td>(</td><td>const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a></td><td>timer_resolution_ms</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a> timer_resolution_ms</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-15BC847B-3D44-339D-BF8F-954C4E63D701"><a name="GUID-15BC847B-3D44-339D-BF8F-954C4E63D701"><!-- --></a>
+		<h2 class="topictitle2">set_use_eap_milli_second_timer(const bool)</h2>
+		<table class="signature"><tr><td>void</td><td>set_use_eap_milli_second_timer</td><td>(</td><td>const bool</td><td>use_eap_millisecond_timer</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>This function activates millisecond timer with true value. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const bool use_eap_millisecond_timer</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E0BF5FDC-27BC-35EC-8C1C-5544F8C15F58"><a name="GUID-E0BF5FDC-27BC-35EC-8C1C-5544F8C15F58"><!-- --></a>
+		<h2 class="topictitle2">trace_timer()</h2>
+		<table class="signature"><tr><td>void</td><td>trace_timer</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>This function traces all initialized timer events. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-3375E74A-9956-36C4-8512-C5C883F30146"><a name="GUID-3375E74A-9956-36C4-8512-C5C883F30146"><!-- --></a>
+		<h2 class="topictitle2">trace_timer_event(const eap_const_string, const eap_timer_queue_event_c *const)</h2>
+		<table class="signature"><tr><td>void</td><td>trace_timer_event</td><td>(</td><td>const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">eap_const_string</a></td><td>prefix,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *const </td><td>event</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<p>this function traces one timer event. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">eap_const_string</a> prefix</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *const  event</td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-1E440A1A-A5EE-3149-9F91-25ED4DE63588"><a name="GUID-1E440A1A-A5EE-3149-9F91-25ED4DE63588"><!-- --></a>
+		<h2 class="topictitle2">
+					abs_eap_am_tools_c *const m_am_tools</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-4FD0ECE2-8614-3C94-B931-F78836959475.html">abs_eap_am_tools_c</a> *const</td><td>m_am_tools</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-1EE8D13B-5D78-359F-91AA-C5BE6211688A"><a name="GUID-1EE8D13B-5D78-359F-91AA-C5BE6211688A"><!-- --></a>
+		<h2 class="topictitle2">bool m_is_active</h2>
+		<table class="signature"><tr><td>bool</td><td>m_is_active</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-28C2AFF6-FBF6-36C5-9598-1F5E77380717"><a name="GUID-28C2AFF6-FBF6-36C5-9598-1F5E77380717"><!-- --></a>
+		<h2 class="topictitle2">bool m_is_valid</h2>
+		<table class="signature"><tr><td>bool</td><td>m_is_valid</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-F46C0BE2-0941-3D2E-A4A4-BA88D93D8129"><a name="GUID-F46C0BE2-0941-3D2E-A4A4-BA88D93D8129"><!-- --></a>
+		<h2 class="topictitle2">
+					eap_timer_queue_hash_c * m_map</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-8A180C9C-14E4-3409-93EB-21DD2F00CA06.html">eap_timer_queue_hash_c</a> *</td><td>m_map</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-51744823-6DD5-3F0E-9329-14B069A2F460"><a name="GUID-51744823-6DD5-3F0E-9329-14B069A2F460"><!-- --></a>
+		<h2 class="topictitle2">
+					eap_timer_queue_event_c * m_new_event_begin</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *</td><td>m_new_event_begin</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>These are begin and end of the list of new events that are will be added to timer queue during the next <a href="GUID-4F339520-22A2-3041-9982-F8F61469A920.html#GUID-A5912083-AAA8-3727-BD66-C6758D237DCF">pulse_timer()</a> function call. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-618147AE-3376-31EB-99B1-F2024E817AE1"><a name="GUID-618147AE-3376-31EB-99B1-F2024E817AE1"><!-- --></a>
+		<h2 class="topictitle2">
+					eap_timer_queue_event_c * m_new_event_end</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *</td><td>m_new_event_end</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-2644570A-2D9F-3D22-A4A1-6386FE954504"><a name="GUID-2644570A-2D9F-3D22-A4A1-6386FE954504"><!-- --></a>
+		<h2 class="topictitle2">
+					eap_timer_queue_event_c * m_timer_queue</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-DF6B985F-5F24-363B-9D14-AAB52893EF80.html">eap_timer_queue_event_c</a> *</td><td>m_timer_queue</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-1D22DCC8-83DF-35ED-8DC7-9F37B662A445"><a name="GUID-1D22DCC8-83DF-35ED-8DC7-9F37B662A445"><!-- --></a>
+		<h2 class="topictitle2">
+					u32_t
+				 m_timer_resolution_ms</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-DF710D47-68F2-3916-9B2C-7B277610248C.html">u32_t</a>
+				</td><td>m_timer_resolution_ms</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>This is the resolution of this timer queue. Each pulse is assumed to be this length. This is also the minimum timer value. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-E74BF276-D32F-3C72-A175-FF8674548A08"><a name="GUID-E74BF276-D32F-3C72-A175-FF8674548A08"><!-- --></a>
+		<h2 class="topictitle2">bool m_use_eap_millisecond_timer</h2>
+		<table class="signature"><tr><td>bool</td><td>m_use_eap_millisecond_timer</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

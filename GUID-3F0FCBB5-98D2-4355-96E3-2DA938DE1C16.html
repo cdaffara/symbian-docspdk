@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="DSA Migration Guide"/>
+<meta name="abstract" content="This migration guide explains the guidelines that applications that use direct screen access (DSA) must follow in order to run on ScreenPlay (NGA) devices."/>
+<meta name="description" content="This migration guide explains the guidelines that applications that use direct screen access (DSA) must follow in order to run on ScreenPlay (NGA) devices."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-021E8B9C-4A1B-4C6D-B69E-4337A766C39A.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-021E8B9C-4A1B-4C6D-B69E-4337A766C39A.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D93978BE-11A3-5CE3-B110-1DEAA5AD566C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-484B51EC-2209-5492-8E9C-9D792AB0DF35.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-3F0FCBB5-98D2-4355-96E3-2DA938DE1C16"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>DSA Migration Guide</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-3F0FCBB5-98D2-4355-96E3-2DA938DE1C16"><a name="GUID-3F0FCBB5-98D2-4355-96E3-2DA938DE1C16"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id1198293 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-021E8B9C-4A1B-4C6D-B69E-4337A766C39A.html" title="This section describes the changes required for applications to work on Symbian^3.">Porting applications from S60 5th Edition to Symbian^3</a> &gt; </div>
+<h1 class="topictitle1">DSA Migration Guide</h1>
+<div><p>This migration guide explains the guidelines that applications
+that use direct screen access (DSA) must follow in order to run on
+ScreenPlay (NGA) devices.</p>
+
+<p>Introduced in an earlier version of the Symbian platform, DSA enables
+applications that require high frame rates (such as video and games)
+to bypass the Window Server and write to the screen directly.  On
+ScreenPlay, Symbian recommends the use of EGL window surfaces in preference
+to DSA.</p>
+
+<p>Support for DSA is maintained for backward compatibility reasons.
+ However, whereas on some earlier devices, applications might work
+without fully conforming to the rules of DSA, these rules are now
+necessarily enforced.  Applications that follow the following guidelines
+should run correctly on a ScreenPlay device.</p>
+
+<div class="section" id="GUID-3F0FCBB5-98D2-4355-96E3-2DA938DE1C16__GUID-3725C49E-4804-4AF3-9797-1D052685893F"><a name="GUID-3F0FCBB5-98D2-4355-96E3-2DA938DE1C16__GUID-3725C49E-4804-4AF3-9797-1D052685893F"><!-- --></a><h2 class="sectiontitle">Always
+use a DSA session when using DSA</h2>             <p>The main classes
+of the DSA framework are <a href="GUID-24C7AE25-B44A-3B6F-AA05-EA90A8D36129.html"><span class="apiname">CDirectScreenAccess</span></a>, <a href="GUID-E2092CF9-98E8-3206-91B2-36011AA6FB77.html"><span class="apiname">RDirectScreenAccess</span></a> and <a href="GUID-5A289A8A-1485-3AB9-94CF-177B83D4F450.html"><span class="apiname">MDirectScreenAccess</span></a>. Before drawing to the screen, the DSA application must create a
+DSA session; for example, by instantiating <samp class="codeph">CDirectScreenAccess</samp> and calling <samp class="codeph">CDirectScreenAccess::StartL()</samp>.  This
+rule applies regardless of whether the application accesses the DSA
+framebuffer using <a href="GUID-4A501086-7EFF-376D-8901-6D9B2EB4EFF2.html"><span class="apiname">CFbsBitGc</span></a>, <a href="GUID-B229156F-2344-3F46-8542-AC65882D80DE.html"><span class="apiname">CFbsScreenDevice</span></a> or gains a pointer directly through HAL.</p>
+<p>Applications that
+fail to create a DSA session will not work.  Applications that draw
+outside of an active period of DSA will not work.  This is because
+all DSA rendering is directed into a virtual framebuffer and the Operating
+System uses the DSA session to determine when that framebuffer should
+be made visible.</p>
+<p>The following example demonstrates requesting
+direct screen access:</p>
+<pre class="codeblock">voidCMyDSAEngine::StartDrawingL()
+    {
+    // Initialize DSA.
+    TRAPD(dsaError,iDSA-&gt;StartL());
+    if (dsaError==KErrNone)
+        {
+        // Get the graphics context for drawing.
+        iGc=iDSA-&gt;Gc();
+
+        // Get the region to draw to.
+        iRegion=iDSA-&gt;DrawingRegion();
+
+        // Set the clipping region to this region.
+        iGc-&gt;SetClippingRegion(iRegion); 
+
+        // Start generating timer events (the drawing is done in a timer callback).
+        iPeriodicTimer=CPeriodic::NewL(CActive::EPriorityStandard);
+        iPeriodicTimer-&gt;Start(0,KInterval,TCallBack(DrawNextFrame, this));
+        iDrawing=ETrue;
+        }
+    }
+</pre>
+</div>
+
+<div class="section" id="GUID-3F0FCBB5-98D2-4355-96E3-2DA938DE1C16__GUID-ED2BEF42-7E4D-484F-8142-011271D7A584"><a name="GUID-3F0FCBB5-98D2-4355-96E3-2DA938DE1C16__GUID-ED2BEF42-7E4D-484F-8142-011271D7A584"><!-- --></a><h2 class="sectiontitle">Inform
+the Operating System after updating the DSA buffer</h2><p>Applications
+can access the screen by writing to the video hardware framebuffer
+or by using <a href="GUID-B229156F-2344-3F46-8542-AC65882D80DE.html"><span class="apiname">CFbsScreenDevice</span></a>.  Regardless which
+of these methods you use, the application must inform the OS that
+the framebuffer has been updated in order for the DSA drawing to be
+pushed to the display.</p>
+<p>Applications that fail to declare modifications
+to the framebuffer will not see their content correctly appear on-screen.
+ This is because the OS uses event-driven updating to copy the contents
+of the DSA framebuffer into the display.</p>
+<p>When writing to the
+video hardware frame buffer, force a screen update by creating a redraw
+event like this:</p>
+<pre class="codeblock">TRawEventredraw;
+redraw.Set(TRawEvent::ERedraw);
+UserSvr::AddEvent(redraw);</pre>
+<p>When using <a href="GUID-B229156F-2344-3F46-8542-AC65882D80DE.html"><span class="apiname">CFbsScreenDevice</span></a>, force a screen update by calling one of the following:</p>
+<pre class="codeblock">void CFbsScreenDevice::Update();
+void CFbsScreenDevice::Update(constTRegion &amp;aRegion);
+</pre>
+         </div>
+
+<div class="section" id="GUID-3F0FCBB5-98D2-4355-96E3-2DA938DE1C16__GUID-862F9788-B580-4D93-84B4-677D4B964BB9"><a name="GUID-3F0FCBB5-98D2-4355-96E3-2DA938DE1C16__GUID-862F9788-B580-4D93-84B4-677D4B964BB9"><!-- --></a><h2 class="sectiontitle">Do
+not mix DSA and non-DSA rendering</h2><p>The application must not
+issue <a href="GUID-0AEE5955-C530-35F1-A904-69183331B294.html"><span class="apiname">CWindowGc</span></a> rendering to a window when DSA
+is active on that window.  If both types of rendering are required,
+the application must ensure that they only happen in distinct periods
+demarcated by the DSA session.</p>
+<p>Applications that interleave
+periods of DSA rendering with periods of standard indirect (<a href="GUID-0AEE5955-C530-35F1-A904-69183331B294.html"><span class="apiname">CWindowGc</span></a>) rendering, expecting to see each painted on
+top of the previous, will not work.  This is because the OS now uses
+two separate framebuffers; one for DSA rendering and one for indirect
+rendering.  Previous versions of the OS use a single
+framebuffer for both types of rendering.</p>
+<p>Applications must be
+written to render the entire contents of their window using either
+DSA or indirect rendering at any one point of time.</p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-021E8B9C-4A1B-4C6D-B69E-4337A766C39A.html" title="This section describes the changes required for applications to work on Symbian^3.">Porting applications from S60 5th Edition to Symbian^3</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-D93978BE-11A3-5CE3-B110-1DEAA5AD566C.html" title="This topic provides an introduction to ScreenPlay and its architecture. ScreenPlay is a new graphics architecture, introduced in Symbian^3 (S^3). ScreenPlay enables device creators to take advantage of improved software performance, hardware acceleration and third party graphics engines. ScreenPlay is sometimes known as the New Graphics Architecture (NGA).">The
+ScreenPlay Graphics Architecture</a></div>
+<div><a href="GUID-484B51EC-2209-5492-8E9C-9D792AB0DF35.html" title="This section provides application developers with an introduction to key concepts involved in drawing graphics to the screen.">Graphics
+and Drawing</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

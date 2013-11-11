@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="SMS Stack Tutorial"/>
+<meta name="abstract" content="This tutorial describes how to send and receive messages using the SMS stack."/>
+<meta name="description" content="This tutorial describes how to send and receive messages using the SMS stack."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E0DA7DE7-FD5A-5C1D-A53C-870966F00445.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-34E7AAF2-EC62-5BF6-B9E7-C7D346BCDF93.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6BA58045-3864-599A-878E-0C7AE7E9741B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E0DA7DE7-FD5A-5C1D-A53C-870966F00445.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-3D1E5144-00BC-51AF-8887-4C97167E73FB"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>SMS Stack Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-3D1E5144-00BC-51AF-8887-4C97167E73FB"><a name="GUID-3D1E5144-00BC-51AF-8887-4C97167E73FB"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2563496 id2563002 id2563083 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-34E7AAF2-EC62-5BF6-B9E7-C7D346BCDF93.html" title="Cellular Baseband Services provide a common interface to telephony services for applications and higher level platform components. The framework is independent of the underlying network services.">Cellular Baseband Services Guide</a> &gt; <a href="GUID-6BA58045-3864-599A-878E-0C7AE7E9741B.html" title="This section describes the components related to the SMS protocols.">SMS Protocols</a> &gt; <a href="GUID-E0DA7DE7-FD5A-5C1D-A53C-870966F00445.html" title="This section provides the summary of concepts and tutorials related to the SMS stack for the GSM networks. The client applications can access the SMS stack using socket server APIs.">SMS Stack for GSM Networks</a> &gt; </div>
+<h1 class="topictitle1">SMS Stack Tutorial</h1>
+<div><p>This tutorial describes how to send and receive messages using the SMS stack. </p>
+<div class="example" id="GUID-3D1E5144-00BC-51AF-8887-4C97167E73FB__GUID-BA144B2C-BDE0-5D9E-A977-ED38C80CB8E7"><a name="GUID-3D1E5144-00BC-51AF-8887-4C97167E73FB__GUID-BA144B2C-BDE0-5D9E-A977-ED38C80CB8E7"><!-- --></a><h2 class="sectiontitle">Send SMS example</h2> <pre class="codeblock" id="GUID-3D1E5144-00BC-51AF-8887-4C97167E73FB__GUID-CC32288F-16DA-56C5-97B0-CBF18A674DBD"><a name="GUID-3D1E5144-00BC-51AF-8887-4C97167E73FB__GUID-CC32288F-16DA-56C5-97B0-CBF18A674DBD"><!-- --></a>
+#include &lt;e32std.h&gt;
+#include &lt;es_sock.h&gt;
+#include &lt;gsmubuf.h&gt;
+#include &lt;gsmumsg.h&gt;
+#include &lt;gsmuset.h&gt;
+#include &lt;smsustrm.h&gt;
+#include &lt;smsuaddr.h&gt;
+
+_LIT(KSmsMessage, "Sample SMS message for illustration");
+_LIT(KDestination,"+44789456123");
+_LIT(KServiceCentre, "+44123456789");
+RFs  fs;
+RSocketServ socketServer;
+RSocket socket;
+
+//connect to the file server
+User::LeaveIfError(fs.Connect());
+CleanupClosePushL(fs);
+
+//connect to the socket server
+User::LeaveIfError(socketServer.Connect());
+CleanupClosePushL(socketServer);
+
+//Open a SMS socket
+User::LeaveIfError(socket.Open(socketServer, KSMSAddrFamily, KSockDatagram, KSMSDatagramProtocol));
+CleanupClosePushL(socket);
+TSmsAddr smsAddr;
+
+//set the sockets to only send the messages
+smsAddr.SetSmsAddrFamily(ESmsAddrSendOnly);
+
+//Bind the socket
+socket.Bind(smsAddr);
+
+//create a message and encoding scheme to be used
+CSmsBuffer* buffer=CSmsBuffer::NewL();
+CSmsMessage* smsMessage=CSmsMessage::NewL(fs, CSmsPDU::ESmsSubmit, buffer);
+CleanupStack::PushL(smsMessage);
+
+TSmsUserDataSettings smsSettings;
+smsSettings.SetAlphabet(TSmsDataCodingScheme::ESmsAlphabet7Bit);
+smsMessage-&gt;SetUserDataSettingsL(smsSettings);
+
+smsMessage-&gt;SetToFromAddressL(KDestination);
+smsMessage-&gt;SmsPDU().SetServiceCenterAddressL(KServiceCentre);
+buffer-&gt;InsertL(0,KSmsMessage);
+
+TRequestStatus status;
+
+RSmsSocketWriteStream writestream(socket);
+
+writestream &lt;&lt; *smsMessage;
+writestream.CommitL();
+
+TPckgBuf&lt;TUint&gt; sbuf;
+socket.Ioctl(KIoctlSendSmsMessage, status, &amp;sbuf, KSolSmsProv);
+User::WaitForRequest(status);
+
+CleanupStack::PopAndDestroy(smsMessage);
+CleanupStack::PopAndDestroy(&amp;socket);
+CleanupStack::PopAndDestroy(&amp;socketServer);
+CleanupStack::PopAndDestroy(&amp;fs);
+</pre>
+ </div>
+ <div class="section" id="GUID-3D1E5144-00BC-51AF-8887-4C97167E73FB__GUID-314DEC98-B67D-5ADF-B5E7-D96FEAF59455"><a name="GUID-3D1E5144-00BC-51AF-8887-4C97167E73FB__GUID-314DEC98-B67D-5ADF-B5E7-D96FEAF59455"><!-- --></a><h2 class="sectiontitle">Receive SMS example</h2> <pre class="codeblock" id="GUID-3D1E5144-00BC-51AF-8887-4C97167E73FB__GUID-F3EC34CF-90C1-59FE-9CBE-2912DF02D0AC"><a name="GUID-3D1E5144-00BC-51AF-8887-4C97167E73FB__GUID-F3EC34CF-90C1-59FE-9CBE-2912DF02D0AC"><!-- --></a>
+#include &lt;e32std.h&gt;
+#include &lt;es_sock.h&gt;
+#include &lt;gsmubuf.h&gt;
+#include &lt;gsmumsg.h&gt;
+#include &lt;gsmuset.h&gt;
+#include &lt;smsustrm.h&gt;
+#include &lt;smsuaddr.h&gt;
+
+_LIT(KSmsMessage, "Sample SMS message for illustration");
+_LIT(KDestination,"+44789456123");
+_LIT(KServiceCentre, "+44123456789");
+RFs fs;
+RSocketServ socketServer;
+RSocket socket;
+
+//connect to the file server
+User::LeaveIfError(fs.Connect());
+CleanupClosePushL(fs);
+
+//connect to the socket server
+User::LeaveIfError(socketServer.Connect());
+CleanupClosePushL(socketServer);
+
+//Open a SMS socket
+User::LeaveIfError(socket.Open(socketServer, KSMSAddrFamily, KSockDatagram, KSMSDatagramProtocol));
+CleanupClosePushL(socket);
+
+TSmsAddr smsAddr;
+
+//set the sockets to receive all SMS messages
+smsAddr.SetSmsAddrFamily(ESmsAddrRecvAny);
+
+//Bind the socket
+socket.Bind(smsAddr);
+TRequestStatus status;
+TPckgBuf&lt;TUint&gt; sbuf;
+
+socket.Ioctl(KIOctlSelect,status,&amp;sbuf,KSOLSocket);
+User::WaitForRequest(status);
+CSmsBuffer* buffer=CSmsBuffer::NewL();
+CSmsMessage* smsMessage=CSmsMessage::NewL(fs, CSmsPDU::ESmsSubmit, buffer);
+CleanupStack::PushL(smsMessage);
+
+//read from the stream
+RSmsSocketReadStream readstream(socket);
+
+readstream &gt;&gt; *smsMessage;
+
+socket.Ioctl(KIoctlReadMessageSucceeded, status, &amp;sbuf, KSolSmsProv);
+User::WaitForRequest(status);
+CleanupStack::Pop(smsMessage);    
+
+//clear the contents from buffer
+CleanupStack::PopAndDestroy(smsMessage);
+CleanupStack::PopAndDestroy(&amp;socket);
+CleanupStack::PopAndDestroy(&amp;socketServer);
+CleanupStack::PopAndDestroy(&amp;fs);
+</pre>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E0DA7DE7-FD5A-5C1D-A53C-870966F00445.html" title="This section provides the summary of concepts and tutorials related to the SMS stack for the GSM networks. The client applications can access the SMS stack using socket server APIs.">SMS Stack for GSM Networks</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Handling request body data"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B4A54501-4AA4-5ACB-96D7-4427C7752639.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C0D38954-2FC5-4E8B-BC11-229464DCF16C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1E8904E3-43AC-5332-A2EF-F11F5728DBE8.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B4A54501-4AA4-5ACB-96D7-4427C7752639.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Handling request body data</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047"><a name="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387372 id2387380 id2387389 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C0D38954-2FC5-4E8B-BC11-229464DCF16C.html">High Level Internet Protocols Guide</a> &gt; <a href="GUID-1E8904E3-43AC-5332-A2EF-F11F5728DBE8.html">Application Layer Protocols</a> &gt; <a href="GUID-B4A54501-4AA4-5ACB-96D7-4427C7752639.html">Using HTTP Client</a> &gt; </div>
+<h1 class="topictitle1">Handling request body data</h1>
+<div><p>HTTP methods POST and PUT both require a request body to be specified by the client before a transaction is submitted. Also required in the request is a Content-Type header, to inform the HTTP server of the body data's media (MIME) type. </p>
+ <p>If the body or Content-Type header are absent, an error will be returned as an event. See <a href="GUID-AA2A730E-A7C9-5647-AD42-11C3BAF4C38D.html#GUID-AA2A730E-A7C9-5647-AD42-11C3BAF4C38D__GUID-8DB0C8B3-4ED6-59D6-A796-F4EA2DE5DC5B">Validation filter</a> for details of errors that can be sent. </p>
+ <div class="section" id="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-3FD76282-A3E5-4613-A852-CDF7A0E9879A"><a name="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-3FD76282-A3E5-4613-A852-CDF7A0E9879A"><!-- --></a><h2 class="sectiontitle">Specifying a request data supplier</h2> <p>The following code fragment from <span class="filepath">HTTPEXAMPLECLIENT</span> demonstrates a request body being set: </p>
+ <pre class="codeblock" id="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-51D78C10-21D9-5DEC-A84D-AADCD7A675CA"><a name="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-51D78C10-21D9-5DEC-A84D-AADCD7A675CA"><!-- --></a>void CHttpClient::InvokeHttpMethodL(const TDesC8&amp; aUri, RStringF aMethod)
+{
+...
+iTrans = iSess.OpenTransactionL(uri, *iTransObs, aMethod);
+RHTTPHeaders hdr = iTrans.Request().GetHeaderCollection();
+...
+// Add headers and body data for methods that use request bodies
+    if (iHasARequestBody)
+        {
+        // Content type header
+        TBuf8&lt;KMaxContentTypeSize&gt; contTypeBuf;
+        contTypeBuf.Copy(iReqBodyContentType);
+        RStringF contTypeStr = iSess.StringPool().OpenFStringL(contTypeBuf);
+        CleanupClosePushL(contTypeStr);
+    THTTPHdrVal contType(contTypeStr);
+        hdr.SetFieldL(iSess.StringPool().StringF(HTTP::EContentType,RHTTPSession::GetTable()), contType);
+
+        MHTTPDataSupplier* dataSupplier = this;
+        if (iManualPost)
+            dataSupplier = iFormEncoder;
+        iTrans.Request().SetBody(*dataSupplier);
+        CleanupStack::PopAndDestroy(&amp;contTypeStr);
+        }
+
+    // submit the transaction
+    iTrans.SubmitL();</pre>
+ <p>The example uses two alternative alterative implementations of <a href="GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5.html"><span class="apiname">MHTTPDataSupplier</span></a>: the first method, not described here, is the <a href="GUID-604D8C43-93F7-3835-8810-BD1CC891D086.html"><span class="apiname">CHTTPFormEncoder</span></a> class, a utility that encodes a series of field name-value pairs into the URI-encoded form, as used by Web/WAP browsers to send data the user has entered into text boxes. </p>
+ <p>The second method sets the request body data supplier to be the <samp class="codeph">CHttpClient</samp> object itself. From the header file <span class="filepath">httpexampleclient.h</span>: </p>
+ <pre class="codeblock" id="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-1FB82DEB-6400-55C9-9E71-D54C3F4F41F6"><a name="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-1FB82DEB-6400-55C9-9E71-D54C3F4F41F6"><!-- --></a>class CHttpClient : public CBase, public MHTTPDataSupplier, ...
+    {
+    ...
+public: // methods inherited from MHTTPDataSupplier
+    virtual TBool GetNextDataPart(TPtrC8&amp; aDataPart);
+    virtual void ReleaseData();
+    virtual TInt OverallDataSize();
+    ...
+    };</pre>
+ <p>The client must implement the three pure-virtual methods of <samp class="codeph">MHTTPDataSupplier</samp> to allow HTTP to obtain the body data it needs as it assembles an HTTP request. </p>
+ <ul><li id="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-C1213E1D-56EA-5E08-984B-E418BDC025D8"><a name="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-C1213E1D-56EA-5E08-984B-E418BDC025D8"><!-- --></a><p> <samp class="codeph">GetNextDataPart()</samp>: when this method is invoked, the client must set the <samp class="codeph">aDataChunk</samp> parameter to point at an 8-bit data buffer that is populated with the next piece of body data to be transmitted. If this buffer holds the last part of the request body, the method must return <samp class="codeph">ETrue</samp>. </p>
+ </li>
+ <li id="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-536C0C3B-4E24-5F14-A4B7-6E10A38D78BC"><a name="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-536C0C3B-4E24-5F14-A4B7-6E10A38D78BC"><!-- --></a><p> <samp class="codeph">ReleaseData()</samp>: when this method is invoked, the client can free the data buffer it last returned from <samp class="codeph">GetDataChunk()</samp>, and can start to assemble the next buffer for transmission. </p>
+ </li>
+ <li id="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-D88FC36E-99A2-5740-837A-9A46DB19E90B"><a name="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-D88FC36E-99A2-5740-837A-9A46DB19E90B"><!-- --></a><p> <samp class="codeph">OverallDataSize()</samp>: when this method is invoked, the client should return the size of the whole request body data, if it is known. If unknown, it should return <samp class="codeph">KErrNotFound</samp>. </p>
+ </li>
+ </ul>
+ <p>There is no need for the client to set a 'Content-Length' header. The API does this automatically, based on what it gets from calling <samp class="codeph">OverallDataSize()</samp>. </p>
+ </div>
+ <div class="section" id="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-195A967A-410F-480F-8E4E-37109F5E6A31"><a name="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-195A967A-410F-480F-8E4E-37109F5E6A31"><!-- --></a><h2 class="sectiontitle">Signalling new body data</h2> <p>After <samp class="codeph">ReleaseData()</samp> has been invoked, the client must prepare the next buffer of data for transmission. Since the API cannot predict when each buffer will be ready, it will pause the request transmission until an event is sent by the client to notify the availability of new data. This is done using the <a href="GUID-2E673024-239B-3965-8880-C47B7CC24EF6.html#GUID-2E673024-239B-3965-8880-C47B7CC24EF6__GUID-908A430D-9CCC-350D-B6EB-06E6EB94B0DD"><span class="apiname">RHTTPTransaction::NotifyNewRequestBodyPartL()</span></a> method. </p>
+ <pre class="codeblock" id="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-E97E6DBB-C8E9-5EE5-8703-680FCE2CEE0F"><a name="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-E97E6DBB-C8E9-5EE5-8703-680FCE2CEE0F"><!-- --></a>void CHttpClient::ReleaseData()
+    {
+    // Clear out the submit buffer
+    TPtr8 buff = iReqBodySubmitBuffer-&gt;Des();
+    buff.Zero();
+    // Notify HTTP of more data available immediately, since it's being read from file
+    TRAPD(err, iTrans.NotifyNewRequestBodyPartL());
+    if (err != KErrNone)
+        User::Panic(KHttpExampleClientPanic, KCouldntNotifyBodyDataPart);
+    }</pre>
+ <p>When <samp class="codeph">THTTPEvent::ENotifyNewRequestBodyPart</samp> is processed by the API, it resumes transmission of body data and calls the client's <samp class="codeph">GetNextDataPart()</samp> method again. </p>
+ </div>
+ <div class="section" id="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-29C4B920-D6E4-467D-9AA0-2F59B266F86F"><a name="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047__GUID-29C4B920-D6E4-467D-9AA0-2F59B266F86F"><!-- --></a><h2 class="sectiontitle">Streaming body data</h2> <p>If a client application is using HTTP POST to stream data to a server, then it is unlikely to know at the start of the transaction how much data is to be sent. </p>
+ <p>As described previously, the client's <samp class="codeph">OverallDataSize()</samp> method should return <samp class="codeph">KErrNotFound</samp> to indicate this. The result is that the API will automatically switch over to use the 'chunked' transfer encoding. The API automatically generates the 'Transfer-Encoding: chunked' header and will not send a Content-Length header. </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-B4A54501-4AA4-5ACB-96D7-4427C7752639.html">Using HTTP Client</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

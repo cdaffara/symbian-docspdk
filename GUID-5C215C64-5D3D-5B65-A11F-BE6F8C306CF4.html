@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How the Target Client is Resolved using CSIPResolvedClient"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A3D1684D-1DF1-5CAF-A0BB-A32685528596.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6425B722-4095-56E3-9198-70BA3E06C617.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-057F1F82-56AF-5696-853E-79196A3D567E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A3D1684D-1DF1-5CAF-A0BB-A32685528596.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How the Target Client is Resolved using CSIPResolvedClient</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4"><a name="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2397554 id2397680 id2397911 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-6425B722-4095-56E3-9198-70BA3E06C617.html">Multimedia Protocols Guide</a> &gt; <a href="GUID-057F1F82-56AF-5696-853E-79196A3D567E.html">SIP</a> &gt; <a href="GUID-A3D1684D-1DF1-5CAF-A0BB-A32685528596.html">SIP Client Resolver API</a> &gt; </div>
+<h1 class="topictitle1">How the Target Client is Resolved using CSIPResolvedClient</h1>
+<div><p>SIP Client Resolver determines the target clients by comparing the Request-URI of the incoming SIP request to the information provided in the ECOM plug-in resource file. This resource file is an XML file. All client applications using Client Resolver must be implemented as ECOM plug-ins and must have capabilities. </p>
+ <p>An application must declare capabilities, that are the supported content types and media formats that use the SIP headers and SDP m-lines. The capabilities must be declared in the code of the plug-in, in the XML file, or in the opaque_data field of the resource file. </p>
+ <p>The following is the DTD for the ECOM plug-in’s resource file: </p>
+ <pre class="codeblock" id="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-68B0C530-A5DA-5230-870E-49649C242F08"><a name="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-68B0C530-A5DA-5230-870E-49649C242F08"><!-- --></a>&lt;!-- SIP_CLIENT --&gt;
+&lt;!ELEMENT SIP_CLIENT (SIP_HEADERS, SDP_LINES?)&gt;
+
+&lt;!-- ALLOW_STARTING determines if a client can be started by the SIP stack. --&gt;
+&lt;!ATTLIST SIP_CLIENT ALLOW_STARTING (YES|NO) #REQUIRED&gt;
+
+&lt;!-- SIP_HEADERS --&gt;
+&lt;!ELEMENT SIP_HEADERS (ACCEPT+, ALLOW_EVENTS*, ACCEPT_CONTACT*)&gt;
+
+&lt;!-- ACCEPT: Accept-header as specified in RFC 3261.
+  Indicates Content-Types supported by the client.
+  Note that support for application/sdp must be announced as well,
+  especially when the application aims to indicate capabilities based 
+  on SDP. Otherwise the SDP-based rules will not be taken into account.
+  An empty value means that the application is willing
+  to receive SIP requests without content. 
+--&gt;
+&lt;!ELEMENT ACCEPT EMPTY&gt;
+&lt;!ATTLIST ACCEPT value CDATA #REQUIRED&gt;
+
+&lt;!-- ALLOW_EVENTS: Allow-Events-header as specified in RFC 3265
+  Indicates events supported by the client.
+  Compared to the event-package part of a Event-header
+  in an incoming SIP request if present. 
+--&gt;
+&lt;!ELEMENT ALLOW_EVENTS EMPTY&gt;
+&lt;!ATTLIST ALLOW_EVENTS value CDATA #REQUIRED&gt;
+
+&lt;!-- ACCEPT_CONTACT: Accept-Contact-header as specified in RFC 3841
+  Indicates caller preferences supported by the client.
+  All the parameters must match to a Accept-Contact header 
+  in an incoming SIP request if present.
+--&gt;
+&lt;!ELEMENT ACCEPT_CONTACT EMPTY&gt;
+&lt;!ATTLIST ACCEPT_CONTACT value CDATA #REQUIRED&gt;
+
+&lt;!-- SDP_LINES --&gt;
+&lt;!ELEMENT SDP_LINES (LINE+)&gt;
+
+&lt;!-- SDP Lines 
+  Can be used to indicate supported media by the client.
+  If defined the application must announce the capability of 
+  receiving content of type application/sdp.
+  Only M-line is supported currently as follows:
+    - supported values of media field
+    - port is rendered useless, 
+          but is mandatory in M-Line's BNF (should be set to zero)
+    - supported values of proto field
+    - name of the application in fmt field if the
+      value of media field is 'application'
+  BNF for the value of the M-Line:
+        media space port ["/" integer] space proto 1*(space fmt)
+        media = 1*(alpha-numeric)
+        port = 1*(DIGIT)
+        proto = 1*(alpha-numeric)
+        fmt = 1*(alpha-numeric)
+    alpha-numeric = ALPHA | DIGIT
+        ALPHA = "a"|"b"|"c"|"d"|"e"|"f"|"g"|"h"|"I"|"j"|"k"|
+                "l"|"m"|"n"|"o "|"p"|"q"|"r"|"s"|"t"|"u"|"v"|
+                "w"|"x"|"y"|"z"|"A"|"B"|"C "|"D"|"E"|"F"|"G"|
+                "H"|"I"|"J"|"K"|"L"|"M"|"N"|"O"|"P"|" Q"|"R"|
+                "S"|"T"|"U"|"V"|"W"|"X"|"Y"|"Z"
+    DIGIT = "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"
+--&gt;
+&lt;!ELEMENT LINE EMPTY&gt;
+&lt;!ATTLIST LINE name CDATA #REQUIRED&gt;
+&lt;!ATTLIST LINE value CDATA #REQUIRED&gt;
+</pre>
+ <p>The resource (<span class="filepath">.rss</span>) file contains the XML file and the following information: </p>
+ <ul><li id="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-ECADCF4D-C7B1-5F8F-861C-247682A61B41"><a name="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-ECADCF4D-C7B1-5F8F-861C-247682A61B41"><!-- --></a><p> <samp class="codeph"> dll_uid</samp> and <samp class="codeph">implementation_uid</samp>: These UIDs are supplied on request to <a href="http://www.symbiansigned.com" target="_blank">Symbian Signed</a>. </p>
+ <p> <strong>Note</strong>: These UIDs can be the same. </p>
+ </li>
+ <li id="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-CF722A1F-0FCE-5E12-9DD2-876C1DB776FD"><a name="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-CF722A1F-0FCE-5E12-9DD2-876C1DB776FD"><!-- --></a><p> <samp class="codeph"> interface_uid</samp>: This must have the value <samp class="codeph">0x102010DD</samp>. </p>
+ </li>
+ <li id="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-A9CF8349-9202-508A-83EA-48B0BDBDB147"><a name="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-A9CF8349-9202-508A-83EA-48B0BDBDB147"><!-- --></a><p> <samp class="codeph">default_data</samp>: The application UID (without 0x). </p>
+ </li>
+ <li id="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-EB1AFAED-F5B6-591D-9412-9E240587ABB5"><a name="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-EB1AFAED-F5B6-591D-9412-9E240587ABB5"><!-- --></a><p> <samp class="codeph"> opaque_data</samp>: The application capabilities in XML format. This field is empty if application capabilities are defined in the implementation. </p>
+ </li>
+ </ul>
+ <div class="section"><h2 class="sectiontitle">Resolving the target client using CSIPResolvedClient</h2> <p>The following illustration shows how the SIP Client Resolver subsystem resolves the target client implementation and requests the resolved client to connect to the SIP implementation. In this plan, the default resolution logic is applied. </p>
+ <div class="fignone" id="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-AF6C1C45-A5A0-56FF-BBFC-3635BF4F9AD1"><a name="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-AF6C1C45-A5A0-56FF-BBFC-3635BF4F9AD1"><!-- --></a><span class="figcap">Figure 1. 
+             Call flow of resolving a target client implementation using
+             CSIPResolvedClient 
+          </span> <img src="GUID-8E8F1999-4DE0-5CA0-9656-C54127FDB3D4_d0e558055_href.png"/></div>
+ <p>The following list describes how the target client is resolved using <a href="GUID-F0E4FA44-A41C-3C6F-993E-39CED042A879.html"><span class="apiname">CSIPResolvedClient</span></a>. </p>
+ <a name="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-3D917824-7288-5893-8FFB-C4C81D30BF79"><!-- --></a><ol id="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-3D917824-7288-5893-8FFB-C4C81D30BF79"><li id="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-D801505D-4B4F-503B-95F7-F0C412413F70"><a name="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-D801505D-4B4F-503B-95F7-F0C412413F70"><!-- --></a><p>The user receives a SIP request and the target client is defined using <a href="GUID-F0E4FA44-A41C-3C6F-993E-39CED042A879.html"><span class="apiname">CSIPResolvedClient</span></a>. </p>
+ </li>
+ <li id="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-6AE1B8B5-83AF-5346-9F6C-68DE86B08800"><a name="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-6AE1B8B5-83AF-5346-9F6C-68DE86B08800"><!-- --></a><p>The user requests the SIP Client Resolver API implementation for a channel UI to connect to the user. </p>
+ </li>
+ <li id="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-CBF6BEDC-6062-5E21-80C4-920303B6C3FC"><a name="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-CBF6BEDC-6062-5E21-80C4-920303B6C3FC"><!-- --></a><p>The user requests the target client to connect to SIP with the resolved UID if there is no connection with the resolved channel UID. </p>
+ </li>
+ <li id="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-6EEEBE30-C31B-5E7C-9F91-FEAC3D14A340"><a name="GUID-5C215C64-5D3D-5B65-A11F-BE6F8C306CF4__GUID-6EEEBE30-C31B-5E7C-9F91-FEAC3D14A340"><!-- --></a><p>The SIP Client Resolver API implementation starts the target client. </p>
+ </li>
+ </ol>
+ </div>
+ <div class="section"><h2 class="sectiontitle">See also</h2> <p> <a href="GUID-0D579DDC-0A8A-5CFA-8194-CAA955B65A57.html">Example of a SIP client resolver plug-in</a>  </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-A3D1684D-1DF1-5CAF-A0BB-A32685528596.html">SIP Client Resolver API</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

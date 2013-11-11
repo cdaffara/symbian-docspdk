@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CXmppSettingsApi"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-FBABE13B-68C6-388F-B744-DFA5F86DEA88"/>
+
+<title>CXmppSettingsApi</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-FBABE13B-68C6-388F-B744-DFA5F86DEA88"><a name="GUID-FBABE13B-68C6-388F-B744-DFA5F86DEA88"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2454385 id2454464 id2898058 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CXmppSettingsApi Class Reference</h1>
+	<table class="signature"><tr><td>class CXmppSettingsApi : public CBase</td></tr></table><div class="section"><div>
+			<p>This class handles dynamic name-value pair storing. Be warned, all actions are final.</p>
+
+			<p>This is how this component works: It has two tables. First one, the column table, contains only single row. This table is actually a header table for the record table. When you set an new attribute, we check that does it already exist in column table. If it does not, it is added as last entry. After that data of the attribute is set to the record table into same column as it is attribute name is in the column table. Row of the settings record is determined by given settingsrecordid.</p>
+
+			<p>The column table can hold 0xFFFE (65534) of different user attributes and you can add 0xFF (255) different settingsrecords.</p>
+
+			<p>Below is an picture of the tables. Only the ID column is mandatory. All other columns are defined by user.</p>
+
+			<p>------------------------------------------------------------ | COLUMNS TABLE | |----------------------------------------------------------- | 1 | 2 | 3 | 4 | 5... | | ------------------------------------------------------------ | ID | SERVER-ADDR | SERVER-PORT | USERNAME | etc...| | ------------------------------------------------------------</p>
+
+			<p>------------------------------------------------------------ | RECORDS TABLE | |----------------------------------------------------------- | 1 | 2 | 3 | 4 | 5... | | ------------------------------------------------------------ | 1 | www.gizmo.com | 5223 | Myerdin | etc...| | ------------------------------------------------------------ | 2 | | 5222 | Ballmer | etc...| | ------------------------------------------------------------ | 3 | login.com | | Apple | etc...| | ------------------------------------------------------------ | 4 | aaa.bbb.com | 1234 | user | etc...| | ------------------------------------------------------------</p>
+
+			<div class="p">Usage examples: <pre class="codeblock">  ---- Example 1 ----------------------------------------------
+   Usage example:
+   First Create settings record:
+
+   TUint32 settingId(0);
+   CXmppSettingsApi* sapi = CXmppSettingsApi::NewLC();
+   sapi-&gt;CreateSettingsRecordL( settingId );
+   CleanupStack::PopAndDestroy( sapi );
+
+   The settingId contains now new id.
+
+ ---- Example 2 ----------------------------------------------
+   You can request default settings record (currently returns the first):
+
+   TUint32 settingId(0);
+   sapi-&gt;DefaultSettingsRecordL( settingId );
+
+   The settingId contains now the id.
+
+  ---- Example 3 ----------------------------------------------
+   When you want to add new parameter to the settings record, do following:
+
+   _LIT( KOurParam, "USERNAME");
+
+   sapi-&gt;SetParamL( settingId,
+                    KOurParam(),
+                    aUsername );
+
+   If this is the first time the parameter is added to the settings record,
+   it creates new room for it.
+
+  ---- Example 4 ----------------------------------------------
+   When you want to get parameter from the settings record, do following:
+
+   _LIT( KOurParam, "USERNAME");
+   RBuf value;
+   value.CreateL( KMaxParamLength );
+
+   sapi-&gt;SetParamL( settingId,
+                    KOurParam(),
+                    value );
+
+   Value now contains the value recordd in the settings record. If no value
+   has been set for this settins records column, then it cannot be
+   found -&gt;leaves KErrNotFound.</pre>
+</div>
+
+			<div class="p">jabbersettings.lib <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CXmppSettingsApi<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-46DF75BB-8E78-354D-B2E8-38752A030142">~CXmppSettingsApi</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-9A3CF490-5BA0-313D-9A1B-ABDD410B201E">CreateSettingsRecordL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-85F7E092-280A-34A4-90C9-07125571FBA7">DefaultSettingsRecordL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-0FABC7CE-A9DF-3355-B5DB-A16AE70BC58F">GetParamL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-AE684D39-6AF9-35B7-B8BF-CB99DC023FC5">GetParamL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-3CFDACB9-AE89-3642-BE07-6A149A3BC3C8">GetRepositoryKeyL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-64871490-A0AE-3ED2-AC94-E51F188393BA">GetSettingsRecordIdArrayL</a>(<a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &gt; &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FBABE13B-68C6-388F-B744-DFA5F86DEA88.html">CXmppSettingsApi</a> *</td><td><a href="#GUID-72ED431D-6ADA-31EC-860A-447D7BABF758">NewL</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FBABE13B-68C6-388F-B744-DFA5F86DEA88.html">CXmppSettingsApi</a> *</td><td><a href="#GUID-FAC2FC4D-CD6D-3AF1-8F56-852409815A36">NewLC</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-58E696CE-9BCC-38E4-80B8-254D6D4529B3">RemoveParamL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-2120C8BE-8F93-3762-8B1D-BE1BB3B386E0">RemoveSettingsRecordL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-4E759E58-E8B5-3326-9D5A-BB244446ED73">SetParamL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-93FB9262-F570-3E17-A7BF-5B729F0A8011">SetParamL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-6CC6DBF4-3FB6-382C-A327-CA55383BE3BB">CXmppSettingsApi</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-08571EDA-262F-3A42-9864-3ACF508BF3A0">ConstructL</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-AF161E1D-3763-3CD6-A434-BA5AAC98A32C">GetColumnKeyL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-10AE011B-EE45-3AFC-8B73-1941E7BD0A6C.html">CXmppSettingsColumn</a> *</td><td><a href="#GUID-A4640AEB-A2F6-31E7-8362-9BF922923F3E">iColumns</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-87A83174-673F-32A8-BCDA-CE465FF786C4.html">CXmppSettingsRecord</a> *</td><td><a href="#GUID-FAC096F1-070F-3909-B97F-D3BE8C954550">iRecords</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-DEA618DF-D462-3B3E-A1E1-F21295AAFE78.html">CRepository</a> *</td><td><a href="#GUID-3103F407-5C46-3AE8-A945-0D541AAAFCE6">iRepository</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-6CC6DBF4-3FB6-382C-A327-CA55383BE3BB"><a name="GUID-6CC6DBF4-3FB6-382C-A327-CA55383BE3BB"><!-- --></a>
+		<h2 class="topictitle2">CXmppSettingsApi()</h2>
+		<table class="signature"><tr><td>CXmppSettingsApi</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Default Contructor </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-46DF75BB-8E78-354D-B2E8-38752A030142"><a name="GUID-46DF75BB-8E78-354D-B2E8-38752A030142"><!-- --></a>
+		<h2 class="topictitle2">~CXmppSettingsApi()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CXmppSettingsApi</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Destructor </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-08571EDA-262F-3A42-9864-3ACF508BF3A0"><a name="GUID-08571EDA-262F-3A42-9864-3ACF508BF3A0"><!-- --></a>
+		<h2 class="topictitle2">ConstructL()</h2>
+		<table class="signature"><tr><td>void</td><td>ConstructL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-9A3CF490-5BA0-313D-9A1B-ABDD410B201E"><a name="GUID-9A3CF490-5BA0-313D-9A1B-ABDD410B201E"><!-- --></a>
+		<h2 class="topictitle2">CreateSettingsRecordL(TUint32 &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>CreateSettingsRecordL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;</td><td>aSettingsRecordId</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Creates new settings record.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp; aSettingsRecordId</td><td>On return contains the new setting id.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-85F7E092-280A-34A4-90C9-07125571FBA7"><a name="GUID-85F7E092-280A-34A4-90C9-07125571FBA7"><!-- --></a>
+		<h2 class="topictitle2">DefaultSettingsRecordL(TUint32 &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>DefaultSettingsRecordL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;</td><td>aSettingsRecordId</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Returns default settings record id.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp; aSettingsRecordId</td><td>On return contains the setting id.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AF161E1D-3763-3CD6-A434-BA5AAC98A32C"><a name="GUID-AF161E1D-3763-3CD6-A434-BA5AAC98A32C"><!-- --></a>
+		<h2 class="topictitle2">GetColumnKeyL(TUint32, const TDesC &amp;, TBool, TUint32 &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetColumnKeyL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aSettingsRecordId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aAttrName,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aCreateColumnIfNotExist,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;</td><td>aTheKey</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<p>This method does checks before setting or getting values.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aSettingsRecordId</td><td>Setting id to be changed.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aAttrName</td><td>Parameters name.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aCreateColumnIfNotExist</td><td>Should new column be created if it is not founded (by aAttrName).  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp; aTheKey</td><td>On return contains key to be created/changed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0FABC7CE-A9DF-3355-B5DB-A16AE70BC58F"><a name="GUID-0FABC7CE-A9DF-3355-B5DB-A16AE70BC58F"><!-- --></a>
+		<h2 class="topictitle2">GetParamL(TUint32, const TDesC &amp;, TDes &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetParamL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aSettingsRecordId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aAttrName,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aAttrValue</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<div class="p">Gets value of the param.<ul><li><p>KErrNotFound if setting collection or Param is not found.</p>
+</li>
+</ul>
+</div>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aSettingsRecordId</td><td>Setting id of interest.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aAttrName</td><td>Parameters name.  </td></tr><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aAttrValue</td><td>On return, contains the param value.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AE684D39-6AF9-35B7-B8BF-CB99DC023FC5"><a name="GUID-AE684D39-6AF9-35B7-B8BF-CB99DC023FC5"><!-- --></a>
+		<h2 class="topictitle2">GetParamL(TUint32, const TDesC &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetParamL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aSettingsRecordId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aAttrName,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aAttrValue</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<div class="p">Gets value of the param.<ul><li><p>KErrNotFound if setting collection or Param is not found.</p>
+</li>
+</ul>
+</div>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aSettingsRecordId</td><td>Setting id of interest.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aAttrName</td><td>Parameters name.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aAttrValue</td><td>On return, contains the param value.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3CFDACB9-AE89-3642-BE07-6A149A3BC3C8"><a name="GUID-3CFDACB9-AE89-3642-BE07-6A149A3BC3C8"><!-- --></a>
+		<h2 class="topictitle2">GetRepositoryKeyL(TUint32, const TDesC &amp;, TBool, TUint32 &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetRepositoryKeyL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aSettingsRecordId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aAttrName,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aCreateColumnIfNotExist,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;</td><td>aTheKey</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>This method does checks before setting or getting values.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aSettingsRecordId</td><td>Setting id to be changed.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aAttrName</td><td>Parameters name.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aCreateColumnIfNotExist</td><td>Should new column be created if it is not founded (by aAttrName).  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp; aTheKey</td><td>On return contains key to be created/changed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-64871490-A0AE-3ED2-AC94-E51F188393BA"><a name="GUID-64871490-A0AE-3ED2-AC94-E51F188393BA"><!-- --></a>
+		<h2 class="topictitle2">GetSettingsRecordIdArrayL(RArray&lt; TUint32 &gt; &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetSettingsRecordIdArrayL</td><td>(</td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &gt; &amp;</td><td>aArray</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Fills the array with settings ids. If there is none, array is zero length.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RArray</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &gt; &amp; aArray</td><td>Array is filled with setting ids.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-72ED431D-6ADA-31EC-860A-447D7BABF758"><a name="GUID-72ED431D-6ADA-31EC-860A-447D7BABF758"><!-- --></a>
+		<h2 class="topictitle2">NewL()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FBABE13B-68C6-388F-B744-DFA5F86DEA88.html">CXmppSettingsApi</a> *</td><td>NewL</td><td>(</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Two-phased constructor. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-FAC2FC4D-CD6D-3AF1-8F56-852409815A36"><a name="GUID-FAC2FC4D-CD6D-3AF1-8F56-852409815A36"><!-- --></a>
+		<h2 class="topictitle2">NewLC()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FBABE13B-68C6-388F-B744-DFA5F86DEA88.html">CXmppSettingsApi</a> *</td><td>NewLC</td><td>(</td><td>)</td><td>[static]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-58E696CE-9BCC-38E4-80B8-254D6D4529B3"><a name="GUID-58E696CE-9BCC-38E4-80B8-254D6D4529B3"><!-- --></a>
+		<h2 class="topictitle2">RemoveParamL(TUint32, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RemoveParamL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aSettingsRecordId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aAttrName</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<div class="p">Removes this param from this Settings record.<ul><li><p>KErrNotFound If Settings record or param is not found.</p>
+</li>
+</ul>
+</div>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aSettingsRecordId</td><td>Setting id.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aAttrName</td><td>Parameters name.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2120C8BE-8F93-3762-8B1D-BE1BB3B386E0"><a name="GUID-2120C8BE-8F93-3762-8B1D-BE1BB3B386E0"><!-- --></a>
+		<h2 class="topictitle2">RemoveSettingsRecordL(TUint32)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RemoveSettingsRecordL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aSettingsRecordId</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Removes Settings record using given settings record id.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aSettingsRecordId</td><td>Setting id to be removed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4E759E58-E8B5-3326-9D5A-BB244446ED73"><a name="GUID-4E759E58-E8B5-3326-9D5A-BB244446ED73"><!-- --></a>
+		<h2 class="topictitle2">SetParamL(TUint32, const TDesC &amp;, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetParamL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aSettingsRecordId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aAttrName,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aAttrValue</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Sets value of the param. If ParamName is not found, it creates new.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aSettingsRecordId</td><td>Setting id of interest.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aAttrName</td><td>Parameters name.  </td></tr><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aAttrValue</td><td>Parameters value.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-93FB9262-F570-3E17-A7BF-5B729F0A8011"><a name="GUID-93FB9262-F570-3E17-A7BF-5B729F0A8011"><!-- --></a>
+		<h2 class="topictitle2">SetParamL(TUint32, const TDesC &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetParamL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aSettingsRecordId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aAttrName,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aAttrValue</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Sets value of the param. If ParamName is not found, it creates new.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 5.0 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aSettingsRecordId</td><td>Setting id of interest.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aAttrName</td><td>Parameters name.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aAttrValue</td><td>Parameters value.  </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-A4640AEB-A2F6-31E7-8362-9BF922923F3E"><a name="GUID-A4640AEB-A2F6-31E7-8362-9BF922923F3E"><!-- --></a>
+		<h2 class="topictitle2">
+					CXmppSettingsColumn * iColumns</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-10AE011B-EE45-3AFC-8B73-1941E7BD0A6C.html">CXmppSettingsColumn</a> *</td><td>iColumns</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Class for column table handling. Own. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-FAC096F1-070F-3909-B97F-D3BE8C954550"><a name="GUID-FAC096F1-070F-3909-B97F-D3BE8C954550"><!-- --></a>
+		<h2 class="topictitle2">
+					CXmppSettingsRecord * iRecords</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-87A83174-673F-32A8-BCDA-CE465FF786C4.html">CXmppSettingsRecord</a> *</td><td>iRecords</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Class for settings records handling. Own. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-3103F407-5C46-3AE8-A945-0D541AAAFCE6"><a name="GUID-3103F407-5C46-3AE8-A945-0D541AAAFCE6"><!-- --></a>
+		<h2 class="topictitle2">
+					CRepository * iRepository</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-DEA618DF-D462-3B3E-A1E1-F21295AAFE78.html">CRepository</a> *</td><td>iRepository</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Central Repository. Own. </p>
+
+			</div></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

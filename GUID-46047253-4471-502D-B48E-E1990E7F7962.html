@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Sending an RTP packet"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C467E6CD-6656-55F6-BDDF-BFA4F187B14F.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6425B722-4095-56E3-9198-70BA3E06C617.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C467E6CD-6656-55F6-BDDF-BFA4F187B14F.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-46047253-4471-502D-B48E-E1990E7F7962"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Sending an RTP packet</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-46047253-4471-502D-B48E-E1990E7F7962"><a name="GUID-46047253-4471-502D-B48E-E1990E7F7962"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2397554 id2397597 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-6425B722-4095-56E3-9198-70BA3E06C617.html">Multimedia Protocols Guide</a> &gt; <a href="GUID-C467E6CD-6656-55F6-BDDF-BFA4F187B14F.html">RTP</a> &gt; </div>
+<h1 class="topictitle1">Sending an RTP packet</h1>
+<div><p>This page describes how to prepare, create and send an RTP packet. </p>
+ <div class="section" id="GUID-46047253-4471-502D-B48E-E1990E7F7962__GUID-9E7AAB77-6F14-51AE-8008-B2F1C49667A5"><a name="GUID-46047253-4471-502D-B48E-E1990E7F7962__GUID-9E7AAB77-6F14-51AE-8008-B2F1C49667A5"><!-- --></a><h2 class="sectiontitle">Preparing the packet</h2> <p> <samp class="codeph">RRtpSendPacket</samp> allows you to set the following fields for an RTP packet. </p>
+ <p> <samp class="codeph">SetMarker()</samp>: Sets or unsets the marker bit. </p>
+ <p> <samp class="codeph">SetPayloadType()</samp>: Sets the default payload type this is usually set befor e creating a new packet. </p>
+ <p> <samp class="codeph">SetTimeStamp()</samp>: Sets the sampling instant of first octet in the RTP data packet (also RTCP packet). </p>
+ <p> <samp class="codeph">SetFlags()</samp>: Sets the first 32 bits of the packet header. </p>
+ <p>You can retrieve the following from an RTP packet: </p>
+ <p> <samp class="codeph">WritePayload()</samp>: Gets the descriptor to which the data can be written. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Creating a send packet</h2> <p> <samp class="codeph">RRtpSendSource</samp> allows you to create a new RTP packet. <samp class="codeph">NewSendPacketL</samp> and <samp class="codeph">NewSendPacketLC</samp> create a new send RTP packet. These functions return a handle to an <samp class="codeph">RRtpSendPacket</samp> object. </p>
+ <pre class="codeblock" id="GUID-46047253-4471-502D-B48E-E1990E7F7962__GUID-1A5771D1-9794-5307-AEE1-6398BE5DFBB2"><a name="GUID-46047253-4471-502D-B48E-E1990E7F7962__GUID-1A5771D1-9794-5307-AEE1-6398BE5DFBB2"><!-- --></a>RRtpSendPacket NewSendPacketL(TInt aPayloadSize=0, TInt aHeaderExtensionSize=KRtpNoExtension);</pre>
+ <p>Set the default payload type and payload size before you create the new send packet using <samp class="codeph">SetPayloadType()</samp> and <samp class="codeph">SetDefaultPayloadSize()</samp> respectively. </p>
+ <p>Set the header extension size to multiples of 4-byte words this means the fixed header must be followed by exactly one header extension. The default value is <samp class="codeph">KRtpNoExtension</samp>. 0 is an acceptable value. </p>
+ <p> <samp class="codeph">RRtpSendSource</samp> allows you to set any of the following for an RTP packet to be sent: </p>
+ <p> <samp class="codeph">SetAlignment</samp>: Aligns the header data to multiples of the set padding value. The values can range within 1-255. 1 is the default value, which means not padded. </p>
+ <p> <samp class="codeph">SetDefaultPayloadSize</samp>: Sets the default payload size for the RTP packet that is to be sent. This is usually set before creating a new packet. </p>
+ <p> <samp class="codeph">SetPayloadType</samp>: Sets the default payload type for the RTP packet that is to be sent. This is usually set before creating a new packet. </p>
+ <p>Call <samp class="codeph">ByeL</samp> to send the BYE packet to indicate that one or more sources are no longer active (example when a participant wants to leave). </p>
+ <p>You can stop sending a packet even after making a send request. Call <samp class="codeph">RRtpSendSource::Cancel()</samp> to cancel the outstanding send request on the send stream. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Sending the packet</h2> <p>Call <samp class="codeph">RRtpSendPacket::Send()</samp> to send the RTP packet. The packet is considered to be sent only when an <samp class="codeph">ERtpSendSucceeded</samp> event is received from the send stream. If a failure occurs, an <samp class="codeph">ERtpSendFailed</samp> event is received. </p>
+ <p> <strong>Note</strong>: Before sending an RTP packet you must set the bandwidth for the RTP session. The following code snippet shows how to set the bandwidth for an RTP session. </p>
+ <pre class="codeblock" id="GUID-46047253-4471-502D-B48E-E1990E7F7962__GUID-6E2043B8-8354-5DAA-B174-9CF54A806EE1"><a name="GUID-46047253-4471-502D-B48E-E1990E7F7962__GUID-6E2043B8-8354-5DAA-B174-9CF54A806EE1"><!-- --></a>IMPORT_C void SetBandwidth(TUint aBandwidth) </pre>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Closing the packet</h2> <p>Once the packet has been sent, call <samp class="codeph">RRtpSendPacket::Close()</samp> to close the RTP packet. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Closing the send stream</h2> <p>Call <samp class="codeph">RRtpSendSource::Close()</samp> to close the send stream. The send stream cannot be closed if an event is currently being handled by a call back function. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">See also</h2> <p> <a href="GUID-5287A403-1094-5682-A443-A6C2A04A1F23.html">Creating and Managing an RTP session</a>  </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C467E6CD-6656-55F6-BDDF-BFA4F187B14F.html">RTP</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Migration Tutorial: Demand Paging and Media Drivers"/>
+<meta name="abstract" content="Describes how to change media drivers when demand paging is used."/>
+<meta name="description" content="Describes how to change media drivers when demand paging is used."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5C223AD5-4676-58B4-B3A5-066F6B69AA4D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-52371DAB-A231-558C-B3E6-220DAAEE566B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5C223AD5-4676-58B4-B3A5-066F6B69AA4D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Migration Tutorial: Demand Paging and Media Drivers</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2400778 id2402024 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-52371DAB-A231-558C-B3E6-220DAAEE566B.html" title="Provides software components that implement the interface between Symbian platform and peripherals.">Logical Device Drivers</a> &gt; <a href="GUID-5C223AD5-4676-58B4-B3A5-066F6B69AA4D.html" title="Provides the logical device driver for the internal and removable storage media on a phone.">Local Media Subsystem</a> &gt; </div>
+<h1 class="topictitle1">Migration
+Tutorial: Demand Paging and Media Drivers</h1>
+<div><p>Describes how to change media drivers when demand paging is used.</p>
+
+<p>Demand paging is a change made from Symbian platform v9.3 to how the Kernel
+uses RAM and storage media. This topic </p>
+
+<div class="section" id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-AD70C4EE-F7E8-473D-B917-819B9852CB31"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-AD70C4EE-F7E8-473D-B917-819B9852CB31"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p>If the ROM has been built with paging
+enabled, the image is divided into two sections: an unpaged section and a
+paged section. In addition to this, code that is not part of the ROM can be
+loaded on demand into RAM from other non-XIP partitions and/or media, for
+example FAT or ROFS partitions. </p>
+ <p>Two types of paging are currently
+supported: </p>
+ <ul>
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-E838F239-2F8A-5441-AE76-59382AA75FF6"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-E838F239-2F8A-5441-AE76-59382AA75FF6"><!-- --></a><p>ROM paging - paging
+from the paged section of the ROM image </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-28970AFC-33C6-56B7-BBD3-383220359A90"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-28970AFC-33C6-56B7-BBD3-383220359A90"><!-- --></a><p>code paging - paging
+from non-removable media, for example, a FAT partition on an internal Multi
+Media Card (MMC) drive or an internal NAND ROFS/FAT partition. </p>
+ <p>See
+also <a href="GUID-90B5FDD9-7D59-5035-BF53-2B177655DCD6.html" title="Explains how to change the MMC media driver for when demand paging is used.">Paging from an
+internal MMC</a>. </p>
+ </li>
+
+</ul>
+ <div class="p"> <div class="note"><span class="notetitle">Note:</span> : A difference between ROM paging and code paging is that
+all ROM pages are contiguous, whereas code that is paged from other drives
+may be split over several potentially non-contiguous clusters. This puts an
+extra burden on the paging subsystem as it needs to identify the layout of
+the DLL on the media before it is deemed pageable. This is achieved by using
+the file servers blockmap API.</div>
+ </div>
+ <p>Media drivers are typically
+PDDs with a filename of <span class="filepath">med.pdd</span>. Normally they are declared
+in the <span class="filepath">rombuild.oby</span> file with the keyword <samp class="codeph">extension</samp> or <samp class="codeph">device</samp> and
+are therefore flagged as unpaged. That is, once loaded their code and read-only
+data sections are not paged out. </p>
+ <p>A media driver that is capable of
+servicing page requests from the paging subsystem must ensure that the thread
+in which the media driver runs takes the page fault itself otherwise a deadlock
+could occur. In theory, the only time this can happen is when a media driver
+accepts a write request from a user side client that points to data in the
+paged section of the ROM or to code that has been loaded into RAM from code
+paging enabled media. To remedy this, the local media subsystem has been modified
+to lock write requests to paging media drivers before they are dispatched
+and to split large write requests into a series of smaller ones to avoid exhausting
+available RAM. </p>
+ <p>The two initial stages relevant to this discussion
+are: </p>
+ <ul>
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-02D2CBAA-8393-52C2-B940-31603B4AF9FA"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-02D2CBAA-8393-52C2-B940-31603B4AF9FA"><!-- --></a><p>the kernel extension
+entry point - identified by the <samp class="codeph">DECLARE_STANDARD_EXTENSION</samp> macro </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-1EFE9978-780D-507C-B408-E0C3AE97A0A7"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-1EFE9978-780D-507C-B408-E0C3AE97A0A7"><!-- --></a><p>the PDD entry point
+- identified by the <samp class="codeph">DECLARE_EXTENSION_PDD</samp> macro. </p>
+ </li>
+
+</ul>
+ <p>To enable demand paging as soon as possible in the boot sequence
+it is desirable to instantiate and install the PDD factory object earlier,
+for example in the kernel extension entry point. </p>
+ <div class="p"> <div class="note"><span class="notetitle">Note:</span>  Some media
+drivers have no kernel extension entry point defined, the MMC media driver
+is an example. These drivers have a <a href="GUID-73947402-2F32-35C7-94C4-22B4D63D5FB3.html"><span class="apiname">DECLARE_STANDARD_PDD</span></a> macro
+defined rather than <a href="GUID-52853C0D-CA98-3B92-B7D4-FF1C1F06C1A6.html"><span class="apiname">DECLARE_EXTENSION_PDD</span></a>. They require
+modification to have a <a href="GUID-52853C0D-CA98-3B92-B7D4-FF1C1F06C1A6.html"><span class="apiname">DECLARE_EXTENSION_PDD</span></a> and a <a href="GUID-8B6DF6D7-4995-3564-9303-272500D7E747.html"><span class="apiname">DECLARE_STANDARD_EXTENSION</span></a>.</div>
+ </div>
+ <p>The
+steps needed to support ROM and/or code paging are as follows: </p>
+ <a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-CADDDC61-A3A2-5AC3-AD69-739FD61FA9CC"><!-- --></a><ol id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-CADDDC61-A3A2-5AC3-AD69-739FD61FA9CC">
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-4D14D36E-5F3A-55E6-BAB8-A45243B34928"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-4D14D36E-5F3A-55E6-BAB8-A45243B34928"><!-- --></a><p>determine whether code
+paging is supported, and if so, identify the relevant local drive number or
+numbers </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-F97B3965-020F-5C16-9D09-5861C0B6C695"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-F97B3965-020F-5C16-9D09-5861C0B6C695"><!-- --></a><p> <a href="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3.html#GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-77FBA53A-CC78-5CD1-8FDF-F6A8001DE466">modify variantmediadef.h</a>  </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-D608C61F-E297-5A0C-B0FD-4F0F98B36EEF"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-D608C61F-E297-5A0C-B0FD-4F0F98B36EEF"><!-- --></a><p> <a href="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3.html#GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-686EFEF4-A514-51BC-8378-962A8899F270">modify the media drivers kernel extension entry point</a> to register
+the media driver with the paging subsystem and to instantiate and install
+the <a href="GUID-A5484A7F-94B9-34C7-9F88-82B1BF516930.html"><span class="apiname">DPhysicalDevice</span></a> derived factory object </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-5DEA2654-8954-52EC-B498-066AE05AB209"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-5DEA2654-8954-52EC-B498-066AE05AB209"><!-- --></a><p> <a href="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3.html#GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-C32CF25E-553B-5786-88ED-4587AC0DF3BA">modify the DLocalDrive::Ecaps() handling</a>  </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-CED0CA1D-44EF-51DC-BC56-60B88A9D0494"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-CED0CA1D-44EF-51DC-BC56-60B88A9D0494"><!-- --></a><p>modify the media drivers <a href="GUID-A0D4EB25-0BA4-39EE-874B-465EB9628DCC.html#GUID-A0D4EB25-0BA4-39EE-874B-465EB9628DCC__GUID-EB244422-0BEC-3D3F-BDDA-3F050A2697A7"><span class="apiname">DMediaDriver::Request</span></a> function
+to accept the four new <a href="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3.html#GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-AE44672E-F60D-563C-BB6A-B70AF187C366">paging
+request</a> types </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-A7CFB8AA-4D95-5DD3-AF3F-0FAB0448F218"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-A7CFB8AA-4D95-5DD3-AF3F-0FAB0448F218"><!-- --></a><p> <a href="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3.html#GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-0EA673E6-FEE4-51F6-9C84-9411316D7357">Handling fragmented write requests</a>. </p>
+ </li>
+
+</ol>
+ </div>
+
+<div class="section" id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-77FBA53A-CC78-5CD1-8FDF-F6A8001DE466"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-77FBA53A-CC78-5CD1-8FDF-F6A8001DE466"><!-- --></a><h2 class="sectiontitle">Changes to
+variantmediadef.h</h2> <p>The following should be defined using appropriate
+names in the variant's <em>variantmediadef.h</em> file: </p>
+ <ul>
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-F5EFB1C8-B7C4-52AD-88A2-8A7659527373"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-F5EFB1C8-B7C4-52AD-88A2-8A7659527373"><!-- --></a><p> <samp class="codeph">PAGING_TYPE</samp> -
+flags that indicate whether code paging and/or ROM paging is supported </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-2745304A-2FAF-5DCB-88D3-74BD56B475E0"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-2745304A-2FAF-5DCB-88D3-74BD56B475E0"><!-- --></a><p> <samp class="codeph">NAND_PAGEDRIVELIST</samp> -
+a list of the paging drives </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-507FB105-E254-501E-B22A-33E93C3CABA5"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-507FB105-E254-501E-B22A-33E93C3CABA5"><!-- --></a><p> <samp class="codeph">NAND_PAGEDRIVECOUNT</samp> -
+the total number of paging drives </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-F3D6494E-A14D-5FB1-A3E7-3D75D3753E12"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-F3D6494E-A14D-5FB1-A3E7-3D75D3753E12"><!-- --></a><p> <samp class="codeph">NUM_PAGES</samp> -
+if a write request points to data that resides in paged ROM, the request is
+split up into separate fragments of the specified size. This value needs to
+be chosen with care, as if it is too small writes can take too long to finish. </p>
+ </li>
+
+</ul>
+<div class="p"> <div class="note"><span class="notetitle">Note:</span>  Normal write requests which point to data that is not in paged
+ROM are not fragmented. However, large requests are split up into smaller
+requests by the file server, providing clients with a more responsive system.</div>
+ </div>
+ <p>The
+macros defined in the file <em>variantmediadef.h</em> are passed to <a href="GUID-9E60E8D9-619E-3A76-BAC8-93A60D62C7DF.html#GUID-9E60E8D9-619E-3A76-BAC8-93A60D62C7DF__GUID-5FDD89C6-C34A-3A0D-A422-D148DDE23E42"><span class="apiname">LocDrv::RegisterPagingDevice()</span></a>.
+This function is similar to <a href="GUID-9E60E8D9-619E-3A76-BAC8-93A60D62C7DF.html#GUID-9E60E8D9-619E-3A76-BAC8-93A60D62C7DF__GUID-647D0858-FE04-3A4F-99CE-81CD0B34CE7B"><span class="apiname">LocDrv::RegisterMediaDevice()</span></a> in
+that it takes a drive list as a parameter, but it identifies the drive or
+drives to be used for code paging. If code only ROM paging is needed, set
+the drive count to zero. </p>
+ <p>Changes made to support paging on NAND: </p>
+ <pre class="codeblock" id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-1425F457-8F28-5CD7-B8A4-3FC3D2777D73"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-1425F457-8F28-5CD7-B8A4-3FC3D2777D73"><!-- --></a>// Variant parameters for NAND flash media driver (mednand.pdd)
+#define NAND_DRIVECOUNT 8
+#define NAND_DRIVELIST 2,3,5,6,7,9,10,11
+#define NAND_NUMMEDIA 1
+#define NAND_DRIVENAME "Nand"
+
+#define PAGING_TYPE DPagingDevice::ERom | DPagingDevice::ECode
+
+// code paging from writeable FAT, Composite FAT and first ROFS
+#define NAND_PAGEDRIVELIST 2,5,6    
+#define NAND_PAGEDRIVECOUNT 3
+
+// defines the size of fragment
+#define NUM_PAGES 8</pre>
+ </div>
+
+<div class="section" id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-686EFEF4-A514-51BC-8378-962A8899F270"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-686EFEF4-A514-51BC-8378-962A8899F270"><!-- --></a><h2 class="sectiontitle">Changes to
+the media driver kernel extension point</h2> <p>The kernel-extension entry
+point must create a DFC queue to satisfy any page fault that occurs in the
+drive thread. Failure to do so results in a kernel fault. The entry point
+must then create a <a href="GUID-3715787E-9ADD-39E7-B22A-62CBBD2CEF1B.html"><span class="apiname">DPrimaryMediaBase</span></a> object and register
+it with the local media subsystem. To support paging, the entry point needs
+altering to register the paging device with the demand paging subsystem and
+instantiate and install the factory object. </p>
+ <pre class="codeblock" id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-885C8178-46FB-5F4B-9755-E048A48C42A7"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-885C8178-46FB-5F4B-9755-E048A48C42A7"><!-- --></a>DECLARE_STANDARD_EXTENSION()
+    {   
+    TInt r=Kern::DfcQInit(&amp;TestMediaDfcQ,KTestThreadPriority,&amp;KTestMediaThreadName);
+    if (r|=KErrNone)
+        return r;
+ 
+    DPrimaryMediaBase* pM=new DPrimaryMediaBase;
+    if (!pM)
+        return r;
+
+    pM-&gt;iDfcQ=&amp;TestMediaDfcQ;
+    r=LocDrv::RegisterMediaDevice(
+        MEDIA_DEVICE_NAND,
+        NAND_DRIVECOUNT,
+        NAND_DRIVELIST,
+        pM,
+        NAND_NUMMEDIA,
+        NAND_DRIVENAME);
+    if (r != KErrNone)
+        return r;
+
+    r = LocDrv::RegisterPagingDevice(
+        pM,
+        NAND_PAGEDRIVELIST,
+        NAND_PAGEDRIVECOUNT,
+        PAGING_TYPE,
+        SECTOR_SHIFT,
+        NUM_PAGES);
+    if (r == KErrNone)
+        {
+        device = new DPhysicalDeviceMediaTest;
+        if (device == NULL)
+            return KErrNoMemory;
+        r = Kern::InstallPhysicalDevice(device);
+        }
+    // Ignore error if demand paging not supported by kernel
+    else if (r == KErrNotSupported)
+        r = KErrNone;
+    else
+        return r;
+
+    pM-&gt;iMsgQ.Receive();
+    return KErrNone;
+    }</pre>
+ <p>The fifth parameter passed to the function <a href="GUID-9E60E8D9-619E-3A76-BAC8-93A60D62C7DF.html#GUID-9E60E8D9-619E-3A76-BAC8-93A60D62C7DF__GUID-5FDD89C6-C34A-3A0D-A422-D148DDE23E42"><span class="apiname">LocDrv::RegisterPagingDevice()</span></a> named <samp class="codeph">SECTOR_SHIFT</samp> is the log2 of the sector size for the given media. For example, passing
+a value of 9 corresponds to a sector size of 512 for most media. </p>
+ <div class="p"> <div class="note"><span class="notetitle">Note:</span>  The <a href="GUID-52853C0D-CA98-3B92-B7D4-FF1C1F06C1A6.html"><span class="apiname">DECLARE_EXTENSION_PDD</span></a> entry
+point is called some time later when the file server tries to load all the
+media drivers in the system. When this happens a second factory object is
+created by the media driver, but this is deleted by the kernel when it discovers
+that another factory object bearing the same name is already in its internal
+list.</div>
+ </div>
+ </div>
+
+<div class="section" id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-C32CF25E-553B-5786-88ED-4587AC0DF3BA"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-C32CF25E-553B-5786-88ED-4587AC0DF3BA"><!-- --></a><h2 class="sectiontitle">Changes to
+DLocalDrive::ECaps handling</h2> <p>The <a href="GUID-C57F8D34-DAB5-388F-A99F-A952916B7EA6.html"><span class="apiname">TLocalDriveCaps</span></a> structure
+needs to be modified so that: </p>
+ <ul>
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-FECDE295-A9D3-5373-BD01-F2A7EAB83897"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-FECDE295-A9D3-5373-BD01-F2A7EAB83897"><!-- --></a><p>the <a href="GUID-FF7F3425-9F7C-3146-BA0A-FB68D1A2381C.html"><span class="apiname">KMediaAttPageable</span></a> flag
+is set in <a href="GUID-722A1F4D-3A76-3BE3-95AB-2AA7745930D0.html"><span class="apiname">iMediaAtt</span></a>  </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-82EC6B7C-FF34-5E2C-BFF1-832C0769B517"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-82EC6B7C-FF34-5E2C-BFF1-832C0769B517"><!-- --></a><p>the <a href="GUID-ED80FF32-9226-31E4-8717-D4A29948A75B.html"><span class="apiname">KDriveAttPageable</span></a> flag
+is set if a particular drive has been registered as code paging. This is determined
+by testing <a href="GUID-D84A9903-AE0F-3F54-8833-E8956A88E26C.html#GUID-D84A9903-AE0F-3F54-8833-E8956A88E26C__GUID-F5F80522-E23D-3A3D-86B5-6DC6C9E5C3B1"><span class="apiname">TLocDrvRequest::Drive()</span></a> <samp class="codeph">-&gt;iPagingDrv</samp>. </p>
+ </li>
+
+</ul>
+ <p>Additionally, the <a href="GUID-C57F8D34-DAB5-388F-A99F-A952916B7EA6.html"><span class="apiname">TLocalDriveCaps</span></a> <samp class="codeph">::iDriveAtt</samp> must
+have the <a href="GUID-89ABFCAC-65EF-3DF3-83B8-2B0A169CCAFA.html"><span class="apiname">KDriveAttLocal</span></a> and <a href="GUID-78343374-6F5D-365D-BF3E-9AD19C77FB80.html"><span class="apiname">KDriveAttInternal</span></a> bits
+set and the <a href="GUID-88C9C181-3BC3-35FB-BF82-A81C40EEDEB8.html"><span class="apiname">KDriveAttRemovable</span></a> bit cleared. </p>
+ <pre class="codeblock" id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-04F15DFB-144E-5966-88B5-227B7FC97B55"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-04F15DFB-144E-5966-88B5-227B7FC97B55"><!-- --></a>TInt DMediaDriverTest::Request(TLocDrvRequest&amp; aRequest)
+    {
+    TInt r=KErrNotSupported;
+    TInt id=aRequest.Id();
+
+    if (id == DLocalDrive::ECaps)
+        {
+        TLocDrv* drive = aRequest.Drive();
+        TLocalDriveCapsV4&amp; c = *(TLocalDriveCapsV4*)aRequest.RemoteDes();   
+        r=Caps(*drive,c);
+        }
+    // etc…
+    }
+
+TInt DMediaDriverTest::Caps(TLocDrv&amp; aDrive, TLocalDriveCapsV4&amp; caps)
+    {
+    // fill in rest of caps structure as usual…
+
+    if(aDrive.iPrimaryMedia-&gt;iPagingMedia)
+        caps.iMediaAtt|=KMediaAttPageable;
+    if(aDrive.iPagingDrv)
+        caps.iDriveAtt|=KDriveAttPageable; 
+    }</pre>
+ </div>
+
+<div class="section" id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-AE44672E-F60D-563C-BB6A-B70AF187C366"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-AE44672E-F60D-563C-BB6A-B70AF187C366"><!-- --></a><h2 class="sectiontitle">Handling page
+requests</h2> <p>Four new request types need to be handled to support paging: </p>
+ <ul>
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-703713F1-9276-583A-9963-325C04F8D4B6"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-703713F1-9276-583A-9963-325C04F8D4B6"><!-- --></a><p> <a href="GUID-951FB996-24B3-3340-8386-24B1A895EA16.html"><span class="apiname">EWriteRequestFragment</span></a> marks
+the start and middle of a sequence of writes. </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-F40CCE14-17DF-52EB-937F-CEBC2B78CC94"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-F40CCE14-17DF-52EB-937F-CEBC2B78CC94"><!-- --></a><p>Each sequence is terminated
+by a <a href="GUID-8B4109E6-B9F8-3C18-9F9A-0AB20FDA5E86.html"><span class="apiname">EWriteRequestFragmentLast</span></a> request as long as none
+of the prior requests completed with an error. </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-47C8C482-77B4-5447-8497-E8185BF1350B"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-47C8C482-77B4-5447-8497-E8185BF1350B"><!-- --></a><p> <a href="GUID-F20251F4-A72D-32E5-B2AF-87F71CD5CD87.html"><span class="apiname">ERomPageInRequest</span></a> is
+treated as a normal read except that: </p>
+ <a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-DEEF7484-32E1-5739-839D-D1257A51B83C"><!-- --></a><ol id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-DEEF7484-32E1-5739-839D-D1257A51B83C">
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-A90D4A45-05E4-5F9C-B47E-26F67F5462EE"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-A90D4A45-05E4-5F9C-B47E-26F67F5462EE"><!-- --></a><p>the list of partitions
+reported by <a href="GUID-A0D4EB25-0BA4-39EE-874B-465EB9628DCC.html#GUID-A0D4EB25-0BA4-39EE-874B-465EB9628DCC__GUID-B2F42829-028C-341A-B34D-A8243CA434EB"><span class="apiname">DMediaDriver::PartitionInfo</span></a> does not normally
+include the partition containing the ROM image. Therefore, the local media
+subsystem does not know the absolute position from the start of the media
+of a particular ROM page. The position stored in <a href="GUID-F20251F4-A72D-32E5-B2AF-87F71CD5CD87.html"><span class="apiname">ERomPageInRequest</span></a> is
+offset from the start of the ROM image, rather than the start of the media.
+Therefore, the media driver must add the offset of the start of the ROM image
+to the position stored in <a href="GUID-F20251F4-A72D-32E5-B2AF-87F71CD5CD87.html"><span class="apiname">ERomPageInRequest</span></a> to obtain the
+absolute position before issuing a read request. </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-E020A5D1-82FA-5857-AB1D-42A59D337EFD"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-E020A5D1-82FA-5857-AB1D-42A59D337EFD"><!-- --></a><p>when the read is complete
+the media driver needs to call <a href="GUID-D84A9903-AE0F-3F54-8833-E8956A88E26C.html#GUID-D84A9903-AE0F-3F54-8833-E8956A88E26C__GUID-362AB6B2-9C3D-342F-BB4A-F252ECD7EF3A"><span class="apiname">TLocDrvRequest::WriteToPageHandler</span></a> to
+write the data back to the client, rather than <a href="GUID-D84A9903-AE0F-3F54-8833-E8956A88E26C.html#GUID-D84A9903-AE0F-3F54-8833-E8956A88E26C__GUID-2AC4DBA4-5C87-39C7-B6CF-95ECB7286339"><span class="apiname">TLocDrvRequest::WriteRemote</span></a> as
+for a normal read, </p>
+ </li>
+
+</ol>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-50298F39-D1A0-5731-8E50-D18514941D70"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-50298F39-D1A0-5731-8E50-D18514941D70"><!-- --></a><p> <a href="GUID-E42B407D-8E18-337B-9CBB-4DCDD0AABBE9.html"><span class="apiname">ECodePageInRequest</span></a> is
+treated as a normal read, except that the function <a href="GUID-D84A9903-AE0F-3F54-8833-E8956A88E26C.html#GUID-D84A9903-AE0F-3F54-8833-E8956A88E26C__GUID-362AB6B2-9C3D-342F-BB4A-F252ECD7EF3A"><span class="apiname">TLocDrvRequest::WriteToPageHandler</span></a> should
+be used to write the data back to the demand paging subsystem. However, the
+position in the request is offset from the start of the media as for a normal
+read. </p>
+ </li>
+
+</ul>
+ <p>These request types are enumerated in the <a href="GUID-6C039CFA-BF2F-3272-80FE-71430C12F0F4.html"><span class="apiname">DMediaPagingDevice</span></a> class: </p>
+ <pre class="codeblock" id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-AD9B48CF-7757-5C8A-A2EF-B27F2DC9BDD8"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-AD9B48CF-7757-5C8A-A2EF-B27F2DC9BDD8"><!-- --></a>NONSHARABLE_CLASS(DMediaPagingDevice) : public DPagingDevice
+    {
+public:
+    enum TPagingRequestId
+        {
+        /** 
+        Identifies any middle fragment of a Write request on a partition of a media that supports paging.
+        */
+        EWriteRequestFragment = 
+            DLocalDrive::EFirstReqNumberReservedForPaging,
+
+        /** 
+        Identifies the last fragment of a Write request on a partition of a media that supports paging.
+        */
+        EWriteRequestFragmentLast = 
+            DLocalDrive::EFirstReqNumberReservedForPaging+1,
+
+        /** 
+        Request for paging in (read) data from the ROM store area.
+        */
+        ERomPageInRequest =
+            DLocalDrive::EFirstReqNumberReservedForPaging+2,
+
+        /** 
+        Request for paging in (read) data from the code store area.
+        */
+        ECodePageInRequest =
+            DLocalDrive::ELastReqNumberReservedForPaging
+        };
+        //etc…
+    }</pre>
+ </div>
+
+<div class="section" id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-0EA673E6-FEE4-51F6-9C84-9411316D7357"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-0EA673E6-FEE4-51F6-9C84-9411316D7357"><!-- --></a><h2 class="sectiontitle">Handling fragmented
+write requests</h2> <p>In many respects, <a href="GUID-951FB996-24B3-3340-8386-24B1A895EA16.html"><span class="apiname">EWriteRequestFragment</span></a> and <a href="GUID-8B4109E6-B9F8-3C18-9F9A-0AB20FDA5E86.html"><span class="apiname">EWriteRequestFragmentLast</span></a> can
+be treated as normal write requests. It should be noted however, that these
+write requests can be interleaved with requests from other file server threads
+if the media supports more than one partition, the resulting operations may
+be perceived as a functional break in behaviour. </p>
+ <p>If it is important
+to maintain backwards compatibility and to prevent write requests from being
+interleaved, the media driver must keep track of the current write-request
+chain and defer requests from other drive threads while a write-fragment chain
+is in progress by: </p>
+ <ul>
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-311A0DF2-601D-5623-A059-7E20FAFEEF1C"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-311A0DF2-601D-5623-A059-7E20FAFEEF1C"><!-- --></a><p>ensuring the local media
+subsystem LDD has been built with the <samp class="codeph">__ALLOW_CONCURRENT_FRAGMENTATION__</samp> macro
+undefined. This ensures that the local media subsystem never issues more than
+one write fragment at a time </p>
+ </li>
+
+<li id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-9504A0D1-2147-5968-AB8C-2B9D99A48C0F"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-9504A0D1-2147-5968-AB8C-2B9D99A48C0F"><!-- --></a><p>modifying the paging-media
+driver so that it keeps track of write-request chains and defers any read
+or format requests received after the first fragment and before the last in
+a sequence. When undefined, the macro subsystem does not issue more than one
+write-request chain at a time. </p>
+ </li>
+
+</ul>
+<div class="p"><div class="note"><span class="notetitle">Note:</span>  Write fragments should never be deferred, only read or format
+requests may be deferred. </div>
+</div>
+  <p>To achieve this the media driver
+can maintain a bit mask, each bit of which represents a write in progress
+flag for a particular drive: </p>
+ <pre class="codeblock" id="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-CB127C9B-51D5-5D1A-BAF6-4F8CEF308912"><a name="GUID-EB2566BD-8F65-5A81-B215-E8B05CFE21C3__GUID-CB127C9B-51D5-5D1A-BAF6-4F8CEF308912"><!-- --></a>iFragmenting|=(0x1&lt;&lt;iCurrentReq-&gt;Drive()-&gt;iDriveNumber);</pre>
+ <p>If a read or format request is received while any of the bits in <samp class="codeph">iFragmenting</samp> are
+set, that request may be deferred. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-5C223AD5-4676-58B4-B3A5-066F6B69AA4D.html" title="Provides the logical device driver for the internal and removable storage media on a phone.">Local Media Subsystem</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

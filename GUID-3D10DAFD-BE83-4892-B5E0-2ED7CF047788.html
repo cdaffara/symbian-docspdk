@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="UHEAP Markers and Panics in GLib-based Applications"/>
+<meta name="abstract" content="The 2.10.x version of GLib has introduced a new type of memory allocator called slice allocator. These allocators allocate memory in page sizes even for a small request of something like 20 bytes. Once a huge chunk has been allocated, all the future memory requests are granted using the chunk that was allocated for the first memory request. Once the free pool runs out, another huge chunk is allocated."/>
+<meta name="description" content="The 2.10.x version of GLib has introduced a new type of memory allocator called slice allocator. These allocators allocate memory in page sizes even for a small request of something like 20 bytes. Once a huge chunk has been allocated, all the future memory requests are granted using the chunk that was allocated for the first memory request. Once the free pool runs out, another huge chunk is allocated."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-94D67092-5EB3-4D83-A164-CA628F2E2DB0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-3D10DAFD-BE83-4892-B5E0-2ED7CF047788"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>UHEAP Markers and Panics in GLib-based Applications</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-3D10DAFD-BE83-4892-B5E0-2ED7CF047788"><a name="GUID-3D10DAFD-BE83-4892-B5E0-2ED7CF047788"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2383355 id2383375 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-94D67092-5EB3-4D83-A164-CA628F2E2DB0.html" title="GLib is a general-purpose utility library, which provides many useful data types, macros, type conversions, string utilities, file utilities, a main loop abstraction, and so on. It works on many UNIX-like platforms, Windows, OS/2, and BeOS.">GLib</a> &gt; <a href="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html">GLib Concepts</a> &gt; </div>
+<h1 class="topictitle1">UHEAP
+Markers and Panics in GLib-based Applications</h1>
+<div><p>The 2.10.x version of GLib has introduced a new type of memory
+allocator called slice allocator. These allocators allocate memory in page
+sizes even for a small request of something like 20 bytes. Once a huge chunk
+has been allocated, all the future memory requests are granted using the chunk
+that was allocated for the first memory request. Once the free pool runs out,
+another huge chunk is allocated.  </p>
+
+<p>Whenever the memory is freed using <samp class="codeph">g_slice_free1()</samp>, the
+memory is not returned to the OS; instead it is maintained by GLib as free
+memory which is used to for future memory requests.  </p>
+
+<p>The following example explains the issue. The code given below uses slice
+allocators to allocate 10 bytes of memory using <samp class="codeph">g_slice_alloc()</samp> and
+subsequently frees it using <samp class="codeph">g_slice_free1()</samp>. The code panics
+at <samp class="codeph">__UHEAP_MARKEND</samp>, although the memory that has been allocated
+has been deallocated. This is because all the allocated memory on the heap
+has not been deallocated. When the user calls <samp class="codeph">g_slice_free1()</samp> to
+free up, the memory is not freed; instead, GLib will keep it as part of the
+free pool for future allocation.  </p>
+
+<pre class="codeblock">#include &lt;glib.h&gt;
+#include &lt;e32base.h&gt;
+
+int main()
+{
+  char *x;
+  __UHEAP_MARK;
+  x = (char *)g_slice_alloc(10);
+  g_slice_free1(10,x);
+  __UHEAP_MARKEND;
+  return 0;
+}
+</pre>
+
+<p>To get around this problem, define an environment variable <samp class="codeph">G_SLICE</samp> and
+set it to “always-malloc”.</p>
+
+<div class="note"><span class="notetitle">Note:</span> It is necessary that this environment variable is set before any GLib
+call that can cause memory allocation. If the environment variable is set
+after any <samp class="codeph">g_slice*</samp> APIs have been called either from the
+application code or from GLib library code, setting it has not effect.</div>
+
+<p>The code below demonstrates the usage.</p>
+
+<pre class="codeblock">#include &lt;glib.h&gt;
+#include &lt;e32base.h&gt;
+
+int main()
+{
+  char *x;
+  __UHEAP_MARK;
+ 	g_setenv("G_SLICE","always-malloc",1);
+  x = (char *)g_slice_alloc(10);
+  g_slice_free1(10,x);
+ __UHEAP_MARKEND;
+ return 0;
+}
+</pre>
+
+<div class="note"><span class="notetitle">Note:</span> <samp class="codeph">G_SLICE</samp> is just a debugging environment variable. Setting
+it to “always-malloc” can help in detecting memory leaks in application code.
+This setting need not and should not be done in the release code since doing
+it overrides the GLib memory allocation mechanism and hence may
+result in loss of efficiency. The slice allocators are used by other GLib
+APIs like <samp class="codeph">GList</samp>, <samp class="codeph">GSList</samp>, <samp class="codeph">GNode</samp>,
+and so on. Thus setting the environment variable is necessary if the application
+makes use of any such APIs that might use slice allocators.</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-9057474B-1ADB-4761-879B-6A03B61E6E00.html">GLib Concepts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

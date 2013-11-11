@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Checking for touch support at runtime"/>
+<meta name="abstract" content="The Symbian platform now includes AknLayoutUtils::PenEnabled() to check for touch support at runtime to allow for reduced run-time memory consumption if the device does not support touch."/>
+<meta name="description" content="The Symbian platform now includes AknLayoutUtils::PenEnabled() to check for touch support at runtime to allow for reduced run-time memory consumption if the device does not support touch."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-26A4F760-C85A-4030-8910-15D239323E9D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-29486886-CB54-4A83-AD6D-70F971A86DFC.html"/>
+<meta name="DC.Relation" scheme="URI" content="Chunk1444803053.html#GUID-A9330FEF-C559-4E2B-B064-0151FDADEA8C"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-26A4F760-C85A-4030-8910-15D239323E9D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-DB2E0959-C24E-4E6E-BC6D-064B91BDE662"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Checking for touch support at runtime</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-DB2E0959-C24E-4E6E-BC6D-064B91BDE662"><a name="GUID-DB2E0959-C24E-4E6E-BC6D-064B91BDE662"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2561792 id2561806 id2561942 id2840148 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html">Classic UI Guide</a> &gt; <a href="GUID-29486886-CB54-4A83-AD6D-70F971A86DFC.html">Application and UI frameworks</a> &gt; <a href="Chunk1444803053.html#GUID-A9330FEF-C559-4E2B-B064-0151FDADEA8C">Event handling</a> &gt; <a href="GUID-26A4F760-C85A-4030-8910-15D239323E9D.html">Touch-specific events</a> &gt; </div>
+<h1 class="topictitle1">Checking
+for touch support at runtime</h1>
+<div><p>The Symbian platform now includes <span class="parmname">AknLayoutUtils::PenEnabled()</span> to
+check for touch support at runtime to allow for reduced run-time memory consumption
+if the device does not support touch.</p>
+
+<p>Typical cases where <span class="parmname">AknLayoutUtils::PenEnabled()</span> might
+be useful include:</p>
+
+<ul>
+<li><p>In the component’s constructor to skip the creation of touch-only component
+controls.</p>
+</li>
+
+<li><p>In the component’s <span class="parmname">HandleResourceChange</span>, create
+touch-only component controls if the layout is switched from a non-touchable
+to a touchable one. Touch-only component controls should not be deleted.</p>
+</li>
+
+<li><p>In the component’s drawing code.</p>
+</li>
+
+</ul>
+
+<div class="note"><span class="notetitle">Note:</span> <p><samp class="codeph">AknLayoutUtils::PenEnabled()</samp> is supported from S60
+3rd Edition, FP1, onwards.</p>
+</div>
+
+<pre class="codeblock">void CMyAppContainer::ConstructL( const TRect&amp; aRect )
+    {
+    CreateWindowL();
+    SetRect( aRect );
+ 
+    // If the device supports touch, construct long tap detector
+    if ( AknLayoutUtils::PenEnabled() )
+        {
+        iLongTapDetector = CAknLongTapDetector::NewL( this );
+        }
+    ActivateL();
+    }</pre>
+
+<div class="note"><span class="notetitle">Note:</span> <p>You cannot use <samp class="codeph">AknLayoutUtils::PenEnabled()</samp> in <samp class="codeph">.rss</samp> resource
+files.</p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-26A4F760-C85A-4030-8910-15D239323E9D.html">Touch-specific events</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

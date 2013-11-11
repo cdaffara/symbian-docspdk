@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CPolicyServer"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2"/>
+
+<title>CPolicyServer</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2"><a name="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2557087 id2441463 id2441468 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CPolicyServer Class Reference</h1>
+	<table class="signature"><tr><td>class CPolicyServer : public CServer2</td></tr></table><div class="section"><div>
+			<p>A security policy framework built on top of the normal <a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html#GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C">CServer2</a> class.</p>
+
+			<p>The two major functions of the Policy Server framework are to check a received message against a security policy and then to perform an action depending on the result of this check. The exact behaviour is defined by the contents of the <a href="GUID-1655BF07-8077-3501-ADC0-96D1256967E2.html#GUID-1655BF07-8077-3501-ADC0-96D1256967E2">TPolicy</a> structure given in the constructor for <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2">CPolicyServer</a>.</p>
+
+			<p>The processing performed when a server receives a message are describe below. This should aid understanding of the interaction of the <a href="GUID-1655BF07-8077-3501-ADC0-96D1256967E2.html#GUID-1655BF07-8077-3501-ADC0-96D1256967E2">TPolicy</a> structure and virtual member functions which may be implemented by classes derived from <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2">CPolicyServer</a>.</p>
+
+			<p>Checking the Security Policy</p>
+
+			<p>On receipt of a message, the message function number is used to search the list of ranges pointed to by <a href="GUID-1655BF07-8077-3501-ADC0-96D1256967E2.html#GUID-D1271FDB-4B24-338B-9DC4-2336E307219D">TPolicy::iRanges</a>. This yields a range number R, which is between 0 and <a href="GUID-1655BF07-8077-3501-ADC0-96D1256967E2.html#GUID-D87FD6C9-55E8-3195-A255-791B2FC08AB9">TPolicy::iRangeCount</a>-1. The policy index, X, for this range is then fetched from <a href="GUID-1655BF07-8077-3501-ADC0-96D1256967E2.html#GUID-90AA7F0E-A0CF-322B-8A33-86EBAFB1189A">TPolicy::iElementsIndex</a>[R]. If the message is a Connect message, then X is fetched directly from <a href="GUID-1655BF07-8077-3501-ADC0-96D1256967E2.html#GUID-B77831F6-6912-31AA-A0B5-01867C5D30A0">TPolicy::iOnConnect</a> instead.</p>
+
+			<div class="p">The further action taken is determined by the value of X.<ul><li><p>If X==TSpecialCaseEAlwaysPass, the message is processed as normal; either by passing it to the ServiceL() method of a session, or, in the case of a connection message, a new session is created.</p>
+</li>
+<li><p>If X==TSpecialCaseENotSupported, the message is completed with KErrNotSupported.</p>
+</li>
+<li><div class="p">If X==TSpecialCaseECustomCheck, a call to the virtual function <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-C6423445-AEE4-32DD-9893-FF854467BCC6">CustomSecurityCheckL()</a> is made. The implementation of this method must return one of the TCustomResult enumerations which determine what further action is to be taken:<ul><li><p>TCustomResult::EPass The message is processed as normal; either by passing it to the ServiceL() method of a session, or, in the case of a connection message, a new session is created.</p>
+</li>
+<li><p>TCustomResult::EFail This causes <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-F9E6E695-D46E-3D6E-B198-D9994C817B54">CheckFailedL()</a> to be called with the action specified by the aAction reference given to <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-C6423445-AEE4-32DD-9893-FF854467BCC6">CustomSecurityCheckL()</a> (This defaults to TFailureAction::EFailClient.)</p>
+</li>
+<li><p>TCustomResult::EAsync The derived class is responsible for further processing of the message, the Policy Server framework will do nothing more with it.</p>
+</li>
+</ul>
+</div>
+</li>
+<li><p>If X &lt; TSpecialCase::ESpecialCaseHardLimit, X is taken as an index into the array of <a href="GUID-9E96B24F-717B-304A-96F9-A6F6A4BB2CED.html#GUID-9E96B24F-717B-304A-96F9-A6F6A4BB2CED">TPolicyElement</a> objects pointed to by <a href="GUID-1655BF07-8077-3501-ADC0-96D1256967E2.html#GUID-BF5CDE0E-E4DF-3D3C-B7B1-B2203DB8F217">TPolicy::iElements</a>. The platform security attributes of the process which sent the message being processed are checked against the security policy specified in this <a href="GUID-9E96B24F-717B-304A-96F9-A6F6A4BB2CED.html#GUID-9E96B24F-717B-304A-96F9-A6F6A4BB2CED">TPolicyElement</a>. If the process possesses all of the attributes specified then the message processed as normal. Otherwise, <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-F9E6E695-D46E-3D6E-B198-D9994C817B54">CheckFailedL()</a> is called with the action value specified in the <a href="GUID-9E96B24F-717B-304A-96F9-A6F6A4BB2CED.html#GUID-9E96B24F-717B-304A-96F9-A6F6A4BB2CED">TPolicyElement</a> .</p>
+</li>
+</ul>
+</div>
+
+			<p>Handling Policy Check Failure</p>
+
+			<p>The <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-F9E6E695-D46E-3D6E-B198-D9994C817B54">CheckFailedL()</a> method is called when a security check has failed. It performs an action according to the aAction value given to it:</p>
+
+			<div class="p">
+				<ul>
+					<li>
+						<p>If aAction==TFailureActionEFailClient, the message is completed with KErrPermissionDenied.</p>
+
+					</li>
+
+					<li>
+						<p>If aAction==TFailureActionEPanicClient, the client thread is panicked.</p>
+
+					</li>
+
+					<li>
+						<div class="p">If aAction &lt; 0 a call to the virtual function <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-71AFD28F-BA7A-36CF-A52D-1366B38DB337">CustomFailureActionL()</a> is made. The implementation of this method must return one of the TCustomResult enumerations which determine what further action is to be taken:<ul><li><p>TCustomResult::EPass The message is processed as normal; either by passing it to the ServiceL() method of a session, or, in the case of a connection message, a new session is created.</p>
+</li>
+<li><p>TCustomResult::EFail The message is completed with KErrPermissionDenied.</p>
+</li>
+<li><p>TCustomResult::EAsync The derived class is responsible for further processing of the message, the Policy Server framework will do nothing more with it.</p>
+</li>
+</ul>
+</div>
+
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CPolicyServer<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2</a><ul class="derivation"><li class="derivation-depth-2 "><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive</a><ul class="derivation"><li class="derivation-depth-3 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></li></ul></li></ul></div>
+<div class="section nested"><h2 class="sectiontitle">Nested Classes and Structures</h2><ul><li><a href="GUID-1655BF07-8077-3501-ADC0-96D1256967E2.html">CPolicyServer::TPolicy</a></li><li><a href="GUID-9E96B24F-717B-304A-96F9-A6F6A4BB2CED.html">CPolicyServer::TPolicyElement</a></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F9E6E695-D46E-3D6E-B198-D9994C817B54">CheckFailedL</a>(const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-8DC4DBEF-5B7C-3662-B60F-2D95C378E876.html">TSecurityInfo</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-82EE4DD7-6FC9-3DF3-AEA1-896A1DB1C526">ProcessError</a>(const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-64C0D879-73D4-35E7-8BD9-51D4A051FD31">ProcessL</a>(const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-6ABBA29A-893F-3DA2-81B5-9EB16F53F598">CPolicyServer</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-1655BF07-8077-3501-ADC0-96D1256967E2.html">TPolicy</a> &amp;, <a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">TServerType</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html">TCustomResult</a></td><td><a href="#GUID-71AFD28F-BA7A-36CF-A52D-1366B38DB337">CustomFailureActionL</a>(const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-8DC4DBEF-5B7C-3662-B60F-2D95C378E876.html">TSecurityInfo</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html">TCustomResult</a></td><td><a href="#GUID-C6423445-AEE4-32DD-9893-FF854467BCC6">CustomSecurityCheckL</a>(const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-8DC4DBEF-5B7C-3662-B60F-2D95C378E876.html">TSecurityInfo</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-A6F3852A-E9C9-3C79-AE8E-289BB69B2526">Extension_</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *&amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">const <a href="GUID-9E96B24F-717B-304A-96F9-A6F6A4BB2CED.html">CPolicyServer::TPolicyElement</a> *</td><td><a href="#GUID-961F75E1-0FAB-3493-A975-6E98D61124BD">FindPolicyElement</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-18012C40-2976-34D7-B9D7-D31BB9686214">RunError</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-187D0491-B1ED-33DF-9710-795B7D2A973D">RunL</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::CActive(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Cancel()</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Deque()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::IsActive()const</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::IsAdded()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Priority()const</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::SetActive()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::SetPriority(TInt)</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::~CActive()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2::CServer2(TInt,TServerType)</a></td></tr><tr><td> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2::DoCancel()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2::DoConnect(const RMessage2 &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2::Message()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2::ReStart()</a></td></tr><tr><td> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2::Server()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2::SetMaster(const CServer2 *)</a></td></tr><tr><td> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2::SetPinClientDescriptors(TBool)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2::Start(const TDesC &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2::StartL(const TDesC &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2::~CServer2()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Enumerations</th></tr></thead><tbody><tr><td align="right" valign="top">enum</td><td><a href="#GUID-4BF530BE-82B1-3B89-8B79-29AEC83619CF">TCustomResult</a> { <a href="#GUID-FA061886-991A-39D3-BD9D-F38AC3CB650F">EPass</a> = 0, <a href="#GUID-B386C8E8-4A8F-3A11-A8F8-25E56D812B06">EFail</a> = 1, <a href="#GUID-4D12D42B-3A56-37D3-824A-9A9265FA8D5B">EAsync</a> = 2 }</td></tr><tr class="bg"><td align="right" valign="top">enum</td><td><a href="#GUID-149CA1F4-A3B4-38F5-8FEF-90A67C965C05">TFailureAction</a> { <a href="#GUID-E018B4AA-0464-348E-88DE-FCC08F904075">EFailClient</a> = 0, <a href="#GUID-75680374-8505-3965-A973-3A13ABCE5867">EPanicClient</a> = 1 }</td></tr><tr><td align="right" valign="top">enum</td><td><a href="#GUID-2AFDB8F7-EDF7-3507-9472-E0655C6D600D">TSpecialCase</a> { <a href="#GUID-5C40FA32-F877-3E2B-916D-13E3F5997957">ECustomCheck</a> = 255u, <a href="#GUID-30696DC3-0523-3E5C-8670-4287BB9ED220">ENotSupported</a> = 254u, <a href="#GUID-36F89815-6AC6-33A3-9C35-F3D7ED4FBFA2">EAlwaysPass</a> = 253u, <a href="#GUID-E05B3575-4497-3AB1-80B5-DE1C2B5D84A7">ESpecialCaseLimit</a> = 252u, <a href="#GUID-90B0C2B5-3019-3E57-BF28-032FFB88B035">ESpecialCaseHardLimit</a> = 250u }</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Enumerations</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive:TPriority</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2:TPanic</a></td></tr><tr><td> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2:TServerType</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">const <a href="GUID-1655BF07-8077-3501-ADC0-96D1256967E2.html">TPolicy</a> &amp;</td><td><a href="#GUID-98256A10-3563-3643-A3C6-E258AAB133D2">iPolicy</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Attributes</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::iStatus</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">CServer2::iSessionIter</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-6ABBA29A-893F-3DA2-81B5-9EB16F53F598"><a name="GUID-6ABBA29A-893F-3DA2-81B5-9EB16F53F598"><!-- --></a>
+		<h2 class="topictitle2">CPolicyServer(TInt, const TPolicy &amp;, TServerType)</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>CPolicyServer</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPriority,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-1655BF07-8077-3501-ADC0-96D1256967E2.html">TPolicy</a> &amp;</td><td>aPolicy,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">TServerType</a></td><td>aType = EUnsharableSessions</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected]</td></tr></table><div class="section"><div>
+				<p>Construct a policy server</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPriority</td><td>Active object priority for this server  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-1655BF07-8077-3501-ADC0-96D1256967E2.html">TPolicy</a> &amp; aPolicy</td><td>Reference to a policy object describing the security checks required for each message type. The server does not make a copy of policy, and therefore this object must exist for the lifetime of the server. It is recommended that aPolicy is in const static data.  </td></tr><tr><td class="parameter"><a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html">TServerType</a> aType = EUnsharableSessions</td><td>Type of session sharing supported by this server  </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-F9E6E695-D46E-3D6E-B198-D9994C817B54"><a name="GUID-F9E6E695-D46E-3D6E-B198-D9994C817B54"><!-- --></a>
+		<h2 class="topictitle2">CheckFailedL(const RMessage2 &amp;, TInt, const TSecurityInfo &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>CheckFailedL</td><td>(</td><td>const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp;</td><td>aMsg,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aAction,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-8DC4DBEF-5B7C-3662-B60F-2D95C378E876.html">TSecurityInfo</a> &amp;</td><td>aMissing</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Called when a security check has failed.</p>
+
+				<div class="p">The aAction parameter determines the action taken:<ul><li><p>If aAction==TFailureActionEFailClient, the message is completed with KErrPermissionDenied.</p>
+</li>
+<li><p>If aAction==TFailureActionEPanicClient, the client thread is panicked.</p>
+</li>
+<li><p>If aAction &lt; 0 a call to the virtual function <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-71AFD28F-BA7A-36CF-A52D-1366B38DB337">CustomFailureActionL()</a> is made.</p>
+</li>
+</ul>
+</div>
+
+				<p>This function should only ever be called by derived implementations if asynchronous security checks are in use.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp; aMsg</td><td>The message which failed its check.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aAction</td><td>The action to take. (See description.)  </td></tr><tr><td class="parameter">const <a href="GUID-8DC4DBEF-5B7C-3662-B60F-2D95C378E876.html">TSecurityInfo</a> &amp; aMissing</td><td>A list of the security attributes that were missing from the checked process.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-71AFD28F-BA7A-36CF-A52D-1366B38DB337"><a name="GUID-71AFD28F-BA7A-36CF-A52D-1366B38DB337"><!-- --></a>
+		<h2 class="topictitle2">CustomFailureActionL(const RMessage2 &amp;, TInt, const TSecurityInfo &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html">TCustomResult</a></td><td>CustomFailureActionL</td><td>(</td><td>const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp;</td><td>aMsg,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aAction,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-8DC4DBEF-5B7C-3662-B60F-2D95C378E876.html">TSecurityInfo</a> &amp;</td><td>aMissing</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>Performs a custom action after the failure of a security check. Derived server classes must implement this function if the aAction value passed to <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-F9E6E695-D46E-3D6E-B198-D9994C817B54">CheckFailedL()</a> is less than zero. This can happened if the policy specified a negative number in the iAction member of any of the TPolicyElements, or, if the derived <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-C6423445-AEE4-32DD-9893-FF854467BCC6">CustomSecurityCheckL()</a> modified the value of aAction prior to returning.</p>
+
+				<div class="p">If negative aAction values are used, there are two further cases to consider:<ol><li><p>The custom security check can synchronously decide if the message should pass. In this case, the derived implementation must simply return either EPass or EFail depending on the result of the security check.</p>
+</li>
+<li><div class="p">The custom security check needs to use asynchronous methods in order to determine whether the message should still proceed. In this case, these asysnchronous methods should be started and then the EAsync value returned. Furthermore, implmentations returning EAsync commit to the following:<ul><li><p>If the security check eventually passes, <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-64C0D879-73D4-35E7-8BD9-51D4A051FD31">ProcessL()</a> must be called with the appropriate message.</p>
+</li>
+<li><p>If the security check eventually fails, or if a fatal error condition occurs, including if the previously mentioned call to <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-64C0D879-73D4-35E7-8BD9-51D4A051FD31">ProcessL()</a> leaves; then <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-82EE4DD7-6FC9-3DF3-AEA1-896A1DB1C526">CPolicyServer::ProcessError()</a> should be called passing the message and relevant error code.</p>
+</li>
+<li><p>Pending messages on a given session need to be completed and discarded if the session is closed.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+
+				<p>IMPORTANT NOTE. When processing a message asynchronously, a copy must be made of the <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html#GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0">RMessage2</a> object. Saving a refernece or pointer to the original message will produce unpredictable defects. This is because the object will be reused for the next message that the server receives.</p>
+
+				<p>The default implementation of this function panics the server.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>
+								<a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html#GUID-8F6FE089-E2A8-30F4-B67E-10F286347681">CBase</a> 95 If the default implementation is called. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp; aMsg</td><td>The message to check  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aAction</td><td>The custom failure action requested. This is either a value from TFailureAction or a negative value which has meaning to the CustomFailureActionL() method of a derived class.  </td></tr><tr><td class="parameter">const <a href="GUID-8DC4DBEF-5B7C-3662-B60F-2D95C378E876.html">TSecurityInfo</a> &amp; aMissing</td><td>A const reference to the list of security attributes missing from the checked process. There are two cases to consider: (a) If this message was checked (and failed) by a static policy applied by the policy server framework, aMissing will contain a list of the security attributes that caused the policy to fail. An completely zeroed aMissing implies that an always fail policy was encountered. (b) If this message was failed by a custom security check, then aMissing will be zeroed unless the CustomSecurityCheckL() method filled it in.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C6423445-AEE4-32DD-9893-FF854467BCC6"><a name="GUID-C6423445-AEE4-32DD-9893-FF854467BCC6"><!-- --></a>
+		<h2 class="topictitle2">CustomSecurityCheckL(const RMessage2 &amp;, TInt &amp;, TSecurityInfo &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html">TCustomResult</a></td><td>CustomSecurityCheckL</td><td>(</td><td>const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp;</td><td>aMsg,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aAction,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-8DC4DBEF-5B7C-3662-B60F-2D95C378E876.html">TSecurityInfo</a> &amp;</td><td>aMissing</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>Performs a custom security check. Derived server classes must implement this function if any element in iElementsIndex has the value <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-5C40FA32-F877-3E2B-916D-13E3F5997957">CPolicyServer::ECustomCheck</a>. Similarly, if <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-5C40FA32-F877-3E2B-916D-13E3F5997957">CPolicyServer::ECustomCheck</a> is not used, then this function can be safely ignored.</p>
+
+				<div class="p">If <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-5C40FA32-F877-3E2B-916D-13E3F5997957">CPolicyServer::ECustomCheck</a> is used, there are two further cases to consider:<ol><li><p>The custom security check can synchronously decide if the message should pass. In this case, the derived implementation must simply return either EPass or EFail depending on the result of the security check.</p>
+</li>
+<li><div class="p">The custom security check needs to use asynchronous methods in order to determine whether the message should procceed. In this case, these asysnchronous methods should be started and then the EAsync value returned. Furthermore, implmentations returning EAsync commit to the following:<ul><li><p>If the security check eventually passes, <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-64C0D879-73D4-35E7-8BD9-51D4A051FD31">ProcessL()</a> must be called with the appropriate message.</p>
+</li>
+<li><p>If the security check eventually fails, <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-F9E6E695-D46E-3D6E-B198-D9994C817B54">CheckFailedL()</a> must be called with that message.</p>
+</li>
+<li><p>Pending messages on a given session need to be completed and discarded if the session is closed.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+
+				<p>IMPORTANT NOTE. When processing a message asynchronously, a copy must be made of the <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html#GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0">RMessage2</a> object. Saving a refernece or pointer to the original message will produce unpredictable defects. This is because the object will be reused for the next message that the server receives.</p>
+
+				<p>In both cases, synchronous and asynchronous, the derived implementation has the option of updating the aAction and/or aMissing parameters if that is appropriate.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>
+								<a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html#GUID-8F6FE089-E2A8-30F4-B67E-10F286347681">CBase</a> 95 If the default implementation is called. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp; aMsg</td><td>The message to check.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aAction</td><td>A reference to the action to take if the security check fails. This is either a value from TFailureAction or a negative value which has meaning to the CustomFailureActionL() method of a derived class. The policy server framework gives this value a default of EFailClient. If a derived implementation wishes a different value, then it should change this.  </td></tr><tr><td class="parameter"><a href="GUID-8DC4DBEF-5B7C-3662-B60F-2D95C378E876.html">TSecurityInfo</a> &amp; aMissing</td><td>A reference to the list of security attributes missing from the checked process. The policy server initialises this object to zero (that is a sid of 0, a vid of 0, and no capabilities). If derived implementations wish to take advantage of a list of missing attributes in their implementation of CustomFailureActionL(), then they should set those missing attributes here in CustomSecurityCheckL().  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A6F3852A-E9C9-3C79-AE8E-289BB69B2526"><a name="GUID-A6F3852A-E9C9-3C79-AE8E-289BB69B2526"><!-- --></a>
+		<h2 class="topictitle2">Extension_(TUint, TAny *&amp;, TAny *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Extension_</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aExtensionId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *&amp;</td><td>a0,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *</td><td>a1</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>Extension function </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aExtensionId</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *&amp; a0</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> * a1</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-961F75E1-0FAB-3493-A975-6E98D61124BD"><a name="GUID-961F75E1-0FAB-3493-A975-6E98D61124BD"><!-- --></a>
+		<h2 class="topictitle2">FindPolicyElement(TInt, TUint &amp;)</h2>
+		<table class="signature"><tr><td>const <a href="GUID-9E96B24F-717B-304A-96F9-A6F6A4BB2CED.html">CPolicyServer::TPolicyElement</a> *</td><td>FindPolicyElement</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aFn,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &amp;</td><td>aSpecialCase</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aFn</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &amp; aSpecialCase</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-82EE4DD7-6FC9-3DF3-AEA1-896A1DB1C526"><a name="GUID-82EE4DD7-6FC9-3DF3-AEA1-896A1DB1C526"><!-- --></a>
+		<h2 class="topictitle2">ProcessError(const RMessage2 &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ProcessError</td><td>(</td><td>const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp;</td><td>aMsg,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aError</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Called if a leave occurs during processing of a message. The underlying framework ensures that leaves which occur during <a href="GUID-D5A30C75-E22C-34E8-913B-7D2CA6AD5C51.html#GUID-54230DEC-ED8D-3E8A-8F62-F737D0B992A8">CSession2::ServiceL</a> are passed to <a href="GUID-D5A30C75-E22C-34E8-913B-7D2CA6AD5C51.html#GUID-1B257684-38CF-39FA-94E8-70E4E59EB480">CSession2::ServiceError</a>. Leaves occuring prior to this (ie. during <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-C6423445-AEE4-32DD-9893-FF854467BCC6">CustomSecurityCheckL()</a> or <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-71AFD28F-BA7A-36CF-A52D-1366B38DB337">CustomFailureActionL()</a> ) are completed with the leave code.</p>
+
+				<p>This function should only ever be called by derived implementations if asynchronous security checks are in use. In this case the <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-18012C40-2976-34D7-B9D7-D31BB9686214">RunError()</a> of that other active object must call <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-82EE4DD7-6FC9-3DF3-AEA1-896A1DB1C526">ProcessError()</a>.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp; aMsg</td><td>The message being processed when the leave occurred.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aError</td><td>The leave code.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-64C0D879-73D4-35E7-8BD9-51D4A051FD31"><a name="GUID-64C0D879-73D4-35E7-8BD9-51D4A051FD31"><!-- --></a>
+		<h2 class="topictitle2">ProcessL(const RMessage2 &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ProcessL</td><td>(</td><td>const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp;</td><td>aMsg</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Process an accepted message which has passed its policy check.</p>
+
+				<p>The message is either passed to the ServiceL() method of a session, or, in the case of a connection message, a new session is created.</p>
+
+				<p>This is called by <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-187D0491-B1ED-33DF-9710-795B7D2A973D">RunL()</a> to process a message which has passed its security check. If the server implementation returns EAsync from either <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-C6423445-AEE4-32DD-9893-FF854467BCC6">CustomSecurityCheckL()</a> or <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-71AFD28F-BA7A-36CF-A52D-1366B38DB337">CustomFailureActionL()</a>, then it is the responsibility of the derived server implementation to call ProcessL at a later point if the messages passes the asynchronous check.</p>
+
+				<p>This function should only ever be called by derived implementations if asynchronous security checks are in use. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-D7D422D3-65E5-378B-8F52-6485BC5603A0.html">RMessage2</a> &amp; aMsg</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-18012C40-2976-34D7-B9D7-D31BB9686214"><a name="GUID-18012C40-2976-34D7-B9D7-D31BB9686214"><!-- --></a>
+		<h2 class="topictitle2">RunError(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>RunError</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aError</td><td>)</td><td>[private, virtual]</td></tr></table><div class="section"><div>
+				<p>Handles the situation where a call to <a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html#GUID-2F93CF2B-6823-313A-95E4-433AB9A3711C">CServer2::RunL()</a>, leaves.</p>
+
+				<p>This is the server active object's implementation of the active object framework's <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-18012C40-2976-34D7-B9D7-D31BB9686214">RunError()</a> function.</p>
+
+				<p>In practice, the leave can only be caused by a session's ServiceL() function, which is called from this <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-187D0491-B1ED-33DF-9710-795B7D2A973D">RunL()</a>; this error is reflected back to that session by calling its ServiceError() function.</p>
+
+				<p>
+					<a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html#GUID-5D018F25-5173-36C1-A0B9-5C3A33211C5D">CActive::RunL()</a> <a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html#GUID-49FE8001-39DC-389F-851D-44C74BCE55D2">CActive::RunError()</a> <a href="GUID-D5A30C75-E22C-34E8-913B-7D2CA6AD5C51.html#GUID-1B257684-38CF-39FA-94E8-70E4E59EB480">CSession2::ServiceError()</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aError</td><td>The leave code. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-187D0491-B1ED-33DF-9710-795B7D2A973D"><a name="GUID-187D0491-B1ED-33DF-9710-795B7D2A973D"><!-- --></a>
+		<h2 class="topictitle2">RunL()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RunL</td><td>(</td><td>)</td><td>[private, virtual]</td></tr></table><div class="section"><div>
+				<p>Handles the receipt of a message. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Enumerations Documentation</h1><div class="nested1" id="GUID-4BF530BE-82B1-3B89-8B79-29AEC83619CF"><a name="GUID-4BF530BE-82B1-3B89-8B79-29AEC83619CF"><!-- --></a>
+		<h2 class="topictitle2">Enum TCustomResult</h2>
+		<div class="section"><div>
+				<p>Enumeration of acceptable return codes from both of <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-C6423445-AEE4-32DD-9893-FF854467BCC6">CustomSecurityCheckL()</a> and <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-71AFD28F-BA7A-36CF-A52D-1366B38DB337">CustomFailureActionL()</a>. Results of EPass or EFail are handled by the <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2">CPolicyServer</a> framework. No other action is required on the part of the derived implementation. However, results of EAsync imply that the derived implementation will call the appropriate function once the result is known. See <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-C6423445-AEE4-32DD-9893-FF854467BCC6">CustomSecurityCheckL()</a> and CustomFailureActionL for more information. </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EPass = 0</td><td>
+							<p>Security check passed. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EFail = 1</td><td>
+							<p>Security check failed. </p>
+
+						 </td></tr><tr><td valign="top">EAsync = 2</td><td>
+							<p>Security checking will be performed asynchronously. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-149CA1F4-A3B4-38F5-8FEF-90A67C965C05"><a name="GUID-149CA1F4-A3B4-38F5-8FEF-90A67C965C05"><!-- --></a>
+		<h2 class="topictitle2">Enum TFailureAction</h2>
+		<div class="section"><div>
+				<p>Enumeration specifying action to take if a security check fails. Values &gt;= 0 are handled by <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-F9E6E695-D46E-3D6E-B198-D9994C817B54">CheckFailedL()</a>. Values &lt; 0 are specific to the derived implementation of the policy server and will result in a call to <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-71AFD28F-BA7A-36CF-A52D-1366B38DB337">CustomFailureActionL()</a> if a security check fails. Attempts to use undefined values &gt;= 0 will result in a panic in <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-F9E6E695-D46E-3D6E-B198-D9994C817B54">CheckFailedL()</a>. </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EFailClient = 0</td><td>
+							<p>Complete message with KErrPermissionDenied </p>
+
+						 </td></tr><tr class="bg"><td valign="top">EPanicClient = 1</td><td>
+							<p>Panic client </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2AFDB8F7-EDF7-3507-9472-E0655C6D600D"><a name="GUID-2AFDB8F7-EDF7-3507-9472-E0655C6D600D"><!-- --></a>
+		<h2 class="topictitle2">Enum TSpecialCase</h2>
+		<div class="section"><div>
+				<p>Special case values which can be used instead of a policy element index contained in the array <a href="GUID-1655BF07-8077-3501-ADC0-96D1256967E2.html#GUID-90AA7F0E-A0CF-322B-8A33-86EBAFB1189A">TPolicy::iElementsIndex</a> </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">ECustomCheck = 255u</td><td>
+							<p>Indicates a custom check should be made by calling <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-C6423445-AEE4-32DD-9893-FF854467BCC6">CustomSecurityCheckL()</a> </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ENotSupported = 254u</td><td>
+							<p>Indicates that message is requesting an unsupported function. The message is completed with KErrNotSupported. </p>
+
+						 </td></tr><tr><td valign="top">EAlwaysPass = 253u</td><td>
+							<p>Indicates that the message is requesting an unrestricted function and therefore should be processed without any further checks. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESpecialCaseLimit = 252u</td><td> </td></tr><tr><td valign="top">ESpecialCaseHardLimit = 250u</td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-98256A10-3563-3643-A3C6-E258AAB133D2"><a name="GUID-98256A10-3563-3643-A3C6-E258AAB133D2"><!-- --></a>
+		<h2 class="topictitle2">const TPolicy &amp; iPolicy</h2>
+		<table class="signature"><tr><td>const <a href="GUID-1655BF07-8077-3501-ADC0-96D1256967E2.html">TPolicy</a> &amp;</td><td>iPolicy</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

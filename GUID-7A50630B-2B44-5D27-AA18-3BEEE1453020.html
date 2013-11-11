@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="The Paging Algorithm Technology Guide"/>
+<meta name="abstract" content="Describes the paging algorithm used in demand paging."/>
+<meta name="description" content="Describes the paging algorithm used in demand paging."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6F82A35E-9F11-591D-AA5C-8F60734A2827.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6F82A35E-9F11-591D-AA5C-8F60734A2827.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>The Paging Algorithm Technology Guide</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388574 id2388589 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html">Demand Paging</a> &gt; <a href="GUID-6F82A35E-9F11-591D-AA5C-8F60734A2827.html">Demand Paging Guides</a> &gt; </div>
+<h1 class="topictitle1"> The
+Paging Algorithm Technology Guide</h1>
+<div><p>Describes the paging algorithm used in demand paging.</p>
+
+<div class="section" id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-0F07152A-5469-463B-8BEE-71170A920B19"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-0F07152A-5469-463B-8BEE-71170A920B19"><!-- --></a><h2 class="sectiontitle">Purpose</h2> <p>Kernel
+side developers will sometimes need to know the algorithm used to move data
+in and out of paged memory. </p>
+ <p><strong>Intended
+Audience:</strong> </p>
+ <p>This document is intended to be read by kernel side
+developers. </p>
+ </div>
+
+<div class="section" id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-55C2239D-C351-4081-96F8-CAF1538B4BE3"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-55C2239D-C351-4081-96F8-CAF1538B4BE3"><!-- --></a><h2 class="sectiontitle">The algorithm</h2> <p><strong>Terminology</strong> </p>
+ <p>Paged memory (virtual addresses and their contents)
+is called either: </p>
+ <ul>
+<li id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-8533664E-057B-57EF-8A24-4BA7D3B4EC75"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-8533664E-057B-57EF-8A24-4BA7D3B4EC75"><!-- --></a><p>'live', meaning present
+in the cache of physical RAM, or </p>
+ </li>
+
+<li id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-057D65C6-27D2-5BDD-B5CD-081808CCF44D"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-057D65C6-27D2-5BDD-B5CD-081808CCF44D"><!-- --></a><p>'dead', meaning stored
+elsewhere in the backing store. </p>
+ </li>
+
+</ul>
+ <p>Physical RAM not being used to hold paged memory is called the free
+pool. </p>
+ <p>Items of paged memory can be reassigned from 'live' to 'dead'
+and vice versa. 'Live' items are classed as either 'old' or 'young' for this
+purpose. </p>
+ <p><strong>Paging
+out memory</strong> </p>
+ <p>When more RAM is needed and the pool of free memory
+is empty then RAM is freed up. This means changing an item of paged memory
+from live to dead. The process is called paging out and it involves these
+tasks. </p>
+ <a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-20C35CC3-0845-51A8-B3C0-0F542E0570DF"><!-- --></a><ol id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-20C35CC3-0845-51A8-B3C0-0F542E0570DF">
+<li id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-42AC538A-A676-5A7D-9DE3-FDE880E4A508"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-42AC538A-A676-5A7D-9DE3-FDE880E4A508"><!-- --></a><p>The oldest virtual page
+is removed from the cache and physically stored elsewhere </p>
+ </li>
+
+<li id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-1FBD9975-97D5-50CA-8A2F-864B688C9AE4"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-1FBD9975-97D5-50CA-8A2F-864B688C9AE4"><!-- --></a><p>The MMU marks the virtual
+page as inaccessible. </p>
+ </li>
+
+<li id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-F8CDC9C1-C779-5D25-A16C-8BFC4B82B605"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-F8CDC9C1-C779-5D25-A16C-8BFC4B82B605"><!-- --></a><p>The associated page
+of RAM cache is returned to the free pool. </p>
+ </li>
+
+</ol>
+ <p><strong>Paging
+in memory</strong> </p>
+ <p>When a program attempts to access dead paged memory,
+the MMU generates a page fault and the executing thread is diverted to the
+Symbian platform exception handler. This performs the following
+tasks. </p>
+ <a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-3C52A214-F7FC-55CF-9346-16A4D7E8E37A"><!-- --></a><ol id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-3C52A214-F7FC-55CF-9346-16A4D7E8E37A">
+<li id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-B10392F3-D0CA-5C31-8A88-59E151661821"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-B10392F3-D0CA-5C31-8A88-59E151661821"><!-- --></a><p>Obtain a page of RAM
+from the free pool. If the free pool is empty, free up some memory by paging
+out the oldest live page. </p>
+ </li>
+
+<li id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-EA4E0F16-68D2-564D-B46E-5CB4CB515855"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-EA4E0F16-68D2-564D-B46E-5CB4CB515855"><!-- --></a><p>Read the contents of
+the dead paged memory from its actual location (e.g. NAND flash) and write
+them to the page of RAM. </p>
+ </li>
+
+<li id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-5F9C3CEE-5836-5243-B84D-BA7795D0F056"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-5F9C3CEE-5836-5243-B84D-BA7795D0F056"><!-- --></a><p>Update the live list
+described in the next section. </p>
+ </li>
+
+<li id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-A2A188F0-87EA-5403-8281-652AC52D41C3"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-A2A188F0-87EA-5403-8281-652AC52D41C3"><!-- --></a><p>The MMU maps the linear
+address of the dead paged memory on to the page of RAM. </p>
+ </li>
+
+<li id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-F7A50A62-EBAD-50DD-B8F8-DAD42E598D02"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-F7A50A62-EBAD-50DD-B8F8-DAD42E598D02"><!-- --></a><p>Resume program execution. </p>
+ </li>
+
+</ol>
+ <p><strong>The
+paging cache</strong> </p>
+ <p>The paging cache is only useful if it is used to
+hold the pages most likely to be required. The paging subsystem provides for
+this by selecting the oldest pages to be paged out making space for new ones
+to be paged in. </p>
+ <p>All live pages are stored in a list called the 'live
+page list'. Live pages are labelled 'young' or 'old' and are stored in two
+sub-lists, one for each type: the item at the start of the young list is the
+youngest item and the one at the end of the old list is the oldest item. The
+MMU makes young pages accessible to programs and old pages inaccessible. However,
+old pages are different from dead pages because their contents are still held
+in RAM. </p>
+ <p>The young and old lists are maintained in accordance with
+these four rules. </p>
+ <ul>
+<li id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-ACB20E61-3467-56B4-8697-6DD6C79203FA"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-ACB20E61-3467-56B4-8697-6DD6C79203FA"><!-- --></a><p>When a dead page is
+paged in (made live) it is added to the start of the young list, becoming
+the youngest item. </p>
+ </li>
+
+<li id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-6B56324C-3A75-57C4-90E3-527994DAADFF"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-6B56324C-3A75-57C4-90E3-527994DAADFF"><!-- --></a><p>When a live page must
+be paged out (made dead) to free up RAM, the oldest page is selected. </p>
+ </li>
+
+<li id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-EB5C43F4-1AC9-541F-8235-4DED9714B6F3"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-EB5C43F4-1AC9-541F-8235-4DED9714B6F3"><!-- --></a><p>If an old page is accessed
+by a program a page fault results because old pages are marked inaccessible.
+The paging system handles the fault by turning the page into a young page
+('rejuvenating' it). To compensate, the oldest young page is then turned into
+an old page ('aging' it). </p>
+ </li>
+
+<li id="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-366367C8-BBF3-59ED-9122-38112C6EA6FE"><a name="GUID-7A50630B-2B44-5D27-AA18-3BEEE1453020__GUID-366367C8-BBF3-59ED-9122-38112C6EA6FE"><!-- --></a><p>Efficient operation
+requires a stable ratio of young to old pages. If the number of young pages
+exceeds a specified ratio of old pages, the oldest young page is turned into
+the youngest old page ('aging' it). </p>
+ </li>
+
+</ul>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-6F82A35E-9F11-591D-AA5C-8F60734A2827.html">Demand Paging Guides</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

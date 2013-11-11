@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Long-running services and background objects"/>
+<meta name="abstract" content="This document describes the use of background objects to respond to requests for long-running services."/>
+<meta name="description" content="This document describes the use of background objects to respond to requests for long-running services."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3786D8E6-17A9-52E4-A8DF-CFCDC3039854.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B507490F-6BD3-5DF5-97E4-EFDFEA2B4EDD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-8BD6B29C-D905-5D2B-992A-A04AAD9ABBE3"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Long-running services and background objects</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-8BD6B29C-D905-5D2B-992A-A04AAD9ABBE3"><a name="GUID-8BD6B29C-D905-5D2B-992A-A04AAD9ABBE3"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2393224 id2393257 id2393330 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-3786D8E6-17A9-52E4-A8DF-CFCDC3039854.html">Inter Process Communication</a> &gt; <a href="GUID-B507490F-6BD3-5DF5-97E4-EFDFEA2B4EDD.html">Using Asynchronous Programming</a> &gt; <a href="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html">High Level Asynchronous Service Handling</a> &gt; </div>
+<h1 class="topictitle1">Long-running
+services and background objects</h1>
+<div><p>This document describes the use of background objects to respond
+to requests for long-running services.</p>
+
+<p>System responsiveness is important. Threads must be responsive to their
+users — a delay of more than a few hundred milliseconds is generally unacceptable.</p>
+
+<p>This implies that <em>all </em> <samp class="codeph">RunL()</samp> <em> functions should
+complete in a few hundred milliseconds in order to maintain system responsiveness</em>.</p>
+
+<p>In some cases, servicing a request may take longer than this. For example,
+printing a document, or sending a file, may take seconds or minutes to execute,
+but they should not hold up the main thread. It should also be possible to
+cancel long running services.</p>
+
+<p>The preferred solution is to use a background active object running in
+the same thread as all other active objects </p>
+
+<p>With this approach, the long running service is split into multiple chunks.
+The <samp class="codeph">RunL()</samp> function allows itself to run for a relatively
+short period and then renews its request. This background active object tracks
+its own progress through the long running task so that when <samp class="codeph">RunL()</samp> is
+next called, the it can continue from where it finished last time.</p>
+
+<p>The background active object has a lower priority than other active objects
+in the thread. The user driven event-handling active objects can cancel the
+background active object by calling its <samp class="codeph">Cancel()</samp> function.</p>
+
+<p>The advantages of this approach are:</p>
+
+<ul>
+<li id="GUID-8BD6B29C-D905-5D2B-992A-A04AAD9ABBE3__GUID-CAA7ED85-1F45-5D1F-95FE-5A2606A0C27F"><a name="GUID-8BD6B29C-D905-5D2B-992A-A04AAD9ABBE3__GUID-CAA7ED85-1F45-5D1F-95FE-5A2606A0C27F"><!-- --></a><p>active objects are very
+cheap to create and use very few resources.</p>
+ </li>
+
+<li id="GUID-8BD6B29C-D905-5D2B-992A-A04AAD9ABBE3__GUID-3BF548A8-D3FA-5718-AB91-14C556199E70"><a name="GUID-8BD6B29C-D905-5D2B-992A-A04AAD9ABBE3__GUID-3BF548A8-D3FA-5718-AB91-14C556199E70"><!-- --></a><p>co-operating active
+objects cannot pre-empt each other; therefore, there is no need for locking
+and synchronization primitives when programming with multiple active objects.</p>
+ </li>
+
+<li id="GUID-8BD6B29C-D905-5D2B-992A-A04AAD9ABBE3__GUID-7B8FCF9D-C24A-59E9-B0F7-D6E81E7DAF3F"><a name="GUID-8BD6B29C-D905-5D2B-992A-A04AAD9ABBE3__GUID-7B8FCF9D-C24A-59E9-B0F7-D6E81E7DAF3F"><!-- --></a><p>active objects can share
+resources that are owned by a thread.</p>
+ </li>
+
+</ul>
+
+<p>The active object framework allows the active-object implementation of
+a long-running operation to be concealed from the API, so that the service
+is presented to the user simply as an asynchronous request function together
+with an associated cancel function.</p>
+
+<p>In cases where an active object implementation is impossible or impractical
+to program, then a background thread may be used to implement a long-running
+service. This approach is <em>not</em> recommended for code specifically designed
+for Symbian platform.</p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C2608BF5-CDA7-530A-B67A-0414C7FA585D.html">High Level Asynchronous Service Handling</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

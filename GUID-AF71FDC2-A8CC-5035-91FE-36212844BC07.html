@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Channel Implementation"/>
+<meta name="abstract" content="Describes how to use the template port to implement the physical channel for the Digitizer Driver."/>
+<meta name="description" content="Describes how to use the template port to implement the physical channel for the Digitizer Driver."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0563266C-8B5A-5664-9AC6-A5504AB5056F.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E081474F-6B17-5D2E-833B-E8177778577A.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0563266C-8B5A-5664-9AC6-A5504AB5056F.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Channel Implementation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2400061 id2400098 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-E081474F-6B17-5D2E-833B-E8177778577A.html" title="The Digitizer Driver is a kernel extension that manages digitizers (touch screens).">Digitizer Driver</a> &gt; <a href="GUID-0563266C-8B5A-5664-9AC6-A5504AB5056F.html" title="Describes the steps to implement a port of the Digitizer Driver.">Porting Tutorial</a> &gt; </div>
+<h1 class="topictitle1">Channel
+Implementation</h1>
+<div><p>Describes how to use the template port to implement the physical
+channel for the Digitizer Driver. </p>
+
+<div class="section" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-EA342370-0293-5762-86FD-E86DC6BC3006"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-EA342370-0293-5762-86FD-E86DC6BC3006"><!-- --></a><h2 class="sectiontitle">Define the
+size of the digitizer</h2> <p>The following four constants defined at the
+top of the template implementation in <span class="filepath">xyin.cpp</span> define
+the origin and size of the digitizer device in pixels. Modify the values to
+define your own origin and size. </p>
+ <pre class="codeblock" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-8A7E9CCC-D6A2-5E5D-B0DB-8AE3334F6EC9"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-8A7E9CCC-D6A2-5E5D-B0DB-8AE3334F6EC9"><!-- --></a>const TUint KConfigXyOffsetX    = 0;
+const TUint KConfigXyOffsetY    = 0;
+const TUint KConfigXyWidth = 640;  // pixels per line
+const TUint KConfigXyHeight = 480; // lines per panel
+</pre>
+ <p>This is information that is returned when calls are made: </p>
+ <ul>
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-003FE140-2DDF-58B4-AA1F-57F8A0FCF4E7"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-003FE140-2DDF-58B4-AA1F-57F8A0FCF4E7"><!-- --></a><p> <em>user side</em> to <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-573C49D6-7763-37AE-B2B2-4C8FB1327E21"><span class="apiname">HAL::Get()</span></a> passing
+the attribute(s) <a href="GUID-696EDBEB-76B2-3F02-AD33-BA4977551F32.html"><span class="apiname">EPenX</span></a> and <a href="GUID-3E3B49CC-53F6-3341-A969-1DDC0A837B0B.html"><span class="apiname">EPenY</span></a>  </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-0C5E452E-5564-5A27-B379-5BF3D9518E78"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-0C5E452E-5564-5A27-B379-5BF3D9518E78"><!-- --></a><p> <em>kernel side</em> to <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-DA115709-A225-3E2A-BCCD-6E2BB15979B9"><span class="apiname">Kern::HalFunction()</span></a>,
+passing group <a href="GUID-357CC84A-F701-3F56-AF4D-0C95002F1A8E.html"><span class="apiname">EHalGroupdigitizer</span></a> and function-id <a href="GUID-841ECDFD-7CAB-30BB-A301-CF70C029043B.html"><span class="apiname">EdigitizerHalXYInfo</span></a>  </p>
+ </li>
+
+</ul>
+ <p>See <a href="GUID-2D977A02-5928-5441-8AE7-42A722F2A4B8.html#GUID-2D977A02-5928-5441-8AE7-42A722F2A4B8__GUID-4DA41221-40B9-5BC7-B2C6-7C6EB4522508">User-Side
+Hardware Abstraction</a>. </p>
+ <p>The following four constants define the
+digitizer origin and size in digitizer ADC coordinates. Modify the values
+for your own digitizer: </p>
+ <pre class="codeblock" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-ED04E417-16B5-5AA2-96FB-B450BAC272A9"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-ED04E417-16B5-5AA2-96FB-B450BAC272A9"><!-- --></a>const Tint KConfigXySpreadX = 4096; // maximum valid X spread
+const Tint KConfigXySpreadY = 4096; // maximum valid Y spread
+const Tint KConfigXyMinX = 0;       // minimum valid X value
+const Tint KConfigXyMinY = 0;       // minimum valid Y value
+</pre>
+ </div>
+
+<div class="section" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-A4B43E01-9638-5967-8EFA-0AABA33189EA"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-A4B43E01-9638-5967-8EFA-0AABA33189EA"><!-- --></a><h2 class="sectiontitle">Implement power
+on behaviour</h2> <p>In the template port, this is implemented by <strong>DTemplatedigitizer::digitizerPowerUp()</strong>.
+Note that this function is not derived from any base class function. </p>
+ <ul>
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-2B31DD8F-DACF-50FD-8FC6-DC6C55954CC5"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-2B31DD8F-DACF-50FD-8FC6-DC6C55954CC5"><!-- --></a><p>Add code to this function
+to do these things: </p>
+ <a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-324D32A9-50F0-53F9-A717-AE026626A76E"><!-- --></a><ol id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-324D32A9-50F0-53F9-A717-AE026626A76E">
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-7A461F0B-EBEE-5F73-BFA1-031EEAB9BCF9"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-7A461F0B-EBEE-5F73-BFA1-031EEAB9BCF9"><!-- --></a><p>Clear all digitizer
+interrupts. </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-62182E91-A6B0-5C3C-8CC5-4C993235EF02"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-62182E91-A6B0-5C3C-8CC5-4C993235EF02"><!-- --></a><p>Request power resources
+from the power controller. This will power the device up from sleep mode.
+Note that power up, and power down, can be implemented later. </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-D9CFB381-4D23-5E47-808B-C5CE52F99223"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-D9CFB381-4D23-5E47-808B-C5CE52F99223"><!-- --></a><p>Configure the hardware
+so that it generates an interrupt when the digitizer is touched. </p>
+ </li>
+
+</ol>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-AFFF418C-9FD7-5EE6-9487-968FDCF7B795"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-AFFF418C-9FD7-5EE6-9487-968FDCF7B795"><!-- --></a><p>Make sure that the digitizer
+interrupt is defined. In the template port, the interrupt id is defined as
+the constant: </p>
+ <pre class="codeblock" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-7D7940D8-4708-501C-AA44-1C9A6961260A"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-7D7940D8-4708-501C-AA44-1C9A6961260A"><!-- --></a>const TInt KIntIddigitizer=EAsspIntIdC</pre>
+ <p>in
+the file <span class="filepath">...\template\template_assp\template_assp.h</span>. </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-EE388EFA-84D7-5E1E-A75F-66310EAEF8E5"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-EE388EFA-84D7-5E1E-A75F-66310EAEF8E5"><!-- --></a><p>Make sure that the interrupt
+controller is configured for the digitizer interrupt. See <a href="GUID-76A30EC4-4B99-5471-9E80-F853C91485BC.html" title="The ASSP/Variant part of the base port must implement an interrupt dispatcher to manage interrupts.">Interrupt
+Dispatcher</a>. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-1A1194A0-DF74-59E7-B3AD-FD87D501F00F"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-1A1194A0-DF74-59E7-B3AD-FD87D501F00F"><!-- --></a><h2 class="sectiontitle">Implement Ddigitizer::WaitForPenDown()</h2> <p>This
+code is executed at startup or whenever the pen is lifted up. It implements
+a request for an interrupt to be generated when the pen next touches the digitizer.
+It is called by the platform independent layer: </p>
+ <ul>
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-1D1D1ED7-12EC-51B9-A5B7-228E0390DF4C"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-1D1D1ED7-12EC-51B9-A5B7-228E0390DF4C"><!-- --></a><p>at startup </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-C8999684-87B6-5DDA-AB4F-D990B7512365"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-C8999684-87B6-5DDA-AB4F-D990B7512365"><!-- --></a><p>when the pen is removed
+from the digitizer after a pen-up event has been issued. </p>
+ </li>
+
+</ul>
+ <p>There are two main cases to deal with: the digitizer is powering
+down; the digitizer is not powering down </p>
+ <p id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-9DC378A0-05F9-52B0-A441-1E451E85D213"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-9DC378A0-05F9-52B0-A441-1E451E85D213"><!-- --></a><strong>The
+digitizer is powering down</strong> </p>
+ <p>The implementation for this case can
+be left until later. It is discussed in <a href="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07.html#GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-FE7F24DF-6A65-5A7E-A9C8-DBCF7848DEA6">Implement
+power up and power down handling</a>. </p>
+ <p id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4B4CF159-E5B2-5EAA-8489-8E1921BA0AF1"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4B4CF159-E5B2-5EAA-8489-8E1921BA0AF1"><!-- --></a><strong>The
+digitizer is <em>not</em> powering down</strong> </p>
+ <p>To deal with this case,
+your implementation needs to: </p>
+ <ul>
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-633792DB-C955-57E0-8DB1-2FDB2EC20269"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-633792DB-C955-57E0-8DB1-2FDB2EC20269"><!-- --></a><p>clear the digitizer
+interrupt </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-2F88C290-C412-50EF-8E2C-BE0CC5A489DA"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-2F88C290-C412-50EF-8E2C-BE0CC5A489DA"><!-- --></a><p>set up the hardware
+so that it can detect when the digitizer is touched. </p>
+ </li>
+
+</ul>
+ <p>The pen interrupt is now enabled; if the digitizer is now touched,
+the pen interrupt ISR (interrupt service routine) <samp class="codeph">DTemplatedigitizer::PenInterrupt()</samp> is
+called. </p>
+ <p>In the template port, the ISR includes the statement: </p>
+ <pre class="codeblock" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-351F56AC-8B3D-55F6-B3EC-77F623C18BE1"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-351F56AC-8B3D-55F6-B3EC-77F623C18BE1"><!-- --></a>__KTRACE_OPT(KHARDWARE,Kern::Printf("I"));</pre>
+ <p>and
+means that if the <samp class="codeph">KHARDWARE</samp> tracing flag has been set, and
+tracing is on, then a single “I” is printed whenever the digitizer is touched. </p>
+<strong>Tracing
+note</strong> <div class="p">If the <samp class="codeph">KEXTENSION</samp>, <samp class="codeph">KPOWER</samp> and <samp class="codeph">KHARDWARE</samp> tracing
+flags have been set, and tracing is on, then by the time <samp class="codeph">WaitForPenDown()</samp> is
+called, you should be able to see the following sequence of calls in the trace:<ul>
+<li><p><samp class="codeph">DoCreate()</samp></p>
+</li>
+
+<li><p><samp class="codeph">digitizerPowerUp()</samp></p>
+</li>
+
+<li><p><samp class="codeph">WaitForPenDown()</samp></p>
+</li>
+
+</ul>
+</div>
+ </div>
+
+<div class="section" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-D74C94E4-83AD-5BC0-B435-754E7D3FECA4"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-D74C94E4-83AD-5BC0-B435-754E7D3FECA4"><!-- --></a><h2 class="sectiontitle">Implement the
+pen interrupt ISR</h2> <p>In the template port, the interrupt service routine
+(ISR) that handles a pen interrupt is implemented by <strong>DTemplatedigitizer::PenInterrupt()</strong>.
+Note that this function is not derived from any base class function. </p>
+ <p>There
+are two main things to consider here: </p>
+ <a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4CD5BC52-AC79-55E8-B38F-EA9DCB048A04"><!-- --></a><ol id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4CD5BC52-AC79-55E8-B38F-EA9DCB048A04">
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4D9F1CC5-E256-53F7-8E7D-B31ED3296C7D"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4D9F1CC5-E256-53F7-8E7D-B31ED3296C7D"><!-- --></a><p>You need to add code
+to the start of the function to decide whether the pen is now up (i.e. removed
+from the screen panel), or whether the pen is now down (i.e. touching the
+digitizer panel). To make the decision, you may need to read the appropriate
+hardware register. The detail depends on the hardware. </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4FF2D674-4BB1-50EB-B55C-DF18652A1E5F"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4FF2D674-4BB1-50EB-B55C-DF18652A1E5F"><!-- --></a><p>If the pen is down,
+you need to check the value of the configurable constant <a href="GUID-3574BE12-9DA9-573D-8545-3B073005A139.html#GUID-3574BE12-9DA9-573D-8545-3B073005A139__GUID-587D0895-7B8D-5FA1-A2DE-2F346780BB78">KPenDownDelayTime</a>. What you do next depends on the value of this constant: </p>
+ <ul>
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-C238E00E-7A7C-5A44-A63D-5D214C30727D"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-C238E00E-7A7C-5A44-A63D-5D214C30727D"><!-- --></a><p>If the value is greater
+than zero, then you do not need to change the code at this time. The existing
+code just starts a timer to delay the beginning of the collection of samples.
+Note, however, that you will need to modify the debounce timer callback function <samp class="codeph">timerIntExpired()</samp> to
+clear the digitizer interrupt - see <a href="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07.html#GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-7ADA202E-23F8-52E1-BE57-B44FF75C5612">Add
+code to the debounce timer callback function</a>. </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-985A0D59-B45D-59D3-894F-9B9509B03E70"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-985A0D59-B45D-59D3-894F-9B9509B03E70"><!-- --></a><p>If the value is zero,
+then you must clear the digitizer interrupt here in this function, <samp class="codeph">PenInterrupt()</samp>. </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-B2766A95-D916-428F-84AE-2D4ADDFF999A"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-B2766A95-D916-428F-84AE-2D4ADDFF999A"><!-- --></a><p>To contribute the timing
+of pen interrupts as a source of random data for the Random Number Generator
+(see <a href="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB.html">CSPRNG Implementation
+in Kernel</a>), ensure that a call to <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-C46E48EE-6F4A-3A61-A3C9-84B145119541"><span class="apiname">Interrupt::AddTimingEntropy()</span></a> is
+made in the ISR.</p>
+</li>
+
+</ol>
+ </div>
+
+<div class="section" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4B0737BA-74E2-5FF2-BCE3-4BC822C14470"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4B0737BA-74E2-5FF2-BCE3-4BC822C14470"><!-- --></a><h2 class="sectiontitle">Initialise
+sampling</h2> <p>In the template port, the initialisation of sampling is
+implemented in the first half of the function <strong>DTemplatedigitizer::TakeSample()</strong> function.
+Note that this function is not derived from any base class function. </p>
+ <p>There
+are two main things to consider here: </p>
+ <a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-1101F7D6-EDEF-5B9F-832C-75D298ACF1E4"><!-- --></a><ol id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-1101F7D6-EDEF-5B9F-832C-75D298ACF1E4">
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-A56C4872-FDD0-571C-A721-C267BB1DFD5C"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-A56C4872-FDD0-571C-A721-C267BB1DFD5C"><!-- --></a><p>You need to decide whether
+the pen is up or down. Set the variable <samp class="codeph">penDown</samp> to <a href="GUID-781E8158-805B-3784-8FED-D7A191822FC3.html"><span class="apiname">ETrue</span></a> if
+the pen is down or <a href="GUID-A759CA2D-8327-348F-9337-4886E619D920.html"><span class="apiname">EFalse</span></a> if the pen is up. </p>
+ <p>To
+do this you may need to read the appropriate hardware register - the detail
+depends on the hardware. </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4B498AD5-766B-57DF-8021-2A7BB7FB5C19"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4B498AD5-766B-57DF-8021-2A7BB7FB5C19"><!-- --></a><p>Change the section of
+code that is executed when the pen is found to be up after a power on, i.e.
+the block of code: </p>
+ <pre class="codeblock" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4CE73640-1D2F-50F2-AD85-92B2F0FA35DC"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4CE73640-1D2F-50F2-AD85-92B2F0FA35DC"><!-- --></a>if (iState==E_HW_PowerUp)
+    {
+    if (!penDown)
+        {
+        ...
+        }</pre>
+ <p>The block of code needs to do the following: </p>
+ <ul>
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-22297738-82AA-5F87-AE35-09903161E793"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-22297738-82AA-5F87-AE35-09903161E793"><!-- --></a><p>reset the sample buffer </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-D22ED4D2-B602-5270-9131-053E6B17191B"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-D22ED4D2-B602-5270-9131-053E6B17191B"><!-- --></a><p>clear the digitizer
+interrupt </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-32A574A0-42D0-5953-AB00-BDFAABD4C82E"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-32A574A0-42D0-5953-AB00-BDFAABD4C82E"><!-- --></a><p>set up the hardware
+so that it can detect when the digitizer is touched </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-B422C5F4-D7F8-5BD1-B9B5-130B9EFBD44A"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-B422C5F4-D7F8-5BD1-B9B5-130B9EFBD44A"><!-- --></a><p>enable the digitizer
+interrupt. </p>
+ </li>
+
+</ul>
+ </li>
+
+</ol>
+ </div>
+
+<div class="section" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4E84D583-7745-531B-AB62-65D012B4BCB2"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-4E84D583-7745-531B-AB62-65D012B4BCB2"><!-- --></a><h2 class="sectiontitle">Take sample
+readings</h2> <p>In the template port, the initialisation of sampling is
+implemented in the second half of the function <strong>DTemplatedigitizer::TakeSample()</strong> function.
+Note that this function is not derived from any base class function. </p>
+ <p>This
+code is executed while the pen is down, and needs to do the following: </p>
+ <ul>
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-F9FB32EF-7967-5753-8D4F-BBEAF3BC2AC9"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-F9FB32EF-7967-5753-8D4F-BBEAF3BC2AC9"><!-- --></a><p>read the hardware for
+the digitizer samples and put the results into the sample buffer. The sample
+buffer resides in the platform independent layer. </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-E4F4B6D9-9455-5B43-A025-735A6A1235B0"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-E4F4B6D9-9455-5B43-A025-735A6A1235B0"><!-- --></a><p>set up the hardware
+so that it can detect when the digitizer is touched </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-642B38D4-658A-59A0-AA7C-D497CB6A0FF4"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-642B38D4-658A-59A0-AA7C-D497CB6A0FF4"><!-- --></a><p>schedule the reading
+of the next sample using a one shot timer; the time interval is defined by
+the value of the configurable constant <a href="GUID-3574BE12-9DA9-573D-8545-3B073005A139.html#GUID-3574BE12-9DA9-573D-8545-3B073005A139__GUID-C8EC7A1D-7597-57BB-ADE4-0EDFFEB323D0">KInterSampleTime</a> </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-C3B71C41-8C33-5A39-B1D8-B08CD6D7AE6E"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-C3B71C41-8C33-5A39-B1D8-B08CD6D7AE6E"><!-- --></a><p>when a complete group
+of samples has been taken, tell the platform independent layer by calling <samp class="codeph">RawSampleValid()</samp>;
+the function is a member of the base class <a href="GUID-52E09E60-E29C-359C-926B-9836D960EF20.html"><span class="apiname">Ddigitizer</span></a>. </p>
+ </li>
+
+</ul>
+ <p><strong>Tracing note </strong> </p>
+ <p>If the <samp class="codeph">KHARDWARE</samp> tracing
+flag has been set, and tracing is on, then it should be possible to move the
+pen over the screen and see the raw sample values on the debug output. Check
+they are correct. </p>
+ </div>
+
+<div class="section" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-7ADA202E-23F8-52E1-BE57-B44FF75C5612"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-7ADA202E-23F8-52E1-BE57-B44FF75C5612"><!-- --></a><h2 class="sectiontitle">Add code to
+the debounce timer callback function</h2> <p>In the template port, the
+debounce timer callback function is implemented by the local function <strong>timerIntExpired()</strong>. </p>
+ <p>If
+not already done in <a href="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07.html#GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-D74C94E4-83AD-5BC0-B435-754E7D3FECA4">Implement
+the pen interrupt ISR</a>, add code to this callback function to clear
+the digitizer interrupt. </p>
+ </div>
+
+<div class="section" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-8F229C58-66B5-5D0A-9058-8C57586F5B45"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-8F229C58-66B5-5D0A-9058-8C57586F5B45"><!-- --></a><h2 class="sectiontitle">Deal with a
+pen up interrupt</h2> <p>If the digitizer generates an interrupt when the
+pen is lifted, then you need to add code to the pen interrupt ISR to handle
+this. This is the same function, <strong>DTemplatedigitizer::PenInterrupt()</strong>,
+referred to in <a href="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07.html#GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-D74C94E4-83AD-5BC0-B435-754E7D3FECA4">Implement
+the pen interrupt ISR</a>. </p>
+ <p>The code should: </p>
+ <ul>
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-46619FF8-B3A0-556C-8B7F-D93CA3BAD2DA"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-46619FF8-B3A0-556C-8B7F-D93CA3BAD2DA"><!-- --></a><p>clear the digitizer
+interrupt. </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-6E7353D8-118D-5FD9-9557-68DBCCBF32D9"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-6E7353D8-118D-5FD9-9557-68DBCCBF32D9"><!-- --></a><p>set up the hardware
+so that it can detect when the digitizer panel is touched. </p>
+ </li>
+
+</ul>
+ <p>If there is no pen up interrupt by design, then you need to add code
+into the <strong>DTemplatedigitizer::TakeSample()</strong> function at the point where
+the pen is up and the digitizer is in the <em>pen up debounce</em> state (i.e. <samp class="codeph">E_HW_PenUpDebounce</samp>): </p>
+ <pre class="codeblock" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-6AF28551-7F20-5C70-8D0E-E40F2DD50417"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-6AF28551-7F20-5C70-8D0E-E40F2DD50417"><!-- --></a>if (!penDown)
+    {
+    if (iState==E_HW_PenUpDebounce)
+        {
+        . . .</pre>
+ <p>At this point, you should have almost all digitizer
+capability – pen up handling, pen down handling, and the taking of digitizer
+readings. </p>
+ </div>
+
+<div class="section" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-6DC8A3DB-452F-5738-9D60-7E34BF8A3596"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-6DC8A3DB-452F-5738-9D60-7E34BF8A3596"><!-- --></a><h2 class="sectiontitle">Implement Ddigitizer::digitizerOff()</h2> <p>This
+function is called when the digitizer is being powered down. </p>
+ <p>If the
+device is powered on, then the function needs to do disable the digitizer
+interrupt. </p>
+ <p>If the digitizer is in the <em>collect sample</em> state
+(i.e. <samp class="codeph">E_HW_CollectSample</samp>), then it also needs to do the following: </p>
+ <ul>
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-7C5A6267-9CE2-587F-9092-F16DB89E8283"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-7C5A6267-9CE2-587F-9092-F16DB89E8283"><!-- --></a><p>set up the hardware
+so that the device wakes up from standby if the digitizer panel is touched. </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-F606C7D1-A0FD-5845-B9A0-EAF13D3F5B01"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-F606C7D1-A0FD-5845-B9A0-EAF13D3F5B01"><!-- --></a><p>relinquish the request
+for power resources; this will place the peripheral hardware into a low power
+"sleep" mode, which is capable of detecting an interrupt. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-FE7F24DF-6A65-5A7E-A9C8-DBCF7848DEA6"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-FE7F24DF-6A65-5A7E-A9C8-DBCF7848DEA6"><!-- --></a><h2 class="sectiontitle">Implement power
+up and power down handling</h2> <p>At this point, the device should be
+working successfully. </p>
+ <p>You now need to put the device into a low power
+"sleep" mode when it is switched off, and to bring it out of "sleep" mode
+when the digitizer is touched. </p>
+ <ul>
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-EE805C9C-62F1-5F03-A9F9-643BC025E047"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-EE805C9C-62F1-5F03-A9F9-643BC025E047"><!-- --></a><p>Add code to the template
+port function <strong>DTemplatedigitizer::digitizerPowerUp()</strong> to request power
+resources from the power controller. This will power the device up from sleep
+mode. </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-141FEF1E-B284-5970-89CF-81F9C6CD3890"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-141FEF1E-B284-5970-89CF-81F9C6CD3890"><!-- --></a><p>Add code to the powering
+down part of your implementation of <a href="GUID-52E09E60-E29C-359C-926B-9836D960EF20.html#GUID-52E09E60-E29C-359C-926B-9836D960EF20__GUID-43E7AF76-DF07-3688-984A-80365150C080"><span class="apiname">Ddigitizer::WaitForPenDown()</span></a> that
+does the following: </p>
+ <ul>
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-310D240A-CCCC-5978-8798-75EE01B13E7D"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-310D240A-CCCC-5978-8798-75EE01B13E7D"><!-- --></a><p>sets up the hardware
+to wake the device from standby if the digitizer is touched. </p>
+ </li>
+
+<li id="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-D7C488F1-8727-5948-A7D1-3D1C4A306AF9"><a name="GUID-AF71FDC2-A8CC-5035-91FE-36212844BC07__GUID-D7C488F1-8727-5948-A7D1-3D1C4A306AF9"><!-- --></a><p>relinquishes the request
+for power resources - this will place the peripheral hardware into a low power
+"sleep" mode, which is capable of detecting an interrupt. </p>
+ </li>
+
+</ul>
+ </li>
+
+</ul>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-0563266C-8B5A-5664-9AC6-A5504AB5056F.html" title="Describes the steps to implement a port of the Digitizer Driver.">Porting Tutorial</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

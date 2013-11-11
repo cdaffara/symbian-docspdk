@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Creating a Graphics Surface Tutorial"/>
+<meta name="abstract" content="This tutorial first shows you how to create a composition surface using the Surface Manager API. It then shows you how to create second surface that shares the same memory."/>
+<meta name="description" content="This tutorial first shows you how to create a composition surface using the Surface Manager API. It then shows you how to create second surface that shares the same memory."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C7B420DE-CEDA-5D3F-8095-71136E862CDF.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4797000B-B61D-5EF8-8C38-3159433C9C7B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C7B420DE-CEDA-5D3F-8095-71136E862CDF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-55EF3CEB-AF3E-5A32-96F3-F146D1A06C8F.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ADA8CECB-0E70-5B9C-8F36-0714AAF0CD13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-63CB6C7E-44EC-5D0B-A37D-FE78F7D76592.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Creating a Graphics Surface Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2384330 id2387319 id2387344 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html">Graphics Guide</a> &gt; <a href="GUID-4797000B-B61D-5EF8-8C38-3159433C9C7B.html" title="The Graphics Hardware Drivers collection provides optional hardware adaptation services.">Graphics Hardware Drivers Collection</a> &gt; <a href="GUID-C7B420DE-CEDA-5D3F-8095-71136E862CDF.html" title="The Surface Manager component manages the lifetime and use of graphics composition surfaces in system memory.">Surface Manager Component</a> &gt; </div>
+<h1 class="topictitle1">Creating
+a Graphics Surface Tutorial</h1>
+<div><p>This tutorial first shows you how to create a composition surface
+using the Surface Manager API. It then shows you how to create second surface
+that shares the same memory. </p>
+
+<p> <strong>Variant</strong>: <a href="GUID-D93978BE-11A3-5CE3-B110-1DEAA5AD566C.html" title="This topic provides an introduction to ScreenPlay and its architecture. ScreenPlay is a new graphics architecture, introduced in Symbian^3 (S^3). ScreenPlay enables device creators to take advantage of improved software performance, hardware acceleration and third party graphics engines. ScreenPlay is sometimes known as the New Graphics Architecture (NGA).">ScreenPlay</a>. <strong>Target
+audience</strong>: Device creators. </p>
+
+<div class="section" id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-B29CBC23-1A7A-5848-ACE1-65EFE25293DB"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-B29CBC23-1A7A-5848-ACE1-65EFE25293DB"><!-- --></a><h2 class="sectiontitle">Required background</h2> <p>This
+tutorial assumes a background knowledge of the following: </p>
+ <ul>
+<li id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-5FC40F07-18E3-520D-9336-4C8D7D1D9F2C"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-5FC40F07-18E3-520D-9336-4C8D7D1D9F2C"><!-- --></a><p><a href="GUID-0DC3E5AA-1706-5255-ACD6-E7AB732E1095.html" title="This topic provides an introduction to the Graphics Composition collection.">Graphics
+Composition Collection Overview</a>  </p>
+ </li>
+
+<li id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-6688632B-48E1-5357-9451-C46487026585"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-6688632B-48E1-5357-9451-C46487026585"><!-- --></a><p><a href="GUID-ADA8CECB-0E70-5B9C-8F36-0714AAF0CD13.html" title="This topic provides an introduction to graphics composition surfaces, which are usually simply called surfaces. Surfaces are pixel buffers that have associated metadata describing the width, height, stride and pixel format and are used as input to the composition components. Surfaces can be multi-buffered and are identified by a 128-bit identifier (called the surface ID).">Graphics
+Composition Surfaces</a>  </p>
+ </li>
+
+<li id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-86252B83-1503-588F-ACBC-2924D73F9729"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-86252B83-1503-588F-ACBC-2924D73F9729"><!-- --></a><p><a href="GUID-55EF3CEB-AF3E-5A32-96F3-F146D1A06C8F.html" title="The Surface Manager is responsible for creating graphics composition surfaces (called surfaces) in system memory and controlling access to them.">Surface
+Manager</a>  </p>
+ </li>
+
+<li id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-8C7E9588-DF1B-56A2-8CAD-059F70C5DB9C"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-8C7E9588-DF1B-56A2-8CAD-059F70C5DB9C"><!-- --></a><p><a href="GUID-81A0A2E9-4BB9-58BF-B2D3-08098E7E9C7C.html" title="The Surface Update component provides a communication mechanism between the composition engine and its clients.">Surface
+Update Server</a>  </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-7ADE65B1-3DF6-5224-B783-382DC8448059"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-7ADE65B1-3DF6-5224-B783-382DC8448059"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p>This
+topic shows you how to create one graphics surface and then another one that
+shares the same memory. Because the screen is either in portrait or landscape
+orientation, this approach is useful for handling two surfaces, one of which
+is used for the portrait orientation and the other for the landscape orientation. </p>
+ <p>For
+example, suppose <em>Surface 1</em> is used for landscape orientation and <em>Surface
+2</em> for portrait orientation. When a rotation is in progress from landscape
+to portrait: </p>
+ <ul>
+<li id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-B32ACAAE-91CC-5DB8-863F-224C5A5AAA06"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-B32ACAAE-91CC-5DB8-863F-224C5A5AAA06"><!-- --></a><p>The first buffer in <em>Surface
+1</em> is in use as an input to the composition engine. </p>
+ </li>
+
+<li id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-AC1BA893-C782-5B02-B21B-83186B86B0A7"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-AC1BA893-C782-5B02-B21B-83186B86B0A7"><!-- --></a><p>The renderer renders
+into the second buffer in <em>Surface 2</em>. </p>
+ </li>
+
+</ul>
+ <p>Because both surfaces share the same memory, the buffers in the two
+orientations must be at the same offsets in the chunk. This is shown in the
+following diagram. </p>
+ <div class="fignone" id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-552B25FF-A930-5F5B-9379-89F77AB0BE17"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-552B25FF-A930-5F5B-9379-89F77AB0BE17"><!-- --></a><span class="figcap">Figure 1.               Two double-buffered surfaces that share the same memory
+           </span>
+
+<img src="GUID-EFFEB18E-5BF5-5855-9D1F-E7C39CB569D0_d0e282186_href.png"/>
+</div>
+ <p>In the example code below, some error handling has been omitted
+for brevity. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Creating the first surface</h2> <a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-90E6761F-7BE0-528C-ABC2-AEBCE4A8A120"><!-- --></a><ol id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-90E6761F-7BE0-528C-ABC2-AEBCE4A8A120">
+<li id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-EB97C422-189F-51D0-AF56-5803C3AECB1E"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-EB97C422-189F-51D0-AF56-5803C3AECB1E"><!-- --></a><p>Call <a href="GUID-733B8BFA-7BC2-3A6D-A66F-F788413D25A9.html"><span class="apiname">RSurfaceManager::Open()</span></a> to
+open a connection to the Surface Manager. </p>
+ <div class="p"><pre class="codeblock" id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-89837128-5647-56CD-8C1B-2FF142DAFE46"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-89837128-5647-56CD-8C1B-2FF142DAFE46"><!-- --></a>RSurfaceManager surfaceManager;
+surfaceManager.Open();</pre>
+ </div>
+ <p>The Surface Manager is now ready
+for use. </p>
+ </li>
+
+<li id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-8B6DA00E-12F1-520B-9DC9-1AFC72EF4443"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-8B6DA00E-12F1-520B-9DC9-1AFC72EF4443"><!-- --></a><p>Specify the surface
+creation attributes using the <a href="GUID-733B8BFA-7BC2-3A6D-A66F-F788413D25A9.html"><span class="apiname">TSurfaceCreationAttributes</span></a> class. </p>
+ <div class="p"><pre class="codeblock" id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-2B4FF1D8-69CB-5DA3-9A14-1A8B17DE85B5"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-2B4FF1D8-69CB-5DA3-9A14-1A8B17DE85B5"><!-- --></a>RSurfaceManager::TSurfaceCreationAttributesBuf bf;
+RSurfaceManager::TSurfaceCreationAttributes&amp; attributes = bf();
+    
+attributes.iSize.iWidth = 320;
+attributes.iSize.iHeight = 240;
+attributes.iBuffers = 2;
+attributes.iPixelFormat = EUidPixelFormatARGB_4444;    
+attributes.iStride = 640;
+attributes.iOffsetToFirstBuffer = 100;
+attributes.iAlignment = 4;
+attributes.iContiguous = EFalse;
+attributes.iCacheAttrib = TCacheAttribute::ECached; 
+     
+// Create two user-defined hints.
+RSurfaceManager::THintPair hints[2];
+hints[0].Set(0x124578, 25, ETrue);
+hints[1].Set(0x237755, 50, ETrue);
+    
+attributes.iHints = hints;
+attributes.iHintCount = 2;</pre>
+ </div>
+ </li>
+
+<li id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-BC9CCB88-C7FE-54D8-83B6-957D274CBC9F"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-BC9CCB88-C7FE-54D8-83B6-957D274CBC9F"><!-- --></a><p>Call <a href="GUID-733B8BFA-7BC2-3A6D-A66F-F788413D25A9.html"><span class="apiname">RSurfaceManager::CreateSurface(const
+                TSurfaceCreationAttributesBuf&amp;, TSurfaceId&amp;)</span></a> to
+create the first surface. </p>
+ <p>This function takes the surface creation
+attributes as input and returns the new surface ID. </p>
+ <div class="p"><pre class="codeblock" id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-9B155DBD-C343-5103-B2A3-CE6DB30CA020"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-9B155DBD-C343-5103-B2A3-CE6DB30CA020"><!-- --></a>TSurfaceId surfaceId;
+TInt err = surfaceManager.CreateSurface(bf, surfaceId);</pre>
+ </div>
+ </li>
+
+<li id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-5C36F371-D0D4-52ED-87D8-B87B9FE7C947"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-5C36F371-D0D4-52ED-87D8-B87B9FE7C947"><!-- --></a><p>Call <a href="GUID-733B8BFA-7BC2-3A6D-A66F-F788413D25A9.html"><span class="apiname">RSurfaceManager::MapSurface(const
+TSurfaceId&amp;,                 RChunk&amp;)</span></a> to map the surface. </p>
+ <p>This
+function takes the surface ID as input and returns a handle to the shared
+chunk. </p>
+ <div class="p"><pre class="codeblock" id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-C0058D19-355B-5A16-B6A2-602DD35C90D1"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-C0058D19-355B-5A16-B6A2-602DD35C90D1"><!-- --></a>if (err == KErrNone)
+    {
+    // We have a surface, so map it in.
+    RChunk chunk;
+    err = surfaceManager.MapSurface(surfaceId, chunk);
+    if ( err == KErrNone)
+        { 
+        // Get info about it
+        RSurfaceManager::TInfoBuf buf;
+        RSurfaceManager::TSurfaceInfoV01&amp; surfaceInfo = buf(); 
+       
+        surfaceManager.SurfaceInfo(surfaceId, buf); 
+        }</pre>
+ </div>
+ </li>
+
+</ol>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Creating the second surface</h2> <p>An overload of <a href="GUID-733B8BFA-7BC2-3A6D-A66F-F788413D25A9.html"><span class="apiname">RSurfaceManager::CreateSurface()</span></a> allows
+you to supply a shared chunk as an input parameter. The shared chunk must
+be successfully allocated by the calling code before it is passed in to the
+surface creation API. We will use the shared chunk returned in the last step. </p>
+ <a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-9E4CE367-00ED-5F39-829C-BF3B5CD8446C"><!-- --></a><ol id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-9E4CE367-00ED-5F39-829C-BF3B5CD8446C">
+<li id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-6144B775-CFB1-5CFF-9AF4-AC7AA823D375"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-6144B775-CFB1-5CFF-9AF4-AC7AA823D375"><!-- --></a><p>Specify the surface
+creation attributes in a <a href="GUID-733B8BFA-7BC2-3A6D-A66F-F788413D25A9.html"><span class="apiname">TSurfaceCreationAttributes</span></a> class. </p>
+ <pre class="codeblock" id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-EF7EFC61-9AE9-53C9-93DA-2E7E259DA4B2"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-EF7EFC61-9AE9-53C9-93DA-2E7E259DA4B2"><!-- --></a>// We have a surface, so create an another surface with a different             
+// orientation.
+         
+RSurfaceManager::TSurfaceCreationAttributesBuf bf2;
+attributes = bf2();
+         
+// Initialize the surface creation attributes.  
+attributes.iSize.iWidth  = 240; // Change the orientation .
+attributes.iSize.iHeight = 320;   
+attributes.iBuffers = 2;
+attributes.iPixelFormat = EUidPixelFormatARGB_4444;    
+attributes.iStride = 480;    // Width has changed to 240.
+     
+// Read the offset to the first buffer from the first surface.
+TInt offset;
+surfaceManager.GetBufferOffset(surfaceId, 0, offset); 
+attributes.iOffsetToFirstBuffer = offset;
+        
+// iCacheAttribute and iContiguous are not used for already existing
+// chunks.</pre>
+ </li>
+
+<li id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-868F20E1-9A6A-52F7-8979-15793E634659"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-868F20E1-9A6A-52F7-8979-15793E634659"><!-- --></a><p>Call <a href="GUID-733B8BFA-7BC2-3A6D-A66F-F788413D25A9.html"><span class="apiname">RSurfaceManager::CreateSurface(const
+                TSurfaceCreationAttributesBuf&amp;, TSurfaceId&amp;, const
+                RChunk&amp;)</span></a> to create a surface in the specified
+shared chunk. This overload takes the surface creation attributes and the
+handle of the existing chunk (returned in step 4 above) as inputs and returns
+the new surface ID. </p>
+ <pre class="codeblock" id="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-DC3C332D-CBD0-5804-8A44-66545A1558AF"><a name="GUID-E238B1FE-BBD8-5C6D-AE04-258188EFF9FF__GUID-DC3C332D-CBD0-5804-8A44-66545A1558AF"><!-- --></a>TSurfaceId surfaceId1;
+err = surfaceManager.CreateSurface(bf2, surfaceId1, chunk);    
+if (err == KErrNone)
+    {
+    // Surface created successfully.
+    }</pre>
+ </li>
+
+</ol>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C7B420DE-CEDA-5D3F-8095-71136E862CDF.html" title="The Surface Manager component manages the lifetime and use of graphics composition surfaces in system memory.">Surface Manager Component</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-55EF3CEB-AF3E-5A32-96F3-F146D1A06C8F.html" title="The Surface Manager is responsible for creating graphics composition surfaces (called surfaces) in system memory and controlling access to them.">Surface Manager
+Overview</a></div>
+<div><a href="GUID-ADA8CECB-0E70-5B9C-8F36-0714AAF0CD13.html" title="This topic provides an introduction to graphics composition surfaces, which are usually simply called surfaces. Surfaces are pixel buffers that have associated metadata describing the width, height, stride and pixel format and are used as input to the composition components. Surfaces can be multi-buffered and are identified by a 128-bit identifier (called the surface ID).">Graphics
+Surfaces</a></div>
+<div><a href="GUID-63CB6C7E-44EC-5D0B-A37D-FE78F7D76592.html" title="The Graphics Composition collection is a key part of ScreenPlay. The collection is made up of components that are concerned with composition. This is the process of putting together the output elements from various different sources to create the display that the viewer sees on the screen.">Graphics
+Composition Collection</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

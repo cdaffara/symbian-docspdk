@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Character Conversion in Symbian C++ and GNU C"/>
+<meta name="abstract" content="Symbian C++ supports character conversion between Unicode and other native character sets."/>
+<meta name="description" content="Symbian C++ supports character conversion between Unicode and other native character sets."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2016EF4B-F001-5EB2-8095-6048582511D6.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2016EF4B-F001-5EB2-8095-6048582511D6.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-86086CA3-9A2E-4024-BE80-1763614A5079"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Character Conversion in Symbian C++ and GNU C</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-86086CA3-9A2E-4024-BE80-1763614A5079"><a name="GUID-86086CA3-9A2E-4024-BE80-1763614A5079"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381193 id2381201 id2381285 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html">Generic Open Libraries</a> &gt; <a href="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html">Open Environment Core (P.I.P.S.)</a> &gt; <a href="GUID-2016EF4B-F001-5EB2-8095-6048582511D6.html">P.I.P.S. Concepts</a> &gt; </div>
+<h1 class="topictitle1">Character
+Conversion in Symbian C++ and GNU C</h1>
+<div><p>Symbian C++ supports character conversion between Unicode and other
+native character sets.</p>
+
+<div class="p">GNU C supports character conversion: <ul>
+<li><p>between Unicode and other native character sets</p>
+</li>
+
+<li><p>from a native character set to another native character set.</p>
+</li>
+
+</ul>
+</div>
+
+<p>The following example illustrates the steps to be followed to convert from
+one native character set to another native character set. In GNU C it is straightforward.
+In Symbian C++ more lines of code are needed to do the same work. The example
+converts a string from the ISO-8859-1 character set to the ISO-8859-2
+character set. </p>
+
+<p><strong>GNU C</strong></p>
+
+<pre class="codeblock">#include &lt;iconv.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;errno.h&gt;
+
+int main (void)
+{
+ iconv_t cd;
+ const char *inbuf = "abcd";
+ char *outbuf = NULL;;
+ size_t inbytes,outbytes;
+ cd = iconv_open ("ISO-8859-2", "ISO-8859-1");
+ if (cd == (iconv_t) -1)
+ {
+   printf ("iconv_open failed errno = %d\n",errno);
+   iconv_close(cd);
+   return 1;
+ }
+ outbuf = (char*) malloc(4);
+ inbytes = outbytes = 4 ;
+ iconv (cd, &amp;inbuf, &amp;inbytes, &amp;outbuf, &amp;outbytes);
+ if (iconv (cd, &amp;inbuf, &amp;inbytes, &amp;outbuf, &amp;outbytes) == (size_t) -1)
+     printf(" errno = %d \n",errno);
+ else
+       printf("Iconv passed\n");
+ iconv_close (cd);
+ return 1;
+}
+</pre>
+
+<p><strong>SYMBIAN C++ </strong></p>
+
+<ul>
+<li><p>Specify the non-Unicode character set being converted to Unicode. In
+this case it is ISO-8859-1.</p>
+</li>
+
+<li><p>Convert the text from the native character set to Unicode.</p>
+</li>
+
+<li><p>Specify the non-Unicode character set being converted from Unicode.
+In this case it is ISO-8859-2 </p>
+</li>
+
+<li><p>Convert the text from Unicode to the native character set </p>
+</li>
+
+</ul>
+
+<pre class="codeblock">#include &lt;e32base.h&gt;
+#include &lt;e32cons.h&gt;
+#include &lt;charconv.h&gt;
+#include &lt;f32file.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+
+LIT8(KNativeText, "abcd");
+LOCAL_C int doExampleL()
+{
+   char *inbuf = "abcd";
+   char *outbuf = NULL;
+   int inbytes,outbytes;
+   inbytes = outbytes = 4; 
+   
+   TInt retVal = KErrNone;
+   outbuf = (char*) malloc(outbytes);
+   RFs fileSession;
+   User::LeaveIfError(fileSession.Connect());
+   CleanupClosePushL(fileSession);
+  
+  //Allocates and constructs a CCnvCharacterSetConverter object
+  CnvCharacterSetConverter* conv = CCnvCharacterSetConverter::NewLC() ;
+  TPtrC8 remainderOfForeignText((const TText8*) inbuf,inbytes);
+  TBuf16&lt;256&gt; UnicodeText;
+  TBuf8&lt;256&gt; outputBuffer;
+  TInt numberOfUnconvertibleCharacters = 0;
+  TInt indexOfFirstByteOfFirstUnconvertibleCharacter = 0;
+  //Specifies the character set(ISO-8859-1) to convert to UNICODE
+  CCnvCharacterSetConverter::TAvailability  avail = conv-&gt;PrepareToConvertToOrFromL (KCharacterSetIdentifierIso88591, fileSession);
+ if(CCnvCharacterSetConverter::ENotAvailable == avail)
+ {
+   CleanupStack::PopAndDestroy(2);  //conv, fileSession
+   return KErrGeneral;
+ }
+ //Convert text encoded in the ISO-8859-1 character set into the Unicode character set (UCS-2).
+ retVal = conv-&gt;ConvertToUnicode(UnicodeText, remainderOfForeignText, numberOfUnconvertibleCharacters, indexOfFirstByteOfFirstUnconvertibleCharacter);
+ if(retVal &lt; 0 &amp;&amp; (retVal != CCnvCharacterSetConverter::EErrorIllFormedInput))
+ {
+  CleanupStack::PopAndDestroy(2);  //conv, fileSession
+  return retVal;
+ }
+ //Specifies the character set(ISO-8859-2) to convert from UNICODE
+ avail = conv-&gt;PrepareToConvertToOrFromL(KCharacterSetIdentifierIso88592, fileSession);
+ if(CCnvCharacterSetConverter::ENotAvailable == avail)
+ {
+   CleanupStack::PopAndDestroy(2);  //conv, fileSession
+   return KErrGeneral;
+ }
+ //Convert text encoded in the Unicode character set (UCS-2) to  ISO-8859-2
+ retVal = conv-&gt;ConvertFromUnicode(outputBuffer,UnicodeText, numberOfUnconvertibleCharacters, indexOfFirstByteOfFirstUnconvertibleCharacter);
+ if(retVal &lt; 0 &amp;&amp; (retVal != CCnvCharacterSetConverter::EErrorIllFormedInput))
+ {
+   CleanupStack::PopAndDestroy(2);  //conv, fileSession
+   return retVal;
+ }
+ TInt outputbufferLength = outputBuffer.Length();
+ strncpy(outbuf, (const char*) outputBuffer.Ptr(),outputbufferLength);
+ outbuf = outbuf + outputbufferLength;
+ CleanupStack::PopAndDestroy(2); //conv, fileSession
+ return retVal;
+}
+</pre>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-2016EF4B-F001-5EB2-8095-6048582511D6.html">P.I.P.S. Concepts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

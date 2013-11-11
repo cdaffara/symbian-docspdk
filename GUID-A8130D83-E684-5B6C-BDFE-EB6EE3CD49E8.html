@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Writing a UPS Dialog Creator"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B2089965-546C-5FF2-8596-13A2221E02E6.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BA362536-C9C9-5BA4-BEE3-0E1AD7FA45F1.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5329AE68-39E0-55E7-9878-2D8FF9E29B21.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B2089965-546C-5FF2-8596-13A2221E02E6.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Writing a UPS Dialog Creator</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8"><a name="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2858558 id2858601 id2858609 id2858646 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html">OS Security Guide</a> &gt; <a href="GUID-BA362536-C9C9-5BA4-BEE3-0E1AD7FA45F1.html">Authorisation</a> &gt; <a href="GUID-5329AE68-39E0-55E7-9878-2D8FF9E29B21.html">User Prompt Service</a> &gt; <a href="GUID-B2089965-546C-5FF2-8596-13A2221E02E6.html">Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Writing
+a UPS Dialog Creator</h1>
+<div>
+<div class="section" id="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-9383005F-53E7-465E-A10E-8A781EDB52E2"><a name="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-9383005F-53E7-465E-A10E-8A781EDB52E2"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p>Dialog
+creators are ECom plug-ins that device creators can write to generate the
+dialogs containing prompts for phone users. </p>
+ <p>The plug-in has an API
+that consists of two asynchronous functions: </p>
+ <ul>
+<li id="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-96CBCE79-4F5D-5F87-AC6B-C366346447AB"><a name="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-96CBCE79-4F5D-5F87-AC6B-C366346447AB"><!-- --></a><p>The <samp class="codeph">PrepareDialog()</samp> function.
+This function is called first by the UPS server. It enables the dialog creator
+to query other system servers such as AppArc or the SIS registry to retrieve
+additional information to display in the dialog. For example it might query
+the SIS registry using the client application’s secure id. </p>
+ </li>
+
+<li id="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-A439E217-B95B-5B68-8893-BDBD61D694D1"><a name="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-A439E217-B95B-5B68-8893-BDBD61D694D1"><!-- --></a><p>The <samp class="codeph">DisplayDialog()</samp> function.
+This function is called second by the UPS server. It displays the prompt,
+most commonly through the notification framework. This function also returns
+the option selected by the user and, if applicable, the fingerprint for a
+new decision record. </p>
+ </li>
+
+</ul>
+ <p>The UPS displays only one prompt at a time so it is possible for
+there to be a delay between calling the function to prepare the dialog and
+the function to display the dialog. It is also possible for other dialogs
+to be displayed between the dialog being prepared and its being displayed. </p>
+ <p>Both <samp class="codeph">PrepareDialog()</samp> and <samp class="codeph">DisplayDialog()</samp> are asynchronous and must support cancellation through <samp class="codeph">CActive::Cancel</samp>.
+If either function is cancelled, the dialog creator instance is destroyed
+without calling further methods. </p>
+ <p>The work split between <samp class="codeph">PrepareDialog()</samp> and <samp class="codeph">DisplayDialog()</samp> described
+above is a recommendation, and some of the functionality could be implemented
+directly in the notifier implementation. </p>
+ <p>In the example given in this
+document, the functionality for dialogs is implemented separately from the
+functionality for policy evaluators. This allows multiple policy evaluators
+to share common UI code. However, it is possible to deliver policy evaluator
+and dialog creator plug-ins in the same DLL. </p>
+ </div>
+
+<div class="section" id="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-38974132-906B-45C9-8C38-0C9D0F396D15"><a name="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-38974132-906B-45C9-8C38-0C9D0F396D15"><!-- --></a><h2 class="sectiontitle">Procedure</h2> <p>Dialog
+creators implement the <samp class="codeph">CDialogCreator</samp> interface. This section
+shows how to implement the functions that prepare and display the user prompt. </p>
+ <a name="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-0F29F8B7-F303-5D42-BB95-A32B1FE13A9A"><!-- --></a><ol id="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-0F29F8B7-F303-5D42-BB95-A32B1FE13A9A">
+<li id="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-9FDDAD1F-4B9A-516A-8A00-0C331F38C4CA"><a name="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-9FDDAD1F-4B9A-516A-8A00-0C331F38C4CA"><!-- --></a><p>Prepare a dialog using
+the <a href="GUID-2308E2F4-A878-3B0A-951B-EFC4908AD9BB.html"><span class="apiname">PrepareDialog()</span></a> function. </p>
+ </li>
+
+<li id="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-45C16A52-A05E-545A-AB3A-967CCA35BB15"><a name="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-45C16A52-A05E-545A-AB3A-967CCA35BB15"><!-- --></a><p>Display the dialog using
+the <a href="GUID-E6C3B0F0-43A7-3656-946B-5CFE97DCFC80.html"><span class="apiname">DisplayDialog()</span></a> function. </p>
+ </li>
+
+</ol>
+ <p>The Dialog Creator plug-in creates a dialog prompt in cases where
+no previous decision is found in the decision database. </p>
+ <p><strong> Preparing
+the dialog</strong> </p>
+ <p>The parameters to <samp class="codeph">PrepareDialog()</samp> are
+mostly <samp class="codeph">const</samp> pointers and references to the data that has
+already been generated by the UPS or policy evaluator. </p>
+ <p>The following
+table describes the parameters for the <samp class="codeph">PrepareDialog()</samp> function: </p>
+ 
+<div class="tablenoborder"><a name="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-6D139216-B6A8-55A1-8D9B-C15134198198"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-6D139216-B6A8-55A1-8D9B-C15134198198" frame="border" border="1" rules="all">
+<thead align="left">
+<tr>
+<th class="cellrowborder" valign="top" id="d1543378e136">Parameter</th>
+
+<th class="cellrowborder" valign="top" id="d1543378e139">Description</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top" headers="d1543378e136 "><p> <samp class="codeph">aRequest</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d1543378e139 "><p>Data that the system server provides to the UPS, including the ClientSid,
+ServerSid and ServiceId. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d1543378e136 "><p> <samp class="codeph">aPolicy</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d1543378e139 "><p>Details of the policy for the service. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d1543378e136 "><p> <samp class="codeph">aFingerprints</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d1543378e139 "><p>A pointer to the fingerprints array generated by the policy evaluator.
+(If the user selects "Always" or “Never”, the dialog creator returns a pointer
+to an existing fingerprint object instead of re-generating the fingerprint.) </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d1543378e136 "><p> <samp class="codeph">aClientEntity</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d1543378e139 "><p>Details of client entity (will be null if the client process is
+not an execution host or the policy evaluator does not support client entities). </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d1543378e136 "><p> <samp class="codeph">aEvalPrivateData</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d1543378e139 "><p>Opaque data, which can be any other information for use in the fingerprint
+or to be displayed in the dialog. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d1543378e136 "><p> <samp class="codeph">aStatus</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d1543378e139 "><p>The request status used to contain completion information for the
+function. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <div class="p"><div class="note"><span class="notetitle">Note:</span> </div>
+ The UPS does not allow any responses to be returned
+to the system server except those defined in the UPS policy file. If the dialog
+creator returns an option that was not specified in the policy, the request
+is rejected and <samp class="codeph">EUpsDecNo</samp> is returned. </div>
+<p>Your implementation
+can assume that the pointers remain valid until after <samp class="codeph">DisplayDialog()</samp> has
+been called. </p>
+<p>The <samp class="codeph">PrepareDialog()</samp> function sets values. </p>
+<p>The<samp class="codeph"> DoPrepareDialogL()</samp> function
+prepares the data for the prompt. The DoPrepareDialogL() function is called
+through a switch statement, which can be seen in the full code sample at the
+end of this. </p>
+ <p><strong>Displaying the dialog </strong> </p>
+ <p>The <samp class="codeph">DisplayDialog()</samp> function
+displays the dialog created by <samp class="codeph">PrepareDialog()</samp>. On completion,
+it sets the option selected by the user and the fingerprint value if “Always”
+or “Never” was selected. Usually, dialogs are displayed using the notifier
+framework, but device creators are free to use other mechanisms. </p>
+ <p>On
+completion <samp class="codeph">iOptionSelected</samp> must be set to the option selected
+by the user: Yes, No, Session, Always or Never. </p>
+ <ul>
+<li id="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-C657A459-6ED4-59EF-9A8A-C9FE41AF2DD0"><a name="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-C657A459-6ED4-59EF-9A8A-C9FE41AF2DD0"><!-- --></a><p>If the user selects
+“Always” or “Never”, <samp class="codeph">iFingerprint</samp> must be set to point to
+the fingerprint to use for the new decision record. Usually, this would just
+point to one of the fingerprints passed to <samp class="codeph">PrepareDialog()</samp>,
+but generating a new fingerprint is also permitted. </p>
+ </li>
+
+<li id="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-0E2690AB-B44B-5C8B-9365-E09BC3031398"><a name="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-0E2690AB-B44B-5C8B-9365-E09BC3031398"><!-- --></a><p>If the decision record
+already exists and <samp class="codeph">DisplayDialog()</samp> modifies the value of <samp class="codeph">aEvaluatorInfo</samp>,
+the record is updated with the new value. </p>
+ </li>
+
+</ul>
+ <p>In the example at the end of this section, the <samp class="codeph">DisplayDialog()</samp> function
+sets values. The <samp class="codeph">DoDisplayDialogL()</samp> function calls the notifier
+framework to display the dialogs. The <samp class="codeph">DoDisplayDialogL()</samp> function
+is called through a <samp class="codeph">switch</samp> statement, which can be seen in
+the full code sample at the end of this section: </p>
+ </div>
+
+<div class="section" id="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-9C1BBD11-028A-4853-98FC-BF4B881BE2AF"><a name="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-9C1BBD11-028A-4853-98FC-BF4B881BE2AF"><!-- --></a><h2 class="sectiontitle">Example</h2> <p>The
+following code shows an example of a full implementation of the dialog creator
+file: </p>
+ <pre class="codeblock" id="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-314673F2-BBA0-56C0-A76D-07862BB4592F"><a name="GUID-A8130D83-E684-5B6C-BDFE-EB6EE3CD49E8__GUID-314673F2-BBA0-56C0-A76D-07862BB4592F"><!-- --></a>#include "refdialogcreator.h"
+#include &lt;ecom/implementationproxy.h&gt;
+#include &lt;apaid.h&gt;
+#include &lt;apgcli.h&gt;
+#include &lt;ups/promptrequest.h&gt;
+#include &lt;swi/sisregistrypackage.h&gt;
+#include &lt;swi/sisregistrysession.h&gt;
+#include &lt;scs/nullstream.h&gt;
+#include &lt;s32mem.h&gt;
+
+static const TUint KRefDialogCreatorImplementationId = 0x10283694;
+
+static const TUint KRefNotifierImplementationId = 0x1028369B;
+
+CDialogCreator* CRefDialogCreator::CreateDialogCreatorL()
+/**
+Factory method that instantiates a new dialog creator EComplug-in.
+
+@return A pointer to the new reference dialog creator object.
+*/
+    {
+    CRefDialogCreator* self = new (ELeave)CRefDialogCreator();
+    CleanupStack::PushL(self);
+    self-&gt;ConstructL();
+    CleanupStack::Pop(self);
+    return self;
+    }
+
+static const TImplementationProxy ImplementationTable[] = 
+    {
+    IMPLEMENTATION_PROXY_ENTRY(KRefDialogCreatorImplementationId, CRefDialogCreator::CreateDialogCreatorL)
+    };
+
+EXPORT_C const TImplementationProxy* ImplementationGroupProxy(TInt&amp; aTableCount)
+/**
+Standard EComfactory
+*/
+    {
+    aTableCount = sizeof(ImplementationTable) / sizeof(TImplementationProxy);
+    return ImplementationTable;
+    }    
+    
+
+CRefDialogCreator::CRefDialogCreator() 
+/**
+Constructor
+*/
+    : CDialogCreator(), iPromptResult(), iPromptResultPckg(iPromptResult), iState(EIdle)
+    {
+    CActiveScheduler::Add(this);    
+    }
+    
+CRefDialogCreator::~CRefDialogCreator()
+/**
+Destructor
+*/
+    {
+    Deque();
+    delete iPromptData;
+    iPromptDataDes.Close();
+    iNotifier.Close();
+    }
+
+void CRefDialogCreator::ConstructL()
+/**
+Second phase constructor
+*/
+    {
+    User::LeaveIfError(iNotifier.Connect());
+    }
+
+void CRefDialogCreator::DoCancel()
+    {
+    if (iState == EProcessResult)
+        {
+        iNotifier.CancelNotifier(TUid::Uid(KRefNotifierImplementationId));
+        }
+    if (iClientStatus)
+        {
+        User::RequestComplete(iClientStatus, KErrCancel);
+        }
+    }
+    
+TInt CRefDialogCreator::RunError(TInt aError)
+    {
+    if (iClientStatus)
+        {
+        User::RequestComplete(iClientStatus, aError);
+        }
+    return KErrNone;
+    }
+
+void CRefDialogCreator::RunL()
+    {
+    User::LeaveIfError(iStatus.Int());
+    switch (iState)
+        {
+        case EPrepareDialog:
+            DoPrepareDialogL();
+            break;
+        case EDisplayDialog:
+            DoDisplayDialogL();
+            break;
+        case EProcessResult:
+            DoProcessResultL();
+            break;
+        default:
+            ASSERT(EFalse);            
+        }
+    }
+    
+void CRefDialogCreator::DoPrepareDialogL()
+    {
+    iPromptData = CPromptData::NewL();
+    
+    // Only one state at the moment but more should be
+    // added for long running operators e.g. querying the SIS registry
+    // or resolving the client entity.
+    ResolveClientNameL(iRequest-&gt;ClientSid());
+    
+    // Get the vendor name for the client process
+    ResolveVendorNameL(iRequest-&gt;ClientVid());
+    
+    // Server / Service localized names generated in notifier plug-in. 
+    iPromptData-&gt;iServerSid = iRequest-&gt;ServerSid();
+    iPromptData-&gt;iServiceId = iRequest-&gt;ServiceId();
+    
+    // Different dialog text is displayed depending on whether the client application
+    // is signed.
+    // N.B. Protected SID is assumed to be signed or included at ROM build.
+    if (iRequest-&gt;IsClientSidProtected()) iPromptData-&gt;iFlags |= ETrustedClient;
+    
+    // Use the options specified by the policy
+    iPromptData-&gt;iOptions = iPolicy-&gt;Options();
+    
+    // Add the descriptions of the fingerprints. This could be used
+    // to allow the user to grant access to all destinations 
+    // or a single destination.
+    TInt count = iFingerprints-&gt;Count();
+    for (TInt i = 0; i &lt; count; ++i)
+        {
+        HBufC* description = (*iFingerprints)[i]-&gt;Description().AllocLC();
+        iPromptData-&gt;iDescriptions.AppendL(description);
+        CleanupStack::Pop(description);
+        }
+    
+    User::RequestComplete(iClientStatus, KErrNone);
+    // DisplayDialog is invoked by the UPS, this just verifies 
+    // that PrepareDialog was called first.
+    iState = EDisplayDialog;
+    }
+    
+void CRefDialogCreator::DoDisplayDialogL()
+/**
+Uses the notifier framework to display the dialog.
+*/
+    {
+    // Externalize the prompt data to a descriptor
+    RNullWriteStream ns;
+    ns &lt;&lt; *iPromptData;
+    ns.CommitL();
+    iPromptDataDes.CreateL(ns.BytesWritten());
+    RDesWriteStream ws;    
+    ws.Open(iPromptDataDes);
+    ws &lt;&lt; *iPromptData;
+    ws.CommitL();    
+    iNotifier.StartNotifierAndGetResponse(iStatus, TUid::Uid(KRefNotifierImplementationId),
+        iPromptDataDes, iPromptResultPckg);
+    SetActive();
+    iState = EProcessResult;
+    }
+    
+void CRefDialogCreator::DoProcessResultL()
+/**
+Processes the result returned by the notifier.
+*/
+    {
+    if (iPromptResult.iSelected == CPolicy::EAlways ||
+        iPromptResult.iSelected == CPolicy::ENever)
+        {
+        // The Always or Never option was selected so return the fingerprint 
+        // for the new decision record.
+        // 
+        // In this implementation a copy of the original fingerprint is returned. However,
+        // it is permitted to return a different fingerprint e.g. a modifier description.        
+        if (iPromptResult.iDestination &gt;= 0 &amp;&amp; iPromptResult.iDestination &lt; iFingerprints-&gt;Count())        
+            {
+            *iFingerprint = (*iFingerprints)[iPromptResult.iDestination];
+            }
+        else
+            {
+            ASSERT(EFalse);    // should never happen, unless the notifier has errors.
+            }
+        }            
+    *iOptionSelected =    iPromptResult.iSelected;
+    iState = EIdle;
+    User::RequestComplete(iClientStatus, KErrNone);        
+    }
+
+void CRefDialogCreator::ResolveVendorNameL(const TVendorId&amp; aVid)
+/**
+Looks up the localized vendor name for the client process and writes
+this to iPromptData-&gt;iVendorName.
+
+Typically, this would be resolved from the SIS registry or a lookup table.
+
+@param aVid    The vendor id of the client process.
+*/
+    {
+    if (iPromptData-&gt;iVendorName.Length() != 0)
+        {
+        // already obtained vendor name from SIS registry
+        return;
+        }
+        
+    if (aVid.iId == 0x70000001)
+        {
+        _LIT(KSymbian, "XYZ Vendor");
+        iPromptData-&gt;iVendorName.Create(KSymbian);
+        }
+    else 
+        {
+        _LIT(KUnknown, "Unknown vendor");
+        iPromptData-&gt;iVendorName.Create(KUnknown);
+        }
+    }
+    
+void CRefDialogCreator::ResolveClientNameL(const TSecureId&amp; aSid)
+/**
+Generates a human readable name for the client process. In order of 
+preference the following data is returned
+
+- The AppArc caption name.
+- The localized package name that owns this SID.
+- A value from a lookup table.
+- The filename for the client process executable.
+
+@param aSid    The secure id of the client process.
+*/
+    {
+    TBool found = EFalse;
+    
+    // Although the client name from AppArc takes precedance the SIS
+    // registry is always invoked in order to retrieve the vendor name
+    found |= ResolveClientNameFromSisRegistryL(aSid);
+    found |= ResolveClientNameFromAppArcL(aSid);
+            
+    // A lookup that maps secure-ids to application names could
+    // be used here.
+
+    // Fall back to the filename of the client process
+    // The original thread may have exited so the process handle is used instead.
+    // because the client-side object e.g. RSocket may be shared between threads.
+
+    // If the process has exited then it's o.k. to leave.
+    if (! found)
+        {            
+        RProcess clientProcess;
+        User::LeaveIfError(clientProcess.Open(iRequest-&gt;ClientProcessId()));
+        CleanupClosePushL(clientProcess);
+        iPromptData-&gt;iClientName.Create(clientProcess.FileName());        
+        CleanupStack::PopAndDestroy(&amp;clientProcess); 
+        }
+    }
+
+TBool CRefDialogCreator::ResolveClientNameFromAppArcL(const TSecureId&amp; aSid)
+/**
+Gets the caption name for the application from AppArc (if available).
+
+@param    aSid    The secure id of the client process.
+@return            ETrue if a match was found in apparc; otherwise, EFalse is returned.
+*/
+    {
+    TBool found(EFalse);
+        
+    RApaLsSession apa;
+    CleanupClosePushL(apa);    
+    TInt err = apa.Connect();
+    if (err == KErrNone)
+        {        
+        TApaAppInfo* info = new(ELeave) TApaAppInfo();
+        CleanupStack::PushL(info);
+        
+        err = apa.GetAppInfo(*info, TUid::Uid(aSid));
+        if (err == KErrNone)
+            {
+            iPromptData-&gt;iClientName.Close();
+            iPromptData-&gt;iClientName.Create(info-&gt;iCaption);
+            found = ETrue;
+            }
+        else if (err != KErrNotFound)
+            {
+            User::Leave(err);
+            }    
+        CleanupStack::PopAndDestroy(info); 
+        }
+    else if (err != KErrNotFound)
+        {
+        // If the connection to apparc failed with KErrNotFound
+        // then the error is ignored becase we assume the dialog
+        // creator was invoked from text-shell
+        User::Leave(err);
+        }
+    CleanupStack::PopAndDestroy(&amp;apa);
+    return found;
+    }
+    
+TBool CRefDialogCreator::ResolveClientNameFromSisRegistryL(const TSecureId&amp; aSid)
+/**
+Retrieves the client and vendor information from the SIS registry.
+@param aSid        The secure-id of the client application to lookup in the registry.
+@return            ETrue, if the lookup was successful; otherwise, EFalse is returned.
+*/
+    {
+    TBool found(EFalse);
+    Swi::RSisRegistrySession r;
+    User::LeaveIfError(r.Connect());
+    CleanupClosePushL(r);
+    
+    Swi::CSisRegistryPackage* p(0);
+    TRAPD(err, p = r.SidToPackageL(TUid::Uid(aSid.iId)));
+    if (err == KErrNone)
+        {
+        iPromptData-&gt;iClientName.Create(p-&gt;Name());
+        iPromptData-&gt;iVendorName.Create(p-&gt;Vendor());
+        found = ETrue;
+        delete p;
+        }
+    CleanupStack::PopAndDestroy(&amp;r);
+    return found;
+    }
+
+// From CDialogCreator
+void CRefDialogCreator::PrepareDialog(
+    const UserPromptService::CPromptRequest&amp; aRequest, const CPolicy&amp; aPolicy,            
+    const RPointerArray&lt;CFingerprint&gt;&amp; aFingerprints, const CClientEntity* aClientEntity,
+    const TAny* aEvalPrivateData, TRequestStatus&amp; aStatus)
+    {
+    aStatus = KRequestPending;
+    iClientStatus = &amp;aStatus;
+    
+    iRequest = &amp;aRequest;
+    iPolicy = &amp;aPolicy;
+    iFingerprints = &amp;aFingerprints;
+    iEvalPrivateData = aEvalPrivateData;
+    (void) aClientEntity;
+
+    // Kick off dialog creator state machine
+    iState = EPrepareDialog;
+    iStatus = KRequestPending;
+    TRequestStatus* status = &amp;iStatus;
+    SetActive();
+    User::RequestComplete(status, KErrNone);
+    }
+    
+void CRefDialogCreator::DisplayDialog(CPolicy::TOptions&amp; aOptions, const CFingerprint*&amp; aFingerprint,
+        TUint&amp; aEvaluatorInfo, TRequestStatus&amp; aStatus)
+    {    
+    aStatus = KRequestPending;
+    iClientStatus = &amp;aStatus;
+    
+    iOptionSelected = &amp;aOptions;
+    iFingerprint = &amp;aFingerprint;
+    aFingerprint = 0;
+    iEvaluatorInfo = &amp;aEvaluatorInfo;
+    iClientStatus = &amp;aStatus;
+    
+    // Start state machine
+    ASSERT(iState == EDisplayDialog); // PrepareDialog should have been called first
+    iStatus = KRequestPending;
+    TRequestStatus* status = &amp;iStatus;
+    SetActive();
+    User::RequestComplete(status, KErrNone);
+    }
+</pre>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-B2089965-546C-5FF2-8596-13A2221E02E6.html">Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

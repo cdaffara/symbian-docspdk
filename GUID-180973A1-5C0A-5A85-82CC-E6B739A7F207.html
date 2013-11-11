@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Platform Specific Layer Validation"/>
+<meta name="abstract" content="Describes the test code to validate a port of the MMC Controller."/>
+<meta name="description" content="Describes the test code to validate a port of the MMC Controller."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-86082C0C-B0EE-5E7C-85B4-4A509066012F.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CFD2236E-7775-5532-89CD-7D0E1E219FD8.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2F114BC9-9B5D-5989-9CF3-37A43377DC58.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-79B2CF91-FB95-5E7C-81CC-235A6A660D88.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-86082C0C-B0EE-5E7C-85B4-4A509066012F.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Platform Specific Layer Validation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2400576 id2400607 id2400622 id2400700 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-CFD2236E-7775-5532-89CD-7D0E1E219FD8.html" title="Provides an overview of generic driver support.">Generic Driver Support</a> &gt; <a href="GUID-2F114BC9-9B5D-5989-9CF3-37A43377DC58.html" title="Provides the physical device drivers, called media drivers, and associated libraries that manage storage media hardware.">Media Drivers</a> &gt; <a href="GUID-79B2CF91-FB95-5E7C-81CC-235A6A660D88.html" title="The MMC Controller provides kernel extensions that manages access to the MultiMediaCard hardware on behalf of media drivers or any other device driver.">MMC Controller</a> &gt; <a href="GUID-86082C0C-B0EE-5E7C-85B4-4A509066012F.html" title="Describes the steps to implement a port of the MMC Controller.">MMC Porting Implementation Tutorial</a> &gt; </div>
+<h1 class="topictitle1">Platform
+Specific Layer Validation</h1>
+<div><p>Describes the test code to validate a port of the MMC Controller.</p>
+
+<p>There are three stages involved in testing a port of the MultiMediaCard
+controller. The first stage tests the controller in isolation; subsequent
+stages test an additional area of functionality. </p>
+
+<p>All three stages involve text shell based test programs and test drivers,
+and therefore these tests can be run by just building a text shell ROM. You
+can also run tests on the Emulator. </p>
+
+<div class="section" id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-AB3EBD9F-49E9-5C9C-ACFB-377997C2A838"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-AB3EBD9F-49E9-5C9C-ACFB-377997C2A838"><!-- --></a><h2 class="sectiontitle">Testing the
+controller in isolation</h2> <p> <span class="filepath">MMCTEST.EXE</span> tests
+the MultiMediaCard controller in isolation, at the controller’s client interface
+level. Since the controller’s client API is a kernel side interface, this
+requires a test driver, <span class="filepath">D_MMCIF.LDD</span>, as well as the test
+program itself. </p>
+ <p>This is not a 'go/no-go' type test, but is a test
+utility that can perform a small variety of operations. These are selected
+a simple interactive way by pressing appropriate keys. </p>
+ 
+<div class="tablenoborder"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-A5C02651-82A2-57DB-8BCF-D1EF5F72902A"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-A5C02651-82A2-57DB-8BCF-D1EF5F72902A" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p>Building <span class="filepath">MMCTEST.EXE</span> and <span class="filepath">D_MMCIF.LDD</span>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>The source and header files needed to build <span class="filepath">MMCTEST.EXE</span> can
+be found in <span class="filepath">...\e32utils\pccd</span>; the mmp file is <span class="filepath">...\e32utils\group\mmctest.mmp</span>. </p>
+ <p>The
+source and header files needed to build the test driver <span class="filepath">D_MMCIF.LDD</span> can
+be found in <span class="filepath">...\e32utils\pccd</span>; the mmp file is <span class="filepath">...\e32utils\group\d_mmcif.mmp</span>. </p>
+ <p>You
+need to build <span class="filepath">MMCTEST.EXE</span> for the appropriate CPU target
+architecture (e.g. ARMI,THUMB etc.); you need to build <span class="filepath">D_MMCIF.LDD</span> for
+the appropriate platform (e.g. MINT). </p>
+ <p>Include both of these components
+in a ROM </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>Running the tests </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Run MMCTEST and perform the following suggested sequence: </p>
+ <ul>
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-3685E0AA-B3D5-5A30-B6FF-04DE7A53EBCF"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-3685E0AA-B3D5-5A30-B6FF-04DE7A53EBCF"><!-- --></a><p>Without a card inserted,
+power up the stack by pressing <kbd class="userinput">P</kbd>, and check that it
+reports that no card is present. </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-BA816CD0-3FA1-54C3-8480-7F82BA338119"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-BA816CD0-3FA1-54C3-8480-7F82BA338119"><!-- --></a><p>Insert a card, power
+it up, and check that it reports that a card is present. </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-29403BEA-814F-5F54-85B1-8E598E67BB72"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-29403BEA-814F-5F54-85B1-8E598E67BB72"><!-- --></a><p>Now that the card is
+powered up, read the card info by pressing <kbd class="userinput">C</kbd>, and check
+the data returned about the card against the expected card data, by referring
+to the datasheet for the card. </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-7C7542B2-F46A-5183-8256-1E962094A9B7"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-7C7542B2-F46A-5183-8256-1E962094A9B7"><!-- --></a><p>Read the first sector
+of the card by pressing <kbd class="userinput">M</kbd>. </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-B6F5D3F1-2CF9-55B3-8EAF-4672EBE9B1A9"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-B6F5D3F1-2CF9-55B3-8EAF-4672EBE9B1A9"><!-- --></a><p>Now read a few more
+sectors by pressing the space bar. </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-15FBBB20-8914-566B-A786-BB470312A7D0"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-15FBBB20-8914-566B-A786-BB470312A7D0"><!-- --></a><p>Test writing to a sector:
+while still viewing a sector, edit a part of this, by using the direction
+keys and typing in a hex number. Now save the change by pressing <kbd class="userinput">ESC</kbd>,
+followed by <kbd class="userinput">Y</kbd>. Now navigate to the same sector again
+and check that it displays the new contents of the sector. </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-23809955-30D3-5B53-85B6-890C75E63957"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-23809955-30D3-5B53-85B6-890C75E63957"><!-- --></a><p>Quit the test by pressing <kbd class="userinput">Q</kbd>. </p>
+ </li>
+
+</ul>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ </div>
+
+<div class="section" id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-9A353066-CE24-5969-B0FD-3F1164ECF3F5"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-9A353066-CE24-5969-B0FD-3F1164ECF3F5"><!-- --></a><h2 class="sectiontitle">Testing the
+controller with the media driver and the local media sub-system</h2> <a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-323C60B8-36B4-5975-AECC-659F68AB560D"><!-- --></a><ol id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-323C60B8-36B4-5975-AECC-659F68AB560D">
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-97E060B0-8355-54E3-AA35-7FF9B9D59119"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-97E060B0-8355-54E3-AA35-7FF9B9D59119"><!-- --></a><p> <span class="filepath">DRVTEST.EXE</span> tests
+the MultiMediaCard controller in conjunction with the media driver and the
+local media sub-system, in effect accessing the card as a local drive. This
+requires a kernel side test driver <span class="filepath">D_DRVIF.LDD</span> as well
+as the test program itself. </p>
+ <p>This is not a 'go/no-go' type test, but
+is a test utility that can perform a small variety of operations. These are
+selected a simple interactive way by pressing appropriate keys. It is used
+to test that card initialization and single block read and write requests
+are performed successfully. </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-BCCDA1BB-7205-5C0D-A0CC-607E44196624"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-BCCDA1BB-7205-5C0D-A0CC-607E44196624"><!-- --></a><p> <span class="filepath">T_ATADRV.EXE</span> tests
+that card initialization and simple read and write requests succeed. It also
+tests multi-block read/write operations, format requests, accessing the device
+following a media change event, and a machine power down event. </p>
+ <p>This
+is a 'go/no-go' type test. If this test succeeds, you can have fairly high
+confidence that the F32 test suite will run successfully. </p>
+ </li>
+
+</ol>
+ 
+<div class="tablenoborder"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-D29E7820-6241-5B6E-B242-4B7037BA7344"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-D29E7820-6241-5B6E-B242-4B7037BA7344" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p>Building <span class="filepath">DRVTEST.EXE</span>, <span class="filepath">D_DRVIF.LDD</span>,
+and <span class="filepath">T_ATADRV.EXE</span>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>The source and header files needed to build <span class="filepath">DRVTEST.EXE</span> can
+be found in <span class="filepath">...\e32utils\pccd</span>; the mmp file is <span class="filepath">...\e32utils\group\drvtest.mmp</span>. </p>
+ <p>The
+source and header files needed to build the test driver <span class="filepath">D_DRVIF.LDD</span> can
+be found in <span class="filepath">...\e32utils\pccd</span>; the mmp file is <span class="filepath">...\e32utils\group\d_drvif.mmp</span>. </p>
+ <p>The
+source and header files needed to build <span class="filepath">T_ATADRV.EXE</span> can
+be found in <span class="filepath">...\e32test\pccd</span>; the mmp file is <span class="filepath">...\e32test\group\t_atadrv.mmp</span>. </p>
+ <p>You
+need to build <span class="filepath">DRVTEST.EXE</span> for the appropriate CPU target
+architecture (e.g. ARMI,THUMB etc.) </p>
+ <p>You need to build <span class="filepath">D_DRVIF.LDD</span> for
+the appropriate platform (e.g. MINT) </p>
+ <p>You need to build <span class="filepath">T_ATADRV</span> for
+the appropriate CPU target architecture (e.g. ARMI,THUMB). </p>
+ <p>Include
+these components in a ROM. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>Running the DRVTEST test </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Run DRVTEST and perform the following suggested sequence: </p>
+ <ul>
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-22D82528-84D3-58C8-83F1-63B9D63976D0"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-22D82528-84D3-58C8-83F1-63B9D63976D0"><!-- --></a><p>Without a card inserted,
+power up the stack by pressing <kbd class="userinput">P</kbd>, and check that it
+reports that no card is present. </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-646F1CE2-6F6E-58D1-A097-2675CC0285D6"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-646F1CE2-6F6E-58D1-A097-2675CC0285D6"><!-- --></a><p>Insert a card, power
+it up, and check that it reports that a card is present. </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-76B81B73-0F7E-57DE-AEE2-67E03E9422A2"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-76B81B73-0F7E-57DE-AEE2-67E03E9422A2"><!-- --></a><p>Now that the card is
+powered up, read the card info by pressing <kbd class="userinput">C</kbd>, and check
+the data returned about the card against the expected card data, by referring
+to the datasheet for the card. </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-FD9CC21C-5818-5405-B0BA-B5E5344D715F"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-FD9CC21C-5818-5405-B0BA-B5E5344D715F"><!-- --></a><p>Read the first sector
+of the card by pressing <kbd class="userinput">M</kbd>. </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-B7EF88BE-D2CB-5E8F-844B-47F1A461CC82"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-B7EF88BE-D2CB-5E8F-844B-47F1A461CC82"><!-- --></a><p>Now read a few more
+sectors by pressing the <kbd class="userinput">space                         bar</kbd>. </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-96527F35-52E7-5400-AEB1-E7D05D4420C5"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-96527F35-52E7-5400-AEB1-E7D05D4420C5"><!-- --></a><p>Test writing to a sector:
+while still viewing a sector, edit a part of this, by using the direction
+keys and typing in a hex number. Now save the change by pressing <kbd class="userinput">ESC</kbd>,
+followed by <kbd class="userinput">Y</kbd>. Now navigate to the same sector again
+and check that it displays the new contents of the sector. </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-D91CFC9A-C544-5E32-BCAE-3B2BA558AF63"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-D91CFC9A-C544-5E32-BCAE-3B2BA558AF63"><!-- --></a><p>Quit the test by pressing <kbd class="userinput">Q</kbd>. </p>
+ </li>
+
+</ul>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>Running the T_ATADRV test </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Run T_ATADRV and follow the on-screen instructions. Check that the
+test runs to the end with no errors. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ </div>
+
+<div class="section" id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-9AD20A90-0E4D-56BC-A681-833EBD632DF6"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-9AD20A90-0E4D-56BC-A681-833EBD632DF6"><!-- --></a><h2 class="sectiontitle"> Testing using
+the F32 test suite</h2> <p>The final test stage is to run the entire file
+server test suite on a card drive. </p>
+ <p>To perform these tests: </p>
+ <ul>
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-1C50C6E5-E811-5DFE-8814-F4B18648E389"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-1C50C6E5-E811-5DFE-8814-F4B18648E389"><!-- --></a><p>build a text shell ROM
+that contains the F32 test suite, i.e. build the ROM with the option: </p>
+ <pre class="codeblock" id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-892CC775-89C7-5B48-AE44-5D63E7A030FD"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-892CC775-89C7-5B48-AE44-5D63E7A030FD"><!-- --></a>-t=f32tests</pre>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-2A5BE4AA-9762-525F-9391-D839153C41F5"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-2A5BE4AA-9762-525F-9391-D839153C41F5"><!-- --></a><p>boot the test machine
+into the text shell. </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-C9A22A2C-58F6-59A4-BB85-6D69703520F9"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-C9A22A2C-58F6-59A4-BB85-6D69703520F9"><!-- --></a><p>launch the F32 automatic
+tests and check that all of the tests run without error. Use the command option
+"-d" to set the default drive, for example: </p>
+ <pre class="codeblock" id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-08A2E18B-7CA8-5124-B46E-88311D468C4E"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-08A2E18B-7CA8-5124-B46E-88311D468C4E"><!-- --></a>RUNTESTS F32TEST.AUTO.ARMI.BAT -d d</pre>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-57378A6B-B5FB-5EFF-9FD4-6F948B5F20D1"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-57378A6B-B5FB-5EFF-9FD4-6F948B5F20D1"><!-- --></a><h2 class="sectiontitle">Emulator-based
+tests</h2> <p>It is possible to emulate a user opening and closing the
+MMC drive door, replacing and removing the MMC card, and assigning a password
+to an emulated MMC card. This is important so that you can test: </p>
+ <ul>
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-2B8F603F-FC12-57E2-B4A7-E86653DAD5C5"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-2B8F603F-FC12-57E2-B4A7-E86653DAD5C5"><!-- --></a><p>how an application behaves
+when the MMC card, from which the application is running, is removed and/or
+swapped </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-D110DBEA-7070-557E-982A-8A34FACC7256"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-D110DBEA-7070-557E-982A-8A34FACC7256"><!-- --></a><p>how an application behaves
+when it is reading and writing data to and from an MMC card </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-E714BBF6-A97F-5D4A-9D45-A7B8C12238F4"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-E714BBF6-A97F-5D4A-9D45-A7B8C12238F4"><!-- --></a><p>that data stored on
+an MMC card is not lost or corrupted during MMC drive events </p>
+ </li>
+
+<li id="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-EC779E31-2A94-51D4-B93D-4C9C2811726A"><a name="GUID-180973A1-5C0A-5A85-82CC-E6B739A7F207__GUID-EC779E31-2A94-51D4-B93D-4C9C2811726A"><!-- --></a><p>that MMC card locking
+and password notification works correctly. </p>
+ </li>
+
+</ul>
+ <p>The platform independent layer of the MuiltiMediaCard controller,
+as its name implies, is common to all platforms, including the emulator. However,
+the emulator provides its own implementation of the platform specific layer. </p>
+ <p>The
+emulator does not provide access to any kind of MultiMediaCard hardware. Instead,
+the memory area of each emulated card is represented by a file, a <span class="filepath">.bin</span> type
+file in the Windows system <span class="filepath">temp</span> directory, on the host
+machine. The MultiMediaCard emulator emulates a single stack containing two
+separate cards, the first in slot 0, and the second in slot 1. Each emulated
+card has an associated <span class="filepath">.bin</span> file on the host machine.
+As the emulator only supports the swapping of cards in slot 0, there are two <span class="filepath">.bin</span> files,
+one for each of the two emulated MMC cards in slot 0. There is no support
+for card swapping on slot 1, and therefore this has only one <span class="filepath">.bin</span> file. </p>
+ <p>This
+means that all the test programs described can be run on the emulator, and
+they will exercise the platform independent layer code in the same way as
+on real target hardware. It also means that call entries to, and exits from
+platform specific layer code can be traced, and may be useful for debugging
+problems on real hardware, and to help understand how the controller operates. </p>
+ <p>The
+code for the emulator specific layer code can be found in <span class="filepath">...\wins\specific\mmc.cpp</span>. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-86082C0C-B0EE-5E7C-85B4-4A509066012F.html" title="Describes the steps to implement a port of the MMC Controller.">MMC Porting Implementation Tutorial</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

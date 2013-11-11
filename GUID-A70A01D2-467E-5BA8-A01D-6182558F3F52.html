@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Boot Time Initialisation Implementation"/>
+<meta name="abstract" content="How to write an initialisation function, implemented by the Media driver and called by the kernel at boot time."/>
+<meta name="description" content="How to write an initialisation function, implemented by the Media driver and called by the kernel at boot time."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E21C4AF8-852A-5BBD-A92A-5473D1DFFBB1.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-52371DAB-A231-558C-B3E6-220DAAEE566B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5C223AD5-4676-58B4-B3A5-066F6B69AA4D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E21C4AF8-852A-5BBD-A92A-5473D1DFFBB1.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-A70A01D2-467E-5BA8-A01D-6182558F3F52"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Boot Time Initialisation Implementation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-A70A01D2-467E-5BA8-A01D-6182558F3F52"><a name="GUID-A70A01D2-467E-5BA8-A01D-6182558F3F52"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2400778 id2402024 id2402050 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-52371DAB-A231-558C-B3E6-220DAAEE566B.html" title="Provides software components that implement the interface between Symbian platform and peripherals.">Logical Device Drivers</a> &gt; <a href="GUID-5C223AD5-4676-58B4-B3A5-066F6B69AA4D.html" title="Provides the logical device driver for the internal and removable storage media on a phone.">Local Media Subsystem</a> &gt; <a href="GUID-E21C4AF8-852A-5BBD-A92A-5473D1DFFBB1.html" title="Describes the steps to implement a new Media Driver.">Media Driver Tutorial</a> &gt; </div>
+<h1 class="topictitle1">Boot
+Time Initialisation Implementation</h1>
+<div><p>How to write an initialisation function, implemented by the Media
+driver and called by the kernel at boot time. </p>
+
+<p>You use the <a href="GUID-7964FC46-4641-3BDD-92C9-50FA22C3321A.html"><span class="apiname">DECLARE_STANDARD_EXTENSION()</span></a> macro as a
+wrapper around the code that does this. There are at two important things
+to do at this stage: </p>
+
+<ul>
+<li id="GUID-A70A01D2-467E-5BA8-A01D-6182558F3F52__GUID-21EA5C7E-7147-596E-A340-1D6FED0328CE"><a name="GUID-A70A01D2-467E-5BA8-A01D-6182558F3F52__GUID-21EA5C7E-7147-596E-A340-1D6FED0328CE"><!-- --></a><p>attach a DFC queue,
+if the underlying media driver supports asynchronous creation </p>
+ </li>
+
+<li id="GUID-A70A01D2-467E-5BA8-A01D-6182558F3F52__GUID-4E9CD255-B954-5B75-B639-2AC494296AA4"><a name="GUID-A70A01D2-467E-5BA8-A01D-6182558F3F52__GUID-4E9CD255-B954-5B75-B639-2AC494296AA4"><!-- --></a><p>register the media driver
+with the local media system. </p>
+ </li>
+
+</ul>
+
+<div class="section" id="GUID-A70A01D2-467E-5BA8-A01D-6182558F3F52__GUID-43EB0EC7-AAA3-5FFC-8724-E938F6BFB158"><a name="GUID-A70A01D2-467E-5BA8-A01D-6182558F3F52__GUID-43EB0EC7-AAA3-5FFC-8724-E938F6BFB158"><!-- --></a><h2 class="sectiontitle">Asynchronous
+creation of the media driver</h2> <p>If the underlying media driver supports
+asynchronous creation, then a DFC queue <em>must</em> be attached at this stage.
+However, media drivers that interface to the Peripheral Bus Controller should
+create a new <a href="GUID-B4E66372-2654-3434-AFB7-844B0B8D2FC9.html"><span class="apiname">DPBusPrimaryMedia</span></a> object, as shown in the
+code above, but should not allocate a DFC for asynchronous creation; this
+is handled by the Peripheral Bus Controller. </p>
+ <p>See also <a href="GUID-A6D14A03-ADBF-570D-8AC7-E8BC2700F930.html#GUID-A6D14A03-ADBF-570D-8AC7-E8BC2700F930__GUID-32B157E9-0F71-5C1B-A0FA-08D5B1ACA700">Create() - create the media driver object</a>. </p>
+ </div>
+
+<div class="section" id="GUID-A70A01D2-467E-5BA8-A01D-6182558F3F52__GUID-4A8DEEAB-32C4-5431-8226-5623E2BD9098"><a name="GUID-A70A01D2-467E-5BA8-A01D-6182558F3F52__GUID-4A8DEEAB-32C4-5431-8226-5623E2BD9098"><!-- --></a><h2 class="sectiontitle">Register the
+media driver with the local media system</h2> <p>The media driver must
+be registered with the Local Media Subsystem; this provides information such
+as the number of supported drives, partitions, names and drive numbers. This
+is done by calling <a href="GUID-9E60E8D9-619E-3A76-BAC8-93A60D62C7DF.html#GUID-9E60E8D9-619E-3A76-BAC8-93A60D62C7DF__GUID-647D0858-FE04-3A4F-99CE-81CD0B34CE7B"><span class="apiname">LocDrv::RegisterMediaDevice()</span></a>, and passing
+appropriate values. </p>
+ <p>The media device type can be any of the <a href="GUID-0FE5A5FE-5D38-3620-8674-2B770CB9D049.html"><span class="apiname">TMediaDevice</span></a> enumerated
+values provide that a given value is only used once. This value may sometimes
+be referred to as the media ID. </p>
+ <p>The values passed to this function
+are highly dependent on the target hardware platform, and it is common practice
+to define them in a file contained within the Variant directory, instead of
+hard-coding them into generic Symbian platform code. For example, Variant
+A may provide two PC Card slots, while Variant B may provide 4. </p>
+ <p>The
+port for the template reference board has the header file <span class="filepath">...\template_variant\inc\variantmediadef.h</span>,
+which defines constants that are used when registering a media driver for
+that specific hardware. </p>
+ <p>Your code may find it convenient to use the
+struct <a href="GUID-FC0F974E-9ABB-348B-9AE9-778B3A1F413A.html"><span class="apiname">SMediaDeviceInfo</span></a> to capture this information. </p>
+ </div>
+
+<div class="example"><p>The following code is used: </p>
+ <pre class="codeblock" id="GUID-A70A01D2-467E-5BA8-A01D-6182558F3F52__GUID-2A3ADFBB-C2D4-51DD-AE3E-21C5C34554D9"><a name="GUID-A70A01D2-467E-5BA8-A01D-6182558F3F52__GUID-2A3ADFBB-C2D4-51DD-AE3E-21C5C34554D9"><!-- --></a>DECLARE_STANDARD_EXTENSION()
+    {
+    TInt r=KErrNoMemory;
+    DPrimaryMediaBase* pM=new DPrimaryMediaBase;
+    if (pM)
+        {
+        //…Required here for Asynchronous creation (if supported)
+        pM-&gt;iDfcQ = &amp;MyDfcQ;
+ 
+        //…Perform registration here
+        r = LocDrv::RegisterMediaDevice(MEDIA_DEVICE_TYPE,
+                                        MEDIA_DRIVECOUNT,
+                                        &amp;IMediaDriveNumbers[0],
+                                        pM,MEDIA_NUMMEDIA,KMediaDriveName
+                                       );
+        }
+    return(r);
+    }
+      </pre>
+ <p>You can also do any further initialisation that is appropriate
+to your driver. </p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E21C4AF8-852A-5BBD-A92A-5473D1DFFBB1.html" title="Describes the steps to implement a new Media Driver.">Media Driver Tutorial</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

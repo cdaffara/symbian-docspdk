@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Debugging the Host Controller"/>
+<meta name="abstract" content="Describes how to debug the host controller."/>
+<meta name="description" content="Describes how to debug the host controller."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5FE7D4DB-B853-57C4-8A90-16DF92F6231A.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DD13AA8E-BDAD-57EC-81EC-49C8D6D30A86.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6CE12919-FF81-5254-BA12-385F589FEA44.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5FE7D4DB-B853-57C4-8A90-16DF92F6231A.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Debugging the Host Controller</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE"><a name="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2535271 id2535486 id2535569 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-DD13AA8E-BDAD-57EC-81EC-49C8D6D30A86.html" title="The Short Link Services module enables licensees to implement Bluetooth, USB, Infrared and OBEX on Symbian platform devices.">Short Link Services Guide</a> &gt; <a href="GUID-6CE12919-FF81-5254-BA12-385F589FEA44.html" title="The Bluetooth Management collection contains the Bluetooth Manager and Bluetooth Client components.">Bluetooth Management Collection</a> &gt; <a href="GUID-5FE7D4DB-B853-57C4-8A90-16DF92F6231A.html">Bluetooth User Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Debugging
+the Host Controller</h1>
+<div><p>Describes how to debug the host controller.</p>
+
+<p>The HCI extension-conduit enables the writing of vendor specific commands
+to the Bluetooth host controller hardware via the stack. Specific debugging
+events or command completions are received back through a "secure channel".
+Event notifications are only available to the one client that issued the command
+in the first place, and there is only one such client on a device at any one
+time. </p>
+
+
+
+<p><strong>Intended Audience </strong> </p>
+
+<p>This document is intended to be read by Symbian platform licensees. </p>
+
+<div class="section" id="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-19A5E2C9-4222-4759-BBBA-8A257313061C"><a name="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-19A5E2C9-4222-4759-BBBA-8A257313061C"><!-- --></a><h2 class="sectiontitle">How to send vendor-specific debug commands to the host controller</h2> <p>A
+wrapper class <a href="GUID-EEC833C9-8711-30FA-95B5-1FB8D7A02A0B.html"><span class="apiname">CHciExtensionConduit</span></a> is provided to drive
+a command/event loop on behalf of the client program. The wrapper class provides
+callbacks into the client-implemented <a href="GUID-2591274E-4F6F-315C-B170-82D980E82750.html"><span class="apiname">MVendorSpecificHciConduit</span></a> interface
+upon reception of a debug or command completion event. On construction, the <samp class="codeph">CHciExtensionConduit</samp> registers
+itself with the Bluetooth stack, which ensures that there can be only one
+HCI Extension Conduit in existence on a machine at one time. This means that
+the first such conduit constructed after bootup has sole access to issue vendor
+specific commands and more importantly receive back vendor specific events. </p>
+ <p><strong>Basic Procedure</strong> </p>
+ <p>To send vendor specific debug commands to
+the host controller: </p>
+ <a name="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-7C2C1742-54F1-533C-B511-4DB2486E6791"><!-- --></a><ol id="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-7C2C1742-54F1-533C-B511-4DB2486E6791">
+<li id="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-2AB6F7B7-69BC-5DA2-A365-BC2E32B8DFE1"><a name="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-2AB6F7B7-69BC-5DA2-A365-BC2E32B8DFE1"><!-- --></a><p>create an array for
+your vendor specific commands and a descriptor to hold this data </p>
+ </li>
+
+<li id="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-5567327D-A4EF-51AE-8123-3E358AF16CC7"><a name="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-5567327D-A4EF-51AE-8123-3E358AF16CC7"><!-- --></a><p>call <a href="GUID-EEC833C9-8711-30FA-95B5-1FB8D7A02A0B.html#GUID-EEC833C9-8711-30FA-95B5-1FB8D7A02A0B__GUID-1989D0A7-ADC4-33F2-B1B1-6F1DDB685DE1"><span class="apiname">CHciExtensionConduit::IssueCommandL()</span></a> to
+issue the vendor specific command to the hardware, passing it the descriptor
+containing the raw binary data for the command. The raw binary data should
+not include the HCI transport header and footer bytes, as the stack will add
+these automatically to the provided hex command. </p>
+ </li>
+
+<li id="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-2B1DD0BD-547B-5C66-BD73-2EA5406195CA"><a name="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-2B1DD0BD-547B-5C66-BD73-2EA5406195CA"><!-- --></a><p>define and implement <a href="GUID-2591274E-4F6F-315C-B170-82D980E82750.html#GUID-2591274E-4F6F-315C-B170-82D980E82750__GUID-08860F56-E933-3746-962F-92FA858EAB56"><span class="apiname">MVendorSpecificHciConduit::CommandCompleted()</span></a>:
+this function is called when a vendor specific command issued through the
+conduit receives a completion from the hardware. </p>
+ </li>
+
+<li id="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-0C35ABB8-E040-5DB9-85D4-62A8F7B71A2D"><a name="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-0C35ABB8-E040-5DB9-85D4-62A8F7B71A2D"><!-- --></a><p>If the command generates
+debug events, call <a href="GUID-EEC833C9-8711-30FA-95B5-1FB8D7A02A0B.html#GUID-EEC833C9-8711-30FA-95B5-1FB8D7A02A0B__GUID-AB5A6279-CA79-3318-A3A1-111118985C57"><span class="apiname">CHciExtensionConduit::WaitForEvent()</span></a> to
+instruct the conduit that vendor debug events are expected back from the hardware.
+Implement <a href="GUID-2591274E-4F6F-315C-B170-82D980E82750.html#GUID-2591274E-4F6F-315C-B170-82D980E82750__GUID-C4154C63-3F48-3FF2-8702-923327370170"><span class="apiname">MVendorSpecificHciConduit::ReceiveEvent()</span></a> to
+get your specific debug event data generated from the hardware. </p>
+ </li>
+
+</ol>
+ <p><strong> Example </strong> </p>
+ <pre class="codeblock" id="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-1E719427-E3AB-5ED8-9EEC-C8C0D8EFE725"><a name="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-1E719427-E3AB-5ED8-9EEC-C8C0D8EFE725"><!-- --></a>class CDebugEventConsole : public CBase, private MVendorSpecificHciConduit
+    {
+public:
+    static CDebugEventConsole* NewL();
+ ~CDebugEventConsole();
+
+private:
+    ConstructL();
+    CDebugEventConsole();
+    virtual void CommandCompleted(TInt aError);
+    virtual TBool ReceiveEvent(TDesC8&amp; aEvent, TInt aError);
+
+    CConsoleBase*            iConsole;
+    CHciExtensionConduit*    iConduit;
+    };
+
+ CDebugEventConsole* CDebugEventConsole::NewL()
+    {
+    CDebugEventConsole* self=new (ELeave)CDebugEventConsole();
+    CleanupStack::PushL(self);
+    self-&gt;ConstructL();
+    CleanupStack::Pop(self);
+    return self;
+    }
+
+CDebugEventConsole::~CDebugEventConsole()
+    {
+    delete iConsole;
+    delete iConduit;
+    }
+
+CDebugEventConsole::ConstructL()
+    {
+    TUint8 ActivateInfo[] = //returns response event and couple of extension events
+        {
+        0x01, 0x02, 0x03, 0x04, //example uses meaningless values, for illustration
+        0x05, 0x06, 0x07, 0x08,
+        0x09, 0x0A, 0x0B, 0x0C,
+        0x0D, 0x0E, 0x0F, 0x10,
+        0x11, 0x12, 0x13, 0x14,
+        0x15, 0x16, 0x17, 0x18,
+        0x19, 0x1A, 0x1B, 0x1C,
+        0x1D, 0x1E, 0x1F, 0x20,
+        0x21, 0x22, 0x23, 0x24,
+        0x25, 0x26
+        };
+
+    ...
+
+    TPtrC8 ExtensionCommand(ActivateInfo, sizeof(ActivateInfo));
+ 
+    ...
+    
+    iConsole=Console::NewL(_L("listening for Events..."),TSize(20,20));
+    iConduit = CHciExtensionConduit::NewL(*this);
+    iConduit-&gt;IssueCommandL(ExtensionCommand);
+    }
+
+CDebugEventConsole::CDebugEventConsole()
+    {
+    }
+
+void CDebugEventConsole::CommandCompleted(TInt aError)
+    {
+    iConsole-&gt;Printf(_L("Cmd Complt: %d\n"), aError);
+        if(aError==KErrNone)
+        {
+        aError = iConduit-&gt;WaitForEvent();    
+        iConsole-&gt;Printf(_L("WaitForEvent: %d\n"), aError);
+        }
+    }
+
+TBool CDebugEventConsole::ReceiveEvent(TDesC8&amp; aEvent, TInt aError)
+    {
+    iConsole-&gt;Printf(_L("Rcvd Event!\n  err %d Length %d\n"), aError, aEvent.Length());
+    return ETrue; // Keep receiving events
+    }
+
+void DoEventListenerL()
+    {
+    CActiveScheduler *exampleScheduler = new (ELeave) CActiveScheduler();
+    CleanupStack::PushL(exampleScheduler);
+    CActiveScheduler::Install(exampleScheduler); 
+
+    CleanupStack::PushL(CDebugEventConsole::NewL());
+
+    CActiveScheduler::Start();
+    CleanupStack::PopAndDestroy(2); // active shed, myDebug
+    }
+</pre>
+ </div>
+
+<div class="section" id="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-205EEED3-5B56-497C-9714-0D40653DABC5"><a name="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-205EEED3-5B56-497C-9714-0D40653DABC5"><!-- --></a><h2 class="sectiontitle">Where Next?</h2> <p>This tutorial set takes you through
+all the steps involved in setting up and communicating over a Bluetooth connection. </p>
+ <ul>
+<li id="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-710429DF-DDE9-5529-B0C5-62BE04E9FB03"><a name="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-710429DF-DDE9-5529-B0C5-62BE04E9FB03"><!-- --></a><p> <a href="GUID-70339E6A-63CD-5A74-846C-50771FDAC763.html">Listening
+for Incoming Bluetooth Connections</a>  </p>
+ </li>
+
+<li id="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-40F5BDDB-06CF-5D2E-AD32-0BA5B9C2438F"><a name="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-40F5BDDB-06CF-5D2E-AD32-0BA5B9C2438F"><!-- --></a><p> <a href="GUID-834BD3BB-B39C-5EE9-8A62-9DC435930F95.html">Handling
+the Local Device Name</a>  </p>
+ </li>
+
+<li id="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-E7C9448C-4C00-5755-BCF0-47ADD30F012C"><a name="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-E7C9448C-4C00-5755-BCF0-47ADD30F012C"><!-- --></a><p> <a href="GUID-FDA7B932-B9C6-502D-8699-C18C8D86BCC6.html" title="The Bluetooth specification defines commands and options that can be used with the various layers of the protocol.">Performing
+Low-level Configuration</a>  </p>
+ </li>
+
+<li id="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-8E85825C-92DB-554D-9EBC-74297A3CD148"><a name="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-8E85825C-92DB-554D-9EBC-74297A3CD148"><!-- --></a><p> <strong>Debugging the Host
+Controller</strong> - This document </p>
+ </li>
+
+<li id="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-39439F8A-81F6-5AA2-88D2-DEC3FCE8DC11"><a name="GUID-5C63EF5C-826D-5838-BB7E-12FF4EA1DFCE__GUID-39439F8A-81F6-5AA2-88D2-DEC3FCE8DC11"><!-- --></a><p> <a href="GUID-01A0682A-50B1-57AB-9939-6CC8FCCD782D.html">Disconnecting
+ACL links</a>  </p>
+ </li>
+
+</ul>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-5FE7D4DB-B853-57C4-8A90-16DF92F6231A.html">Bluetooth User Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

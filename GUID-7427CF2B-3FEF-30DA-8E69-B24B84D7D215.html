@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="MMdEQueryObserver"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-7427CF2B-3FEF-30DA-8E69-B24B84D7D215"/>
+
+<title>MMdEQueryObserver</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-7427CF2B-3FEF-30DA-8E69-B24B84D7D215"><a name="GUID-7427CF2B-3FEF-30DA-8E69-B24B84D7D215"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2383086 id2434397 id2434640 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">MMdEQueryObserver Class Reference</h1>
+	<table class="signature"><tr><td>class MMdEQueryObserver</td></tr></table><div class="section"><div>
+			<p>Observer interface for MdE database queries.</p>
+
+			<p>Example of doing a query to metadata database:</p>
+
+			<p>A class needs to implement <a href="GUID-7427CF2B-3FEF-30DA-8E69-B24B84D7D215.html#GUID-7427CF2B-3FEF-30DA-8E69-B24B84D7D215">MMdEQueryObserver</a> interface if it is going to do a query to MdE database.</p>
+
+			<p>class CMdEQueryExample : public <a href="GUID-7427CF2B-3FEF-30DA-8E69-B24B84D7D215.html#GUID-7427CF2B-3FEF-30DA-8E69-B24B84D7D215">MMdEQueryObserver</a> { void <a href="GUID-7427CF2B-3FEF-30DA-8E69-B24B84D7D215.html#GUID-E0C9097B-3019-3068-8425-80B9866B97BC">HandleQueryNewResults(CMdEQuery&amp; aQuery, TInt aFirstNewItemIndex, TInt aNewItemCount)</a>; void <a href="GUID-7427CF2B-3FEF-30DA-8E69-B24B84D7D215.html#GUID-0ABE366A-94F1-3546-8B25-840BF3A0D269">HandleQueryCompleted(CMdEQuery&amp; aQuery, TInt aError)</a>; ... CMdESession* iMdeSession; // session to MdE, created before trying to do the query CMdEQuery* iQuery; };</p>
+
+			<p>void CMdEQueryExample::DoQuery() { CMdENamespaceDef&amp; defNS = iMdeSession-&gt;GetDefaultNamespaceDefL();</p>
+
+			<p>// In this function we create a query with following conditions: // Right object in relation must be a location object. // Left object in relation must have id 6.</p>
+
+			<p>// First create an object query. We want to find location objects so let's give that // as a condition to the query. CMdEObjectDef&amp; rightObjDef = defNS.GetObjectDefL( MdeConstants::Location::KLocationObject ); iQuery = iMdeSession-&gt;NewObjectQueryL( defNS, rightObjDef, this );</p>
+
+			<p>// Result mode EQueryResultModeItem means we want the query to return items. // Other options are: EQueryResultModeId, EQueryResultModeCount, // EQueryResultModeDistinctValues and EQueryResultModeObjectWithFreetexts. iQuery-&gt;SetResultMode( EQueryResultModeItem );</p>
+
+			<p>// ELogicConditionOperatorAnd means we want all conditions to be true. iQuery-&gt;Conditions().SetOperator( ELogicConditionOperatorAnd );</p>
+
+			<p>// Add a relation condition to the query. The location object is the right side object of // the relation. CMdERelationCondition&amp; filterCond = iQuery-&gt;Conditions(). AddRelationConditionL( ERelationConditionSideRight );</p>
+
+			<p>// The object on the left side of the relation must have ID 6. filterCond.LeftL().AddObjectConditionL( 6 );</p>
+
+			<p>iQuery-&gt;FindL( 10, 1 ); // Start the query! The first parameter is maximum number of result items. // The second parameter is number of results per observer // notification. This query returns maximum of 10 location items // and gives a notification (HandleQueryNewResults) for each. }</p>
+
+			<p>void CMdEQueryExample::HandleQueryCompleted( CMdEQuery&amp; aQuery, TInt aError ) { // query is completed if( aQuery.Count() &gt; 0 &amp;&amp; aError == KErrNone ) { // some items were found! } }</p>
+
+			<p>void CMdEQueryExample::HandleQueryNewResults(CMdEQuery&amp; aQuery, TInt aFirstNewItemIndex, TInt aNewItemCount) { // query is not yet completed but new results were found }</p>
+
+			<p>CMdEQuery::FindL </p>
+
+		</div></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">void</td><td><a href="#GUID-0ABE366A-94F1-3546-8B25-840BF3A0D269">HandleQueryCompleted</a>(CMdEQuery &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-E0C9097B-3019-3068-8425-80B9866B97BC">HandleQueryNewResults</a>(CMdEQuery &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-0ABE366A-94F1-3546-8B25-840BF3A0D269"><a name="GUID-0ABE366A-94F1-3546-8B25-840BF3A0D269"><!-- --></a>
+		<h2 class="topictitle2">HandleQueryCompleted(CMdEQuery &amp;, TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>HandleQueryCompleted</td><td>(</td><td>CMdEQuery &amp;</td><td>aQuery,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aError</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Called to notify the observer that the query has been completed, or that an error has occured.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CMdEQuery &amp; aQuery</td><td>Query instance.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aError</td><td>KErrNone, if the query was completed successfully. Otherwise one of the system-wide error codes.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E0C9097B-3019-3068-8425-80B9866B97BC"><a name="GUID-E0C9097B-3019-3068-8425-80B9866B97BC"><!-- --></a>
+		<h2 class="topictitle2">HandleQueryNewResults(CMdEQuery &amp;, TInt, TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>HandleQueryNewResults</td><td>(</td><td>CMdEQuery &amp;</td><td>aQuery,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aFirstNewItemIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aNewItemCount</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Called to notify the observer that new results have been received in the query.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CMdEQuery &amp; aQuery</td><td>Query instance that received new results.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aFirstNewItemIndex</td><td>Index of the first new item that was added to the result item array.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aNewItemCount</td><td>Number of items added to the result item array.  </td></tr></table></div>
+
+	</div>
+
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

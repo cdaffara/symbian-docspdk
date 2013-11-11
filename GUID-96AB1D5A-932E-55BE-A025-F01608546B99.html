@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="RAII Idiom"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ECE93783-F571-51DA-AB92-EDDA8618A85C.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-324107D1-6E0B-56DD-BDC0-7296F688A9CF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-28AD51DC-C101-5E6E-9EC3-C2B61400D8CD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D60B55FA-D8C1-559A-9D99-48845BE32A6C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ECE93783-F571-51DA-AB92-EDDA8618A85C.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-96AB1D5A-932E-55BE-A025-F01608546B99"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>RAII Idiom</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-96AB1D5A-932E-55BE-A025-F01608546B99"><a name="GUID-96AB1D5A-932E-55BE-A025-F01608546B99"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2383459 id2384051 id2384059 id2384073 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-324107D1-6E0B-56DD-BDC0-7296F688A9CF.html">Low Level Libraries and Frameworks</a> &gt; <a href="GUID-28AD51DC-C101-5E6E-9EC3-C2B61400D8CD.html">Generic Usability Library</a> &gt; <a href="GUID-D60B55FA-D8C1-559A-9D99-48845BE32A6C.html" title="The EUser High Level (EUserHL) library is a general purpose user library that provides a usability layer to hide away some of the complexities of the Symbian platform. This section lists the concepts, the overview and the tutorials that helps the Symbian Developers understand the importance of the EUserHL library.">EUser High Level Library</a> &gt; <a href="GUID-ECE93783-F571-51DA-AB92-EDDA8618A85C.html" title="The EUser High Level Library introduces a new L-Class idiom along with a self managing string class and automatic resource management classes.">EUser High Level Concepts</a> &gt; </div>
+<h1 class="topictitle1">RAII Idiom</h1>
+<div><p>The Resource Acquisition Is Initialization (RAII) idiom is the basis of implementation of the smart pointer class template. It is also used by the implementation of the file stream classes provided by C++ Standard Library and by many others. The Symbian C++ class templates for automatic resource management are based on the C++ RAII idiom, in order to provide exception-safe automatic cleanup on normal or exceptional exit from a scope. </p>
+ <div class="section"><h2 class="sectiontitle">Need for RAII Idiom</h2> <p>The current Symbian C++ resource management mechanism is the Symbian Cleanup Stack. The CleanupStack class and the associated functions provides Symbian C++ exception-safe (leave safe) cleanup when used in conjunction with the Symbian Leave mechanism. The RAII idiom can free resources automatically. The idiom consists of a class with a constructor that allocates a resource and a destructor that frees the resource. When a local variable of that class type is declared, it will automatically call the destructor to free the resource when leaving the scope. This also protects against leaks caused by thrown exceptions. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">RAII APIs</h2> <p>The LCleanedupX and LManagedX class templates share a common API as described below: </p>
+ <ul><li id="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-73832E1B-FF2E-5779-AB4C-CAABAB564CE8"><a name="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-73832E1B-FF2E-5779-AB4C-CAABAB564CE8"><!-- --></a><p> <a href="GUID-C945DFA5-819F-3EB4-8762-25AD191C8DCE.html"><span class="apiname"> ReleaseResource()</span></a>  </p>
+ <pre class="codeblock" id="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-3410D6E2-2A5C-54D2-95A5-AE38AFEA682F"><a name="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-3410D6E2-2A5C-54D2-95A5-AE38AFEA682F"><!-- --></a>void ReleaseResource()</pre>
+ <p> <strong>Description:</strong> This method forces cleanup of a managed resource. If automatic resource management is enabled, the specified cleanup strategy is invoked for the managed reference and the automatic resource management is then disabled. </p>
+ </li>
+ <li id="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-77F69FF8-E61A-5B57-B887-D66EC29F4CF9"><a name="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-77F69FF8-E61A-5B57-B887-D66EC29F4CF9"><!-- --></a><p> <a href="GUID-BDB6254A-B55E-3834-8187-1CD9DF3C5968.html"><span class="apiname"> Unmanage()</span></a>  </p>
+ <pre class="codeblock" id="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-7D6FDC92-A0A6-5AB5-AD7E-69E9C9C52206"><a name="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-7D6FDC92-A0A6-5AB5-AD7E-69E9C9C52206"><!-- --></a>T&amp; Unmanage()</pre>
+ <p> <strong>Description:</strong> This method disables automatic cleanup of a managed resource and returns a reference to the object of type T. </p>
+ </li>
+ <li id="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-E1CC7B50-A4C6-599E-9A4B-A78D650B8121"><a name="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-E1CC7B50-A4C6-599E-9A4B-A78D650B8121"><!-- --></a><p> <a href="GUID-344DF799-7861-3E54-8B92-7F96956A5237.html"><span class="apiname">IsEnabled()</span></a>  </p>
+ <pre class="codeblock" id="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-36EED42A-0C9B-5BC3-B7B7-AFD2365DF2F8"><a name="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-36EED42A-0C9B-5BC3-B7B7-AFD2365DF2F8"><!-- --></a>TBool IsEnabled()</pre>
+ <p> <strong>Description:</strong> This method returns ETrue if automatic resource management is enabled, otherwise returns EFalse. </p>
+ </li>
+ <li id="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-4B6610DD-BD24-527E-A9C6-6E23391C789C"><a name="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-4B6610DD-BD24-527E-A9C6-6E23391C789C"><!-- --></a><p> <a href="GUID-890C741F-EC69-30E3-AA89-CE35B3DE481F.html"><span class="apiname">Get()</span></a>  </p>
+ <pre class="codeblock" id="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-F473AB80-49AC-5355-8879-649A05034E03"><a name="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-F473AB80-49AC-5355-8879-649A05034E03"><!-- --></a>T&amp; Get()</pre>
+ <p> <strong>Description:</strong> This method returns a reference to the managed object of type T for Ref, Handle and Guard variants of LCleanedupX and LManagedX. </p>
+ <pre class="codeblock" id="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-F6F79274-1B93-5E05-8446-8C00E479F0AD"><a name="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-F6F79274-1B93-5E05-8446-8C00E479F0AD"><!-- --></a>T* Get()</pre>
+ <p> <strong>Description:</strong> This method returns a pointer to the managed object of type T for Ptr and Array variants of LCleanedupX and LManagedX. </p>
+ </li>
+ <li id="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-96477A5F-5CB1-55DE-9924-7A4AB341AFBE"><a name="GUID-96AB1D5A-932E-55BE-A025-F01608546B99__GUID-96477A5F-5CB1-55DE-9924-7A4AB341AFBE"><!-- --></a><p>Operators </p>
+ <p>The <strong>.</strong> operator gives access to the public members of the managing class. </p>
+ <p>The <strong>-&gt;</strong> operator gives access to the public members of the managed class. </p>
+ <p>The <strong>*</strong> operator is used to get a reference or pointer to the underlying managed object. </p>
+ <p> </p>
+ <p> </p>
+ </li>
+ </ul>
+ </div>
+ <div class="section"><h2 class="sectiontitle">See Also</h2> <p><a href="GUID-B007634D-4D55-528A-8B85-6120C633AC8B.html">EUser High Level Library Overview</a>  </p>
+ <p><a href="GUID-D33EB877-CCCB-527B-8AFC-4A8385C55E78.html" title="The EUser High Level Library tutorials are meant to discuss the usage of the LString and resource management class implementation.">EUser High Level Library Tutorials</a>  </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-ECE93783-F571-51DA-AB92-EDDA8618A85C.html" title="The EUser High Level Library introduces a new L-Class idiom along with a self managing string class and automatic resource management classes.">EUser High Level Concepts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

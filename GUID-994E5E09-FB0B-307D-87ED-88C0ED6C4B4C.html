@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="MTimeoutManager"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-994E5E09-FB0B-307D-87ED-88C0ED6C4B4C"/>
+
+<title>MTimeoutManager</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-994E5E09-FB0B-307D-87ED-88C0ED6C4B4C"><a name="GUID-994E5E09-FB0B-307D-87ED-88C0ED6C4B4C"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2472810 id2408823 id2408865 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">MTimeoutManager Class Reference</h1>
+	<table class="signature"><tr><td>class MTimeoutManager : public MInetBase</td></tr></table><div class="section"><div>
+			<p>Implementation of "delta queue" timeout manager.</p>
+
+			<p>The timeout manager provides a timeout callback service for any object. An object using the timeout service only needs to have member variable of <a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html#GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24">RTimeout</a> and define the timeout linkage (<a href="GUID-330C7689-DE38-3D7D-8930-5C86E3013DEF.html#GUID-330C7689-DE38-3D7D-8930-5C86E3013DEF">TimeoutLinkage</a>) for redirecting the timeout callback to a real function of some object.</p>
+
+			<p>The same time manager can be used for different object classes. A component can use single timeout manager instance for all of its objects:</p>
+
+			<div class="p">
+				<ol>
+					<li>
+						<p>Create timeout manager using <a href="GUID-7AFE1EEC-88D2-33B6-B5C1-8B10FAEADA3B.html#GUID-70743016-2942-3B67-B0A2-DB73466686EA">TimeoutFactory::NewL</a></p>
+
+					</li>
+
+					<li>
+						<p>Objects, which need the timeout callback, declare the <a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html#GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24">RTimeout</a> member variable and the appropriate linkage (<a href="GUID-330C7689-DE38-3D7D-8930-5C86E3013DEF.html#GUID-330C7689-DE38-3D7D-8930-5C86E3013DEF">TimeoutLinkage</a>).</p>
+
+					</li>
+
+					<li>
+						<p>The timeout callback for a object is requested either by <a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html#GUID-AFF32541-6CCB-3637-8AA0-320ED399F1BD">RTimeout::Set</a> or <a href="GUID-994E5E09-FB0B-307D-87ED-88C0ED6C4B4C.html#GUID-51BDF665-BC4D-3588-87D1-817A0015FDD2">MTimeoutManager::Set</a>. The set implicitly cancels previous timeout, if active.</p>
+
+					</li>
+
+					<li>
+						<p>
+							<a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html#GUID-8AF9B536-560F-38B3-85A8-EA4A849C4D22">RTimeout::Cancel</a> cancels pending timeout, if any is active.</p>
+
+					</li>
+
+				</ol>
+
+			</div>
+
+			<div class="p">Destructions:<ol><li><p>When an object with <a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html#GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24">RTimeout</a> member(s) is destroyed, the destructor of this object should include a <a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html#GUID-8AF9B536-560F-38B3-85A8-EA4A849C4D22">RTimeout::Cancel()</a> for the member variable(s).</p>
+</li>
+<li><p>The timeout manager must be deleted, as any normal allocated object. All pending timeouts are silently cancelled (no expire call will happen for them).</p>
+</li>
+</ol>
+</div>
+
+			<p>The timeout manager maintains an ordered queue of pending timeouts. The next object to expire is always the first in the list, and the timeout manager sets up an internal timer event (<a href="GUID-8A423EA2-4264-30C9-9579-0466994E6E88.html#GUID-8DC7C12A-BD00-3FC6-B250-8925948F13DB">RTimer::After</a>) to happen based on the first object.</p>
+
+			<p>To create an instance of a timeout manager, use <a href="GUID-7AFE1EEC-88D2-33B6-B5C1-8B10FAEADA3B.html#GUID-70743016-2942-3B67-B0A2-DB73466686EA">TimeoutFactory::NewL</a>.</p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">MTimeoutManager<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8A1D0670-9BB0-3864-B29D-2E6C5E377433.html">MInetBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-CBC8C054-57CB-3FBE-8FF5-5629D1D1B486">~MTimeoutManager</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-51BDF665-BC4D-3588-87D1-817A0015FDD2">Set</a>(<a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html">RTimeout</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8A1D0670-9BB0-3864-B29D-2E6C5E377433.html">MInetBase::GetApiL(const TDesC8 &amp;,TUint *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8A1D0670-9BB0-3864-B29D-2E6C5E377433.html">MInetBase::GetApiL(const TDesC8 &amp;,TUint)</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-CBC8C054-57CB-3FBE-8FF5-5629D1D1B486"><a name="GUID-CBC8C054-57CB-3FBE-8FF5-5629D1D1B486"><!-- --></a>
+		<h2 class="topictitle2">~MTimeoutManager()</h2>
+		<table class="signature"><tr><td>~MTimeoutManager</td><td>(</td><td>)</td><td>[inline, virtual]</td></tr></table><div class="section"><div>
+				<p>Destructor.</p>
+
+				<p>Even though this is a "mixin" class, the entity that creates it through the <a href="GUID-7AFE1EEC-88D2-33B6-B5C1-8B10FAEADA3B.html#GUID-70743016-2942-3B67-B0A2-DB73466686EA">TimeoutFactory::NewL()</a> is expected to delete this manager using the returned pointer. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-51BDF665-BC4D-3588-87D1-817A0015FDD2"><a name="GUID-51BDF665-BC4D-3588-87D1-817A0015FDD2"><!-- --></a>
+		<h2 class="topictitle2">Set(RTimeout &amp;, TUint)</h2>
+		<table class="signature"><tr><td>void</td><td>Set</td><td>(</td><td><a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html">RTimeout</a> &amp;</td><td>aLink,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aTime</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Activate timeout callback after the specified time.</p>
+
+				<p>Set a timeout for an object (any previous timeout setting for this object is silently removed, no Expired callback will occur for that). The timeout (aTime) value interpretation is dependent on the aUnit parameter specified for the manager, when it was created (see <a href="GUID-7AFE1EEC-88D2-33B6-B5C1-8B10FAEADA3B.html#GUID-70743016-2942-3B67-B0A2-DB73466686EA">TimeoutFactory::NewL</a>).</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html">RTimeout</a> &amp; aLink</td><td>the timeout handle within the object  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aTime</td><td>the time (in fraction of second units).  </td></tr></table></div>
+
+	</div>
+
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Keyboard Driver Implementation Tutorial"/>
+<meta name="abstract" content="This topic describes how to implement an interrupt driven keyboard driver."/>
+<meta name="description" content="This topic describes how to implement an interrupt driven keyboard driver."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D048E187-6B1C-5A80-9CD0-89CD10688C6F.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D048E187-6B1C-5A80-9CD0-89CD10688C6F.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Keyboard Driver Implementation Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2400154 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-D048E187-6B1C-5A80-9CD0-89CD10688C6F.html" title="A Keyboard Driver is a kernel extension that gets input from keyboard hardware, and makes these events available to other parts of the operating system and applications. This section describes how to implement a driver for your phone hardware.">Keyboard Driver</a> &gt; </div>
+<h1 class="topictitle1">Keyboard Driver Implementation Tutorial</h1>
+<div><p>This topic describes how to implement an interrupt driven
+keyboard driver. </p>
+
+<p>The steps are: </p>
+
+<ul>
+<li id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-BC3A7259-A750-5D5F-8363-6F8BBC03E8EB"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-BC3A7259-A750-5D5F-8363-6F8BBC03E8EB"><!-- --></a><p>Implement the
+driver entry point function and initialisation code. This function
+is called when the extension is loaded. </p>
+ <p>The initialisation
+code binds the hardware interrupt to the Interrupt Service Routine
+(ISR) and enables the interrupt. </p>
+ </li>
+
+<li id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-3A050F21-FE10-5C0F-8BFE-C44692C0BDE2"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-3A050F21-FE10-5C0F-8BFE-C44692C0BDE2"><!-- --></a><p>Implement an
+ISR to handle key events. The ISR queues a keyboard DFC. </p>
+ </li>
+
+<li id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-6580FC61-3D9E-5370-88AD-50CC1FB28E5F"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-6580FC61-3D9E-5370-88AD-50CC1FB28E5F"><!-- --></a><p>Implement a
+keyboard DFC. This function interrogates the keyboard, converts the
+scancode to a keypress event, and places it onto the kernel's event
+queue. </p>
+ </li>
+
+</ul>
+
+<div class="section" id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-B4B6A6C6-39D0-49FC-A630-1979368056B0"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-B4B6A6C6-39D0-49FC-A630-1979368056B0"><!-- --></a><h2 class="sectiontitle">Set
+Up</h2> <p>In the template reference board port, the <span class="filepath">.mmp</span> file for the keyboard driver is <span class="filepath">...\template_variant\exkey_inttemplate.mmp</span>. This is one of the PRJ_MMPFILES referenced in the template variant's <span class="filepath">bld.inf</span> file in the <span class="filepath">...\template_variant\...</span> directory, and means that the keyboard driver is built as part of
+the Variant. </p>
+ <p>The source for the driver is contained entirely
+within <span class="filepath">...\template_variant\specific\keyboard_interrupt.cpp</span>. </p>
+ <p>The driver is defined as a kernel extension and is loaded
+early in the boot sequence. </p>
+ </div>
+
+<div class="section" id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-547A2791-82D8-4C86-86E6-B4B9CEF04E3B"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-547A2791-82D8-4C86-86E6-B4B9CEF04E3B"><!-- --></a><h2 class="sectiontitle">Entry
+point implementation</h2> <p>The driver functionality is encapsulated
+by the <samp class="codeph">DKeyboardTemplate</samp> class, and an instance of
+this is created when the extension is loaded. </p>
+ <p>As the driver
+is a kernel extension, it must have a <samp class="codeph">DECLARE_STANDARD_EXTENSION()</samp> statement. In the template port, this is implemented: </p>
+ <pre class="codeblock" id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-69F707CF-642D-5D03-AC78-4914549C4413"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-69F707CF-642D-5D03-AC78-4914549C4413"><!-- --></a>DECLARE_STANDARD_EXTENSION()
+    {
+    __KTRACE_OPT(KEXTENSION,Kern::Printf("Starting keyboard driver"));
+
+    // create keyboard driver
+    TInt r=KErrNoMemory;
+    DKeyboardTemplate* pK=new DKeyboardTemplate;
+    if (pK)
+        r=pK-&gt;Create();
+
+    __KTRACE_OPT(KEXTENSION,Kern::Printf("Returns %d",r));
+    return r;
+    }
+
+</pre>
+ <p>It simply creates an instance of the <samp class="codeph">DKeyboardTemplate</samp> class and then performs a second-phase initialisation, which is
+a common pattern in Symbian platform and third party applications. </p>
+ <p><strong>Initialisation on construction</strong> </p>
+ <p>The constructor
+of the <samp class="codeph">DKeyboardTemplate</samp> class has the following
+signature: </p>
+ <pre class="codeblock" id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-5D247843-FF8C-5157-8BE5-53B5883F00B2"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-5D247843-FF8C-5157-8BE5-53B5883F00B2"><!-- --></a>DKeyboardTemplate::DKeyboardTemplate()
+    :    DPowerHandler(KLitKeyboard), 
+        iMsgQ(rxMsg,this,NULL,1),
+        iPowerUpDfc(PowerUpDfcFn,this,6),
+        iPowerDownDfc(PowerDownDfcFn,this,7),
+        iEventDfc(EventDfcFn,this,1)
+    {
+    }
+
+</pre>
+ <p>See also <a href="GUID-3C34724F-B476-5329-B0B1-6D5A34294979.html" title="Describes how to implement the Interrupt Dispatcher part of the ASSP/Variant.">Interrupt Dispatcher
+Tutorial</a>. </p>
+ </div>
+
+<div class="section" id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-F11265AA-D280-4B4E-92DA-38F12E7D5E30"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-F11265AA-D280-4B4E-92DA-38F12E7D5E30"><!-- --></a><h2 class="sectiontitle"> Interrupt
+Service Routine (ISR) implementation</h2> <p>The ISR (Interrupt
+Service Routine) just schedules the DFC that handles the keypress.
+It can also optionally contribute the timing of key interrupts as
+a source of random data for the Random Number Generator (see <a href="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB.html">CSPRNG Implementation
+in Kernel</a>). On the template reference board, this is implemented
+as: </p>
+ <pre class="codeblock" id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-866CEA65-78AC-5A2C-AF08-29DF8FE53DD5"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-866CEA65-78AC-5A2C-AF08-29DF8FE53DD5"><!-- --></a>void DKeyboardTemplate::Isr(TAny* aPtr)
+	{
+	Interrupt::Disable(KIntIdKeyboard);
+	
+	// Add the timing of key interrupts as entropy data for the RNG
+	Interrupt::AddTimingEntropy();
+	
+	k.iEventDfc.Add();
+	}
+</pre>
+ <p>The ISR disables the keyboard interrupt, as repeated
+ISRs are not allowed to queue further DFC routines. </p>
+ </div>
+
+<div class="section" id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-E53E0FE1-3100-4B8B-BE90-250C1BDDE15C"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-E53E0FE1-3100-4B8B-BE90-250C1BDDE15C"><!-- --></a><h2 class="sectiontitle">DFC
+function implementation</h2> <p>The DFC is the function <samp class="codeph">DKeyboardTemplate::EventDfcFn</samp> which is implemented as a
+call to <samp class="codeph">DKeyboardTemplate::EventDfc()</samp>. </p>
+ <pre class="codeblock" id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-2A1B334A-441E-57C3-B40C-603D992F934F"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-2A1B334A-441E-57C3-B40C-603D992F934F"><!-- --></a>void DKeyboardTemplate::EventDfcFn(TAny* aPtr)
+    {
+    ((DKeyboardTemplate*)aPtr)-&gt;EventDfc();
+    }
+
+void DKeyboardTemplate::EventDfc()
+    {
+    __KTRACE_OPT(KHARDWARE,Kern::Printf("DKeyboardTemplate::EventDfc"));
+
+    TInt irq=NKern::DisableAllInterrupts();
+    while (IsKeyReady())                        // while there are keys in the controller's output buffer
+        {
+        NKern::RestoreInterrupts(irq);
+        TRawEvent e;
+        TUint keyCode=GetKeyCode();                // Read keycodes from controller
+        __KTRACE_OPT(KHARDWARE,Kern::Printf("#%02x",keyCode));
+
+        //
+        // TO DO: (mandatory)
+        //
+        // Convert from hardware scancode to EPOC scancode and send the scancode as an event (key pressed or released)
+        // as per below EXAMPLE ONLY:
+        //
+        TUint bareCode=keyCode&amp;~KFlagKeyPressed;
+        TUint8 stdKey=convertCode[bareCode];
+        if (keyCode&amp;KFlagKeyPressed)
+            e.Set(TRawEvent::EKeyUp,stdKey,0);
+        else
+            e.Set(TRawEvent::EKeyDown,stdKey,0);
+        Kern::AddEvent(e);
+        NKern::Sleep(1);                        // pause before reading more keycodes
+        irq=NKern::DisableAllInterrupts();
+        }
+    Interrupt::Enable(KIntIdKeyboard);
+    NKern::RestoreInterrupts(irq);
+    }</pre>
+ <p>This: </p>
+ <ul>
+<li id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-8A202894-34F8-5E7B-B791-20D4B6C8B914"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-8A202894-34F8-5E7B-B791-20D4B6C8B914"><!-- --></a><p>reads the scan
+code data by calling <samp class="codeph">DKeyboardTemplate::GetKeyCode()</samp>  </p>
+ </li>
+
+<li id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-D553B662-F60C-575F-893D-347A9344F9B9"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-D553B662-F60C-575F-893D-347A9344F9B9"><!-- --></a><p>re-enables the
+keyboard interrupt, now that the DFC has freed up the input data register </p>
+ </li>
+
+<li id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-BFC75E95-A9AE-584E-8A17-CCAF9C2F5913"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-BFC75E95-A9AE-584E-8A17-CCAF9C2F5913"><!-- --></a><p>translates the
+keypress event into a Symbian scancode </p>
+ </li>
+
+<li id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-20BC22AF-C58C-56DC-B777-B5C8681668D6"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-20BC22AF-C58C-56DC-B777-B5C8681668D6"><!-- --></a><p>puts the translated
+event on to the event queue. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-437735D9-916C-4308-913C-3839CC7F0002"><a name="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9__GUID-437735D9-916C-4308-913C-3839CC7F0002"><!-- --></a><h2 class="sectiontitle">See
+also</h2> <p> <a href="GUID-EB76FAF8-CD4B-5CB6-9F23-C852ED91866F.html" title="This section describes the architecture and behavior of the Keyboard Driver.">Concepts</a>  </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-D048E187-6B1C-5A80-9CD0-89CD10688C6F.html" title="A Keyboard Driver is a kernel extension that gets input from keyboard hardware, and makes these events available to other parts of the operating system and applications. This section describes how to implement a driver for your phone hardware.">Keyboard Driver</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

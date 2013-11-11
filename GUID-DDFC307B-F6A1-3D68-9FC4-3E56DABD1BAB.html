@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CProtocolPosthook"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB"/>
+
+<title>CProtocolPosthook</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB"><a name="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2472810 id2408823 id2408865 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CProtocolPosthook Class Reference</h1>
+	<table class="signature"><tr><td>class CProtocolPosthook : public CIp6Hook</td></tr></table><div class="section"><div>
+			<p>Base class for the hooks between IP and NIF.</p>
+
+			<p>This is the base class for hooks that live between the IP and NIF layer (post-processing and pre-processing hooks). However, this is also suitable for the base class of any hook. The class provides automatic "network service detection", and supports both <strong>binding to</strong> and <strong>binding from</strong> IP6.</p>
+
+			<p>The implementations of <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-64AE87B4-F70F-3E16-AC54-538BA0EEA5CF">CProtocolPosthook::BindL</a> and <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-C6E90B6E-065C-3FCF-9B6A-CA8723B4576B">CProtocolPosthook::Unbind</a> handle the "chaining" feature of the post processing hooks. The stack uses a sequence of BindL and Unbind calls when inserting or removing a protocol.</p>
+
+			<div class="p">Outbound (<a href="GUID-43799E3E-A0D3-3CEF-B925-892960FA1251.html#GUID-FD6F91ED-6C50-35CA-8F52-E99E459670E7">MIp6Hook::BindPostHook()</a>): <pre class="codeblock">
+ U ---&gt; IP6          F ---&gt; NIF
+ ..Send.. \         /
+           \   ....P -&gt;
+            \                      |
+             H1 --&gt; H2 --&gt; ... --&gt; T
+             ...Send...Send...Send
+</pre>
+ The <a href="GUID-A2D2ECED-00A0-3F8A-8E04-4EE2C049640E.html#GUID-E0EE2897-3819-3674-BDD7-B38FA1EB7EB9">MNetworkService::Send</a> passes the packet (P) to the <a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html#GUID-16A9B085-2ABB-3B4E-BB69-4FD186358986">CProtocolBase::Send</a> of the first post processing hook (H1). It is the responsibility of H1 to pass the packet to the next post-processing hook (H2). The stack maintains an internal chain terminator (T), which will pass the packet to the NIF using the flow context (F) attached to the packet. The Send does the packet forwarding to the next linked hook automaticly.</div>
+
+			<p>The information block associated with the packet is defined by RMBufSendPacket , which always includes a reference to the flow context (F). If a hook before the terminator (T) does not pass the packet forward in chain, then it must also take care of releasing the flow context (RMBufSendInfo::iFlow.Close()).</p>
+
+			<p>The flow context is the only way for the terminator (T) to know the target NIF. If the packet has not flow context, the terminator drops the packet. The flow context is detached from the packet before it is passed to the NIF.</p>
+
+			<div class="p">Inbound (<a href="GUID-43799E3E-A0D3-3CEF-B925-892960FA1251.html#GUID-9FE4B48B-F301-3CA6-B735-1D5BDD803F9D">MIp6Hook::BindPreHook()</a>): <pre class="codeblock">
+   NIF --&gt; IP6                     IP6 ---&gt; U
+  ..Process..\                      |
+              \   ......P -&gt;        |
+               \     src=NIF        |
+               H1 --&gt; H2 --&gt; .. --&gt; T
+            ..Process..Process..Process
+</pre>
+ The <a href="GUID-A2D2ECED-00A0-3F8A-8E04-4EE2C049640E.html#GUID-7F6980D4-61B3-371B-A665-466C3A22D5D5">MNetworkService::Process</a> passes the incoming packet to the <a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html#GUID-62A99C64-72DA-3263-8E52-1B540854E619">CProtocolBase::Process</a> of the first pre-processing hook (H1). It is the responsibility of the H1 to pass the packet to the next pre-processing hook (H2). The stack maintains an internal terminator (T), which will pass the packet upwards in the protocol stack. The <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-ADE6A491-A552-30F2-8D8F-C3472B71B6AE">CProtocolPosthook::Process</a> does the packet forwarding to the next linked hook automaticly.</div>
+
+			<p>In the Process chain, the source (<a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html#GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F">CProtocolBase</a> *) is actually a pointer to the NIF object (CNifIfBase). Upon arriving to the terminator (T), the source must still be a valid and known to stack as a NIF (successfully introduced as documented in nif_binding  at some earlier point). Otherwise packet is not accepted. The information block is defined by the <a href="GUID-7F08CE77-19F5-3368-8290-45EC6D34B27F.html#GUID-7F08CE77-19F5-3368-8290-45EC6D34B27F">RMBufPktInfo</a> class. The information block "changes into" <a href="GUID-4D89D183-0A0C-3FA8-90A9-90FDEC381F8B.html#GUID-4D89D183-0A0C-3FA8-90A9-90FDEC381F8B">RMBufRecvInfo</a> after the terminator (T).</p>
+
+			<p>
+				<a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB">CProtocolPosthook</a> can also be used as a generic base for any hook. Then the following protocol ids for the BindL will become reserved:</p>
+
+			<div class="p">
+				<ul>
+					<li>
+						<p>
+							<a href="GUID-43799E3E-A0D3-3CEF-B925-892960FA1251.html#GUID-FD6F91ED-6C50-35CA-8F52-E99E459670E7">MIp6Hook::BindPostHook()</a> (for outbound posthook chaining)</p>
+
+					</li>
+
+					<li>
+						<p>
+							<a href="GUID-43799E3E-A0D3-3CEF-B925-892960FA1251.html#GUID-9FE4B48B-F301-3CA6-B735-1D5BDD803F9D">MIp6Hook::BindPreHook()</a> (for inbound posthook chaining)</p>
+
+					</li>
+
+					<li>
+						<p>
+							<a href="GUID-2CB64551-4879-3565-9835-6EDF8116B9A7.html#GUID-E1F11829-6FA6-3AF9-A637-E513202B94CB">KProtocolInet6Ip</a> (for the network intance)</p>
+
+					</li>
+
+					<li>
+						<p>
+							<a href="GUID-2CB64551-4879-3565-9835-6EDF8116B9A7.html#GUID-1C769D3A-2F0B-38F3-B53F-73B85A311E6D">KProtocolInetIp</a> (for network instance, deprecated)</p>
+
+					</li>
+
+				</ul>
+
+			</div>
+
+			<p>BindToL implementation handles <a href="GUID-2CB64551-4879-3565-9835-6EDF8116B9A7.html#GUID-E1F11829-6FA6-3AF9-A637-E513202B94CB">KProtocolInet6Ip</a> and <a href="GUID-2CB64551-4879-3565-9835-6EDF8116B9A7.html#GUID-1C769D3A-2F0B-38F3-B53F-73B85A311E6D">KProtocolInetIp</a> targets. This does not do automatic CProtcolBase::BindL to the target (see DoBindToL). The hook binds, if needed, should be done in the NetworkAttachedL function.</p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CProtocolPosthook<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-A9E16BCD-6D89-3215-BADF-716002B13C47.html">CIp6Hook</a><ul class="derivation"><li class="derivation-depth-2 "><a href="GUID-C226CE50-116D-3316-9AEB-56F2E8339919.html">CProtocolBaseUnbind</a><ul class="derivation"><li class="derivation-depth-3 "><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a><ul class="derivation"><li class="derivation-depth-4 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></li></ul></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-874E5F21-7806-39ED-868D-06102F4BE5B6">ApplyL</a>(<a href="GUID-1D50480F-117B-3818-9897-731ED264B745.html">RMBufHookPacket</a> &amp;, <a href="GUID-4D89D183-0A0C-3FA8-90A9-90FDEC381F8B.html">RMBufRecvInfo</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-64AE87B4-F70F-3E16-AC54-538BA0EEA5CF">BindL</a>(<a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-051CDB22-06BF-3F76-81F0-47F4F313EC80">BindToL</a>(<a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-10A0F9D5-4E88-3D6E-B33E-192C8D5D488E">NetworkAttachedL</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-B56DE302-431E-34B6-9778-10BA946F315B">NetworkDetached</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-A2D2ECED-00A0-3F8A-8E04-4EE2C049640E.html">MNetworkService</a> *</td><td><a href="#GUID-FF3BA960-A962-3EF8-82C9-C49689A17A2B">NetworkService</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-ADE6A491-A552-30F2-8D8F-C3472B71B6AE">Process</a>(<a href="GUID-F024208C-ED19-3301-85C1-53F397C9910F.html">RMBufChain</a> &amp;, <a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-6E571801-9FFA-34E4-918B-2C9053212650">Send</a>(<a href="GUID-F024208C-ED19-3301-85C1-53F397C9910F.html">RMBufChain</a> &amp;, <a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-C6E90B6E-065C-3FCF-9B6A-CA8723B4576B">Unbind</a>(<a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-3B9D511B-EDDD-3341-9E72-2D101512CC07">~CProtocolPosthook</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-B5DCB749-257C-3723-B4BB-E179E1370EA3">DoBindToL</a>(<a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-A9E16BCD-6D89-3215-BADF-716002B13C47.html">CIp6Hook::Identify(struct TServerProtocolDesc *)const</a></td></tr><tr><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::CProtocolBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::CanClose()</a></td></tr><tr><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::Close()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::CloseNow()</a></td></tr><tr><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::Error(TInt,CProtocolBase *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::GetOption(TUint,TUint,TDes8 &amp;,CProtocolBase *)</a></td></tr><tr><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::InitL(TDesC &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::NewHostResolverL()</a></td></tr><tr><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::NewNetDatabaseL()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::NewSAPL(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::NewServiceResolverL()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::Open()</a></td></tr><tr><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::Process(TDes8 &amp;,TSockAddr *,TSockAddr *,CProtocolBase *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::ProtocolFamily()</a></td></tr><tr><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::RefCount()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::Send(TDes8 &amp;,TSockAddr *,TSockAddr *,CProtocolBase *)</a></td></tr><tr><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::SetOption(TUint,TUint,const TDesC8 &amp;,CProtocolBase *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::StartL()</a></td></tr><tr><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::StartSending(CProtocolBase *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::Tag()</a></td></tr><tr><td> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase::~CProtocolBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td><a href="#GUID-144C0839-8A97-3C7D-B6F0-0F9457499A6B">iBindToNet</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *</td><td><a href="#GUID-EE8A1D57-B38C-3411-BC33-A6718ACEB2DE">iInboundHook</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-A2D2ECED-00A0-3F8A-8E04-4EE2C049640E.html">MNetworkService</a> *</td><td><a href="#GUID-9FC526B8-B8ED-3F26-ACFE-B222744FCF55">iNetwork</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *</td><td><a href="#GUID-5E04C003-D60A-3735-B589-91CDA824D01A">iPostHook</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-3B9D511B-EDDD-3341-9E72-2D101512CC07"><a name="GUID-3B9D511B-EDDD-3341-9E72-2D101512CC07"><!-- --></a>
+		<h2 class="topictitle2">~CProtocolPosthook()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CProtocolPosthook</td><td>(</td><td>)</td><td>[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>Destructor</p>
+
+				<p>If this object is still attached to the network layer, the attachement and all bindings to the network layer from this protocol object are cancelled. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-874E5F21-7806-39ED-868D-06102F4BE5B6"><a name="GUID-874E5F21-7806-39ED-868D-06102F4BE5B6"><!-- --></a>
+		<h2 class="topictitle2">ApplyL(RMBufHookPacket &amp;, RMBufRecvInfo &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>ApplyL</td><td>(</td><td><a href="GUID-1D50480F-117B-3818-9897-731ED264B745.html">RMBufHookPacket</a> &amp;</td><td>,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-4D89D183-0A0C-3FA8-90A9-90FDEC381F8B.html">RMBufRecvInfo</a> &amp;</td><td/></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[inline, virtual]</td></tr></table><div class="section"><div>
+				<div class="p">Default ApplyL. The default ApplyL does nothing to the packets. <div class="note"><span class="notetitle">Note:</span> <p>If the only hook binding is post or pre-preprocessing, the ApplyL is never called.</p>
+</div>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-1D50480F-117B-3818-9897-731ED264B745.html">RMBufHookPacket</a> &amp; </td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-4D89D183-0A0C-3FA8-90A9-90FDEC381F8B.html">RMBufRecvInfo</a> &amp; </td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-64AE87B4-F70F-3E16-AC54-538BA0EEA5CF"><a name="GUID-64AE87B4-F70F-3E16-AC54-538BA0EEA5CF"><!-- --></a>
+		<h2 class="topictitle2">BindL(CProtocolBase *, TUint)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>BindL</td><td>(</td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *</td><td>aProtocol,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aId</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>Handles network layer binds.</p>
+
+				<p>This function handles the network layer detection and posthook chaining binds. The processing is based on the following "well known" id values:</p>
+
+				<div class="p">
+					<ul>
+						<li>
+							<p>
+								<a href="GUID-43799E3E-A0D3-3CEF-B925-892960FA1251.html#GUID-FD6F91ED-6C50-35CA-8F52-E99E459670E7">MIp6Hook::BindPostHook()</a> (for outbound posthook chaining)</p>
+
+						</li>
+
+						<li>
+							<p>
+								<a href="GUID-43799E3E-A0D3-3CEF-B925-892960FA1251.html#GUID-9FE4B48B-F301-3CA6-B735-1D5BDD803F9D">MIp6Hook::BindPreHook()</a> (for inbound posthook chaining)</p>
+
+						</li>
+
+						<li>
+							<p>
+								<a href="GUID-2CB64551-4879-3565-9835-6EDF8116B9A7.html#GUID-E1F11829-6FA6-3AF9-A637-E513202B94CB">KProtocolInet6Ip</a> (aProtocol must be network instance)</p>
+
+						</li>
+
+						<li>
+							<p>
+								<a href="GUID-2CB64551-4879-3565-9835-6EDF8116B9A7.html#GUID-1C769D3A-2F0B-38F3-B53F-73B85A311E6D">KProtocolInetIp</a> (aProtocol must be network instance, deprecated)</p>
+
+						</li>
+
+					</ul>
+
+				</div>
+
+				<p>If the aId does not match any of the above, the BindL is silently ignored (just return happens). This is quite OK, there is no need to generate an error in such case.</p>
+
+				<div class="p">This network layer detection is only used in a configuration, where this protocol is bound from the network layer (ip6). Such configuration will keep this protocol module installed whenever the network is loaded. <pre class="codeblock">
+[yourposthook]
+filename= yourposthook.prt
+index= 1
+bindfrom= ip6
+</pre>
+</div>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>This protocol can be loaded even if network is not. If the protocol provides a SAP functionality, an application can open a socket to this protocol without the network layer being started.</p>
+
+					</div>
+The derived class <strong>only</strong> needs to override the default implementation if it appears as a target of "bindto" directive in a ESK file of another protocol (except the network layer), <strong>and if</strong> the implementation needs to store a reference to this protocol. In such case the BindL could be, for example: <pre class="codeblock">	CProtocolBase *iAnother;
+
+	CProtocolDerivedHook::BindL(CProtocolBase *aProtocol, TUint aId)
+		{
+		if (aId == your_special_binding_protocol)
+			{
+			// handle your bind
+			iAnother = aProtocol;
+			}
+		// The default should always be called,
+		CProtocolPosthook::BindL(aProtocol, aId);
+		}</pre>
+ </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> * aProtocol</td><td>The protocol binding to this.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aId</td><td>The bind id.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-051CDB22-06BF-3F76-81F0-47F4F313EC80"><a name="GUID-051CDB22-06BF-3F76-81F0-47F4F313EC80"><!-- --></a>
+		<h2 class="topictitle2">BindToL(CProtocolBase *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>BindToL</td><td>(</td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *</td><td>aProtocol</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>The default implementation.</p>
+
+				<p>This implemenation only handles the network bind and leaves with <a href="GUID-B36D0060-C3FF-3933-81EF-50790DC89B7E.html#GUID-F89DA3F0-2A48-3F9B-8F08-29350E92D0E4">KErrNotSupported</a> if the protocol is not the network instance.</p>
+
+				<div class="p">If the "bindto" list of this protocol can have other protocols than the network (ip6), then the derived class must implement the support for it. For example <pre class="codeblock">	CProtocolDerivedHook::BindToL(CProtocolBase *aProtocol)
+		{
+		const TInt id = DoBindToL(aProtocol);
+		if (id == (TInt)your_special_protocol)
+			{
+			//
+			if (iBindTo)
+				iBindTo-&gt;Close();
+			iBindTo = aProtocol;
+			iBindTo-&gt;Open();
+			// Destructor must issue Close, if iBindTo is non-NULL
+			}
+		else if (id != KErrNone)
+			User::Leave(KErrNotSupported);
+		}</pre>
+ </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> * aProtocol</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B5DCB749-257C-3723-B4BB-E179E1370EA3"><a name="GUID-B5DCB749-257C-3723-B4BB-E179E1370EA3"><!-- --></a>
+		<h2 class="topictitle2">DoBindToL(CProtocolBase *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>DoBindToL</td><td>(</td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *</td><td>aProtocol</td><td>)</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Handle network layer bindto.</p>
+
+				<p>Performs the BindToL processing for the network detection. This network layer detection is only used in a configuration, where the "bindto" list of this protocol includes the network layer (ip6). In this configuration, the network layer stays installed whenever this protocol is loaded.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>Network can be loaded without this protocol being loaded.</p>
+
+					</div>
+
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>The protocol id is TUint. However, this method is defined to return TInt The function should be considered to return TUint and any non-zero value means that the protocol was not the network. [returning TInt instead of TUint is a mistake].</p>
+
+					</div>
+This function exists for derived classes that override the default BindToL for their own processing. See BindToL for example. </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> * aProtocol</td><td>The protocol to bind to.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-10A0F9D5-4E88-3D6E-B33E-192C8D5D488E"><a name="GUID-10A0F9D5-4E88-3D6E-B33E-192C8D5D488E"><!-- --></a>
+		<h2 class="topictitle2">NetworkAttachedL()</h2>
+		<table class="signature"><tr><td>void</td><td>NetworkAttachedL</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Network layer has been attached.</p>
+
+				<div class="p">This function is called when the network layer is detected and attached to this protocol object (NetworkService() returns non-null). The implementation in the derived class can now do the hook specific binds and unbinds using: <pre class="codeblock">	// request inbound packets to my Process()
+	NetworkService()-&gt;BindL(this, MIp6Hook::BindPreHook());
+	// request outbound packets to my Send().
+	NetworkService()-&gt;BindL(this, MIp6Hook::BindPostHook());
+	...
+	// stop getting inbound packets to my Process()
+	NetworkService()-&gt;Unbind(this, MIp6Hook::BindPreHook());
+	// stop getting outbound packets to my Send()
+	NetworkService()-&gt;Unbind(this, MIp6Hook::BindPostHook());
+	// ..or, to rip off all my hooks
+	NetworkService()-&gt;Unbind(this);</pre>
+ </div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-B56DE302-431E-34B6-9778-10BA946F315B"><a name="GUID-B56DE302-431E-34B6-9778-10BA946F315B"><!-- --></a>
+		<h2 class="topictitle2">NetworkDetached()</h2>
+		<table class="signature"><tr><td>void</td><td>NetworkDetached</td><td>(</td><td>)</td><td>[inline, virtual]</td></tr></table><div class="section"><div>
+				<p>Network layer is being detached.</p>
+
+				<p>This function is called when the hook is losing the connection to the network instance (the network instance has issued Unbind request, because it is shutting down).</p>
+
+				<p>Derived class does not need to implement this, unless it caches network layer dependent data internally. Otherwise, it must implement the function and cleanup all such data.</p>
+
+				<p>During the call NetworkService returns the service instance that is going away. However, it should not be used for any binding or unbinding. the detach process does the unbindings automaticly.</p>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>The desctuctor can be called while network is attached. <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB">CProtocolPosthook</a> destructor will unbind this object automaticly from the network (cancel all binds), and then detaches withouth calling NetworkDetached. Thus, the destructor of the derived class must do the cleanup of cached data, but it does not need to worry about the binds to the network. </p>
+
+					</div>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-FF3BA960-A962-3EF8-82C9-C49689A17A2B"><a name="GUID-FF3BA960-A962-3EF8-82C9-C49689A17A2B"><!-- --></a>
+		<h2 class="topictitle2">NetworkService()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-A2D2ECED-00A0-3F8A-8E04-4EE2C049640E.html">MNetworkService</a> *</td><td>NetworkService</td><td>(</td><td>)</td><td>const [inline]</td></tr></table><div class="section"><div>
+				<p>Gets the network service.</p>
+
+				<p>This returns the network service, if any is currently attached. The network is attached after NetworkAttachedL call until the next NetworkDetached or destruction. Otherwise, network is not attached and return is always NULL.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-ADE6A491-A552-30F2-8D8F-C3472B71B6AE"><a name="GUID-ADE6A491-A552-30F2-8D8F-C3472B71B6AE"><!-- --></a>
+		<h2 class="topictitle2">Process(RMBufChain &amp;, CProtocolBase *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Process</td><td>(</td><td><a href="GUID-F024208C-ED19-3301-85C1-53F397C9910F.html">RMBufChain</a> &amp;</td><td>aPacket,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *</td><td>aSrc</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>Process incoming packet.</p>
+
+				<div class="p">Process passes the inbound packet to the next pre-processing hook (<a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-EE8A1D57-B38C-3411-BC33-A6718ACEB2DE">iInboundHook</a>). The derived pre-processing hook can implement own Process. After processing the packet, it would normally call <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-ADE6A491-A552-30F2-8D8F-C3472B71B6AE">CProtocolPosthook::Process</a> to pass the packet forward (note that the information block is the basic <a href="GUID-7F08CE77-19F5-3368-8290-45EC6D34B27F.html#GUID-7F08CE77-19F5-3368-8290-45EC6D34B27F">RMBufPktInfo</a>). <pre class="codeblock">	TInt CProtocolDerivedHook::Process(RMBufChain &amp;aPacket, CProtocolBase *aSrc)
+		{
+		// Do own packet processing.
+
+		RMBufPktInfo *info = RMBufPacketBase::PeekInfoInChain(aPacket);
+		...
+		if (packet_is_dropped)
+			aPacket.Free();
+		else
+			CProtocolPosthook::Process(aPacket, aSrc);
+		}</pre>
+ Hook will receive and pass forward inbound packets only if it has bound as pre-processing hook: <pre class="codeblock">	NetworkService()-&gt;BindL(this, MIp6Hook::BindPreHook());</pre>
+</div>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>For inbound packets, the aSrc is the NIF object (derived from CNifIfBase and not from <a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html#GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F">CProtocolBase</a>.). </p>
+
+						<p>The implementation <strong>SHOULD NOT</strong> change the aSrc. But, if it does change the source, the new source must also be a NIF pointer, and that NIF must also be known to the TCP/IP stack.</p>
+
+					</div>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F024208C-ED19-3301-85C1-53F397C9910F.html">RMBufChain</a> &amp; aPacket</td><td>The inbound packet  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> * aSrc</td><td>The originating NIF  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6E571801-9FFA-34E4-918B-2C9053212650"><a name="GUID-6E571801-9FFA-34E4-918B-2C9053212650"><!-- --></a>
+		<h2 class="topictitle2">Send(RMBufChain &amp;, CProtocolBase *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Send</td><td>(</td><td><a href="GUID-F024208C-ED19-3301-85C1-53F397C9910F.html">RMBufChain</a> &amp;</td><td>aPacket,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *</td><td>aSrc</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>Send packet to the next protocol.</p>
+
+				<div class="p">Send passes the outbound packet to the next post-processing hook (<a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-5E04C003-D60A-3735-B589-91CDA824D01A">iPostHook</a>). The derived post-processing hook can  mplement own Send, After processing the packet, it would normally call <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-6E571801-9FFA-34E4-918B-2C9053212650">CProtocolPosthook::Send</a> to pass the packet forward (note that the information block is <a href="GUID-B0F9F6A7-6D70-3B70-9981-46516281FCA9.html#GUID-B0F9F6A7-6D70-3B70-9981-46516281FCA9">RMBufSendInfo</a> and the attached flow context (<a href="GUID-CB6234B4-19A3-3D9E-AEBE-546D349CDD0D.html#GUID-CB6234B4-19A3-3D9E-AEBE-546D349CDD0D">RFlowContext</a>) <strong>must be closed</strong>, if the packet is deleted): <pre class="codeblock">	TInt CProtocolDerivedHook::Send(RMBufChain &amp;aPacket, CProtocolBase *aSrc)
+		{
+		...
+		// Do own packet processing
+
+		if (packet_is_dropped)
+			{
+			RMBufSendInfo *info = RMBufSendPacket::PeekInfoInChain(aPacket);
+			if (info)
+				info-&gt;iFlow.Close();
+			aPacket.Free();
+			return 1;
+			}
+		else
+			return CProtocolPosthook::Send(aPacket, aSrc);
+		}</pre>
+ Hook will receive and pass forward the outbound packets only if it has a binding to the network layer as a post-processinghook: <pre class="codeblock">	NetworkService()-&gt;BindL(this, MIp6Hook::BindPostHook());</pre>
+</div>
+
+				<div class="p">
+					<div class="note"><span class="notetitle">Note:</span> 
+						<p>The network layer currently sends packets with aSrc == NULL. This may change in future (the network instance is used instead).</p>
+
+					</div>
+If hook is configured to receive packets to Send function from some other protocol than the network layer, then it can use the aSrc to detect this and <strong>NOT</strong> call this default implementation for such packets (unless it intends to inject them to the outbound packet stream).</div>
+
+				<p>Hook will receive outbound packets from the network layer only if it binds as post-processing hook.</p>
+
+				<div class="p">
+					<dl class="precondition">
+						
+							<dt class="dlterm">Pre-condition</dt>
+
+							<dd>RMBufSendPacket::PeekInfoInChain(aPacket).iFlow.IsOpen() </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F024208C-ED19-3301-85C1-53F397C9910F.html">RMBufChain</a> &amp; aPacket</td><td>The outbound packet.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> * aSrc</td><td>The originating protocol (or NULL). </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C6E90B6E-065C-3FCF-9B6A-CA8723B4576B"><a name="GUID-C6E90B6E-065C-3FCF-9B6A-CA8723B4576B"><!-- --></a>
+		<h2 class="topictitle2">Unbind(CProtocolBase *, TUint)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Unbind</td><td>(</td><td><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *</td><td>aProtocol,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aId</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>Handles network layer unbinds.</p>
+
+				<p>This function handles the network layer unbind and posthook chaining unbinds. The processing is based on the following "well known" bind id values:</p>
+
+				<div class="p">
+					<ul>
+						<li>
+							<p>
+								<a href="GUID-43799E3E-A0D3-3CEF-B925-892960FA1251.html#GUID-FD6F91ED-6C50-35CA-8F52-E99E459670E7">MIp6Hook::BindPostHook()</a> (for outbound posthook chaining)</p>
+
+						</li>
+
+						<li>
+							<p>
+								<a href="GUID-43799E3E-A0D3-3CEF-B925-892960FA1251.html#GUID-9FE4B48B-F301-3CA6-B735-1D5BDD803F9D">MIp6Hook::BindPreHook()</a> (for inbound posthook chaining)</p>
+
+						</li>
+
+						<li>
+							<p>
+								<a href="GUID-2CB64551-4879-3565-9835-6EDF8116B9A7.html#GUID-E1F11829-6FA6-3AF9-A637-E513202B94CB">KProtocolInet6Ip</a> (for the network intance)</p>
+
+						</li>
+
+						<li>
+							<p>
+								<a href="GUID-2CB64551-4879-3565-9835-6EDF8116B9A7.html#GUID-1C769D3A-2F0B-38F3-B53F-73B85A311E6D">KProtocolInetIp</a> (for network instance, deprecated)</p>
+
+						</li>
+
+						<li>
+							<p>0 (unbind all)</p>
+
+						</li>
+
+					</ul>
+
+				</div>
+
+				<p>If the aId does not match any of the above, the Unbind is silently ignored (just return happens). This is quite OK, there is no need to generate an error in such case.</p>
+
+				<div class="p">The derived class needs to override the default implementation only if it is bound from another protocol (except the network layer) and if class also overrode the <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-64AE87B4-F70F-3E16-AC54-538BA0EEA5CF">CProtocolPosthook::BindL</a> and saved a pointer to this protocol. For example: <pre class="codeblock">	CProtocolDerivedHook::Unbind(CProtocolBase *aProtocol, TUint aId)
+		{
+		if (iAnother == aProtocol &amp;&amp;
+			(aId == 0 || aId == your_special_binding_protocol))
+			{
+			// handle your unbind
+			iAnotherProtocol = NULL;
+			}
+		// The default should always be called,
+		CProtocolPosthook::Unbind(aProtocol, aId);
+		}</pre>
+ </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> * aProtocol</td><td>The protocol unbinding from this.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aId</td><td>The bind id.  </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-144C0839-8A97-3C7D-B6F0-0F9457499A6B"><a name="GUID-144C0839-8A97-3C7D-B6F0-0F9457499A6B"><!-- --></a>
+		<h2 class="topictitle2">
+					TUint
+				 iBindToNet</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>
+				</td><td>iBindToNet</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>The network attachment type. This base class supports both "bind" and "bindto" attachments to the network layer.</p>
+
+				<div class="p">
+					<ul>
+						<li>
+							<p>if == 1, <tt>bindto= ip6</tt> is in the "hook" ESK file. <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-9FC526B8-B8ED-3F26-ACFE-B222744FCF55">iNetwork</a> has been set by <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-B5DCB749-257C-3723-B4BB-E179E1370EA3">CProtocolPosthook::DoBindToL</a>.</p>
+
+						</li>
+
+						<li>
+							<p>if == 0, <tt>bindto= hook</tt> is in the [ip6] section of the TCPIP6.ESK. <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-9FC526B8-B8ED-3F26-ACFE-B222744FCF55">iNetwork</a> has been set by the <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-64AE87B4-F70F-3E16-AC54-538BA0EEA5CF">CProtocolPosthook::BindL</a>.</p>
+
+						</li>
+
+					</ul>
+
+				</div>
+
+				<p>The value is significant only if <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-9FC526B8-B8ED-3F26-ACFE-B222744FCF55">iNetwork</a> is non-NULL. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-EE8A1D57-B38C-3411-BC33-A6718ACEB2DE"><a name="GUID-EE8A1D57-B38C-3411-BC33-A6718ACEB2DE"><!-- --></a>
+		<h2 class="topictitle2">
+					CProtocolBase * iInboundHook</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *</td><td>iInboundHook</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Inbound posthook chain. The next protocol in list. The <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-64AE87B4-F70F-3E16-AC54-538BA0EEA5CF">CProtocolPosthook::BindL</a> and <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-C6E90B6E-065C-3FCF-9B6A-CA8723B4576B">CProtocolPosthook::Unbind</a> implementions maintain this chain based on the calls coming from the network layer. The id reference in the chaining calls is <a href="GUID-43799E3E-A0D3-3CEF-B925-892960FA1251.html#GUID-9FE4B48B-F301-3CA6-B735-1D5BDD803F9D">MIp6Hook::BindPreHook()</a>. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-9FC526B8-B8ED-3F26-ACFE-B222744FCF55"><a name="GUID-9FC526B8-B8ED-3F26-ACFE-B222744FCF55"><!-- --></a>
+		<h2 class="topictitle2">
+					MNetworkService * iNetwork</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-A2D2ECED-00A0-3F8A-8E04-4EE2C049640E.html">MNetworkService</a> *</td><td>iNetwork</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>The attached network layer (IP layer). The <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-B5DCB749-257C-3723-B4BB-E179E1370EA3">CProtocolPosthook::DoBindToL</a>, <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-64AE87B4-F70F-3E16-AC54-538BA0EEA5CF">CProtocolPosthook::BindL</a> and <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-C6E90B6E-065C-3FCF-9B6A-CA8723B4576B">CProtocolPosthook::Unbind</a> implementations maintain this pointer. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-5E04C003-D60A-3735-B589-91CDA824D01A"><a name="GUID-5E04C003-D60A-3735-B589-91CDA824D01A"><!-- --></a>
+		<h2 class="topictitle2">
+					CProtocolBase * iPostHook</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-C8DA9E1C-33A6-33B3-8D75-6B5F6F3BA20F.html">CProtocolBase</a> *</td><td>iPostHook</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Outbound posthook chain. The next protocol in list. The <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-64AE87B4-F70F-3E16-AC54-538BA0EEA5CF">CProtocolPosthook::BindL</a> and <a href="GUID-DDFC307B-F6A1-3D68-9FC4-3E56DABD1BAB.html#GUID-C6E90B6E-065C-3FCF-9B6A-CA8723B4576B">CProtocolPosthook::Unbind</a> implementions maintain this chain based on the calls coming from the network layer. The id reference in the chaining calls is <a href="GUID-43799E3E-A0D3-3CEF-B925-892960FA1251.html#GUID-FD6F91ED-6C50-35CA-8F52-E99E459670E7">MIp6Hook::BindPostHook()</a>. </p>
+
+			</div></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

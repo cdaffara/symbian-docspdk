@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="CBase-derived classes and two-phase construction"/>
+<meta name="abstract" content="This document describes the need for two-phase construction and how to use second phase constructors."/>
+<meta name="description" content="This document describes the need for two-phase construction and how to use second phase constructors."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5EBA3C03-2E4E-5DBA-BB5B-0D40DAB3C39B.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9636A30F-39EB-54E6-8125-4487D4002FE0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-61DEE78D-4E78-5367-BC8A-F99D3B4E9D5A.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5EBA3C03-2E4E-5DBA-BB5B-0D40DAB3C39B.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>CBase-derived classes and two-phase construction</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0"><a name="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2393700 id2393796 id2393911 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-9636A30F-39EB-54E6-8125-4487D4002FE0.html" title="Memory is allocated to programs in chunks, the documentation in this set explains how to allocate, manage and release that memory.">Memory Management</a> &gt; <a href="GUID-61DEE78D-4E78-5367-BC8A-F99D3B4E9D5A.html" title="Provides an introduction to code construction and error management options.">More about Cleanup Support</a> &gt; <a href="GUID-5EBA3C03-2E4E-5DBA-BB5B-0D40DAB3C39B.html" title="This document introduces two phase construction.">Two Phase Construction</a> &gt; </div>
+<h1 class="topictitle1">CBase-derived
+classes and two-phase construction</h1>
+<div><p>This document describes the need for two-phase construction and
+how to use second phase constructors.</p>
+
+<p>When the construction of an object cannot leave (except for out-of-memory
+for the allocation of the object itself), then it is appropriate to use the
+conventional C++ constructor, which is automatically invoked by <samp class="codeph">new</samp>. </p>
+
+<p>When the construction of an object may leave, then the object must be pushed
+to the clean-up stack, or a pointer to the object must be stored in an object
+that would be cleaned up if a leave occurred, <em>before</em> any part of the
+construction function is invoked that may leave. To allow this to happen,
+construction steps that can leave, are performed not in the C++ constructor,
+but in another initialization functions, referred to as a second phase constructor.</p>
+
+<p>Thus, the general sequence for two-phase construction is:</p>
+
+<a name="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-4EA8A66C-A0FA-58D4-BD86-7FD72029AA17"><!-- --></a><ol id="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-4EA8A66C-A0FA-58D4-BD86-7FD72029AA17">
+<li id="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-38D6D313-2348-5E1A-95BB-205AF451CC5D"><a name="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-38D6D313-2348-5E1A-95BB-205AF451CC5D"><!-- --></a><p>allocate memory for
+the object (and leave if out of memory) using <samp class="codeph">new</samp> </p>
+ </li>
+
+<li id="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-1BC50131-75C9-5EFF-9439-030FB35750F9"><a name="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-1BC50131-75C9-5EFF-9439-030FB35750F9"><!-- --></a><p>optionally define a
+C++ constructor to perform any construction that cannot leave</p>
+ </li>
+
+<li id="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-DA1E047E-40E6-5B71-BB02-C42C7B3609C8"><a name="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-DA1E047E-40E6-5B71-BB02-C42C7B3609C8"><!-- --></a><p>push a pointer to the
+object, or store a pointer to it in a class with cleanup support</p>
+ </li>
+
+<li id="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-6FDA6D4A-9ECD-509D-9D0D-3E7234961657"><a name="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-6FDA6D4A-9ECD-509D-9D0D-3E7234961657"><!-- --></a><p>use the second phase
+constructor to perform any part of the construction that might leave</p>
+ </li>
+
+</ol>
+
+<p>Note that:</p>
+
+<ul>
+<li id="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-C67CA4EB-480A-5A5B-A4F5-B7206DBD3CFE"><a name="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-C67CA4EB-480A-5A5B-A4F5-B7206DBD3CFE"><!-- --></a><p>The whole sequence is
+usually encapsulated in static member functions called <samp class="codeph">NewL()</samp>,
+and <samp class="codeph">NewLC()</samp> (which additionally leaves the created object
+on the clean-up stack).</p>
+ </li>
+
+<li id="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-B0AC323F-EDF5-5BEE-B843-A46E5611B1F3"><a name="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-B0AC323F-EDF5-5BEE-B843-A46E5611B1F3"><!-- --></a><p>Abstract classes are
+not intended to be instantiated, and so have no <samp class="codeph">NewLC()</samp> or <samp class="codeph">NewL()</samp>,
+only a second phase constructor.</p>
+ </li>
+
+<li id="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-557838D0-10D0-55B3-9848-254065EFDFF4"><a name="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-557838D0-10D0-55B3-9848-254065EFDFF4"><!-- --></a><p>Step 2 is optional,
+because all such construction can be performed by the second phase constructor.
+The C++ constructor is only necessary when the class is immediately derived
+from a base class whose default C++ constructor cannot be used. In this case,
+the derived class must call the base class’s constructor with appropriate
+parameters.</p>
+ </li>
+
+<li id="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-93707F75-0BB3-563F-B00C-35683DEE007C"><a name="GUID-5829247E-2E8E-502F-9051-A59DA8EE71B0__GUID-93707F75-0BB3-563F-B00C-35683DEE007C"><!-- --></a><p>It is conventional for
+the second phase constructor to be called <samp class="codeph">ConstructL()</samp>. </p>
+ </li>
+
+</ul>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-5EBA3C03-2E4E-5DBA-BB5B-0D40DAB3C39B.html" title="This document introduces two phase construction.">Two Phase Construction</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

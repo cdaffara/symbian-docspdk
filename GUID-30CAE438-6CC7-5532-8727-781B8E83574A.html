@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Heap Locking in the Font and Bitmap Server"/>
+<meta name="abstract" content="The Font and Bitmap Server's heap locking API is deprecated in Symbian OS v9.3 and later versions. This topic explains the rationale for this and how it affects existing applications that use the CFBsBitmap::LockHeap(), CFBsBitmap::LockHeapLC() and CFbsBitmap::UnlockHeap() functions."/>
+<meta name="description" content="The Font and Bitmap Server's heap locking API is deprecated in Symbian OS v9.3 and later versions. This topic explains the rationale for this and how it affects existing applications that use the CFBsBitmap::LockHeap(), CFBsBitmap::LockHeapLC() and CFbsBitmap::UnlockHeap() functions."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A03FB1BF-F67B-519D-A904-74CA3F8375D9.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A03FB1BF-F67B-519D-A904-74CA3F8375D9.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-71DADA82-3ABC-52D2-8360-33FAEB2E5DE9.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-90644B52-69D7-595C-95E3-D6F7A30C060D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-30CAE438-6CC7-5532-8727-781B8E83574A"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Heap Locking in the Font and Bitmap Server</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-30CAE438-6CC7-5532-8727-781B8E83574A"><a name="GUID-30CAE438-6CC7-5532-8727-781B8E83574A"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2384330 id2385242 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html">Graphics Guide</a> &gt; <a href="GUID-A03FB1BF-F67B-519D-A904-74CA3F8375D9.html" title="The Font and Bitmap Server collection contains only one component—the Font and Bitmap Server. As its name suggests, the Font and Bitmap Server manages fonts and bitmaps.">Font and Bitmap Server Collection</a> &gt; </div>
+<h1 class="topictitle1">Heap
+Locking in the Font and Bitmap Server </h1>
+<div><p>The Font and Bitmap Server's heap locking API is deprecated in
+Symbian OS v9.3 and later versions. This topic explains the rationale for
+this and how it affects existing applications that use the <samp class="codeph">CFBsBitmap::LockHeap()</samp>, <samp class="codeph">CFBsBitmap::LockHeapLC()</samp> and <samp class="codeph">CFbsBitmap::UnlockHeap()</samp> functions. </p>
+
+<div class="section"><h2 class="sectiontitle">Heap locking in previous versions </h2> <p>Prior to Symbian
+OS v9.3, the Font and Bitmap Server made a distinction between small bitmaps
+and large bitmaps. The data for large bitmaps was stored in a separate global
+memory heap where a de-fragmentation algorithm was used. When necessary, this
+algorithm moved bitmap data in the virtual address space. As a result it was
+possible for an application to allocate a new bitmap and trigger the de-fragmentation
+algorithm while an unrelated application accessed the data of another bitmap.
+From an application's point of view, this meant that the value returned by <samp class="codeph">CFbsBitmap::DataAddress()</samp> could
+change unpredictably at any time. </p>
+ <p>The solution was to lock the global
+memory heap by calling <samp class="codeph">CFbsBitmap::LockHeap()</samp> or <samp class="codeph">CFbsBitmap::LockHeapLC()</samp> before
+calling <samp class="codeph">CFbsBitmap::DataAddress()</samp>. When the application finished
+accessing the bitmap data, it unlocked the global memory heap by calling <samp class="codeph">CFbsBitmap::UnlockHeap().</samp> Internally
+the Font and Bitmap Server used a global mutual exclusion object to implement
+the heap locking functions and waited on it before performing any operation
+that could trigger the de-fragmentation algorithm. </p>
+ <p>Although it was
+undocumented functionality, multi-threaded applications could use the heap
+locking functions as a way of synchronizing access to bitmaps shared among
+several threads, because calls to <samp class="codeph">CFbsBitmap::LockHeap()</samp> and <samp class="codeph">CFbsBitmap::UnlockHeap()</samp> translated
+into <samp class="codeph">Wait()</samp> and <samp class="codeph">Signal()</samp> operations on the
+global mutual exclusion object. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">Removal of heap locking </h2> <p><strong>Use of a disconnected
+memory chunk </strong> </p>
+ <p>From Symbian OS v9.3, all bitmap data is kept in
+a disconnected global memory chunk. This is a new type of chunk that does
+not require the set of pages committed to physical memory to form a contiguous
+block in the virtual address space. A virtual address range much bigger than
+the amount of physical memory is reserved, and pages are committed to physical
+memory when allocating bitmaps and de-committed when freeing them. </p>
+ <p>As
+a result, fragmentation in the reserved virtual address range is not a problem
+and fragmentation in the physical address space is handled transparently by
+the Memory Management Unit (MMU). Therefore, de-fragmentation is not necessary
+and bitmap operations do not need to move data belonging to other bitmaps. </p>
+ <p><strong>Removal
+of in-place operations </strong> </p>
+ <p>Some bitmap operations, such as <samp class="codeph">CFbsBitmap::Resize()</samp>, <samp class="codeph">CFbsBitmap::Compress()</samp> and <samp class="codeph">CFbsBitmap::CompressInBackground()</samp>, can change the
+value returned by <samp class="codeph">CFbsBitmap::DataAddress()</samp> because they
+may need to re-allocate memory. These functions have a new implementation.
+They now create a new bitmap object inside the Font and Bitmap Server and
+update the reference contained in the <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html"><span class="apiname">CFbsBitmap</span></a> object.
+The old bitmap is destroyed immediately if it is referenced only by the <samp class="codeph">CFbsBitmap</samp> object
+on which the re-allocating function was called. Otherwise, the old bitmap
+is flagged as <strong>dirty</strong> and its destruction is deferred until its reference
+count becomes zero. </p>
+ <p>All of the functions in the <samp class="codeph">CFbsBitmap</samp> class
+now check whether the referenced bitmap is dirty before proceeding. If it
+is, the Font and Bitmap Server updates the reference to point to the new bitmap.
+When all of the <samp class="codeph">CFbsBitmap</samp> objects that referenced the old
+bitmap have had their references updated or have been deleted, the reference
+count of the old bitmap becomes zero and it is destroyed. </p>
+ <p>The impact
+on performance of this change is negligible, because the dirty flag is tested
+in the context of the client thread and in most cases bitmaps are "clean". </p>
+ <p>Sometimes
+multiple <samp class="codeph">CFbsBitmap</samp> objects in different client threads reference
+the same bitmap. When a client thread calls a re-allocating function on a
+bitmap while another client thread is accessing the bitmap data through a
+pointer returned by <samp class="codeph">CFbsBitmap::DataAddress()</samp>, there is no
+illegal memory access because the old bitmap still exists. This scenario typically
+occurs when an application calls <samp class="codeph">CFbsBitmap::CompressInBackground()</samp> on
+a bitmap and continues to use it, because the compression is performed asynchronously
+at an unspecified time. </p>
+ <p><strong>Deprecation of the heap locking functions </strong> </p>
+ <p>The
+use of a disconnected memory chunk and the removal of in-place operations
+allow the Font and Bitmap Server to work without heap locking. Therefore, <samp class="codeph">CFbsBitmap::LockHeap()</samp>, <samp class="codeph">CFbsBitmap::UnlockHeap()</samp> and <samp class="codeph">CFbsBitmap::LockHeapLC()</samp> are no longer necessary and
+have been deprecated.<strong> These functions no longer provide any locking functionality
+and cannot be used as a  synchronization mechanism</strong>. </p>
+ <p>It is recommended
+that you replace all calls to <samp class="codeph">CFbsBitmap::LockHeap()</samp> and <samp class="codeph">CFbsBitmap::UnlockHeap()</samp> with
+calls to the new functions <samp class="codeph">CFbsBitmap::BeginDataAccess()</samp> and <samp class="codeph">CFbsBitmap::EndDataAccess()</samp>.
+If necessary also add a mutual exclusion object to multi-threaded applications.
+Although not strictly necessary, calling <samp class="codeph">CFbsBitmap::BeginDataAccess()</samp> and <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-683A1D42-2764-3EB7-BD19-9E12559199AB__GUID-0C2D1B5F-46A8-32A1-9558-24BC8A413258"><span class="apiname">CFbsBitmap::EndDataAccess()</span></a> ensures
+optimum performance in platforms with graphics hardware acceleration. </p>
+ <p>For
+the benefit of legacy applications that do not require changes, <samp class="codeph">CFbsBitmap::LockHeap()</samp> and <samp class="codeph">CFbsBitmap::UnlockHeap()</samp> now simply call <samp class="codeph">CFbsBitmap::BeginDataAccess()</samp> and <samp class="codeph">CFbsBitmap::EndDataAccess()</samp>,
+respectively. </p>
+ <p>Any number of client threads can now call <samp class="codeph">CFbsBitmap::DataAddress()</samp> and
+manipulate bitmap data at the same time. This does not cause a problem provided
+each client thread accesses a different bitmap. If a multi-threaded application
+shares a bitmap among several threads and assumes that <samp class="codeph">CFbsBitmap::LockHeap()</samp> is
+implemented as a <samp class="codeph">Wait()</samp> operation on a mutual exclusion object,
+you may need to modify the application. </p>
+ <p><strong>The impact of the change
+on existing applications </strong> </p>
+ <p>The old documentation was ambiguous
+about several aspects of the semantics of the heap locking API. However, because
+the actual implementation used a global mutual exclusion object, it was possible
+for a client thread to call <samp class="codeph">CFbsBitmap::LockHeap()</samp> and prevent
+any other client thread that called <samp class="codeph">CFbsBitmap::LockHeap()</samp> from
+proceeding. This included client threads that attempted to access the same
+bitmap and totally unrelated client threads. Therefore, the heap locking API
+may have been used as a synchronisation mechanism in multi-threaded applications.
+This is no longer possible. </p>
+ <p>The <a href="GUID-B18430C6-0FC1-3EE6-AC5C-A30B6AE88217.html"><span class="apiname">SYMBIAN_DEBUG_FBS_LOCKHEAP</span></a> macro
+can be used to help detect multi-threaded applications that share a bitmap
+among several threads and fail to provide their own mutual exclusion mechanism.
+When this macro is defined in debug builds of the Font and Bitmap Server, <samp class="codeph">CFbsBitmap::LockHeap()</samp> and <samp class="codeph">CFbsBitmap::UnlockHeap()</samp> check whether more than one client thread has a call to <samp class="codeph">CFbsBitmap::LockHeap()</samp> on
+the same bitmap at the same time without a corresponding call to <samp class="codeph">CFbsBitmap::UnlockHeap()</samp>.
+When this is detected, a panic FBSCLI 22 is raised. </p>
+ <p>The impact of
+the change on existing multi-threaded applications that use the heap locking
+API as a synchronisation mechanism is reduced, in most of the cases, to the
+possibility of loss of bitmap data changes rather than illegal memory access
+or any other kind of abnormal termination. An exception is the case of existing
+multi-threaded applications that use the heap locking API as a synchronisation
+mechanism where one thread calls <samp class="codeph">CFbsBitmap::Resize()</samp> on
+a bitmap while another thread calls <samp class="codeph">CFbsBitmap::SizeInPixels()</samp> followed
+by <samp class="codeph">CFbsBitmap::DataAddress()</samp> on the same bitmap. This can
+produce an incorrect value for the size in pixels and lead to an illegal memory
+access. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-A03FB1BF-F67B-519D-A904-74CA3F8375D9.html" title="The Font and Bitmap Server collection contains only one component—the Font and Bitmap Server. As its name suggests, the Font and Bitmap Server manages fonts and bitmaps.">Font and Bitmap Server Collection</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-71DADA82-3ABC-52D2-8360-33FAEB2E5DE9.html" title="The Font and Bitmap Server (FBServ) provides a memory efficient way of using bitmaps and fonts. It stores a single instance of each bitmap in either a shared heap or in eXecute In Place (XIP) ROM and provides clients with read and (when appropriate) write access.">Font and
+Bitmap Server Overview</a></div>
+<div><a href="GUID-90644B52-69D7-595C-95E3-D6F7A30C060D.html" title="A font is a set of characters of matching size (height) and appearance. In order to be displayed each character must ultimately be drawn as a series of pixels (a bitmap). Symbian can store fonts in bitmap or vector form. A vector font (for example, an OpenType font) must be converted to bitmaps (or rasterized) before it can be drawn. Symbian caches and shares bitmaps for performance and memory efficiency.">Font and
+Text Services Collection  Overview </a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

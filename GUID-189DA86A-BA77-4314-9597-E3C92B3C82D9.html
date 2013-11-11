@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Promoting char in comparison with RVCT"/>
+<meta name="abstract" content="The default char will be promoted to int on WINSCW and unsigned on the RVCT compiler. Due to this promotion, comparison c != EOF will not become true on hardware and it will loop infinite."/>
+<meta name="description" content="The default char will be promoted to int on WINSCW and unsigned on the RVCT compiler. Due to this promotion, comparison c != EOF will not become true on hardware and it will loop infinite."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BB149ADF-3F4C-426C-8852-78FF4C144AD5.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-85372267-C352-4389-8FC9-32B8E1622BC9.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BB149ADF-3F4C-426C-8852-78FF4C144AD5.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-189DA86A-BA77-4314-9597-E3C92B3C82D9"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Promoting char in comparison with RVCT</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-189DA86A-BA77-4314-9597-E3C92B3C82D9"><a name="GUID-189DA86A-BA77-4314-9597-E3C92B3C82D9"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381193 id2381201 id2381221 id2381248 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html">Generic Open Libraries</a> &gt; <a href="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html">Open Environment Core (P.I.P.S.)</a> &gt; <a href="GUID-85372267-C352-4389-8FC9-32B8E1622BC9.html">Getting Started</a> &gt; <a href="GUID-BB149ADF-3F4C-426C-8852-78FF4C144AD5.html">Using Compilers and IDEs</a> &gt; </div>
+<h1 class="topictitle1">Promoting <samp class="codeph">char</samp> in
+comparison with RVCT</h1>
+<div><p>The default <samp class="codeph">char</samp> will be promoted to <samp class="codeph">int</samp> on <samp class="codeph">WINSCW</samp> and <samp class="codeph">unsigned</samp> on
+the RVCT compiler. Due to this promotion, comparison c != EOF will not become
+true on hardware and it will loop infinite. </p>
+
+<p>RVCT treats plain <samp class="codeph">char</samp> type as <samp class="codeph">unsigned</samp> by
+default. There is a command line option "<samp class="codeph">--signed_chars</samp>"
+that forces RVCT to treat plain char type as a signed char. Using this option,
+the example will compile and run the way it is expected to. But
+this option must be applied with care, since using the switch universally
+may have other ramifications elsewhere in the source base.</p>
+
+<p>The MMP file can be modified as: </p>
+
+<pre class="codeblock">OPTION armcc  --signed_chars</pre>
+
+<p>Example: </p>
+
+<pre class="codeblock">#include &lt;stdio.h&gt;
+int main()
+{
+  FILE *fp;
+  char c;
+  fp=fopen("test.txt","w"); 
+  fprintf(fp,"%s","ab");
+  fclose(fp);
+  fp=fopen("test.txt","r"); 
+  c=getc(fp);
+  while(c != EOF)
+  {
+     c = getc(fp);
+  }
+  printf("\nOut of loop");
+  fclose(fp);
+  getchar();
+}
+</pre>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-BB149ADF-3F4C-426C-8852-78FF4C144AD5.html">Using Compilers and IDEs</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

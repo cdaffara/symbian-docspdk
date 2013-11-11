@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="RSatService"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-721876BE-5D07-3F41-867F-622791D00459"/>
+
+<title>RSatService</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-721876BE-5D07-3F41-867F-622791D00459"><a name="GUID-721876BE-5D07-3F41-867F-622791D00459"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2413260 id2413538 id2414633 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">RSatService Class Reference</h1>
+	<table class="signature"><tr><td>class RSatService : public RSubSessionBase</td></tr></table><div class="section"><div>
+			<p>
+				<strong>Sub-session for SAT services to SIM</strong>
+			</p>
+
+			<div class="p">In order to use SAT Service API, services of an another API is needed: <ul><li><p><strong>SAT Client API</strong>  For connecting SAT Session  </p>
+</li>
+</ul>
+</div>
+
+			<p>Idle mode text client needs to monitor for idle mode content changes and call <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html#GUID-750EC496-8E9E-37DF-836C-16ED457C59DA">SetIdleModeTextResponse()</a> if content is updated. Result needs to be reported also if there already is initial content after startup, when change notification has not been requested yet. Example sequence for Idle mode client: 1. Startup 2. Request notification for idle mode content updates from. 3. Try to get initial idle mode text. 4. Use initial content, if there was some. 5. Report result if there was content. Later: 6. Idle mode text change notification request is completed. 7. Renew notification request. 8. Read new content. 9. Use new content. 10. Report result.</p>
+
+			<div class="p">
+				<pre class="codeblock">  // How to connect to SAT service :
+  // How to request notification on SetupIdleModeText change:
+
+  RSatSession satSession;
+  RSatService satService;
+  // Connect session
+  satSession.ConnectL();
+  satService.OpenL( satSession );
+  // Start observing asynchronously for changes
+  satService.NotifySetupIdleModeTextChange( status );
+  
+  //How to read Idle Mode Text and icon:
+
+  // Read text and icon after startup and when notified about change.
+  TSatIconQualifier iconQualif( ESatIconNoIcon );
+  TUint8 recordId( 0 );
+  TInt error( KErrNone );
+  HBufC* text = NULL;
+  satService.GetSetupIdleModeTextL( 
+    text, iconQualif, recordId );
+  CFbsBitmap* icon = NULL;
+  if ( text )
+      {
+      // Use text, take care of cleanup.
+      }
+  if ( ESatIconNoIcon != iconQualif )
+      {
+      // There's an icon to be displayed.
+      // Get icon records into array.
+      RIconEf iconInfos;
+      CleanupStack::PushL( TCleanupItem( 
+          LocalArrayCleanupFunction, iconInfos )
+      satService.GetIconInfoL( recordId, iconInfos );
+
+      // Resolve which icon to use using icon infos.
+      // Then get the icon you selected.
+      icon = satService.GetIconL( iconInfos[ 0 ] );
+      CleanupStack::PopAndDestroy(); // iconInfos
+
+      if ( ESatIconSelfExplanatory == iconQualif )
+          {
+          // Only icon should be displayed.
+          }
+      else if ( ESatIconNotSelfExplanatory == iconQualif )
+          {
+          // Both text and icon should be displayed.
+          }
+      }
+  // else: only text should be displayed
+  
+  // Display text and/or icon, take care of their cleanup.</pre>
+
+			</div>
+
+			<div class="p">SatClient.lib <dl class="since"><dt class="dlterm">Since</dt>
+<dd>5.1 </dd>
+</dl>
+</div>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">RSatService<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html">RSubSessionBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-44A62671-E301-330D-9355-34558066EA16">RSatService</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-5404B7EF-50BE-3052-A42A-126AAC2E9A76">Close</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F97E4EF2-48D4-30EE-9497-F29D20155278">GetIconInfoL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint8</a>, <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RIconEf</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html">CFbsBitmap</a> *</td><td><a href="#GUID-82F3CFD8-9BFC-3D00-8D01-2F8595C9794A">GetIconL</a>(const TSatIconInfo &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-A0393FC9-EE45-334A-9535-D62198F7C49D">GetSetupIdleModeTextL</a>(<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *&amp;, <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html">TSatIconQualifier</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint8</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-208D3101-C5A8-3CBA-8679-68A4D02FAA03">NotifySetupIdleModeTextChange</a>(<a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-7671C62B-BD2F-3151-8A95-087F119ABD2C">NotifySetupIdleModeTextChangeCancel</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-926D1D49-1785-301D-87CF-800B2A6D6134">OpenL</a>(const <a href="GUID-8A0B70D1-81BB-33EE-A0B5-24BE7C88C0AF.html">RSatSession</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-750EC496-8E9E-37DF-836C-16ED457C59DA">SetIdleModeTextResponse</a>(const <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html">TSATIdleResult</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-902F9461-FDC5-3F56-A6AC-A16E8B66689B">RSatService</a>(const <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html">RSatService</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-29B782BC-D964-3E2F-A2FF-AA7469B083B7">CheckInfoValidityL</a>(const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-398E08D3-BED5-3981-9A19-A23B74CBC798">FillInternalIconInfo</a>(const TSatIconInfo &amp;, TSatInternalIconInfo &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-2E15C703-5456-3FFF-8D96-6F9CF839847F">SetIconInfoL</a>(TSatIconInfo &amp;, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html">RSatService</a> &amp;</td><td><a href="#GUID-FE1A4882-779A-3E9F-8DF3-5D4B9980365C">operator=</a>(const <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html">RSatService</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html">RSubSessionBase::CloseSubSession(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html">RSubSessionBase::CreateAutoCloseSubSession(RSessionBase &amp;,TInt,const TIpcArgs &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html">RSubSessionBase::CreateSubSession(const RSessionBase &amp;,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html">RSubSessionBase::CreateSubSession(const RSessionBase &amp;,TInt,const TIpcArgs &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html">RSubSessionBase::RSubSessionBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html">RSubSessionBase::Send(TInt)const</a></td></tr><tr><td> </td><td><a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html">RSubSessionBase::Send(TInt,const TIpcArgs &amp;)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html">RSubSessionBase::SendReceive(TInt)const</a></td></tr><tr><td> </td><td><a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html">RSubSessionBase::SendReceive(TInt,TRequestStatus &amp;)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html">RSubSessionBase::SendReceive(TInt,const TIpcArgs &amp;)const</a></td></tr><tr><td> </td><td><a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html">RSubSessionBase::SendReceive(TInt,const TIpcArgs &amp;,TRequestStatus &amp;)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html">RSubSessionBase::Session()const</a></td></tr><tr><td> </td><td><a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html">RSubSessionBase::SubSessionHandle()const</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Enumerations</th></tr></thead><tbody><tr><td align="right" valign="top">enum</td><td><a href="#GUID-D4D3E597-0AC7-33D5-8B7E-D8C66CFE5096">TSATIdleResult</a> { <a href="#GUID-2D84C7B8-DA23-3206-9D65-8BC97CC46144">ESATIdleSuccess</a> = 0x00, <a href="#GUID-6C628B5E-E0BB-3455-BB2F-24920B379B1C">ESATIdleSuccessRequestedIconNotDisplayed</a> = 0x04, <a href="#GUID-F9FEA034-7C57-374D-A25E-0CBAE6C0F48F">ESATIdleMeUnableToProcessCmd</a> = 0x20, <a href="#GUID-4CA5A8A8-3195-35FA-82E8-6C9FBB868346">ESATIdleCmdBeyondMeCapabilities</a> = 0x30 }</td></tr><tr class="bg"><td align="right" valign="top">enum</td><td><a href="#GUID-C6BBF705-08EB-3E56-8CF1-D785925A00C7">TSatIconQualifier</a> { <a href="#GUID-B5FB25B0-E130-3A7A-B7BD-7E60AFC644DB">ESatIconNoIcon</a> = 1, <a href="#GUID-58D9D5DA-3A07-3960-9B69-F70A2587894E">ESatIconSelfExplanatory</a>, <a href="#GUID-B4461179-BA9B-3B13-B610-7B4D122F886B">ESatIconNotSelfExplanatory</a> }</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-4AD02F14-1142-372F-9D11-224595932034.html">TIpcArgs</a>
+				</td><td><a href="#GUID-32E967E2-23D5-3CBC-A407-06FF4F375A20">iArgs</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-14E391CE-2452-3ACD-BD8A-E72EE2CC5D38">iMaxIconDataSize</a></td></tr><tr><td align="right" valign="top">CSatPluginMonitor *</td><td><a href="#GUID-8ED3D932-34E0-39A1-946C-7C0C439A9B13">iSatPluginMonitor</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-44A62671-E301-330D-9355-34558066EA16"><a name="GUID-44A62671-E301-330D-9355-34558066EA16"><!-- --></a>
+		<h2 class="topictitle2">RSatService()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>RSatService</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>C++ default constructor. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-902F9461-FDC5-3F56-A6AC-A16E8B66689B"><a name="GUID-902F9461-FDC5-3F56-A6AC-A16E8B66689B"><!-- --></a>
+		<h2 class="topictitle2">RSatService(const RSatService &amp;)</h2>
+		<table class="signature"><tr><td>RSatService</td><td>(</td><td>const <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html">RSatService</a> &amp;</td><td/><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Prohibit copy constructor if not deriving from <a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html#GUID-8F6FE089-E2A8-30F4-B67E-10F286347681">CBase</a>. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html">RSatService</a> &amp; </td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-29B782BC-D964-3E2F-A2FF-AA7469B083B7"><a name="GUID-29B782BC-D964-3E2F-A2FF-AA7469B083B7"><!-- --></a>
+		<h2 class="topictitle2">CheckInfoValidityL(const TDesC8 &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>CheckInfoValidityL</td><td>(</td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aData</td><td>)</td><td>const [private]</td></tr></table><div class="section"><div>
+				<p>Checks that the data from SIM is valid.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>5.1 </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrCorrupt if the info is invalid. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aData</td><td>Icon info to be checked.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5404B7EF-50BE-3052-A42A-126AAC2E9A76"><a name="GUID-5404B7EF-50BE-3052-A42A-126AAC2E9A76"><!-- --></a>
+		<h2 class="topictitle2">Close()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Close</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Closes the sub-session.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>5.1 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-398E08D3-BED5-3981-9A19-A23B74CBC798"><a name="GUID-398E08D3-BED5-3981-9A19-A23B74CBC798"><!-- --></a>
+		<h2 class="topictitle2">FillInternalIconInfo(const TSatIconInfo &amp;, TSatInternalIconInfo &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>FillInternalIconInfo</td><td>(</td><td>const TSatIconInfo &amp;</td><td>aIconInfo,</td></tr><tr><td colspan="3"> </td><td>TSatInternalIconInfo &amp;</td><td>aInternalIconInfo</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<p>Convert TSatIconinfo to TSatInternalIconInfo.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>5.1 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const TSatIconInfo &amp; aIconInfo</td><td>user side icon info.  </td></tr><tr class="bg"><td class="parameter">TSatInternalIconInfo &amp; aInternalIconInfo</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F97E4EF2-48D4-30EE-9497-F29D20155278"><a name="GUID-F97E4EF2-48D4-30EE-9497-F29D20155278"><!-- --></a>
+		<h2 class="topictitle2">GetIconInfoL(TUint8, RIconEf &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>GetIconInfoL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint8</a></td><td>aRecordNumber,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RIconEf</a> &amp;</td><td>aIconEf</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const </td></tr></table><div class="section"><div>
+				<p>Gets the information of icons from the SIM.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>5.1 </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Error value returned by <a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html#GUID-22D72481-C161-3901-BF61-3F4809C531B0">RSubSessionBase::SendReceive</a>. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrCorrupt if the info is invalid. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint8</a> aRecordNumber</td><td>Record number from proactive command.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RIconEf</a> &amp; aIconEf</td><td>Contains the icon information.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-82F3CFD8-9BFC-3D00-8D01-2F8595C9794A"><a name="GUID-82F3CFD8-9BFC-3D00-8D01-2F8595C9794A"><!-- --></a>
+		<h2 class="topictitle2">GetIconL(const TSatIconInfo &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html">CFbsBitmap</a> *</td><td>GetIconL</td><td>(</td><td>const TSatIconInfo &amp;</td><td>aIconInfo</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Gets the bitmap of selected icon from SIM. Client should determine the suitable icon using GetIconInfoL.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>5.1 </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Error value returned by <a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html#GUID-22D72481-C161-3901-BF61-3F4809C531B0">RSubSessionBase::SendReceive</a>. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Error value returned by <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html#GUID-E29F5E0F-661C-3A5C-9015-1CE892F80FD1">CFbsBitmap::Duplicate</a>. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Error value returned by <a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html#GUID-637C24DD-6D7C-3A2A-87B1-B36CD30616E7">RSubSessionBase::Send</a>. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const TSatIconInfo &amp; aIconInfo</td><td>Information of the selected icon.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A0393FC9-EE45-334A-9535-D62198F7C49D"><a name="GUID-A0393FC9-EE45-334A-9535-D62198F7C49D"><!-- --></a>
+		<h2 class="topictitle2">GetSetupIdleModeTextL(HBufC *&amp;, TSatIconQualifier &amp;, TUint8 &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>GetSetupIdleModeTextL</td><td>(</td><td><a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *&amp;</td><td>aText,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html">TSatIconQualifier</a> &amp;</td><td>aIconQualifier,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint8</a> &amp;</td><td>aRecordNumber</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Get idle mode text and icon.</p>
+
+				<p>Icon and text should be displayed depending on how aIconQualifier specifies icon role. Result must be reported using <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html#GUID-750EC496-8E9E-37DF-836C-16ED457C59DA">RSatService::SetIdleModeTextResponse()</a>. Notice: result needs to be reported also if content is available already after startup when client requests notification for the first time. If unable to display icon, then only text can be displayed (adjust reported result value).</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>5.1 </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotFound ESatIconNotSelfExplanatory icon without text. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *&amp; aText</td><td>New text, if available. Ownership transferred. NULL if no text to display.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html">TSatIconQualifier</a> &amp; aIconQualifier</td><td>Specifies if icon, text or both are preferred.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint8</a> &amp; aRecordNumber</td><td>Record id for icon.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-208D3101-C5A8-3CBA-8679-68A4D02FAA03"><a name="GUID-208D3101-C5A8-3CBA-8679-68A4D02FAA03"><!-- --></a>
+		<h2 class="topictitle2">NotifySetupIdleModeTextChange(TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>NotifySetupIdleModeTextChange</td><td>(</td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Requests notification when idle mode text or image are updated.</p>
+
+				<p>Idle client needs to monitor for setup idle mode content updates. When a request is completed, the Idle client can read new content using GetSetupIdleModeTextL and must report idle mode content displaying result using <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html#GUID-750EC496-8E9E-37DF-836C-16ED457C59DA">SetIdleModeTextResponse()</a>.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>5.1 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>Request to be completed on update.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7671C62B-BD2F-3151-8A95-087F119ABD2C"><a name="GUID-7671C62B-BD2F-3151-8A95-087F119ABD2C"><!-- --></a>
+		<h2 class="topictitle2">NotifySetupIdleModeTextChangeCancel()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>NotifySetupIdleModeTextChangeCancel</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Cancels notification request for setup idle mode text or image change.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>5.1 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-926D1D49-1785-301D-87CF-800B2A6D6134"><a name="GUID-926D1D49-1785-301D-87CF-800B2A6D6134"><!-- --></a>
+		<h2 class="topictitle2">OpenL(const RSatSession &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>OpenL</td><td>(</td><td>const <a href="GUID-8A0B70D1-81BB-33EE-A0B5-24BE7C88C0AF.html">RSatSession</a> &amp;</td><td>aSession</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Opens the sub-session.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>5.1 </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>Error value returned by <a href="GUID-1BBE1448-1DF8-33C4-BF9E-5A5F427AEE35.html#GUID-CD246477-8702-3830-8284-5EDB1BBF18B7">RSubSessionBase::CreateSubSession</a>. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-8A0B70D1-81BB-33EE-A0B5-24BE7C88C0AF.html">RSatSession</a> &amp; aSession</td><td>Sub-session.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2E15C703-5456-3FFF-8D96-6F9CF839847F"><a name="GUID-2E15C703-5456-3FFF-8D96-6F9CF839847F"><!-- --></a>
+		<h2 class="topictitle2">SetIconInfoL(TSatIconInfo &amp;, const TDesC8 &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>SetIconInfoL</td><td>(</td><td>TSatIconInfo &amp;</td><td>aContainer,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aIconSatData</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [private]</td></tr></table><div class="section"><div>
+				<p>Set ETSI specified bitmap data to TSatIconInfo.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>5.1 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">TSatIconInfo &amp; aContainer</td><td>Client side Icon info.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aIconSatData</td><td>RSat::TIcon data from server.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-750EC496-8E9E-37DF-836C-16ED457C59DA"><a name="GUID-750EC496-8E9E-37DF-836C-16ED457C59DA"><!-- --></a>
+		<h2 class="topictitle2">SetIdleModeTextResponse(const TSATIdleResult &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetIdleModeTextResponse</td><td>(</td><td>const <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html">TSATIdleResult</a> &amp;</td><td>aResult</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Sets SetUpIdleModeText response.</p>
+
+				<p>This must be called by the Idle client application after IdleModeText has been modified by SAT, meaning when <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html#GUID-208D3101-C5A8-3CBA-8679-68A4D02FAA03">RSatService::NotifySetupIdleModeTextChange()</a> is completed. Also needs to be called if <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html#GUID-A0393FC9-EE45-334A-9535-D62198F7C49D">GetSetupIdleModeTextL()</a> returned content and <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html#GUID-208D3101-C5A8-3CBA-8679-68A4D02FAA03">RSatService::NotifySetupIdleModeTextChange()</a> notification was not requested yet.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>5.1 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html">TSATIdleResult</a> &amp; aResult</td><td>Result of displaying idle mode text and icon.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-FE1A4882-779A-3E9F-8DF3-5D4B9980365C"><a name="GUID-FE1A4882-779A-3E9F-8DF3-5D4B9980365C"><!-- --></a>
+		<h2 class="topictitle2">operator=(const RSatService &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html">RSatService</a> &amp;</td><td>operator=</td><td>(</td><td>const <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html">RSatService</a> &amp;</td><td/><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Prohibit assigment operator if not deriving from <a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html#GUID-8F6FE089-E2A8-30F4-B67E-10F286347681">CBase</a>. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-721876BE-5D07-3F41-867F-622791D00459.html">RSatService</a> &amp; </td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Enumerations Documentation</h1><div class="nested1" id="GUID-D4D3E597-0AC7-33D5-8B7E-D8C66CFE5096"><a name="GUID-D4D3E597-0AC7-33D5-8B7E-D8C66CFE5096"><!-- --></a>
+		<h2 class="topictitle2">Enum TSATIdleResult</h2>
+		<div class="section"><div>
+				<p>Result options for idle mode text setup. </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">ESATIdleSuccess = 0x00</td><td>
+							<p>Text and Icon were set up successfully </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESATIdleSuccessRequestedIconNotDisplayed = 0x04</td><td>
+							<p>Text was set up successfully, but requested icon was not displayed </p>
+
+						 </td></tr><tr><td valign="top">ESATIdleMeUnableToProcessCmd = 0x20</td><td>
+							<p>Text could not be displayed - temporary problem </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESATIdleCmdBeyondMeCapabilities = 0x30</td><td>
+							<p>Text could not be displayed - permanent problem </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C6BBF705-08EB-3E56-8CF1-D785925A00C7"><a name="GUID-C6BBF705-08EB-3E56-8CF1-D785925A00C7"><!-- --></a>
+		<h2 class="topictitle2">Enum TSatIconQualifier</h2>
+		<div class="section"><div>
+				<p>Specifies icon role. </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">ESatIconNoIcon = 1</td><td>
+							<p>Icon is not available. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ESatIconSelfExplanatory</td><td>
+							<p>Icon is self-explanatory, i.e. if displayed, it replaces the text string. </p>
+
+						 </td></tr><tr><td valign="top">ESatIconNotSelfExplanatory</td><td>
+							<p>Icon is not self-explanatory, i.e. if displayed, it shall be displayed together with the text string. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-32E967E2-23D5-3CBC-A407-06FF4F375A20"><a name="GUID-32E967E2-23D5-3CBC-A407-06FF4F375A20"><!-- --></a>
+		<h2 class="topictitle2">
+					TIpcArgs
+				 iArgs</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-4AD02F14-1142-372F-9D11-224595932034.html">TIpcArgs</a>
+				</td><td>iArgs</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Arguments for asynchronous message. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-14E391CE-2452-3ACD-BD8A-E72EE2CC5D38"><a name="GUID-14E391CE-2452-3ACD-BD8A-E72EE2CC5D38"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iMaxIconDataSize</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iMaxIconDataSize</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Maximum support icon size. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-8ED3D932-34E0-39A1-946C-7C0C439A9B13"><a name="GUID-8ED3D932-34E0-39A1-946C-7C0C439A9B13"><!-- --></a>
+		<h2 class="topictitle2">CSatPluginMonitor * iSatPluginMonitor</h2>
+		<table class="signature"><tr><td>CSatPluginMonitor *</td><td>iSatPluginMonitor</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>SetupIdleMode content monitoring. Own </p>
+
+			</div></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

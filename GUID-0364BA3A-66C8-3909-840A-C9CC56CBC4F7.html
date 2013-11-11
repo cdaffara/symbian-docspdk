@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CTextResolver"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7"/>
+
+<title>CTextResolver</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7"><a name="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CTextResolver Class Reference</h1>
+	<table class="signature"><tr><td>class CTextResolver : public CBase</td></tr></table><div class="section"><div>
+			<p>Class offers functionality for resolving corresponding error texts for error codes. Text Resolver API provides operations with which a specific error code can be resolved to a human readable text. Descriptions for the different error codes must be defined in the resource files of this component.</p>
+
+			<p>Text Resolver uses the <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40">CCoeEnv</a> environment class to access the resource files if the <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40">CCoeEnv</a> environment is available. If the <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40">CCoeEnv</a> environment is not available, the files are accessed through the RResourceFile API.</p>
+
+			<p>The API consist of the <a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html#GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7">CTextResolver</a> class which is used together with Text Resolver flags defined in textresolver.hrh file. The flags are used to tell the priority of the error to the client:</p>
+
+			<div class="p">
+				<ul>
+					<li>
+						<p>EErrorResBlankErrorFlag is used to tell that error has no proper explanation.</p>
+
+					</li>
+
+					<li>
+						<p>EErrorResUnknownErrorFlag indicates that Text Resolver does not support the error.</p>
+
+					</li>
+
+					<li>
+						<p>EErrorResOOMFlag Flag is returned while processing KErrNoMemory error code.</p>
+
+					</li>
+
+				</ul>
+
+			</div>
+
+			<p>Usage:</p>
+
+			<div class="p">
+				<pre class="codeblock">  #include &lt;textresolver.h&gt;
+
+  // Typically used as an instance variable.
+  
+  // Call the factory method NewLC() to create a new instance of CTextResolver.
+  // NewLC() method leaves the instance of the object on the cleanup stack.	
+  // The passed CCoeEnv instance is needed to access the resource files.
+  CTextResolver* iTextResolver = CTextResolver::NewLC(*iCoeEnv); 
+
+  // // Error Resolving, simple:
+
+  // Get error code to be resolved.
+  // TInt err1 = MyMethod(KInvalidValue);
+  TInt err1 = KErrNoMemory;
+    
+  TPtrC buf1;  // For returned error text
+    
+  if (err1 != KErrNone)
+      {
+      // Resolve the given error code. 
+      // The operation returns the error text for the resolved error.
+      // There's no limit how long the resolved string can be.
+      // Add context to 2nd param if needed.
+      buf1.Set(iTextResolver-&gt;ResolveErrorString(err)); 
+      }
+  else
+      {
+      // Do something.
+      }
+        
+  // Note that buf1 will only be valid as long as CTextResolver 
+  // instance is alive and no new error is resolved by the same instance.
+  // If for some reason you need to store the resolved error
+  // beyond immediate use, make a copy of it.
+
+  // Error Resolving, advanced:
+ 
+  // Get error code to be resolved.
+  // TInt err2 = MyMethod(KInvalidValue);
+  TInt err2 = KErrNotSupported;
+        
+  TInt textId(0);    // ID of the returned text
+  TUint flags(0);    // Priority of the returned error 
+  TPtrC buf2;      // For returned error text
+   
+  if (err2 != KErrNone)
+      {
+      // Resolve the given error code.
+      // The operation returns the error text for the resolved error.
+      // There's no limit on how long the resolved string can be.
+      // Add Context to 4th param if needed.
+      buf2.Set(iTextResolver-&gt;ResolveErrorString(err, textId, flags)); 
+
+      if (flags &amp; EErrorResUnknownErrorFlag)
+          {
+          // The flag indicates that Text Resolver does not support
+          // the error code. 
+          // Do something.
+          }
+      }
+  else
+      {
+      // Do something.
+      }
+    
+  // Note that buf2 will only be valid as long as CTextResolver 
+  // instance is alive and no new error is resolved by the same instance.
+  // If for some reason you need to store the resolved error
+  // beyond immediate use, make a copy of it.
+
+  // iTextResolver, Free loaded resources
+  CleanupStack::PopAndDestroy(); </pre>
+
+			</div>
+
+			<div class="p">commonengine.lib <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 2.0 </dd>
+</dl>
+</div>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CTextResolver<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-41A3736A-0DB4-3A54-BDD9-A20998FA2206">~CTextResolver</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">CTextResolver</a> *</td><td><a href="#GUID-5E12D0E3-261F-3144-93B7-C1343E1B4515">NewL</a>(<a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">CTextResolver</a> *</td><td><a href="#GUID-9601647E-98A3-3747-8645-0F1AD5487C3A">NewL</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">CTextResolver</a> *</td><td><a href="#GUID-16A5FC5E-29FD-3CCA-9BA5-94BB3FE1606F">NewLC</a>(<a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">CTextResolver</a> *</td><td><a href="#GUID-877CC416-43DF-371C-BFBC-3ABC99B5F302">NewLC</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td><a href="#GUID-52FCDE47-8034-3434-BE7B-B0731953A5A8">ResolveErrorString</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &amp;, <a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">TErrorContext</a>)</td></tr><tr><td align="right" class="code">IMPORT_C const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td><a href="#GUID-444EF08D-7EEE-3DC2-B0F6-EA9B3650C188">ResolveErrorString</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">TErrorContext</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-CD78E5F1-CF32-345C-8400-AD67606AD492">CTextResolver</a>(<a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code"/><td><a href="#GUID-ED379950-FB78-3780-BFC0-EEF673401F1B">CTextResolver</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-C04ABCBC-A5C8-37F3-8B9F-B104F72C9965">AddContextAndSeparator</a>(<a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">TErrorContext</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-7C2CAFBD-C98E-3976-8F31-DFA4A2580DFB">AllocBuffersL</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-D6A94155-8126-3CC9-96E2-D6B33A5B87FA">AllocReadUnicodeString</a>(RResourceFile &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-AD8F813C-768E-3BEC-AC57-A6B66098EF4A">ConstructL</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-59519A9E-5229-3546-806A-56401497C5C6">DoRawReadOfSystemErrorResourcesToArraysL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-47C6B52F-C0D2-374E-A9E2-0D03F2919F27">DoResolveErrorStringL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-B43E863E-FE77-3D58-B8A0-80C86F4EF9E0">LoadResourceFilesL</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-EF751EE4-3B4A-3897-8D9F-1BAC9ABA11AB">ReadLocalizedSeparatorCharacterFromResourceAndPrepareResourceReaderLC</a>(<a href="GUID-B375D32E-1F91-30FA-8605-A2E163111F9A.html">TResourceReader</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-B6B13B9E-65C8-3CA8-82C9-603E6CD6B978">ReadLocalizedSeparatorCharacterFromResourceL</a>(<a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-8F09721E-ED02-3243-8B87-022FA375D5C5">Reset</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-ECA3AB15-E9C7-3754-9827-295CF1F4E565">ResourceForError</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Enumerations</th></tr></thead><tbody><tr><td align="right" valign="top">enum</td><td><a href="#GUID-55A7216C-29B9-36C8-8635-C1664E113AF1">TErrorContext</a> { <a href="#GUID-A33808C8-9751-3444-BF33-0DA3A01D4C49">ECtxAutomatic</a> = 0, <a href="#GUID-A2B3BA15-1324-3D9B-9849-D69CE5878EC0">ECtxNoCtx</a> = 1, <a href="#GUID-7E121587-BEA5-3957-A995-24CFD9992EF1">ECtxNoCtxNoSeparator</a> = 2 }</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; *</td><td><a href="#GUID-75C60CFF-7AB0-3DFD-8315-18280B0947D6">iAppTexts</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-FD2677D1-EF39-3A8A-8D79-7FD4154FA6C7">iBaseResourceFileOffset</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td><a href="#GUID-5559072F-6718-3825-A148-263F7BFE9FCE">iCoe</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-250A17CE-EBFC-397D-A159-7714CA14475C">iContextSeparator</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-BA67B47E-4874-3089-AB4E-ABB2CF25E647.html">CArrayPtr</a>&lt; <a href="GUID-D04545E8-0BB8-3C9F-BDEB-6C4986DFABAD.html">CErrorResourceIdArray</a> &gt; *</td><td><a href="#GUID-01C46D51-0940-3C7A-8F75-AB50B8E9F202">iErrorTexts</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-BA67B47E-4874-3089-AB4E-ABB2CF25E647.html">CArrayPtr</a>&lt; <a href="GUID-D04545E8-0BB8-3C9F-BDEB-6C4986DFABAD.html">CErrorResourceFlagArray</a> &gt; *</td><td><a href="#GUID-62A3952C-023B-3DCA-B80E-251975560633">iFlags</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html">RFs</a>
+				</td><td><a href="#GUID-AD2322DC-885C-33B4-B2EE-7D2A3752C8CD">iFs</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-DD05830C-82EE-3058-B3E9-3105829C1712">iRDSupport</a></td></tr><tr><td align="right" valign="top">RResourceFile</td><td><a href="#GUID-5A56D598-B085-3998-AFA0-A3CA520F089B">iResFile</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; *</td><td><a href="#GUID-AF91139A-D0D6-385A-9A8D-D8E94E075E7D">iStartError</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-55030232-0397-3736-A3FF-C6CEF5B0F200">iTextBuffer</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-E9CD442E-5949-3234-8ACA-3A3400946D3D">iTitleText</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a>
+				</td><td><a href="#GUID-917D99F0-1DB6-3BBB-A37D-E154244C9C2A">iTruncatedTextPointer</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-CD78E5F1-CF32-345C-8400-AD67606AD492"><a name="GUID-CD78E5F1-CF32-345C-8400-AD67606AD492"><!-- --></a>
+		<h2 class="topictitle2">CTextResolver(CCoeEnv &amp;)</h2>
+		<table class="signature"><tr><td>CTextResolver</td><td>(</td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> &amp;</td><td>aEnv</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> &amp; aEnv</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-ED379950-FB78-3780-BFC0-EEF673401F1B"><a name="GUID-ED379950-FB78-3780-BFC0-EEF673401F1B"><!-- --></a>
+		<h2 class="topictitle2">CTextResolver()</h2>
+		<table class="signature"><tr><td>CTextResolver</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-41A3736A-0DB4-3A54-BDD9-A20998FA2206"><a name="GUID-41A3736A-0DB4-3A54-BDD9-A20998FA2206"><!-- --></a>
+		<h2 class="topictitle2">~CTextResolver()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CTextResolver</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Destructor </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-C04ABCBC-A5C8-37F3-8B9F-B104F72C9965"><a name="GUID-C04ABCBC-A5C8-37F3-8B9F-B104F72C9965"><!-- --></a>
+		<h2 class="topictitle2">AddContextAndSeparator(TErrorContext)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>AddContextAndSeparator</td><td>(</td><td><a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">TErrorContext</a></td><td>aContext</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Returns false if any memory allocation fails or initial values of necessary pointers are NULL, indicating alloc failure earlier. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">TErrorContext</a> aContext</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7C2CAFBD-C98E-3976-8F31-DFA4A2580DFB"><a name="GUID-7C2CAFBD-C98E-3976-8F31-DFA4A2580DFB"><!-- --></a>
+		<h2 class="topictitle2">AllocBuffersL()</h2>
+		<table class="signature"><tr><td>void</td><td>AllocBuffersL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-D6A94155-8126-3CC9-96E2-D6B33A5B87FA"><a name="GUID-D6A94155-8126-3CC9-96E2-D6B33A5B87FA"><!-- --></a>
+		<h2 class="topictitle2">AllocReadUnicodeString(RResourceFile &amp;, TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>AllocReadUnicodeString</td><td>(</td><td>RResourceFile &amp;</td><td>aResFile,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aTextId</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">RResourceFile &amp; aResFile</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aTextId</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-AD8F813C-768E-3BEC-AC57-A6B66098EF4A"><a name="GUID-AD8F813C-768E-3BEC-AC57-A6B66098EF4A"><!-- --></a>
+		<h2 class="topictitle2">ConstructL()</h2>
+		<table class="signature"><tr><td>void</td><td>ConstructL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-59519A9E-5229-3546-806A-56401497C5C6"><a name="GUID-59519A9E-5229-3546-806A-56401497C5C6"><!-- --></a>
+		<h2 class="topictitle2">DoRawReadOfSystemErrorResourcesToArraysL(TInt &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>DoRawReadOfSystemErrorResourcesToArraysL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aError,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aTextId</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<p>Read the system error texts from errorres.rss only, without using the Uikon CEikErrorResolver. This will not pick up any appliation specific errors. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aError</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aTextId</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-47C6B52F-C0D2-374E-A9E2-0D03F2919F27"><a name="GUID-47C6B52F-C0D2-374E-A9E2-0D03F2919F27"><!-- --></a>
+		<h2 class="topictitle2">DoResolveErrorStringL(TInt, TInt &amp;, TUint &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>DoResolveErrorStringL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aError,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aTextId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &amp;</td><td>aFlags</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aError</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aTextId</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &amp; aFlags</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B43E863E-FE77-3D58-B8A0-80C86F4EF9E0"><a name="GUID-B43E863E-FE77-3D58-B8A0-80C86F4EF9E0"><!-- --></a>
+		<h2 class="topictitle2">LoadResourceFilesL()</h2>
+		<table class="signature"><tr><td>void</td><td>LoadResourceFilesL</td><td>(</td><td>)</td><td>[private, inline, virtual]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-5E12D0E3-261F-3144-93B7-C1343E1B4515"><a name="GUID-5E12D0E3-261F-3144-93B7-C1343E1B4515"><!-- --></a>
+		<h2 class="topictitle2">NewL(CCoeEnv &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">CTextResolver</a> *</td><td>NewL</td><td>(</td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> &amp;</td><td>aEnv</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Two-phase constructor method that is used to create a new instance of the <a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html#GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7">CTextResolver</a> class. The implementation uses the passed <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40">CCoeEnv</a> instance to access the resource files.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> &amp; aEnv</td><td>the CCoeEnv instance to be used to access the resource files.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9601647E-98A3-3747-8645-0F1AD5487C3A"><a name="GUID-9601647E-98A3-3747-8645-0F1AD5487C3A"><!-- --></a>
+		<h2 class="topictitle2">NewL()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">CTextResolver</a> *</td><td>NewL</td><td>(</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Constructor creates a new instance of <a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html#GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7">CTextResolver</a>. Resource files are accessed through the RResourceFile API.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-16A5FC5E-29FD-3CCA-9BA5-94BB3FE1606F"><a name="GUID-16A5FC5E-29FD-3CCA-9BA5-94BB3FE1606F"><!-- --></a>
+		<h2 class="topictitle2">NewLC(CCoeEnv &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">CTextResolver</a> *</td><td>NewLC</td><td>(</td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> &amp;</td><td>aEnv</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Constructor creates a new instance of <a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html#GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7">CTextResolver</a>. The implementation uses the passed <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40">CCoeEnv</a> instance to access the resource files. Leaves the object on the cleanup stack.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> &amp; aEnv</td><td>the CCoeEnv instance to be used to access the resource files.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-877CC416-43DF-371C-BFBC-3ABC99B5F302"><a name="GUID-877CC416-43DF-371C-BFBC-3ABC99B5F302"><!-- --></a>
+		<h2 class="topictitle2">NewLC()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">CTextResolver</a> *</td><td>NewLC</td><td>(</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Constructor creates a new instance of CTextResolver.Resource files are accessed through the RResourceFile API. Leaves the object on the cleanup stack.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-EF751EE4-3B4A-3897-8D9F-1BAC9ABA11AB"><a name="GUID-EF751EE4-3B4A-3897-8D9F-1BAC9ABA11AB"><!-- --></a>
+		<h2 class="topictitle2">ReadLocalizedSeparatorCharacterFromResourceAndPrepareResourceReaderLC(TResourceReader &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ReadLocalizedSeparatorCharacterFromResourceAndPrepareResourceReaderLC</td><td>(</td><td><a href="GUID-B375D32E-1F91-30FA-8605-A2E163111F9A.html">TResourceReader</a> &amp;</td><td>aResReader</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>ErrorResolver resource files in the ?:/resource/errors/ folder must always begin with an array of error texts. The Nokia-specific version of the errorres.rss file also contains the localized titel/text separator character at the end of the file. This method reads the separator character from file WITHOUT using a <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40">CCoeEnv</a>. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-B375D32E-1F91-30FA-8605-A2E163111F9A.html">TResourceReader</a> &amp; aResReader</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B6B13B9E-65C8-3CA8-82C9-603E6CD6B978"><a name="GUID-B6B13B9E-65C8-3CA8-82C9-603E6CD6B978"><!-- --></a>
+		<h2 class="topictitle2">ReadLocalizedSeparatorCharacterFromResourceL(CCoeEnv &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ReadLocalizedSeparatorCharacterFromResourceL</td><td>(</td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> &amp;</td><td>aCoeEnv</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>ErrorResolver resource files in the ?:/resource/errors/ folder must always begin with an array of error texts. The Nokia-specific version of the errorres.rss file also contains the localized titel/text separator character at the end of the file. This method reads the separator character from file using the <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40">CCoeEnv</a> provided. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> &amp; aCoeEnv</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8F09721E-ED02-3243-8B87-022FA375D5C5"><a name="GUID-8F09721E-ED02-3243-8B87-022FA375D5C5"><!-- --></a>
+		<h2 class="topictitle2">Reset()</h2>
+		<table class="signature"><tr><td>void</td><td>Reset</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-52FCDE47-8034-3434-BE7B-B0731953A5A8"><a name="GUID-52FCDE47-8034-3434-BE7B-B0731953A5A8"><!-- --></a>
+		<h2 class="topictitle2">ResolveErrorString(TInt, TInt &amp;, TUint &amp;, TErrorContext)</h2>
+		<table class="signature"><tr><td>IMPORT_C const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>ResolveErrorString</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aError,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aTextId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &amp;</td><td>aFlags,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">TErrorContext</a></td><td>aContext = ECtxAutomatic</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Resolves the given error code and returns the error text for the resolved error. Resolved text can be of any length. This version is for advanced use</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aError</td><td>The error code to be resolved.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aTextId</td><td>ID of the returned text.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> &amp; aFlags</td><td>The priority of the returned error. The priority is defined by the this module! Flags are defined in textresolver.hrh.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">TErrorContext</a> aContext = ECtxAutomatic</td><td>Optional context for error numbers. If the aContext parameter is not passed to the function, it uses the default value ECtxAutomatic.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-444EF08D-7EEE-3DC2-B0F6-EA9B3650C188"><a name="GUID-444EF08D-7EEE-3DC2-B0F6-EA9B3650C188"><!-- --></a>
+		<h2 class="topictitle2">ResolveErrorString(TInt, TErrorContext)</h2>
+		<table class="signature"><tr><td>IMPORT_C const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>ResolveErrorString</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aError,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">TErrorContext</a></td><td>aContext = ECtxAutomatic</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Resolves the given error code and returns the error text for the resolved error. Resolved text can be of any length. This version is for "normal" use.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aError</td><td>The error code to be resolved.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-0364BA3A-66C8-3909-840A-C9CC56CBC4F7.html">TErrorContext</a> aContext = ECtxAutomatic</td><td>Optional context for error numbers. If the aContext parameter is not passed to the function, it uses the default value ECtxAutomatic.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-ECA3AB15-E9C7-3754-9827-295CF1F4E565"><a name="GUID-ECA3AB15-E9C7-3754-9827-295CF1F4E565"><!-- --></a>
+		<h2 class="topictitle2">ResourceForError(TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>ResourceForError</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aError</td><td>)</td><td>[private, virtual]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aError</td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Enumerations Documentation</h1><div class="nested1" id="GUID-55A7216C-29B9-36C8-8635-C1664E113AF1"><a name="GUID-55A7216C-29B9-36C8-8635-C1664E113AF1"><!-- --></a>
+		<h2 class="topictitle2">Enum TErrorContext</h2>
+		<div class="section"><div>
+				<p>Defines used error contexts. Optional error contexes for aiding the mapping of error codes to texts in a unique way. If no context is given the assumption is that error codes are unique. </p>
+
+			</div></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">ECtxAutomatic = 0</td><td>
+							<p>Context is defined automatically from error code value. Here it is assumed that each error code is unique and in own range. This is a default value when resolving errors. </p>
+
+						 </td></tr><tr class="bg"><td valign="top">ECtxNoCtx = 1</td><td>
+							<p>Context text is not added to the beginning of the resolved error text, just context separator ':' and newline are added. </p>
+
+						 </td></tr><tr><td valign="top">ECtxNoCtxNoSeparator = 2</td><td>
+							<p>No context text, context separator ':' or newline added to the beginning of the resolved error text. </p>
+
+						 </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-75C60CFF-7AB0-3DFD-8315-18280B0947D6"><a name="GUID-75C60CFF-7AB0-3DFD-8315-18280B0947D6"><!-- --></a>
+		<h2 class="topictitle2">
+					CArrayFix&lt; TInt &gt; * iAppTexts</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; *</td><td>iAppTexts</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-FD2677D1-EF39-3A8A-8D79-7FD4154FA6C7"><a name="GUID-FD2677D1-EF39-3A8A-8D79-7FD4154FA6C7"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iBaseResourceFileOffset</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iBaseResourceFileOffset</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-5559072F-6718-3825-A148-263F7BFE9FCE"><a name="GUID-5559072F-6718-3825-A148-263F7BFE9FCE"><!-- --></a>
+		<h2 class="topictitle2">
+					CCoeEnv * iCoe</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>iCoe</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-250A17CE-EBFC-397D-A159-7714CA14475C"><a name="GUID-250A17CE-EBFC-397D-A159-7714CA14475C"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC * iContextSeparator</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>iContextSeparator</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-01C46D51-0940-3C7A-8F75-AB50B8E9F202"><a name="GUID-01C46D51-0940-3C7A-8F75-AB50B8E9F202"><!-- --></a>
+		<h2 class="topictitle2">
+					CArrayPtr&lt; CErrorResourceIdArray &gt; * iErrorTexts</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-BA67B47E-4874-3089-AB4E-ABB2CF25E647.html">CArrayPtr</a>&lt; <a href="GUID-D04545E8-0BB8-3C9F-BDEB-6C4986DFABAD.html">CErrorResourceIdArray</a> &gt; *</td><td>iErrorTexts</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-62A3952C-023B-3DCA-B80E-251975560633"><a name="GUID-62A3952C-023B-3DCA-B80E-251975560633"><!-- --></a>
+		<h2 class="topictitle2">
+					CArrayPtr&lt; CErrorResourceFlagArray &gt; * iFlags</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-BA67B47E-4874-3089-AB4E-ABB2CF25E647.html">CArrayPtr</a>&lt; <a href="GUID-D04545E8-0BB8-3C9F-BDEB-6C4986DFABAD.html">CErrorResourceFlagArray</a> &gt; *</td><td>iFlags</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-AD2322DC-885C-33B4-B2EE-7D2A3752C8CD"><a name="GUID-AD2322DC-885C-33B4-B2EE-7D2A3752C8CD"><!-- --></a>
+		<h2 class="topictitle2">
+					RFs
+				 iFs</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html">RFs</a>
+				</td><td>iFs</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-DD05830C-82EE-3058-B3E9-3105829C1712"><a name="GUID-DD05830C-82EE-3058-B3E9-3105829C1712"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iRDSupport</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iRDSupport</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-5A56D598-B085-3998-AFA0-A3CA520F089B"><a name="GUID-5A56D598-B085-3998-AFA0-A3CA520F089B"><!-- --></a>
+		<h2 class="topictitle2">RResourceFile iResFile</h2>
+		<table class="signature"><tr><td>RResourceFile</td><td>iResFile</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-AF91139A-D0D6-385A-9A8D-D8E94E075E7D"><a name="GUID-AF91139A-D0D6-385A-9A8D-D8E94E075E7D"><!-- --></a>
+		<h2 class="topictitle2">
+					CArrayFix&lt; TInt &gt; * iStartError</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; *</td><td>iStartError</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-55030232-0397-3736-A3FF-C6CEF5B0F200"><a name="GUID-55030232-0397-3736-A3FF-C6CEF5B0F200"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC * iTextBuffer</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>iTextBuffer</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-E9CD442E-5949-3234-8ACA-3A3400946D3D"><a name="GUID-E9CD442E-5949-3234-8ACA-3A3400946D3D"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC * iTitleText</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>iTitleText</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-917D99F0-1DB6-3BBB-A37D-E154244C9C2A"><a name="GUID-917D99F0-1DB6-3BBB-A37D-E154244C9C2A"><!-- --></a>
+		<h2 class="topictitle2">
+					TPtrC
+				 iTruncatedTextPointer</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC</a>
+				</td><td>iTruncatedTextPointer</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

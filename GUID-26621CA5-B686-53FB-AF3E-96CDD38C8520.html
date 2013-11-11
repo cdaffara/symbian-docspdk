@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Physical RAM Defragmentation"/>
+<meta name="abstract" content="Describes Symbian platform RAM defragmentation."/>
+<meta name="description" content="Describes Symbian platform RAM defragmentation."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DC8D3736-EDCF-54CB-A614-2AAC4664F1CA.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DC8D3736-EDCF-54CB-A614-2AAC4664F1CA.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Physical RAM Defragmentation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388473 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-DC8D3736-EDCF-54CB-A614-2AAC4664F1CA.html" title="This section describes how device drivers can use the services that the Kernel provides.">Kernel-Side Services</a> &gt; </div>
+<h1 class="topictitle1"> Physical
+RAM Defragmentation</h1>
+<div><p>Describes Symbian platform RAM defragmentation.</p>
+
+<p>Symbian platform physical RAM defragmentation is the process of moving
+physical pages, used to back virtual allocations, in order to create empty
+physical ranges. This enables the powering off of individual RAM banks or,
+if required, the allocation of a large contiguous buffer, for example, for
+a CCD image. This functionality allows a more efficient use of RAM in terms
+of both memory and power consumption. </p>
+
+<div class="p"> <div class="note"><span class="notetitle">Note:</span>  Symbian platform RAM defragmentation is used to create large areas
+of contiguous RAM and/or allow the powering down of surplus RAM ICs: it does
+not locate and consolidate fragmented files and folders. This functionality
+enables more efficient use of physical RAM and may enable a lower Bill Of
+Materials (BOM), or increase battery life.</div>
+ </div>
+
+<p>There are two interrelated use cases for defragmenting physical RAM: </p>
+
+<ul>
+<li id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-51F2B5D3-78B2-5EA3-BEBD-6AB9F21D40BD"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-51F2B5D3-78B2-5EA3-BEBD-6AB9F21D40BD"><!-- --></a><p>many device drivers
+require physical RAM for use for buffers. For example, a camera driver may
+require a physically contiguous buffer for holding the output of the CCD.
+In releases 9.3 and before such memory was typically allocated at boot time.
+This practice increases initial RAM consumption after boot. Total RAM consumption
+can be reduced if memory for such buffers is only allocated as required, rather
+than at boot time. It is not possible to provide an absolute guarantee that
+the RAM will be available when needed, but it should succeed in all but exceptional
+cases. </p>
+ </li>
+
+<li id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-7865AD99-69C9-511D-9591-1F10A6A62827"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-7865AD99-69C9-511D-9591-1F10A6A62827"><!-- --></a><p>typically, memory consumption
+of a phone while idle is less than the total memory available. Idle and active
+power consumption can be decreased by powering down unused RAM chips or unused
+RAM banks within a RAM chip. This may also involve cooperation with a higher
+level component in the UI which can shut down unused applications to reclaim
+more memory. </p>
+ </li>
+
+</ul>
+
+<div class="section" id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-DD63E767-B31C-5311-A4A3-AA6A09B55622"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-DD63E767-B31C-5311-A4A3-AA6A09B55622"><!-- --></a><h2 class="sectiontitle">Defragmention
+of RAM</h2> <p> <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html"><span class="apiname">TRamDefragRequest</span></a> is the class used
+by device drivers to perform all defragmentation operations. The three defragmentation
+operations provided are: </p>
+ <ul>
+<li id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-B8D5E8DA-2E7F-5F08-A86C-FEBB6EAA6011"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-B8D5E8DA-2E7F-5F08-A86C-FEBB6EAA6011"><!-- --></a><p> <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-B4825007-E3DB-3559-9D58-637150EF3DB9"><span class="apiname">TRamDefragRequest::DefragRam()</span></a> –
+Performs a general defragmentation. </p>
+ </li>
+
+<li id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-0F001B46-EDB2-551C-8D3D-A1FD51D782FF"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-0F001B46-EDB2-551C-8D3D-A1FD51D782FF"><!-- --></a><p> <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-8C2CB0BA-6596-3639-90F7-CFEF2D839DB1"><span class="apiname">TRamDefragRequest::ClaimRamZone()</span></a> –
+Attempts to claim a whole RAM zone. </p>
+ </li>
+
+<li id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-7E7E62DF-C7F4-5849-A88B-95D7F94F9C75"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-7E7E62DF-C7F4-5849-A88B-95D7F94F9C75"><!-- --></a><p> <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-866259FA-F7D0-360B-AB5D-A1C170383713"><span class="apiname">TRamDefragRequest::EmptyRamZone()</span></a> –
+Removes allocated pages from a RAM zone. </p>
+ </li>
+
+</ul>
+ <p>There are three overloads for each of these <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html"><span class="apiname">TRamDefragRequest</span></a> defragmentation
+methods which behave differently: </p>
+ <ul>
+<li id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-88C45975-36FC-580F-883F-4429FCE0FFC8"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-88C45975-36FC-580F-883F-4429FCE0FFC8"><!-- --></a><p>The first overload is
+synchronous and blocks the calling thread until the defragmentation is complete
+(or is cancelled using <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-2903D832-559C-3FE9-9F9F-317DBD28A7E7"><span class="apiname">TRamDefragRequest::Cancel</span></a>). In this
+case, the return value is the result of the defragmentation – an appropriate
+system-wide error code. </p>
+ </li>
+
+<li id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-5DEFF839-0303-5494-BBCC-04DA3EE8B517"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-5DEFF839-0303-5494-BBCC-04DA3EE8B517"><!-- --></a><p>The second overload
+is asynchronous and takes a pointer to an <a href="GUID-22982E51-E746-37CB-9672-97B58C2672BF.html"><span class="apiname">NFastSemaphore</span></a>.
+The semaphore is signalled when the defragmentation is complete. The return
+value is <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a> unless there was a problem initializing
+the request, in which case an appropriate system-wide error code is returned.
+The result of the defragmentation can be obtained by calling <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-F3B3F56D-E4D4-3CF5-AE6A-F2607BB4022B"><span class="apiname">TRamDefragRequest::Result()</span></a> after
+the semaphore has been signalled. </p>
+ </li>
+
+<li id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-AF7C4053-9317-5B25-B8D9-4B97134969D2"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-AF7C4053-9317-5B25-B8D9-4B97134969D2"><!-- --></a><p>The third overload is
+asynchronous and takes a DFC. The DFC is queued when the defragmentation is
+complete. The return value is <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a> unless there was
+a problem initializing the request, in which case an appropriate system-wide
+error code is returned. The result of the defragmentation can be obtained
+by calling <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-F3B3F56D-E4D4-3CF5-AE6A-F2607BB4022B"><span class="apiname">TRamDefragRequest::Result()</span></a>. </p>
+ </li>
+
+</ul>
+ <p>All <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html"><span class="apiname">TRamDefragRequest</span></a> defragmentation operations
+are placed onto a FIFO queue. Any currently running defragmentation operation
+must complete or be cancelled before a new defragmentation operation can begin. </p>
+ <p>All
+the <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html"><span class="apiname">TRamDefragRequest</span></a> defragmentation methods have the
+following parameter in common: </p>
+ <p><strong>aPriority </strong> </p>
+ <p> <a href="GUID-80B69100-6D39-3987-B585-522576AA295B.html"><span class="apiname">aPriority</span></a> specifies the priority
+of the thread that performs the defragmentation. If <samp class="codeph">aPriority</samp> = <a href="GUID-6A6931F2-FC2D-3F8C-8B30-0F17CDBBD2C5.html"><span class="apiname">KInheritPriority</span></a>,
+the default, then the defragmentation thread will execute with the same priority
+as thread that invokes the defragmentation operation. </p>
+ <p id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-E514CE19-D643-5447-A3C1-84EDCF84B9C7"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-E514CE19-D643-5447-A3C1-84EDCF84B9C7"><!-- --></a><strong>Determining the result of
+a defragmentation operation</strong> </p>
+ <p>For synchronous overloads of the defragmentation
+methods the error code returned by the defragmentation method can be used
+to determine the result of the defragmentation operation. <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a> signifies
+that the defragmentation operation was successful. </p>
+ <p>For asynchronous
+overloads of the defragmentation methods the result of the defragmentation
+operation is determined by invoking <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-F3B3F56D-E4D4-3CF5-AE6A-F2607BB4022B"><span class="apiname">TRamDefragRequest::Result()</span></a> after
+it has signalled that it has completed. Again, <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a> signifies
+that the defragmentation operation was successful. </p>
+ <p id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-19C6DCE9-739F-5085-92FF-626D74F332B1"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-19C6DCE9-739F-5085-92FF-626D74F332B1"><!-- --></a><strong>Cancelling a defragmentation
+operation</strong> </p>
+ <p>A defragmentation operation can be cancelled by invoking
+the <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-EA6C990F-F5B6-3EA6-97A3-F40AAB35351D"><span class="apiname">TRamDefragRequest::Cancel()</span></a> method. This method cancels
+the defragmentation, if it is in progress or is in the queue, and causes it
+to complete with <a href="GUID-6F4A88DA-F54E-3848-9C32-942D6F5F4F3E.html"><span class="apiname">KErrCancel</span></a>. If the defragmentation operation
+has already completed, this method has no effect and the result remains as
+it was. </p>
+ </div>
+
+<div class="section" id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-B4F8543F-538D-5B3A-8F5D-74ACFAAF852F"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-B4F8543F-538D-5B3A-8F5D-74ACFAAF852F"><!-- --></a><h2 class="sectiontitle">General defragmentation</h2> <p> <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-B4825007-E3DB-3559-9D58-637150EF3DB9"><span class="apiname">TRamDefragRequest::DefragRam()</span></a> initiates a general defragmentation. A general defragmentation attempts
+to arrange the currently allocated pages so that only the minimum number and
+the most preferable RAM zones required are powered and refreshed. Each time
+the general defragmentation successfully empties a RAM zone the base port
+invokes the RAM zone call back function with <samp class="codeph">aOp = </samp> <a href="GUID-74DA7B02-CB90-325D-8A84-454004AEB5C8.html"><span class="apiname">ERamZoneOp_PowerDown</span></a> see <a href="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD.html#GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD__GUID-A0273264-8876-523D-B1F0-F6D430FFAECA">RAM
+zone call back function</a>. This informs the base port that it can decide
+to, not refresh or power down the empty RAM zone when it deems it to be appropriate. </p>
+ <p>Depending
+on the current state of the system and the value of <samp class="codeph">aMaxPages</samp>,
+a general defragmentation may require a significant amount of time to complete.
+Therefore, if a general defragmentation is performed too frequently the power
+saving benefits achieved by powering down or not refreshing RAM zones, may
+prove to be less than the power consumed while performing the general defragmentation.
+It is recommended that a general defragmentation is only performed once the
+device has been idle for a significant period of time. </p>
+ <p><strong>aMaxPages </strong> </p>
+ <p> <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-B4825007-E3DB-3559-9D58-637150EF3DB9"><span class="apiname"> TRamDefragRequest::DefragRam()</span></a> is
+similar to the other defragmentation methods, except that it has an additional
+parameter <samp class="codeph">aMaxPages</samp>. <samp class="codeph">aMaxPages</samp> specifies
+a limit on the number of pages that can be moved during a general defragmentation
+when set to zero there is no limit. This can be useful in limiting the amount
+of processing a general defragmentation performs and therefore the power consumed
+by the general defragmentation. However, setting <samp class="codeph">aMaxPages</samp> too
+low may prevent the general defragmentation from being able to empty a single
+RAM zone despite there being enough free pages in the most preferable RAM
+zones. </p>
+ </div>
+
+<div class="section" id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-0BEBEE41-A8DB-56F9-9FCE-E9301CC9864F"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-0BEBEE41-A8DB-56F9-9FCE-E9301CC9864F"><!-- --></a><h2 class="sectiontitle">RAM defragmentation
+of Physically contiguous allocations</h2> <p>Some devices may define <a href="GUID-C13DFF33-7C54-5113-9277-CAD96215F075.html" title="A RAM zone is a physically contiguous section of RAM address space that has a preference value and a unique ID.">RAM Zones</a> for use
+by particular applications or hardware peripherals requiring a block of physically
+contiguous RAM. <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-8C2CB0BA-6596-3639-90F7-CFEF2D839DB1"><span class="apiname">TRamDefragRequest::ClaimRamZone()</span></a> is used
+by the device driver when it requires use of the pre-determined RAM zone to
+be used for the block of physically contiguous RAM. </p>
+ <p> <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-8C2CB0BA-6596-3639-90F7-CFEF2D839DB1"><span class="apiname"> TRamDefragRequest::ClaimRamZone()</span></a> is
+similar to the other defragmentation methods, except that it has two extra
+parameters: </p>
+ <ul>
+<li id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-25BF6436-C6F1-5495-B622-D68EE38764C5"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-25BF6436-C6F1-5495-B622-D68EE38764C5"><!-- --></a><p> <samp class="codeph">aId</samp> –
+the ID of the RAM zone to be claimed. </p>
+ </li>
+
+<li id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-B333AD9A-9DEB-5E54-8156-E2FB3587EA9F"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-B333AD9A-9DEB-5E54-8156-E2FB3587EA9F"><!-- --></a><p> <samp class="codeph">aPhysAddr</samp> –
+on successful completion of the claim operation this is loaded with the physical
+base address of the claimed RAM zone. </p>
+ </li>
+
+</ul>
+ <p>Once a RAM zone has been successfully claimed its memory can be used
+by the device driver after being mapped into a <a href="GUID-51514A4B-0220-557B-9F7A-FB110CEFEF10.html" title="A shared chunk is a mechanism that kernel-side code uses to share memory buffers safely with user-side code.">shared
+chunk</a>. When the claimed RAM zone is no longer required, the device
+driver must use <a href="GUID-3DC7B5F2-512E-3FF3-BC08-945DDE2AE680.html#GUID-3DC7B5F2-512E-3FF3-BC08-945DDE2AE680__GUID-89B28752-7371-3EA8-B213-80F599691D7D"><span class="apiname">Epoc::FreePhysicalRam</span></a> to release it for
+use by the rest of the system. </p>
+ </div>
+
+<div class="section" id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-91358408-F617-5F0F-B88B-BE9F205AD5FB"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-91358408-F617-5F0F-B88B-BE9F205AD5FB"><!-- --></a><h2 class="sectiontitle">Zone specific
+allocations</h2> <p>A device driver may attempt to allocate memory from
+a specific RAM zone using <a href="GUID-3DC7B5F2-512E-3FF3-BC08-945DDE2AE680.html#GUID-3DC7B5F2-512E-3FF3-BC08-945DDE2AE680__GUID-43DE887E-9CE0-397E-9AEF-42A051354AE3"><span class="apiname">Epoc::ZoneAllocPhysicalRam()</span></a>.
+If the allocation fails then use <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-866259FA-F7D0-360B-AB5D-A1C170383713"><span class="apiname">TRamDefragRequest::EmptyRamZone()</span></a> to
+remove as many pages as is reasonable from the RAM zone. </p>
+ <p> <a href="GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262.html#GUID-AE7E0A8E-1513-3F6B-A6D5-150084C4E262__GUID-866259FA-F7D0-360B-AB5D-A1C170383713"><span class="apiname"> TRamDefragRequest::EmptyRamZone()</span></a> is
+similar to the other defragmentation methods, as described in <a href="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520.html#GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-DD63E767-B31C-5311-A4A3-AA6A09B55622">Defragmention of RAM</a>, except that it has an extra parameter: </p>
+ <ul>
+<li id="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-9C78686E-3AE8-56C0-A7B2-EE2138930935"><a name="GUID-26621CA5-B686-53FB-AF3E-96CDD38C8520__GUID-9C78686E-3AE8-56C0-A7B2-EE2138930935"><!-- --></a><p>aId – the ID of the
+RAM zone to be emptied. </p>
+ </li>
+
+</ul>
+ <p>Once the empty defragmentation operation has completed the RAM zone
+specific allocation can be attempted again. However, the RAM zone specific
+allocation may still fail in high RAM usage situations or if the RAM zone
+has too many fixed pages allocated. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-DC8D3736-EDCF-54CB-A614-2AAC4664F1CA.html" title="This section describes how device drivers can use the services that the Kernel provides.">Kernel-Side Services</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

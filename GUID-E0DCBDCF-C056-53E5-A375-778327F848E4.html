@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Asic Class Tutorial"/>
+<meta name="abstract" content="Provides a work through tutorial that allows you to port an Asic implementation to the template variant."/>
+<meta name="description" content="Provides a work through tutorial that allows you to port an Asic implementation to the template variant."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ECAC3FF3-CDB2-5153-AD76-90732BA83726.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ECAC3FF3-CDB2-5153-AD76-90732BA83726.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-984C2A0D-36BE-5A99-9D65-3F8791C669FF.html#GUID-984C2A0D-36BE-5A99-9D65-3F8791C669FF/GUID-95C34114-F986-5428-9D40-5CF64429CDBD"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B498EDA0-677E-5521-9E4F-24D7C2048F2E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5194A7B6-471B-5BCF-8569-16A3BA59000A.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-77DF7A6B-F01D-5B9F-9C7A-662A04ED8BE7.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Asic Class Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2400305 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-ECAC3FF3-CDB2-5153-AD76-90732BA83726.html" title="Describes how to implement the ASSP/Variant layers for a port.">ASSP/Variant Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Asic
+Class Tutorial</h1>
+<div><p>Provides a work through tutorial that allows you to port an Asic
+implementation to the template variant. </p>
+
+<p id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-39010DA3-632A-5C27-92BF-9AA8B5966EAB"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-39010DA3-632A-5C27-92BF-9AA8B5966EAB"><!-- --></a>  This tutorial describes
+how to implement the Asic class. This is a pure virtual interface that is
+defined and called by the Kernel, but which must be implemented by the ASSP/Variant.
+The tutorial assumes that the ASSP/Variant is split into an ASSP layer and
+a Variant layer. </p>
+
+<p>For a minimal port, it isn't necessary to provide implementations for the
+entire <a href="GUID-A83A7C3C-7DC0-3B9C-842F-70FCC751365D.html"><span class="apiname">Asic</span></a> class to be able to test that the kernel boots,
+provided that those functions that are not fully implemented have a dummy
+function so that the code will build. </p>
+
+<p>The <samp class="codeph">Asic</samp> class is defined in<span class="filepath">..\e32\include\kernel\arm\assp.h</span>.
+For reference, the definition is: </p>
+
+<pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-B33CCD29-C6D2-5DC9-9302-A265E248E8DF"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-B33CCD29-C6D2-5DC9-9302-A265E248E8DF"><!-- --></a>class Asic
+    {
+public:
+       // initialisation
+    virtual TMachineStartupType StartupReason()=0;
+    virtual void Init1()=0;
+    virtual void Init3()=0;
+
+    // debug
+    virtual void DebugOutput(TUint aChar)=0;
+
+    // power management
+    virtual void Idle()=0;
+
+    // timing
+    virtual TInt MsTickPeriod()=0;
+    virtual TInt SystemTimeInSecondsFrom2000(TInt&amp; aTime)=0;
+    virtual TInt SetSystemTimeInSecondsFrom2000(TInt aTime)=0;
+    virtual TUint32 NanoWaitCalibration()=0;
+
+    // HAL
+    virtual TInt VariantHal(TInt aFunction, TAny* a1, TAny* a2)=0;
+
+    // Machine configuration
+    virtual TPtr8 MachineConfiguration()=0;
+    };</pre>
+
+<p>Taking the template port as a concrete example, the ASSP layer implementation
+of the <a href="GUID-A83A7C3C-7DC0-3B9C-842F-70FCC751365D.html"><span class="apiname">Asic</span></a> class is defined and implemented by the <samp class="codeph">TemplateAssp</samp> class,
+and the Variant implemention is defined and implemented by the <samp class="codeph">Template</samp> class. </p>
+
+<div class="section" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-7F5D4AD6-0881-5942-9A86-A95C02125A28"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-7F5D4AD6-0881-5942-9A86-A95C02125A28"><!-- --></a><h2 class="sectiontitle">Asic::Init1()
+implementation</h2> <p><strong>Entry
+conditions</strong> </p>
+ <ul>
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-6B761E80-7B63-5F96-9852-65F7321D365B"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-6B761E80-7B63-5F96-9852-65F7321D365B"><!-- --></a><p>called in the context
+of the initial (null) thread </p>
+ </li>
+
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-B8211B76-1308-5372-8034-4B1B9CFE58F3"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-B8211B76-1308-5372-8034-4B1B9CFE58F3"><!-- --></a><p>interrupts are disabled </p>
+ </li>
+
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-482B5E00-A25F-5966-90FB-B622F9C1AF99"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-482B5E00-A25F-5966-90FB-B622F9C1AF99"><!-- --></a><p>there is no kernel heap </p>
+ </li>
+
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-6D985E4B-1A69-58B6-975D-7F696BB062C3"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-6D985E4B-1A69-58B6-975D-7F696BB062C3"><!-- --></a><p>memory management functions
+are not available. </p>
+ </li>
+
+</ul>
+ <p><strong>What
+the function should do</strong> </p>
+ <p>This is called during stage 1 of kernel
+initialisation. </p>
+ <p>In this function, you need to: </p>
+ <ul>
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-D156866C-0BA0-58AE-9438-C4D1D2628D67"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-D156866C-0BA0-58AE-9438-C4D1D2628D67"><!-- --></a><p>initialise the real
+time clock </p>
+ </li>
+
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-7FB60E9E-938C-515E-803D-27DA1315040C"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-7FB60E9E-938C-515E-803D-27DA1315040C"><!-- --></a><p>initialise the interrupt
+dispatcher before CPU interrupts are enabled. </p>
+ </li>
+
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-D55DD2D9-3E45-5256-B1F4-E583706AED66"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-D55DD2D9-3E45-5256-B1F4-E583706AED66"><!-- --></a><p>set the threshold values
+for cache maintenance. You can set separate values for: </p>
+ <ul>
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-B3CEB2A4-4849-517F-A0E9-76A6018537B8"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-B3CEB2A4-4849-517F-A0E9-76A6018537B8"><!-- --></a><p>purging (invalidating)
+a cache </p>
+ </li>
+
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-9DE85DFB-D789-565C-A944-EFBF987D457C"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-9DE85DFB-D789-565C-A944-EFBF987D457C"><!-- --></a><p>cleaning a cache </p>
+ </li>
+
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-0C638F72-1D6B-512D-88EB-7369240C776A"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-0C638F72-1D6B-512D-88EB-7369240C776A"><!-- --></a><p>flushing (i.e. cleaning
+and invalidating) a cache. </p>
+ </li>
+
+</ul>
+ <p>You use the <a href="GUID-4425E698-EE8A-369B-92CD-09B1CBD2911F.html#GUID-4425E698-EE8A-369B-92CD-09B1CBD2911F__GUID-81AA7412-9754-3020-9D77-14DEDD3196CA"><span class="apiname">Cache::SetThresholds()</span></a> interface to
+set these values. </p>
+ <p>As an example of what the threshold values mean,
+if you purge a memory region from cache, and the size of that region is greater
+than the threshold value, then the entire cache is purged. If the size of
+that region is less than or equal to to the threshold value, then only the
+region is purged. </p>
+ <p>The threshold values are platform specific, and
+you need to choose your values based on your own performance measurements.
+Symbian cannot make recommendations. If you choose not to set your own values,
+Symbian platform supplies a set of default values, which are set by <samp class="codeph">Cache::Init1()</samp>. </p>
+ <p>Note
+that there is also a <a href="GUID-4425E698-EE8A-369B-92CD-09B1CBD2911F.html#GUID-4425E698-EE8A-369B-92CD-09B1CBD2911F__GUID-2DBD79A7-2061-3B89-89FA-B0DFC7AFFCF9"><span class="apiname">Cache::GetThresholds()</span></a> interface that
+you may find useful. </p>
+ </li>
+
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-DA94E963-6AA5-5084-8C19-77B7AD484A44"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-DA94E963-6AA5-5084-8C19-77B7AD484A44"><!-- --></a><p>set up the RAM zones.
+For details, see the <a href="GUID-C376486D-B9BF-5D00-8B1A-1527FC1F83AD.html" title="This topic describes how to design the use of RAM zones on a phone, and how to specify the RAM zones in the set up functions in the ASSP/Variant.">RAM
+Zone Tutorial</a>. </p>
+ </li>
+
+</ul>
+ <p>Typically, you would also initialise any memory devices not initialised
+by the bootstrap. Any other initialisation that must happen early on should
+also be done here. </p>
+ <p>The kernel calls the Variant's <samp class="codeph">Init1()</samp> function.
+On the template port, this is the Variant layer's <samp class="codeph">Init1()</samp>,
+i.e. the functions <samp class="codeph">Template::Init1()</samp>. The source for this
+is in <span class="filepath">...\template_variant\specific\variant.cpp</span>. </p>
+ <pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-E1247A9A-B7F7-5C0F-BD3B-A0E471FA4654"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-E1247A9A-B7F7-5C0F-BD3B-A0E471FA4654"><!-- --></a>void Template::Init1()
+    {
+     __KTRACE_OPT(KBOOT,Kern::Printf("Template::Init1()"));
+
+     //
+     // TO DO: (mandatory)
+     //
+     // Configure Memory controller and Memrory Bus parameters (in addition to what was done in the Bootstrap)
+     //
+     __KTRACE_OPT(KBOOT,Kern::Printf("Memory Configuration done"));
+
+     //
+     // TO DO: (optional)
+     //
+     // Inform the kernel of the RAM zone configuration via Epoc::SetRamZoneConfig().
+     // For devices that wish to reduce power consumption of the RAM IC(s) the callback functions
+     // RamZoneCallback() and DoRamZoneCallback() will need to be implemented and passed 
+     // to Epoc::SetRamZoneConfig() as the parameter aCallback.
+     // The kernel will assume that all RAM ICs are fully intialised and ready for use from boot.
+     //
+
+     //
+     // TO DO: (optional)
+     //
+     // Initialise other critical hardware functions such as I/O interfaces, etc, not done by Bootstrap
+     //
+     // if CPU is Sleep-capable, and requires some preparation to be put in that state (code provided in Bootstrap),
+     // the address of the idle code is writen at this location by the Bootstrap
+     // e.g.
+     // iIdleFunction=*(TLinAddr*)((TUint8*)&amp;Kern::SuperPage()+0x1000);
+     //
+     TemplateAssp::Init1();
+     }</pre>
+ <p>The last line is a call into the ASSP layer, which is
+implemented as shown below. On the template port, it is the ASSP layer that
+initialises the interrupt dispatcher and the real time clock. The source for
+this is in <span class="filepath">...\template_assp\assp.cpp</span>: </p>
+ <pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-1E90071E-6CB0-5B01-984C-AFCFD095CA64"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-1E90071E-6CB0-5B01-984C-AFCFD095CA64"><!-- --></a>EXPORT_C void TemplateAssp::Init1()
+    {
+     __KTRACE_OPT(KBOOT,Kern::Printf("TemplateAssp::Init1()"));
+     //
+     // TO DO: (optional)
+     //
+     TemplateInterrupt::Init1();            // initialise the ASSP interrupt controller
+
+     //
+     // TO DO: (optional)
+     //
+     // Initialises any hardware blocks which require early initialisation, e.g. enable and power the LCD, set up
+     // RTC clocks, disable DMA controllers. etc.
+     //
+    }
+
+   </pre>
+ <p> <samp class="codeph">TemplateInterrupt::Init1();</samp> is static
+function that initialises the interrupt dispatcher. See <a href="GUID-423537D5-2C8A-5C26-8D7B-60446E95F681.html" title="This topic describes how to implement the Asic::Init1() and Asic::Init3() functions to initialise interrupts.">Interrupt
+Layer Initialisation</a>. </p>
+ </div>
+
+<div class="section" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-F5275882-BBD0-561F-B617-683AA2004BB9"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-F5275882-BBD0-561F-B617-683AA2004BB9"><!-- --></a><h2 class="sectiontitle">Asic::Init3()
+implementation</h2> <p><strong>Entry
+conditions</strong> </p>
+ <ul>
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-9450694C-ADF3-52DE-AA58-4AFF53A1EEC6"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-9450694C-ADF3-52DE-AA58-4AFF53A1EEC6"><!-- --></a><p>called in the context
+of the supervisor thread </p>
+ </li>
+
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-335F8A2E-0223-598E-AA23-F72E3BE84D76"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-335F8A2E-0223-598E-AA23-F72E3BE84D76"><!-- --></a><p>the kernel is ready
+to handle interrupts </p>
+ </li>
+
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-B198D669-9E88-5279-81A8-6A11F8EE3BFD"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-B198D669-9E88-5279-81A8-6A11F8EE3BFD"><!-- --></a><p>the kernel heap and
+memory management system is fully functional. </p>
+ </li>
+
+</ul>
+ <p><strong>What
+the function should do</strong> </p>
+ <p>This is called during stage 3 of kernel
+initialisation. </p>
+ <p>In this function, you need to: </p>
+ <ul>
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-38C35732-E79A-595C-9852-12D1FE30A081"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-38C35732-E79A-595C-9852-12D1FE30A081"><!-- --></a><p>enable interrupt sources </p>
+ </li>
+
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-D4F750D9-96B1-5AD1-AA66-2485D37B6323"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-D4F750D9-96B1-5AD1-AA66-2485D37B6323"><!-- --></a><p>start the millisecond
+tick timer. </p>
+ </li>
+
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-390278B7-EF0F-59ED-A57D-54490655C97B"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-390278B7-EF0F-59ED-A57D-54490655C97B"><!-- --></a><p>Optionally, replace
+the implementation used by <samp class="codeph">Kern::NanoWait()</samp>. </p>
+ </li>
+
+</ul>
+ <p>Any other general initialisation can also be done here. </p>
+ <p>As
+an example, on the template port, the function is implemented in the Variant
+layer, by <samp class="codeph">Template::Init3()</samp>. </p>
+ <p><strong>Millisecond
+tick timer</strong> </p>
+ <p>The kernel expects that the kernel's tick handler routine
+will be called at a fixed microsecond period, the value of which is returned
+by the implementation of <a href="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4.html#GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-917B420D-5F10-5190-97D2-9D2DAFD4FB76">Asic::MsTickPeriod()</a> function. The <samp class="codeph">Init3()</samp> function must be implemented to start
+this. See <a href="GUID-F84E18B8-5883-5A3A-A9DB-EC25BB86149F.html" title="The kernel implements timing functions using a 1 millisecond tick timer.">Kernel Timers</a> for
+background information. </p>
+ <p>The template implementation is as follows: </p>
+ <pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-AF60AC52-5188-5911-9A03-A090D048ADA3"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-AF60AC52-5188-5911-9A03-A090D048ADA3"><!-- --></a>EXPORT_C void TemplateAssp::Init3()
+    {
+    __KTRACE_OPT(KBOOT,Kern::Printf("TemplateAssp::Init3()"));
+
+    TTemplate::Init3();
+
+    NTimerQ&amp; m=*(NTimerQ*)NTimerQ::TimerAddress();
+    iTimerQ=&amp;m;
+    //
+    // TO DO: (mandatory)
+    //
+    // If Hardware Timer used for System Ticks cannot give exactly the period required store the initial rounding value
+    // here which is updated every time a match occurs. Note this leads to "wobbly" timers whose exact period change
+    // but averages exactly the required value
+    // e.g.
+    // m.iRounding=-5;
+    //
+    
+    TInt r=Interrupt::Bind(KIntIdOstMatchMsTimer,MsTimerTick,&amp;m);    // bind the System Tick interrupt
+    if (r!=KErrNone)
+        Kern::Fault("BindMsTick",r);
+
+    // 
+    // TO DO: (mandatory)
+    //
+    // Clear any pending OST interrupts and enable any OST match registers.
+    // If possible may reset the OST here (to start counting from a full period). Set the harwdare to produce an 
+    // interrupt on full count
+    //
+
+    r=Interrupt::Enable(KIntIdOstMatchMsTimer);    // enable the System Tick interrupt
+    if (r!=KErrNone)
+        Kern::Fault("EnbMsTick",r);
+
+    // 
+    // TO DO: (optional)
+    //
+    // Allocate physical RAM for video buffer, as per example below. However with some hardware, the Video Buffer
+    // may not reside in main System memory, it may be dedicated memory.
+    //
+    // EXAMPLE ONLY
+    TInt vSize=VideoRamSize();
+    r=Epoc::AllocPhysicalRam(2*vSize,TemplateAssp::VideoRamPhys);
+    if (r!=KErrNone)
+        Kern::Fault("AllocVRam",r);
+    }</pre>
+ <p><strong>Servicing
+the timer interrupt</strong> </p>
+ <p>The timer interrupt service routine is required
+only to call the <a href="GUID-DFEAC0DA-E384-3249-BF6A-529A76C3AC34.html#GUID-DFEAC0DA-E384-3249-BF6A-529A76C3AC34__GUID-DA340CB0-C334-3C17-B903-14B135ABDCF1"><span class="apiname">Ntimer::TickQ()</span></a> function and perform any
+housekeeping necessary to ensure that the handler itself is called again after
+the time reported by the <a href="GUID-BCFC62D6-B87A-3319-8DA7-4BA64A9D0311.html"><span class="apiname">MsTickPeriod()</span></a> routine. Since
+the handler is called frequently, it is written in assembler for the fastest
+execution. </p>
+ <pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-0770E505-10F8-582C-BCAA-BC99074FD906"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-0770E505-10F8-582C-BCAA-BC99074FD906"><!-- --></a>__NAKED__ void MsTimerTick(TAny* aPtr)
+    {
+    // Service 1ms tick interrupt
+    asm("ldr ip, [r0, #%a0]" : : "i" _FOFF(NTimerQ,iRounding));
+    asm("ldr r2, __KHwBaseOst ");
+    asm("adds ip, ip, #2 ");
+    asm("ldr r3, __KOst1000HzTickMatchIncrement ");
+    asm("subcs ip, ip, #5 ");
+    asm("str ip, [r0, #%a0]" : : "i" _FOFF(NTimerQ,iRounding));
+    asm("addcs r3, r3, #1 ");
+    asm("mov r1, #%a0" : : "i" ((TInt)(1&lt;&lt;KHwOstMatchMsTimer)));
+    asm("str r1, [r2, #0x14] ");            // clear interrupt
+    asm("ldr r1, [r2, #%a0]" : : "i" ((TInt)KHwOstMatchMsTimer*4));    // r1=old match value
+    asm("add r1, r1, r3 ");            // step match value on
+    asm("ldr ip, [r2, #0x10] ");            // r3=system timer value
+    asm("str r1, [r2, #%a0]" : : "i" ((TInt)KHwOstMatchMsTimer*4));
+    asm("cmp ip, r1 ");            // compare to next match value
+
+#ifdef _DEBUG
+    asm("addpl r1, ip, #10 ");    // in DEBUG if timer&gt;match value, set match value to timer + a bit
+    asm("strpl r1, [r2, #%a0]" : : "i" ((TInt)KHwOstMatchMsTimer*4));
+    asm("b Tick__7NTimerQ ");    // call interrupt handler anyway
+#else
+    asm("bmi Tick__7NTimerQ ");    // if timer&lt;match value, OK - call interrupt handler
+#endif
+
+    // otherwise we are late for the next tick so force a data abort exception...
+    asm("mvn r2, #0x10000002 ");    // r2=0xeffffffd
+    asm("str r2, [r2] ");            // die
+
+    // Constant data embedded in code. 
+    asm("__KOst1000HzTickMatchIncrement: ");
+    asm(".word %a0" : : "i" ((TInt)KOst1000HzTickMatchIncrement));
+    asm("__KHwBaseOst: ");
+    asm(".word %a0" : : "i" ((TInt)KHwBaseOst));
+    }</pre>
+ <p>Note that it is a requirement that the timer period should
+be an integral number of microseconds, even if the exact period is not 1000us.
+It is always possible to add code to the interrupt handler to achieve this
+average so that over a large number of ticks, the deviation from this average
+will tend to 0, by adjusting the exact number of ticks from tick to tick.
+See also <a href="GUID-F84E18B8-5883-5A3A-A9DB-EC25BB86149F.html" title="The kernel implements timing functions using a 1 millisecond tick timer.">Timers</a></p>
+ <p><strong>NanoWait() implementation</strong> </p>
+ <p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-0EEAFE45-5C0D-32A9-AD64-CE3AB0AEE6B3"><span class="apiname">Kern::NanoWait()</span></a> is
+a function that can be called if you want to wait for very short periods of
+time within the kernel. You call this function and specify the number of nanoseconds.
+The function is, in effect, a shell that uses default implementation code
+provided by the generic platform. You can provide your own implementation
+in your port, and register this with the platform. This allows the wait functionality
+to be implemented in the best possible way for your platform, possibly by
+using a hardware timer whose frequency is independent of the CPU frequency. </p>
+ <p>To
+replace the default implementation, you need to: </p>
+ <ul>
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-733329E1-99C5-56A4-B80F-FFCFD74F1320"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-733329E1-99C5-56A4-B80F-FFCFD74F1320"><!-- --></a><p>code your own function.
+This has the same signature as <samp class="codeph">Kern::NanoWait()</samp>: </p>
+ <pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-0AC0DC75-38C7-58A8-8A4F-4C5AA8F23A80"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-0AC0DC75-38C7-58A8-8A4F-4C5AA8F23A80"><!-- --></a>void AsicImpl::DoNanoWait(TUint32 aInterval)
+    {
+    // Wait for aInterval nanoseconds
+    }</pre>
+ <p>where <samp class="codeph">AsicImpl</samp> is the
+class that is ultimately derived from <samp class="codeph">Asic</samp>. </p>
+ </li>
+
+<li id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-BDE8C5D6-6E6C-5B2E-9219-A8D5DC114EA2"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-BDE8C5D6-6E6C-5B2E-9219-A8D5DC114EA2"><!-- --></a><p>register this implementation
+by adding the following call into your <samp class="codeph">Asic::Init3()</samp> function: </p>
+ <pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-1A99C7D2-A550-5B39-9AE7-559AE7B13C3E"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-1A99C7D2-A550-5B39-9AE7-559AE7B13C3E"><!-- --></a>Kern::SetNanoWaitHandler(AsicImpl::DoNanoWait);</pre>
+ </li>
+
+</ul>
+ <p>You can see where this goes by looking at the template port at: <span class="filepath">...\base\cedar\template\template_assp\template_assp.cpp</span>  </p>
+ </div>
+
+<div class="section" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-1028F2D0-BA8B-4880-9565-50C89EBD1685"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-1028F2D0-BA8B-4880-9565-50C89EBD1685"><!-- --></a><h2 class="sectiontitle">Asic::DebugOutput()
+implementation</h2> <p>It is worth implementing this early so that it is
+possible to get trace output to see what the kernel is doing. This function
+is passed one character at a time. Normally this is sent to a UART, though
+it can be output through any convenient communications channel. </p>
+ <p>On
+the template port, this is implemented in the Variant layer, by <samp class="codeph">Template::DebugOutput()</samp> in <span class="filepath">...\template_variant\specific\variant.cpp</span>. </p>
+ </div>
+
+<div class="section" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-EEC48040-B7D7-406B-8138-4A1F646ED990"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-EEC48040-B7D7-406B-8138-4A1F646ED990"><!-- --></a><h2 class="sectiontitle">Asic::Idle()
+implementation</h2> <p>If no power management has been implemented, then
+this function is called when the system is to idle to allow power saving.
+This function can just return, until power management is implemented. Once
+power management has been implemented, then idling behaviour will be handled
+by the power controller, i.e. the Variant's implementation of the <a href="GUID-B3D1C422-6A82-3C6E-9123-1E4F598F0366.html"><span class="apiname">DPowerController</span></a> class </p>
+ </div>
+
+<div class="section" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-917B420D-5F10-5190-97D2-9D2DAFD4FB76"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-917B420D-5F10-5190-97D2-9D2DAFD4FB76"><!-- --></a><h2 class="sectiontitle">Asic::MsTickPeriod()
+implementation</h2> <p>This function is used to return the number of microseconds
+per tick. To avoid timing drift, a tick frequency should be chosen that gives
+a round number of microseconds per tick. The function can return zero until
+the tick timer has been implemented. </p>
+ <p>On the template port, this function
+is implemented in the ASSP layer, and can be found in the source file <span class="filepath">...\template_assp\assp.cpp</span>.
+It is a simple function that just returns the value. </p>
+ <pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-C0D88A32-974C-5824-8D9D-A9B6D7C45802"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-C0D88A32-974C-5824-8D9D-A9B6D7C45802"><!-- --></a>EXPORT_C TInt TemplateAssp::MsTickPeriod()
+    {
+     // 
+     // TO DO: (mandatory)
+     //
+     // Return the OST tick period (System Tick) in microseconds ( 10E-06 s ).
+     //
+     return 1000;   // EXAMPLE ONLY
+    }
+</pre>
+ <p>See also <a href="GUID-F84E18B8-5883-5A3A-A9DB-EC25BB86149F.html" title="The kernel implements timing functions using a 1 millisecond tick timer.">Timers</a>. </p>
+ </div>
+
+<div class="section" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-1C8A7F79-8CD5-442E-A9A5-925C94E80773"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-1C8A7F79-8CD5-442E-A9A5-925C94E80773"><!-- --></a><h2 class="sectiontitle">Asic::SystemTimeInSecondsFrom2000()
+          implementation</h2> <p>This is a function that the kernel uses
+to get the system time. Its signature is </p>
+ <pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-A1FF9777-D627-5409-B6CD-02F20F7A1889"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-A1FF9777-D627-5409-B6CD-02F20F7A1889"><!-- --></a>Tint SystemTimeInSecondsFrom2000(Tint&amp; aTime);</pre>
+ <p>An implementation must set the <samp class="codeph">aTime</samp> reference to the
+number of seconds that have elapsed since the start of the year 2000. This
+is a positive number; a negative number is interpreted as time before 2000. </p>
+ <p>For
+the template reference board, the implementation is as follows: </p>
+ <pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-C4812A82-C069-564B-972A-0922EAC00AAB"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-C4812A82-C069-564B-972A-0922EAC00AAB"><!-- --></a>EXPORT_C TInt TemplateAssp::SystemTimeInSecondsFrom2000(TInt&amp; aTime)
+     {
+      aTime=(TInt)TTemplate::RtcData();
+      __KTRACE_OPT(KHARDWARE,Kern::Printf("RTC READ: %d",aTime));
+      return KErrNone;
+     }
+</pre>
+ <p>Until a real time clock is implemented, this function can
+just return <a href="GUID-6CA4F1ED-7947-3087-B618-D35858FAA3BC.html"><span class="apiname">KErrNone</span></a>. </p>
+ <p>This function calls the register
+access functions in the <samp class="codeph">TTemplate</samp> class. See <span class="filepath">...\template_assp\template_assp.cpp</span> for
+implementation details. </p>
+ <p>Note that tracing output is provided when
+the KHARDWARE bit in the kerneltrace flags is set for the debug build. </p>
+ </div>
+
+<div class="section" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-F0AC3E98-345F-4491-9957-51B127437181"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-F0AC3E98-345F-4491-9957-51B127437181"><!-- --></a><h2 class="sectiontitle">Asic::SetSystemTimeInSecondsFrom2000()
+implementation</h2> <p>This is a function that the kernel uses to set the
+system time. Its signature is </p>
+ <pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-B965C38C-A65E-5E54-BE09-C81300B59EDC"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-B965C38C-A65E-5E54-BE09-C81300B59EDC"><!-- --></a>Tint SetSystemTimeInSecondsFrom2000(Tint aTime);</pre>
+ <p>This sets the real time clock to the number of seconds that have elapsed
+since the start of the year 2000. This is a positive number; a negative number
+is interpreted as time before 2000. </p>
+ <p>For the template reference board,
+the implementation is as follows: </p>
+ <pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-89BFC844-B053-51B7-9ACA-81B19E63414B"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-89BFC844-B053-51B7-9ACA-81B19E63414B"><!-- --></a>EXPORT_C TInt TemplateAssp::SetSystemTimeInSecondsFrom2000(TInt aTime)
+    {
+     //
+     // TO DO: (optional)
+     //
+     // Check if the RTC is running and is stable
+     //
+     __KTRACE_OPT(KHARDWARE,Kern::Printf("Set RTC: %d",aTime));
+     TTemplate::SetRtcData(aTime);
+     __KTRACE_OPT(KHARDWARE,Kern::Printf("RTC: %d",TTemplate::RtcData()));
+     return KErrNone;
+    }
+</pre>
+ <p>Note that tracing output is provided when the KHARDWARE bit
+in the kerneltrace flags is set for the debug build. In this function, the
+trace output shows the value passed in from the kernel and then shows the
+value read back from the real time clock for verification. </p>
+ </div>
+
+<div class="section" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-50BB6924-899F-4385-879E-19A2FC68657C"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-50BB6924-899F-4385-879E-19A2FC68657C"><!-- --></a><h2 class="sectiontitle">Asic::NanoWaitCalibration()
+ implementation</h2> <p>The function <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-0EEAFE45-5C0D-32A9-AD64-CE3AB0AEE6B3"><span class="apiname">Kern::NanoWait()</span></a> can
+be called if you want to wait for very short periods of time within the kernel.
+You call this function and specify the number of nanoseconds. You can either
+use the default implementation of this function, or you can provide your own. </p>
+ <p>The
+default implementation provided by Symbian platform that <samp class="codeph">Kern::NanoWait()</samp> uses
+is a busy loop that is calibrated by calling <samp class="codeph">Asic::NanoWaitCalibration()</samp>. <samp class="codeph">NanoWaitCalibration()</samp> should
+return the number of nanoseconds taken to execute 2 machine cycles. This is
+obviously dependent on the CPU clock speed, so if variants are likely to run
+at different speeds, then this should be implemented in the Variant layer. </p>
+ <p>This
+approach cannot always take into account factors such as processor frequency
+scaling. An alternative approach is for the Variant to supply its own implementation
+to be used by <samp class="codeph">Kern::NanoWait()</samp>. Note that you do not replace <samp class="codeph">Kern::NanoWait()</samp> itself
+as this is a shell function that results in a call to the the implementation.
+See <a href="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4.html#GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-F5275882-BBD0-561F-B617-683AA2004BB9">Asic::Init3()</a> for
+detail on how to replace the implementation. </p>
+ <p>On the template port, <samp class="codeph">Asic::NanoWaitCalibration()</samp> is
+implemented in the ASSP layer, and not in the Variant layer, and can be found
+in the source file <span class="filepath">...\template_assp\assp.cpp</span>. It is
+a simple function that just returns the value. </p>
+ <pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-68298BF1-EAE7-507D-9B5B-DDACE6C19799"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-68298BF1-EAE7-507D-9B5B-DDACE6C19799"><!-- --></a>EXPORT_C TUint32 TemplateAssp::NanoWaitCalibration()
+    {
+     // 
+     // TO DO: (mandatory)
+     //
+     // Return the minimum time in nano-seconds that it takes to execute the following code:
+     //     nanowait_loop:
+     //               subs r0, r0, r1
+  //               bhi nanowait_loop
+     //
+     // If accurate timings are required by the Base Port, then it should provide it's own implementation 
+     // of NanoWait which uses a hardware counter. (See Kern::SetNanoWaitHandler)
+     //
+    
+     return 0;   // EXAMPLE ONLY
+    }
+</pre>
+ </div>
+
+<div class="section" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-15F344C5-A1CC-45FC-AC94-27022A1DF448"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-15F344C5-A1CC-45FC-AC94-27022A1DF448"><!-- --></a><h2 class="sectiontitle">Asic::VariantHal()
+implementation</h2> <p>You might find it useful to review <a href="GUID-9AE254D4-AA60-579E-8D9D-F2797106A413.html" title="Description of HAL types and interfaces.">User-Side
+Hardware Abstraction Technology</a> first. </p>
+ <p>This is the HAL handler
+for the HAL group <a href="GUID-66A851A0-2A0C-3624-AEC1-22F6629FABF7.html#GUID-66A851A0-2A0C-3624-AEC1-22F6629FABF7__GUID-3FA061DE-68F8-3948-96B3-5AFC989DBDE1"><span class="apiname">THalFunctionGroup::EHalGroupVariant</span></a>. </p>
+ </div>
+
+<div class="section" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-2EEA143D-612C-47C5-B16C-22DAD1BC179E"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-2EEA143D-612C-47C5-B16C-22DAD1BC179E"><!-- --></a><h2 class="sectiontitle">Asic::MachineConfiguration()
+          implementation</h2> <p>This returns a <a href="GUID-C0D29B11-1535-3D11-B318-B18D30A6120B.html"><span class="apiname">TPtr8</span></a> descriptor
+representing an area containing machine configuration information. </p>
+ <p>The
+address of this object is obtained by calling <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-4DAE5199-1EB0-31D1-BA06-8F47E96EEADE"><span class="apiname">Kern::MachineConfig()</span></a>.
+However, the Variant (either the ASSP layer or the Variant layer or both)
+is responsible for the content. </p>
+ <p>In the template port, the function
+is implemented in the Variant layer: </p>
+ <pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-B75F631E-03DB-5C98-911F-1161842AA17F"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-B75F631E-03DB-5C98-911F-1161842AA17F"><!-- --></a>TPtr8 Template::MachineConfiguration()
+    {
+     return TPtr8((TUint8*)&amp;Kern::MachineConfig(),sizeof(TActualMachineConfig),sizeof(TActualMachineConfig));
+    }
+</pre>
+ <p>Here, the machine configuration information is represented
+by an object of type <samp class="codeph">TTemplateMachineConfig</samp>, which derives
+from <samp class="codeph">TMachineConfig</samp>. In effect, <samp class="codeph">TMachineConfig</samp> represents
+information that is common to all, while the Variant can extend this to contain
+whatever information is appropriate. </p>
+ <p>Note that <samp class="codeph">TActualMachineConfig</samp> is
+a typedef for <samp class="codeph">TTemplateMachineConfig</samp>. </p>
+ </div>
+
+<div class="section" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-B1E39D8C-1562-4464-A316-144ED89935C9"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-B1E39D8C-1562-4464-A316-144ED89935C9"><!-- --></a><h2 class="sectiontitle">Asic::StartupReason()
+implementation</h2> <p>If a startup reason is available from hardware or
+a preserved RAM location, it should be returned by the function. The default
+is to return <samp class="codeph">EStartupColdReset</samp>. </p>
+ <p>On the template port,
+this is implemented in the ASSP layer: </p>
+ <pre class="codeblock" id="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-FC4FFA46-804D-5A7F-B7CA-DDDC72C60041"><a name="GUID-E0DCBDCF-C056-53E5-A375-778327F848E4__GUID-FC4FFA46-804D-5A7F-B7CA-DDDC72C60041"><!-- --></a>EXPORT_C TMachineStartupType TemplateAssp::StartupReason()
+    {
+     __KTRACE_OPT(KBOOT,Kern::Printf("TemplateAssp::StartupReason"));
+  #ifdef _DEBUG                                                            // REMOVE THIS
+     TUint s = Kern::SuperPage().iHwStartupReason;
+     __KTRACE_OPT(KBOOT,Kern::Printf("CPU page value %08x", s));
+  #endif                                                                    // REMOVE THIS
+     //
+     // TO DO: (mandatory)
+     //
+     // Map the startup reason read from the Super Page to one of TMachineStartupType enumerated values
+     // and return this
+     //
+     return EStartupCold;   // EXAMPLE ONLY
+    }
+</pre>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-ECAC3FF3-CDB2-5153-AD76-90732BA83726.html" title="Describes how to implement the ASSP/Variant layers for a port.">ASSP/Variant Tutorials</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-77DF7A6B-F01D-5B9F-9C7A-662A04ED8BE7.html">ASSP Kernel
+Extension                 Overview</a></div>
+</div>
+<div class="relinfo"><strong>Related information</strong><br/>
+<div><a href="GUID-984C2A0D-36BE-5A99-9D65-3F8791C669FF.html#GUID-984C2A0D-36BE-5A99-9D65-3F8791C669FF__GUID-95C34114-F986-5428-9D40-5CF64429CDBD">ASSP/Variant Architecture</a></div>
+<div><a href="GUID-B498EDA0-677E-5521-9E4F-24D7C2048F2E.html">Implementing
+the ASSP                 Register</a></div>
+<div><a href="GUID-5194A7B6-471B-5BCF-8569-16A3BA59000A.html">Using the
+ASSP Register</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

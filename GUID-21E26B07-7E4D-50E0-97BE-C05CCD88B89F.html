@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Creating a Sink Plugin"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B58DEF65-B08F-5D0B-98E7-EB8DB7082F8B.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1DE5CDAD-8D71-5384-9E98-5665D5A4C792.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-97F83011-BE3C-512C-9599-028CBB92BD51.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B58DEF65-B08F-5D0B-98E7-EB8DB7082F8B.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-21E26B07-7E4D-50E0-97BE-C05CCD88B89F"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Creating a Sink Plugin</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-21E26B07-7E4D-50E0-97BE-C05CCD88B89F"><a name="GUID-21E26B07-7E4D-50E0-97BE-C05CCD88B89F"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2405098 id2396821 id2396835 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-1DE5CDAD-8D71-5384-9E98-5665D5A4C792.html">Multimedia Guide</a> &gt; <a href="GUID-97F83011-BE3C-512C-9599-028CBB92BD51.html" title="The Multimedia Plug-ins collection facilitates a plug-in framework to handle the Multimedia audio, video and image data.">Multimedia Plug-ins Collection</a> &gt; <a href="GUID-B58DEF65-B08F-5D0B-98E7-EB8DB7082F8B.html">Multimedia Plug-in Collection Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Creating
+a Sink Plugin</h1>
+<div>
+<p>A data sink plugin needs to implement the pure virtual (and where appropriate
+override the virtual) base class mixin functions. This section describes how
+to implement the <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html"><span class="apiname">MDataSink</span></a> base class.</p>
+
+<p>Note that it is possible for a single source/sink plugin to be both a source
+and a sink, i.e. derive from both <a href="GUID-2230F976-A798-30EB-ABA6-09C86716A4B5.html"><span class="apiname">MDataSource</span></a> and <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html"><span class="apiname">MDataSink</span></a>. </p>
+
+<p>See <a href="GUID-B998B8FC-3DC3-57B5-A4E6-C4D903B4ACF9.html">Creating a Source
+Plugin</a> for information on source/sink negotiation and data transfer.</p>
+
+
+
+<p><strong> Sink Plugin Instantiation</strong> </p>
+
+<p>A client application instantiates a sink plugin using the <a href="GUID-9DEDFB0F-C963-3FB7-9237-DDDB276C8841.html#GUID-9DEDFB0F-C963-3FB7-9237-DDDB276C8841__GUID-2D177C9B-51F7-30EE-862E-F282E28B3633"><span class="apiname">RMMFController::AddDataSink()</span></a> method,
+passing in the UID of the sink as one of the parameters. The controller framework
+instantiates a sink via the <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-04B8016D-E8A3-3F00-8367-6D20C407A240"><span class="apiname">MDataSink::NewSinkL()</span></a> method
+rather than the more conventional <samp class="codeph">NewL()</samp> method. This is
+because, in some cases, a plugin can be both a sink and a sink of multimedia
+data in which case the instantiation methods for sinks and sinks need to be
+distinct. The <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html"><span class="apiname">MDataSink</span></a> base class instantiation methods
+are described below followed by how to write the instantiation methods in
+the derived class. </p>
+
+<p>The derived data sink needs to implement <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-04B8016D-E8A3-3F00-8367-6D20C407A240"><span class="apiname">MDataSink::NewSinkL()</span></a> and <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-AEC3FEB6-ED46-3E73-85D6-FD298CE1DE6C"><span class="apiname">MDataSink::ConstructSinkL()</span></a> for
+instantiation. The constructor of a data sink plugin needs to specify what
+type of data sink it is. This is achieved by passing a type UID into the <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html"><span class="apiname">MDataSink</span></a> constructor. </p>
+
+<p>If the sink has additional methods, that are not part of the base <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html"><span class="apiname">MDataSink</span></a> class,
+then a further layer of instantiation is required. For example, suppose <samp class="codeph">CAcmeDataSink</samp> had
+some extra methods that were not part of the base class then an additional
+mxin interface for this class is required. For example:</p>
+
+<pre class="codeblock" id="GUID-21E26B07-7E4D-50E0-97BE-C05CCD88B89F__GUID-D81EF01A-7C6C-5EBF-BCC9-3A45378C0466"><a name="GUID-21E26B07-7E4D-50E0-97BE-C05CCD88B89F__GUID-D81EF01A-7C6C-5EBF-BCC9-3A45378C0466"><!-- --></a>class MAcmeDataSink : public MDataSink
+    {
+public:
+    inline static MAcmeDataSink* NewAcmeDataSinkL(TUid aImplemetationUid, const TDesC8&amp; aInitData);
+    //This allows dynamic linkage to the Class:
+    }
+</pre>
+
+<p>The <samp class="codeph">NewAcmeDataSinkL</samp> should be implemented as follows:</p>
+
+<pre class="codeblock" id="GUID-21E26B07-7E4D-50E0-97BE-C05CCD88B89F__GUID-CDA802E2-20C6-5FEF-9429-0ED3B45322C8"><a name="GUID-21E26B07-7E4D-50E0-97BE-C05CCD88B89F__GUID-CDA802E2-20C6-5FEF-9429-0ED3B45322C8"><!-- --></a>MAcmeDataSink* retPtr = static_cast&lt;MAcmeDataSink*&gt;(MDataSink::NewSinkL(aImplementationUid, aInitData));</pre>
+
+<p>The class should derive from the <samp class="codeph">MAcmeDataSink</samp> rather
+than <samp class="codeph">MDataSink</samp> as follows:</p>
+
+<pre class="codeblock" id="GUID-21E26B07-7E4D-50E0-97BE-C05CCD88B89F__GUID-C06D0D2C-C24A-59B6-9775-0521509C8F5B"><a name="GUID-21E26B07-7E4D-50E0-97BE-C05CCD88B89F__GUID-C06D0D2C-C24A-59B6-9775-0521509C8F5B"><!-- --></a>class CAcmeDataSink: public CBase, public MAcmeDataSink
+    {
+public:
+ MDataSink* NewSinkL();
+</pre>
+
+
+
+<p><strong>Sink Plugin Buffer Creation</strong> </p>
+
+<p>Buffers are required to transfer data between a source and a sink. These
+buffers may be created by the source and/or sink. The methods below are for
+the sink buffer creation.</p>
+
+<p>The <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-774C8837-30F7-39C5-ACC9-0AEC1757070C"><span class="apiname">MDataSink::CanCreateSinkBuffer()</span></a> method must be
+implemented by the data sink plugin. Most sinks should be capable of creating
+their own buffer and so would return <samp class="codeph">ETrue</samp>. Note that just
+because a sink can create a buffer, this does not guarantee that the framework
+will actually use the buffer created by the sink. Which buffer is used depends
+on factors such as whether a null codec is used and whether the source is
+the reference buffer, in either of these cases the sink buffer will not be
+used.</p>
+
+<p>The <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-8D998E91-9AF2-3734-A11A-985BD15E324C"><span class="apiname">MDataSink::CreateSinkBufferL()</span></a> method is called
+by the framework to create a buffer from the sink. This method should create
+a buffer of length 0 bytes and a maximum length of an appropriate size for
+the sink. The meaning of 'appropriate' in this context depends on sink specifics,
+such as whether the sink data ultimately comes from hardware that supplies
+buffers of a certain size. Generally a larger buffer size means a smaller
+number data transfers between the sink and sink are required. The returned
+buffer must derive from <a href="GUID-9A7A83ED-592B-3A0C-BABB-3B90099BCF7C.html"><span class="apiname">CMMFBuffer</span></a> but will be a derived
+buffer eg <a href="GUID-AE26E6A4-C1AD-3B35-B5F7-CE0AB60169BB.html"><span class="apiname">CMMFDataBuffer</span></a> or a video frame buffer.</p>
+
+<p>The overloaded <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-8D998E91-9AF2-3734-A11A-985BD15E324C"><span class="apiname">MDataSink::CreateSinkBufferL()</span></a> method,
+which has an additional <samp class="codeph">aSinkBuffer</samp> parameter, is optional.
+The default implementation is identical to the standard <samp class="codeph">CreateSinkBufferL</samp> above.
+This overloaded version is used where the nature of the sink buffer may impact
+the created sink buffer. This method should only be overridden if the size
+and/or type of the sink buffer can influence the size and/or type of the created
+sink buffer.</p>
+
+
+
+<p><strong>Sink State Methods</strong> </p>
+
+<p>The <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html"><span class="apiname">MDataSink</span></a> mixin provides a number of state-related
+functions used to inform a source/sink that the data path (via the controller)
+has made a transition to a particular state. These state transition methods
+are usually called on the source/sink from the datapath and so will be called
+on the data source/sink plugin. These methods are not pure virtual and so
+it is not compulsory to implement them. </p>
+
+<p>The <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-A6CD1868-BAF7-332E-8C35-BE3F494E3D2D"><span class="apiname">MDataSink::SinkThreadLogon()</span></a> method indicates to
+the sink that it can perform any thread specific initialisation. This is so
+that the thread in which the data sink is instantiated is not necessarily
+the same thread in which the actual transfer of data between the source and
+the sink takes place. Any thread-specific sink initialisation cannot take
+place in the <samp class="codeph">NewSinkL()</samp> method and must instead be performed
+in the <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-A6CD1868-BAF7-332E-8C35-BE3F494E3D2D"><span class="apiname">MDataSink::SinkThreadLogon()</span></a> method which is always
+called in the thread in which the data transfer between sink and sink is to
+take place.</p>
+
+<p>The <a href="GUID-8512F793-107A-3166-A62F-750696D942CE.html"><span class="apiname">MAsyncEventHandler</span></a> must also be passed into the
+sink in the same thread in which the sink is to transfer data. If the sink
+can generate events during a data transfer, then it must keep the reference
+to event handler.</p>
+
+<p>It is only necessary to provide an implementation of <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-A6CD1868-BAF7-332E-8C35-BE3F494E3D2D"><span class="apiname">MDataSink::SinkThreadLogon()</span></a> if
+the sink has thread specific initialisation and/or can generate events during
+data transfer.</p>
+
+<p>Implementation of the <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-17E785C1-D177-317F-82D1-D9727CE56399"><span class="apiname">MDataSink::SinkPrimeL()</span></a>, <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-63057BF2-4730-3042-AA32-1D06F455AE17"><span class="apiname">MDataSink::SinkPlayL()</span></a>, <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-5E0447D4-A48D-35B3-AEDF-758EB249FAE2"><span class="apiname">MDataSink::SinkPauseL()</span></a> and <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-E8627DBE-5709-388E-ABB1-0FC2DB8683D2"><span class="apiname">MDataSink::SinkStopL()</span></a> methods is optional. They
+are called when a controller performs a transition to the corresponding state.
+For example, if the controller starts, or resumes, playing then <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-63057BF2-4730-3042-AA32-1D06F455AE17"><span class="apiname">MDataSink::SinkPlayL()</span></a> is
+called.</p>
+
+<p>Implementation of the <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-67D5D509-E5C1-3A93-B4E8-E6083E16E7A5"><span class="apiname">MDataSink::SouceThreadLogoff()</span></a> method
+is optional. This method is called when the controller has finished with the
+data sink and is called in the same thread as the data transfer. This allows
+the data sink to perform any thread specific destruction such as the closure
+of handles. </p>
+
+
+
+<p><strong>Sink Data Types</strong> </p>
+
+<p>The <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-04666F46-042D-311C-828D-A85B65DE992E"><span class="apiname">MDataSink::SinkDataTypeCode()</span></a> method must be implemented
+by the data sink. It should return the data type of the sink for the specified
+media ID. Some data sinks may need their data type to be explicitly set, via
+the <samp class="codeph">SetSinkDataTypeCode</samp> method or via negotiation with a
+data sink, in which case this function should either return a default <samp class="codeph">FourCC</samp> code,
+or a <samp class="codeph">NULL</samp> code, to indicate that the data type is not yet
+known.</p>
+
+<p>Implementation of the <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-BB031D9F-2345-3519-88D0-D6EE0CBFEE57"><span class="apiname">MDataSink::SetSinkDataTypeCode()</span></a> method
+is optional. It should be implemented where the sink can support multiple
+data types.</p>
+
+
+
+<p><strong>Sink Custom Commands</strong> </p>
+
+<p>The <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-EBF981DD-9C18-3417-BAC6-57DA837D4CEA"><span class="apiname">MDataSink::SinkCustomCommand()</span></a> method facilitates
+the use of custom commands. An example implementation is shown below:</p>
+
+<pre class="codeblock" id="GUID-21E26B07-7E4D-50E0-97BE-C05CCD88B89F__GUID-C04BBBD3-9991-5478-9920-E7FFE28DB166"><a name="GUID-21E26B07-7E4D-50E0-97BE-C05CCD88B89F__GUID-C04BBBD3-9991-5478-9920-E7FFE28DB166"><!-- --></a>void CAcmeDataSink::SinkCustomCommand(TMMFMessage&amp; aMessage)
+    {
+    // First, check we can handle message by checking its interface id
+    if (aMessage.InterfaceId() != KUidAcmeDatasinkCustomCommandInterface)
+        {
+        aMessage.Complete(KErrNotSupported);
+        return;
+        }
+
+    // Next, dispatch the command to the appropriate method.
+    TInt error = KErrNone;
+    switch (aMessage.Function())
+        {
+    case EAcmeDatasinkCustomCommandOne:
+       error = HandleCustomCommandOne(aMessage);
+       break;
+    case EAcmeDataSinkCustomCommandTwo:
+       error = HandleCustomCommandTwo(aMessage);
+       break;
+    default:
+       error = KErrNotSupported;
+       break;
+       }
+    aMessage.Complete(error);
+    }
+</pre>
+
+<p>Use of the custom command mechanism is preferable to adding extra methods
+as it avoids extra casting.</p>
+
+
+
+<p><strong>Sink Priority Settings</strong> </p>
+
+<p>The <a href="GUID-708A7583-5C55-3FE1-8238-974C8821588D.html#GUID-708A7583-5C55-3FE1-8238-974C8821588D__GUID-B045F6E3-7D43-3EB0-8AA7-1DF58AC7AFF5"><span class="apiname">MDataSink::SetSinkPrioritySettings()</span></a> method is optional.
+It is used to provide a mechanism to determine which sink should have priority
+in cases where more than one client wishes to use the same physical sink.
+An example might be an audio output, although several audio output sinks can
+be created, the actual hardware may only have one physical speaker. Therefore,
+if one audio output is being used to play music, and another is being used
+to play a ring tone due to an incoming call, then the latter needs to take
+precedence. <a href="GUID-AA73C7C3-5874-34D1-8879-597B0900E9F3.html"><span class="apiname">TMMFPrioritySettings</span></a> contains an <samp class="codeph">iPriority
+TInt</samp> data member, where 100 is maximum priority, 0 is normal and
+-100 is minimum priority. The <a href="GUID-AA73C7C3-5874-34D1-8879-597B0900E9F3.html#GUID-AA73C7C3-5874-34D1-8879-597B0900E9F3__GUID-3B14D763-139C-3A4E-9640-CABBC3427D6E"><span class="apiname">TMMFPrioritySettings::TMdaPriorityPreference</span></a> and <a href="GUID-AA73C7C3-5874-34D1-8879-597B0900E9F3.html#GUID-AA73C7C3-5874-34D1-8879-597B0900E9F3__GUID-A2E1FCFD-2058-3E1D-9FEF-C562F613C65D"><span class="apiname">TMMFPrioritySettings::TMMFStateA</span></a> data members provide further information which may be used if required.
+These specify whether the priority applies to recording or playing.</p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-B58DEF65-B08F-5D0B-98E7-EB8DB7082F8B.html">Multimedia Plug-in Collection Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

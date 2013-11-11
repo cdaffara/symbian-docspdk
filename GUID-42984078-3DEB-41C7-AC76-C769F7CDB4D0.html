@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Implementing eglSwapBuffers"/>
+<meta name="abstract" content="This topic explains how to implement eglSwapBuffers() on the Symbian platform. It provides information about how to handle a window resize and the preserve buffer option."/>
+<meta name="description" content="This topic explains how to implement eglSwapBuffers() on the Symbian platform. It provides information about how to handle a window resize and the preserve buffer option."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8C6D4350-A38D-57A1-8C8D-C777EA7E8A3E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D252E75C-C8CA-5C51-8DA3-95B937A1295C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F094A9FA-D253-5D33-B625-A2AA0B1CE447.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Implementing eglSwapBuffers</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2384330 id2386999 id2387013 id2387068 id2387089 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html">Graphics Guide</a> &gt; <a href="GUID-8C6D4350-A38D-57A1-8C8D-C777EA7E8A3E.html" title="The components within the EGL collection provide access to EGL on the Symbian platform. EGL, an open standard developed by the Khronos Group, provides an interface between rendering APIs such as OpenGL ES or OpenVG and an underlying native platform window system.">EGL Collection</a> &gt; <a href="GUID-D252E75C-C8CA-5C51-8DA3-95B937A1295C.html" title="The EGL Interface component provides a consistent interface to EGL on the Symbian platform, enabling cross-device compatibility. The component includes the Khronos-released header files (which incorporate some minor changes, such as to the in-source comments). It also provides some Symbian-specific header files and some other files (such as LIB, DEF and MMP files) and UIDs. It does not provide any implementations of the APIs.">EGL Interface Component</a> &gt; <a href="GUID-F094A9FA-D253-5D33-B625-A2AA0B1CE447.html" title="This section provides information for EGL implementers working with the Symbian platform.">EGL Implementer's Guide</a> &gt; <a href="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E.html" title="This topic provides an introduction to implementing EGL window surfaces on the Symbian platform. These are used for onscreen rendering into windows that are provided by the Symbian platform (rather than EGL). The details of how to implement window surfaces depend on whether the ScreenPlay variant is in use.">Window Surface Implementation</a> &gt; </div>
+<h1 class="topictitle1">Implementing eglSwapBuffers</h1>
+<div><p>This topic explains how to implement eglSwapBuffers() on
+the Symbian platform. It provides information about how to handle
+a window resize and the preserve buffer option.</p>
+
+<div class="section" id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-FDE82C6A-6F55-437E-B978-C912D41080D2"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-FDE82C6A-6F55-437E-B978-C912D41080D2"><!-- --></a><h2 class="sectiontitle">Promoting buffers to the screen </h2>         
+    <p>EGL composition surfaces typically have two or more buffers,
+known as the front and back buffers. Call <a href="GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06.html#GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06__GUID-2B032364-97A0-31A1-A08C-6D8E8ACC16E1"><span class="apiname">RSurfaceUpdateSession::SubmitUpdate()</span></a> to initiate the composing of a specified buffer of a composition
+surface to the screen. This is an asynchronous operation. If you want
+to be notified when it has finished, call <a href="GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06.html#GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06__GUID-E8A784F8-4733-38D0-B282-B7CBD0AE4DCB"><span class="apiname">RSurfaceUpdateSession::NotifyWhenAvailable()</span></a> immediately before you call <samp class="codeph">SubmitUpdate()</samp>. </p>
+ <p> <a href="GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06.html#GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06__GUID-E8A784F8-4733-38D0-B282-B7CBD0AE4DCB"><span class="apiname">RSurfaceUpdateSession::NotifyWhenAvailable()</span></a> takes a <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html"><span class="apiname">TRequestStatus</span></a>, which you can wait on
+in the usual way—for example, by using an active object or <a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-C197C9A7-EA05-3F24-9854-542E984C612D__GUID-50223158-D05D-33FE-A3DD-FFA9E2F464FF"><span class="apiname">User::WaitForRequest()</span></a>. </p>
+ <p>If a <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html"><span class="apiname">TRequestStatus</span></a> is waiting for the first buffer to complete composition, you need
+to submit the second buffer before the first buffer's <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html"><span class="apiname">TRequestStatus</span></a> is signaled (unless there is an error). This means that there is
+interleaving between the two buffers. </p>
+     </div>
+
+<div class="section" id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-10CF8F2D-2D57-4A57-B370-3B56DDEF76B9"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-10CF8F2D-2D57-4A57-B370-3B56DDEF76B9"><!-- --></a><h2 class="sectiontitle">Synchronization and threads </h2>              <p>First let us consider a scenario that illustrates how <samp class="codeph">eglSwapBuffers()</samp> works. The composition surface has two buffers. The
+front buffer (<em>Buffer 0</em>) is in the process of being displayed
+and the back buffer (<em>Buffer 1</em>) is receiving drawing commands
+for the next animation frame. The client calls <samp class="codeph">eglSwapBuffers()</samp> when all of the drawing commands for the next frame have been issued. </p>
+ <p> <samp class="codeph">eglSwapBuffers()</samp> can promote <em>Buffer 1</em> to the screen by calling <a href="GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06.html#GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06__GUID-2B032364-97A0-31A1-A08C-6D8E8ACC16E1"><span class="apiname">RSurfaceUpdateSession::SubmitUpdate()</span></a>, passing in its index. This makes <em>Buffer 1</em> the front buffer
+and <em>Buffer 0</em> should become the new back buffer and all drawing
+commands should be directed to it. </p>
+ <p>However, suppose the application
+runs faster than the composition engine. <em>Buffer 0</em> cannot become
+the new back buffer until its composition is complete. You therefore
+need to wait for <em>Buffer 0</em> to complete composition before allowing <samp class="codeph">eglSwapBuffers()</samp> to return. This means that after you submit <em>Buffer 1</em> for composition, you must wait for <em>Buffer 0</em> (not <em>Buffer 1</em>) to complete composition before returning. </p>
+ <p>In
+practice it may not be possible to use active objects to do the waiting
+because <samp class="codeph">eglSwapBuffers()</samp> must block on the <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html"><span class="apiname">TRequestStatus</span></a> supplied to <a href="GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06.html#GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06__GUID-2B032364-97A0-31A1-A08C-6D8E8ACC16E1"><span class="apiname">RSurfaceUpdateSession::SubmitUpdate()</span></a>. Using a nested <a href="GUID-B4C76104-EA1B-3FC3-A31E-86A976598171.html"><span class="apiname">CActiveScheduler</span></a> is not recommended
+because it can cause re-entrant issues. A call to <a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-C197C9A7-EA05-3F24-9854-542E984C612D__GUID-50223158-D05D-33FE-A3DD-FFA9E2F464FF"><span class="apiname">User::WaitForRequest()</span></a> may therefore be required. However, doing this from within a thread
+that has an active scheduler can cause stray signal panics (because
+each buffer has a <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html"><span class="apiname">TRequestStatus</span></a> but we only wait
+for one of these at a time). EGL has no control over whether the thread
+has an active scheduler because the thread is owned by the application. </p>
+ <p>A possible solution is to create a separate worker thread that
+is owned by the EGL implementation and has no active scheduler. This
+thread calls <a href="GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06.html#GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06__GUID-E8A784F8-4733-38D0-B282-B7CBD0AE4DCB"><span class="apiname">RSurfaceUpdateSession::NotifyWhenAvailable()</span></a> and <a href="GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06.html#GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06__GUID-2B032364-97A0-31A1-A08C-6D8E8ACC16E1"><span class="apiname">RSurfaceUpdateSession::SubmitUpdate()</span></a>. It
+can safely call <a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-C197C9A7-EA05-3F24-9854-542E984C612D__GUID-50223158-D05D-33FE-A3DD-FFA9E2F464FF"><span class="apiname">User::WaitForRequest()</span></a> to wait
+for each <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html"><span class="apiname">TRequestStatus</span></a> to be signaled, because
+the thread is guaranteed not to have an active scheduler. Signaling
+based on semaphores can be used to control interaction between the
+thread that calls <samp class="codeph">eglSwapBuffers()</samp> and the worker
+thread that owns the <a href="GUID-FAFD23EB-90EF-3F0C-BAB3-74FEC8DF0E06.html"><span class="apiname">RSurfaceUpdateSession</span></a>. </p>
+     </div>
+
+<div class="section" id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-4EF4D8B4-27E5-4D9B-8D22-B6F8C354D6D5"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-4EF4D8B4-27E5-4D9B-8D22-B6F8C354D6D5"><!-- --></a><h2 class="sectiontitle">Handling a window resize event </h2>          
+   <p>A change in the size of an <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a> can be
+detected in <samp class="codeph">eglSwapBuffers()</samp>, by calling <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html#GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79__GUID-2E019F5A-6110-3940-B088-AB13F0EE6AD5"><span class="apiname">RWindow::Size()</span></a> and comparing the result with the previously
+recorded size. If the values differ, a resize has occurred. A typical
+approach on a resize is as follows (and is illustrated in the following
+diagram): </p>
+ <a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-529E2F6E-21A1-5618-920C-231CA3FCD2AB"><!-- --></a><ol id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-529E2F6E-21A1-5618-920C-231CA3FCD2AB">
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-FA1DF0D4-DE06-56AA-8203-1EB42351D2DE"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-FA1DF0D4-DE06-56AA-8203-1EB42351D2DE"><!-- --></a><p>Promote the
+current back buffer to the front buffer for display as usual. </p>
+ </li>
+
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-D254B182-2BC6-5BDF-A76E-CE2FD4527BB1"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-D254B182-2BC6-5BDF-A76E-CE2FD4527BB1"><!-- --></a><p>Create a new
+composition surface with the new dimensions and with one of its buffers
+designated as the back buffer to receive the next set of drawing commands. </p>
+ </li>
+
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-DA7BB534-9565-5127-8B40-CA150E90D710"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-DA7BB534-9565-5127-8B40-CA150E90D710"><!-- --></a><p>On the next
+call to <samp class="codeph">eglSwapBuffers()</samp>, register the new composition
+surface as the window's background surface and promote its back buffer
+to the front buffer for display. (This step is marked with the number
+3 in the following diagram) </p>
+ </li>
+
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-4209FD9D-C668-5902-863C-DB49343ED634"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-4209FD9D-C668-5902-863C-DB49343ED634"><!-- --></a><p>Close the previous
+composition surface. </p>
+ </li>
+
+</ol>
+ <div class="fignone" id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-B793BDDF-7607-5BCD-94C2-44F8349D7BC5"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-B793BDDF-7607-5BCD-94C2-44F8349D7BC5"><!-- --></a><span class="figcap">Figure 1. The buffers in the typical approach to handling a window resize
+event</span>
+
+<img src="GUID-ADC9B349-3CE4-5017-B437-A7F8890C7F0F_d0e275354_href.png"/>
+</div>
+    </div>
+
+<div class="section" id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-CF08037B-2A6A-4B79-9766-E8C730C086F3"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-CF08037B-2A6A-4B79-9766-E8C730C086F3"><!-- --></a><h2 class="sectiontitle">Handling preserve buffers </h2>              <p>When the preserve buffer
+option is in use, a typical implementation promotes the current back
+buffer to the front buffer for display as usual, and copies the back
+buffer content to the new back buffer. The client application then
+provides incremental drawing operations on the new back buffer. On
+the next call to <samp class="codeph">eglSwapBuffers()</samp>, the back buffer
+is again promoted for display and the content is preserved. </p>
+<p>The following diagram shows the scenario of a client application
+drawing A and later B on a surface with the preserve buffers enabled.
+Notice that <samp class="codeph">eglSwapBuffers()</samp> promotes the back buffer
+to the front buffer and then immediately copies the contents of the
+newly promoted buffer to the new back buffer.</p>
+<div class="fignone" id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-B9C43452-0627-41FA-A68A-4C9726194A60"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-B9C43452-0627-41FA-A68A-4C9726194A60"><!-- --></a><span class="figcap">Figure 2. Handling preserve buffers</span>
+
+<img src="GUID-9C54DAFB-843B-41A7-8E54-9B2A39F46527_d0e275378_href.png"/>
+</div>
+    </div>
+
+<div class="section" id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-F357C440-7789-4439-ABBB-8B71FCCB782D"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-F357C440-7789-4439-ABBB-8B71FCCB782D"><!-- --></a><h2 class="sectiontitle">Handling a window resize event with the preserve buffer
+option</h2><p>If there is a window resize event when the preserve
+buffer option is in use, <samp class="codeph">eglSwapBuffers()</samp> creates
+a new surface and typically copies into it any pixels that overlap
+the previous surface. To illustrate how this works, consider the following
+scenario:</p>
+<ol>
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-167D0FD8-22E7-495D-9627-FF7A4DDF654A"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-167D0FD8-22E7-495D-9627-FF7A4DDF654A"><!-- --></a><p>A window is
+a wide rectangle showing an A.</p>
+</li>
+
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-3F62A9F4-6830-4010-9327-88BFD33AA818"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-3F62A9F4-6830-4010-9327-88BFD33AA818"><!-- --></a><p>The application
+draws a B so that the window shows AB. </p>
+</li>
+
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-D8575A54-D2A9-4FDF-999E-E711363AE19D"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-D8575A54-D2A9-4FDF-999E-E711363AE19D"><!-- --></a><p>The user resizes
+the window to a tall thin rectangle which can only show A.</p>
+</li>
+
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-89A1D882-B5DC-4093-98E5-34E3063BBF25"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-89A1D882-B5DC-4093-98E5-34E3063BBF25"><!-- --></a><p>After calling <samp class="codeph">eglSwapBuffers()</samp>, the application draws a C below the A.</p>
+</li>
+
+</ol>
+<p>The following diagram illustrates a typical implementation.
+There are more details below the diagram.</p>
+<div class="fignone" id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-D19DF371-8640-4A2B-AF56-57EF2387CEFD"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-D19DF371-8640-4A2B-AF56-57EF2387CEFD"><!-- --></a><span class="figcap">Figure 3. Handling a window resize with the preserve buffer option</span>
+
+<img src="GUID-8A8FA00B-58FA-4D4E-A018-70D5558BCBFE_d0e275418_href.png"/>
+</div>
+<p>The first <samp class="codeph">eglSwapBuffers()</samp> call (marked
+X in the diagram above) does the following:</p>
+<ol>
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-70603721-5603-4015-B382-8D3F9D693139"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-70603721-5603-4015-B382-8D3F9D693139"><!-- --></a><p>Promotes the
+current back buffer (showing AB) to the front buffer for display as
+usual. </p>
+</li>
+
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-7040357F-1F40-4E34-ACB2-170815B06D10"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-7040357F-1F40-4E34-ACB2-170815B06D10"><!-- --></a><p>Copies the back
+buffer content to the new back buffer (showing AB).</p>
+</li>
+
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-5950B197-5661-44B5-AB7A-475C056F184C"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-5950B197-5661-44B5-AB7A-475C056F184C"><!-- --></a><p>Creates a new
+surface  with the new dimensions.</p>
+</li>
+
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-90909C1D-7335-41BF-973F-B2F82403CF40"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-90909C1D-7335-41BF-973F-B2F82403CF40"><!-- --></a><p>Designates one
+of the new buffers as the back buffer and copies the overlapping pixels
+into it. The new back buffer is then ready to receive new drawing
+operations. </p>
+</li>
+
+</ol>
+<p>The Window Server continues to use the old surface s1 until
+the next call to <samp class="codeph">eglSwapBuffers()</samp>.</p>
+<p>The second <samp class="codeph">eglSwapBuffers()</samp> call (marked Y in the diagram above) does
+the following:</p>
+<ol>
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-05E4F40D-568A-425A-93F8-C30606C50DA8"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-05E4F40D-568A-425A-93F8-C30606C50DA8"><!-- --></a><p>Promotes the
+back buffer (showing A and C) to the front buffer for display as usual.</p>
+</li>
+
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-84200E5B-CD20-4F4A-8D9D-0460B30D40CA"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-84200E5B-CD20-4F4A-8D9D-0460B30D40CA"><!-- --></a><p>Copies the back
+buffer content to the new back buffer (showing A and C).</p>
+</li>
+
+<li id="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-D300A85C-88C3-499A-86A7-EC2B35020E0C"><a name="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0__GUID-D300A85C-88C3-499A-86A7-EC2B35020E0C"><!-- --></a><p>Destroys the
+old surface s1.</p>
+</li>
+
+</ol>
+<p>The Window Server now uses the new surface s2.</p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E.html" title="This topic provides an introduction to implementing EGL window surfaces on the Symbian platform. These are used for onscreen rendering into windows that are provided by the Symbian platform (rather than EGL). The details of how to implement window surfaces depend on whether the ScreenPlay variant is in use.">Window Surface Implementation</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E.html" title="This topic provides an introduction to implementing EGL window surfaces on the Symbian platform. These are used for onscreen rendering into windows that are provided by the Symbian platform (rather than EGL). The details of how to implement window surfaces depend on whether the ScreenPlay variant is in use.">Window
+Surface Implementation Overview</a></div>
+<div><a href="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF.html" title="This topic explains how to implement eglCreateWindowSurface() on the Symbian platform.">Implementing
+eglCreateWindowSurface</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

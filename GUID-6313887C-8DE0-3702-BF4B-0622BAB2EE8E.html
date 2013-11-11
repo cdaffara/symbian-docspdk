@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="RSqlParamWriteStream"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-6313887C-8DE0-3702-BF4B-0622BAB2EE8E"/>
+
+<title>RSqlParamWriteStream</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-6313887C-8DE0-3702-BF4B-0622BAB2EE8E"><a name="GUID-6313887C-8DE0-3702-BF4B-0622BAB2EE8E"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2490214 id2490614 id2490875 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">RSqlParamWriteStream Class Reference</h1>
+	<table class="signature"><tr><td>class RSqlParamWriteStream : public RWriteStream</td></tr></table><div class="section"><div>
+			<p>The write stream interface.</p>
+
+			<p>The class is used to set binary data or text data into a parameter. This is a also known as binding a parameter.</p>
+
+			<p>The class derives from <a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html#GUID-ADAC48A2-3D24-306B-9473-70201F4D351D">RWriteStream</a>, which means that all <a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html#GUID-ADAC48A2-3D24-306B-9473-70201F4D351D">RWriteStream</a> public member functions and predefined stream operators &lt;&lt; can be used to deal with the parameter data.</p>
+
+			<p>If the blob or text data is over 2Mb in size then it is recommended that the <a href="GUID-9D7747B6-E090-3450-9906-845B549F966F.html#GUID-9D7747B6-E090-3450-9906-845B549F966F">RSqlBlobWriteStream</a> or <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a> class is used instead. These classes provide a more RAM-efficient way of writing large amounts of blob or text data to a database.</p>
+
+			<p>The following two cases are typical:</p>
+
+			<p>CASE 1 - binding a large binary parameter.</p>
+
+			<div class="p">
+				<pre class="codeblock">RSqlDatabase db;
+&lt;open/create "db" object&gt;;
+RSqlStatement stmt;
+&lt;prepare "stmt" object&gt;;//The SQL statement references large binary parameter
+RSqlParamWriteStream paramStream;
+CleanupClosePushL(paramStream);
+User::LeaveIfError(paramStream.BindBinary(stmt, &lt;parameter_number&gt;));
+//Write out the parameter data
+paramStream.WriteL(..);
+paramStream &lt;&lt; &lt;data&gt;;
+...
+//Commit the stream
+paramStream.CommitL();
+//Continue with the statement processing issuing Next() or Exec().
+TInt rc = stmt.Next();//rc = stmt.Exec()
+//Close the stream
+CleanupStack::PopAndDestroy(&amp;paramStream);</pre>
+
+			</div>
+
+			<p>CASE 2 - binding a large text parameter.</p>
+
+			<div class="p">
+				<pre class="codeblock">RSqlDatabase db;
+&lt;open/create "db" object&gt;;
+RSqlStatement stmt;
+&lt;prepare "stmt" object&gt;;//The SQL statement references large text parameter
+RSqlParamWriteStream paramStream;
+CleanupClosePushL(paramStream);
+User::LeaveIfError(paramStream.BindText(stmt, &lt;parameter_number&gt;));
+//Write out the parameter data
+paramStream.WriteL(..);
+paramStream &lt;&lt; &lt;data&gt;;
+...
+//Commit the stream
+paramStream.CommitL();
+//Continue with the statement processing issuing Next() or Exec().
+TInt rc = stmt.Next();//rc = stmt.Exec()
+//Close the stream
+CleanupStack::PopAndDestroy(&amp;paramStream);</pre>
+
+			</div>
+
+			<p>
+				<a href="GUID-9D7747B6-E090-3450-9906-845B549F966F.html#GUID-9D7747B6-E090-3450-9906-845B549F966F">RSqlBlobWriteStream</a> <a href="GUID-78544D11-1972-3492-9BD7-D794240895E1.html#GUID-78544D11-1972-3492-9BD7-D794240895E1">TSqlBlob</a></p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">RSqlParamWriteStream<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-D23FABDE-BAD4-3D93-8F35-3B732BA75C15">BindBinaryL</a>(<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-1F4F8F12-F14E-34B2-A588-27647742A352">BindText</a>(<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-4E4AED19-C52C-341C-823D-2559C5434486">BindTextL</a>(<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::Attach(MStreamBuf *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::Close()</a></td></tr><tr><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::CommitL()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::Detach()</a></td></tr><tr><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::Pop()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::PushL()</a></td></tr><tr><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::RWriteStream()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::RWriteStream(MStreamBuf *)</a></td></tr><tr><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::RWriteStream(const MExternalizer&lt; TStreamRef &gt; &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::Release()</a></td></tr><tr><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::Sink()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteInt16L(TInt)</a></td></tr><tr><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteInt32L(TInt32)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteInt8L(TInt)</a></td></tr><tr><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteL(RReadStream &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteL(RReadStream &amp;,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteL(const TDesC16 &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteL(const TDesC16 &amp;,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteL(const TDesC8 &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteL(const TDesC8 &amp;,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteL(const TUint16 *,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteL(const TUint8 *,TInt)</a></td></tr><tr><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteReal32L(TReal)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteReal64L(TReal64)</a></td></tr><tr><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteUint16L(TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteUint32L(TUint32)</a></td></tr><tr><td> </td><td><a href="GUID-ADAC48A2-3D24-306B-9473-70201F4D351D.html">RWriteStream::WriteUint8L(TUint)</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-D23FABDE-BAD4-3D93-8F35-3B732BA75C15"><a name="GUID-D23FABDE-BAD4-3D93-8F35-3B732BA75C15"><!-- --></a>
+		<h2 class="topictitle2">BindBinaryL(RSqlStatement &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>BindBinaryL</td><td>(</td><td><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp;</td><td>aStmt,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aParameterIndex</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp; aStmt</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aParameterIndex</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1F4F8F12-F14E-34B2-A588-27647742A352"><a name="GUID-1F4F8F12-F14E-34B2-A588-27647742A352"><!-- --></a>
+		<h2 class="topictitle2">BindText(RSqlStatement &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>BindText</td><td>(</td><td><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp;</td><td>aStmt,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aParameterIndex</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Gives access to parameter data as a stream of characters.</p>
+
+				<p>NB You need to close the stream after the execution of the statement operation for which the parameter is set (<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">RSqlStatement::Next()</a> or <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0440D12B-C1AC-397D-A676-71ED0CB1838F">RSqlStatement::Exec()</a>).</p>
+
+				<div class="p">
+					<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">RSqlStatement::Next()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0440D12B-C1AC-397D-A676-71ED0CB1838F">RSqlStatement::Exec()</a><dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp; aStmt</td><td>The RSqlStatement object to which the referred parameter belongs.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aParameterIndex</td><td>The index value identifying the parameter; this is 0 for the first parameter. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4E4AED19-C52C-341C-823D-2559C5434486"><a name="GUID-4E4AED19-C52C-341C-823D-2559C5434486"><!-- --></a>
+		<h2 class="topictitle2">BindTextL(RSqlStatement &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>BindTextL</td><td>(</td><td><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp;</td><td>aStmt,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aParameterIndex</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Gives access to parameter data as a stream of characters.</p>
+
+				<p>NB You need to close the stream after the execution of the statement operation for which the parameter is set (<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">RSqlStatement::Next()</a> or <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0440D12B-C1AC-397D-A676-71ED0CB1838F">RSqlStatement::Exec()</a>).</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNoMemory, an out of memory condition occurred. Note that database specific errors categorised as ESqlDbError, and other system-wide error codes may also be returned.</dd>
+
+						
+					</dl>
+
+					<a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-C8BBAAA8-0468-3330-B601-391443C1C410">RSqlStatement::Next()</a> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0440D12B-C1AC-397D-A676-71ED0CB1838F">RSqlStatement::Exec()</a><dl class="user"><dt class="dlterm"><strong>capability</strong></dt>
+<dd>None </dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html">RSqlStatement</a> &amp; aStmt</td><td>The RSqlStatement object to which the referred parameter belongs.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aParameterIndex</td><td>The index value identifying the parameter; this is 0 for the first parameter. </td></tr></table></div>
+
+	</div>
+
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Demand Paging Deadlock Guide"/>
+<meta name="abstract" content="Describes deadlocks in the context of demand paging and how to prevent them from occurring."/>
+<meta name="description" content="Describes deadlocks in the context of demand paging and how to prevent them from occurring."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6381BC82-3060-5023-8221-79B18CCB2CDB.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2B7D04D9-98DE-5284-836D-01DB4FA8949D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6381BC82-3060-5023-8221-79B18CCB2CDB.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ACB79CEF-CA4D-5C96-AFCD-6AD7C7C26C53.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-8A5EC98B-E9AD-5496-9909-7C3B35610785"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Demand Paging Deadlock Guide</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-8A5EC98B-E9AD-5496-9909-7C3B35610785"><a name="GUID-8A5EC98B-E9AD-5496-9909-7C3B35610785"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388574 id2388657 id2388671 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html">Demand Paging</a> &gt; <a href="GUID-2B7D04D9-98DE-5284-836D-01DB4FA8949D.html">Writable Data Paging</a> &gt; <a href="GUID-6381BC82-3060-5023-8221-79B18CCB2CDB.html" title="Contains guides that describe various aspects of writable data paging in more detail.">Writable Data Paging Guides</a> &gt; </div>
+<h1 class="topictitle1">Demand
+Paging Deadlock Guide</h1>
+<div><p>Describes deadlocks in the context of demand paging and how to
+prevent them from occurring. </p>
+
+<div class="section" id="GUID-8A5EC98B-E9AD-5496-9909-7C3B35610785__GUID-F44CAA63-0225-566F-836C-F5348C0591BD"><a name="GUID-8A5EC98B-E9AD-5496-9909-7C3B35610785__GUID-F44CAA63-0225-566F-836C-F5348C0591BD"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p>A
+deadlock is when two or more processes have some resources, but not all of
+the resources required to execute. The resources that are required are held
+by the other processes, which in turn want the resources that are held by
+the initial processes. In this state, no process can execute. </p>
+ <p>The
+classic sign that a deadlock has occurred is that a collection of processes
+just appear to never do anything i.e. 'just hang'. </p>
+ <p>In the context
+of demand paging, the resource is a page of RAM that can be paged in or out.
+If one process wants data in a page of RAM that is paged-in or out by another
+process, then a potential deadlock condition can occur. </p>
+ <p>Deadlocks
+are only likely to occur if you are altering or interacting with one of the
+components used in paging in and out, such as media drivers or the paging
+sub-system. The majority of user-side code does not need to worry about deadlocks
+from paging. </p>
+ <p>This guide is most applicable to device side writers
+and other engineers writing kernel-side code. </p>
+ </div>
+
+<div class="section" id="GUID-8A5EC98B-E9AD-5496-9909-7C3B35610785__GUID-7C628F1C-132F-4327-8248-D018083392E0"><a name="GUID-8A5EC98B-E9AD-5496-9909-7C3B35610785__GUID-7C628F1C-132F-4327-8248-D018083392E0"><!-- --></a><h2 class="sectiontitle">Deadlock features</h2><p>        For a deadlock to occur,
+four necessary conditions must occur:  </p>
+<p> Mutual exclusion condition
+ </p>
+<p>  A resource cannot be used by more than one process at a time.  </p>
+<p> Hold
+and wait condition  </p>
+<p>One process is holding one resource, but needs
+another before it can   finish. </p>
+<p>No preemption condition  </p>
+<p> The
+resources can only be relinquished by the process holding it.  </p>
+<p>Circular
+wait condition </p>
+<p> One process is holding a resource and wants another
+resource that is  held by another process, which in turn wants access to the
+resource held by the  initial process.</p>
+ </div>
+
+<div class="section" id="GUID-8A5EC98B-E9AD-5496-9909-7C3B35610785__GUID-5758274B-83B1-400D-A0E4-993094066769"><a name="GUID-8A5EC98B-E9AD-5496-9909-7C3B35610785__GUID-5758274B-83B1-400D-A0E4-993094066769"><!-- --></a><h2 class="sectiontitle">Deadlock Prevention</h2><p>      Since the cause of deadlocks
+(as far as demand paging is concerned) is  due to the paging in and out of
+RAM, the following points have to be        considered:  </p>
+<ul>
+<li><p> Make sure all kernel-side components are always unpaged. </p>
+</li>
+
+<li><p> Pinning; new APIs have been added that allows a process to over-ride
+  the demand paging rules as regards to how RAM pages are paged in and out
+the phone's memory. The name comes from that fact that the RAM page is fixed
+in the phone's RAM (as if a pin had been stuck into it) until a detached command
+is  executed (unpinned). This is implemented by using the new  <a href="GUID-A3CC1D95-4681-3349-A67C-F113A614041D.html#GUID-A3CC1D95-4681-3349-A67C-F113A614041D__GUID-0DCAB25E-5A99-35EB-9F75-E9C275EE9E17"><span class="apiname">DLogicalChannel::SendMsg()</span></a> method. </p>
+</li>
+
+<li><p>Mutex use in device drivers - if the nesting order is violated then
+deadlock can occur. To overcome this, make sure that all device driver operations
+that could cause a page fault don't use mutexes. In other words, any  access
+to paged memory while holding a mutex has the potential to cause a deadlock.</p>
+</li>
+
+<li><p>Code running in DFC Thread 1 must not access user memory. This DFC
+thread is used by the implementation of the system timer functionality, hence
+paging RAM in or out of the system by this thread could cause serious performance
+problems or a deadlock.   </p>
+</li>
+
+<li><p> For media drivers, make sure that when the media driver services page-in
+requests, that the thread that the driver runs in does not also make   requests
+to page-in RAM pages. Because, if this was to occur, then the media  driver
+will not be able to service the page in request and a dead lock would occur. </p>
+</li>
+
+</ul>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-6381BC82-3060-5023-8221-79B18CCB2CDB.html" title="Contains guides that describe various aspects of writable data paging in more detail.">Writable Data Paging Guides</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-ACB79CEF-CA4D-5C96-AFCD-6AD7C7C26C53.html" title="Describes thrashing in terms of demand paging and how to prevent it.">Thrashing
+Guide</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

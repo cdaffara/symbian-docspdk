@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Cancelling an asynchronous request"/>
+<meta name="abstract" content="This document describes how to cancel an asynchronous request."/>
+<meta name="description" content="This document describes how to cancel an asynchronous request."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C0C19F93-D804-5AED-90E4-A814FA6A3732.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3786D8E6-17A9-52E4-A8DF-CFCDC3039854.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B507490F-6BD3-5DF5-97E4-EFDFEA2B4EDD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C0C19F93-D804-5AED-90E4-A814FA6A3732.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Cancelling an asynchronous request</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6"><a name="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2393224 id2393257 id2393288 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-3786D8E6-17A9-52E4-A8DF-CFCDC3039854.html">Inter Process Communication</a> &gt; <a href="GUID-B507490F-6BD3-5DF5-97E4-EFDFEA2B4EDD.html">Using Asynchronous Programming</a> &gt; <a href="GUID-C0C19F93-D804-5AED-90E4-A814FA6A3732.html">Low Level Asynchronous Service Handling</a> &gt; </div>
+<h1 class="topictitle1">Cancelling
+an asynchronous request</h1>
+<div><p>This document describes how to cancel an asynchronous request.</p>
+
+<p>Most asynchronous service providers support a cancel function. This allows
+an outstanding request to be cancelled before it is complete. </p>
+
+<p>A single thread that is waiting for a single asynchronous request to complete
+cannot cancel that request because the thread is asleep until it completes.
+However, when multiple requests are outstanding, the handling of a request
+completion may involve cancelling some or all of the other outstanding requests.</p>
+
+<p>In all cases, the correct user protocol for cancellation is:</p>
+
+<pre class="codeblock" id="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-849238B9-205F-56ED-8958-B28F7604108C"><a name="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-849238B9-205F-56ED-8958-B28F7604108C"><!-- --></a>    // only cancel if we know that there is
+    // an outstanding request
+if (requestIssued)
+    {
+        // Issue cancel to service provider
+    provider.cancel();
+
+        // Wait for it complete (it must complete)
+    User::WaitForRequest(requestStatus);
+
+        // Now note that request is no longer outstanding
+    requestIssued=EFalse;
+    }</pre>
+
+<div class="section" id="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-13C429B3-7FEF-4A2E-991C-767908F0AA5E"><a name="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-13C429B3-7FEF-4A2E-991C-767908F0AA5E"><!-- --></a><h2 class="sectiontitle">Notes</h2> <ul>
+<li id="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-A905DF5E-2AAA-59F8-B817-D10FBD947B9A"><a name="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-A905DF5E-2AAA-59F8-B817-D10FBD947B9A"><!-- --></a><p>A cancel should only
+be issued from the thread that issued the request.</p>
+ </li>
+
+<li id="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-F4500BC1-6FDF-5D7D-8E62-641246AAE051"><a name="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-F4500BC1-6FDF-5D7D-8E62-641246AAE051"><!-- --></a><p>It is convention that
+cancel functions provided by asynchronous service providers have <samp class="codeph">Cancel</samp> somewhere
+in the name, but need not necessarily be called <samp class="codeph">Cancel()</samp>.</p>
+ </li>
+
+<li id="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-8383581F-B687-5BBE-8F7E-71EC4360A7E0"><a name="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-8383581F-B687-5BBE-8F7E-71EC4360A7E0"><!-- --></a><p>An asynchronous service
+provider must make certain guarantees about cancellation:</p>
+ <ul>
+<li id="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-0383D830-FB83-5707-9FE3-60360ACA9395"><a name="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-0383D830-FB83-5707-9FE3-60360ACA9395"><!-- --></a><p>it must complete quickly —
+otherwise, the <samp class="codeph">User::WaitForRequest()</samp> above would take a
+long time to complete, and cause the program to become unresponsive</p>
+ </li>
+
+<li id="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-0266E0CB-DC3B-597F-8662-B9AA4AAF35C3"><a name="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-0266E0CB-DC3B-597F-8662-B9AA4AAF35C3"><!-- --></a><p>it must not violate
+the guarantee that each request produces precisely one signal</p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-C7C67368-C52D-5830-98FC-DA0AD31917DC"><a name="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-C7C67368-C52D-5830-98FC-DA0AD31917DC"><!-- --></a><p>The service provider
+does not have to guarantee to cancel the actual request: it may already have
+completed — asynchronously, by definition — by the time the client
+thread issues the cancel.</p>
+ </li>
+
+<li id="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-2290B823-B990-5A35-87DB-4BEC312C440E"><a name="GUID-3A4947BD-1BEB-521C-BEDF-738064E83FE6__GUID-2290B823-B990-5A35-87DB-4BEC312C440E"><!-- --></a><p>Although the cancel
+must return quickly, the service initiated by the request may not have completed.
+For instance, if data were requested from a network drive, it may not be returned
+until after the cancel. Because of the cancel, the service provider must discard
+such data.</p>
+ </li>
+
+</ul>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C0C19F93-D804-5AED-90E4-A814FA6A3732.html">Low Level Asynchronous Service Handling</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

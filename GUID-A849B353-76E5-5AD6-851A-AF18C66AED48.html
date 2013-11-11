@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Generic Driver Support Overview"/>
+<meta name="abstract" content="Generic driver related concepts in Symbian platform."/>
+<meta name="description" content="Generic driver related concepts in Symbian platform."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CFD2236E-7775-5532-89CD-7D0E1E219FD8.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CFD2236E-7775-5532-89CD-7D0E1E219FD8.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-52371DAB-A231-558C-B3E6-220DAAEE566B.html#GUID-52371DAB-A231-558C-B3E6-220DAAEE566B/GUID-D25228C5-D51E-54A3-A5D0-0B68A9E8E7C8"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Generic Driver Support Overview</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2400576 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-CFD2236E-7775-5532-89CD-7D0E1E219FD8.html" title="Provides an overview of generic driver support.">Generic Driver Support</a> &gt; </div>
+<h1 class="topictitle1">Generic
+Driver Support Overview</h1>
+<div><p>Generic driver related concepts in Symbian platform. </p>
+
+<div class="section" id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-DBF1C87D-7360-54B7-8658-B6659BF77F06-GENID-1-12-1-18-1-1-13-1-4-1-3-1"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-DBF1C87D-7360-54B7-8658-B6659BF77F06-GENID-1-12-1-18-1-1-13-1-4-1-3-1"><!-- --></a><h2 class="sectiontitle">Architecture</h2> <p>The
+role of a generic device driver is to give a user-side application access
+to peripheral resources without exposing the operation of the underlying hardware.
+A device driver is effectively an add-on to the kernel, and implements a polymorphic
+interface defined by the kernel. It resides on the kernel side and therefore
+has the same access rights, uses the kernel heap and links to the kernel,
+so that it can call kernel functions. Typically, hardware indicates completion
+of an operation by generating an interrupt. This is handled by an Interrupt
+Service Routine (ISR) provided by the driver. An ISR is restricted in what
+it can do, and must complete quickly. So it is normal for it to schedule a
+Delayed Function Call (DFC) which at some later time runs in the context of
+a kernel-side thread. Device driver services are generally asynchronous. A
+device driver includes: </p>
+ <ul>
+<li id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-DE0F5D5C-B3C2-547D-BE5B-EA80FE290A20"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-DE0F5D5C-B3C2-547D-BE5B-EA80FE290A20"><!-- --></a><p>A user-side API </p>
+ </li>
+
+<li id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-33122E07-9C29-5138-8FBD-D8B34195091D"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-33122E07-9C29-5138-8FBD-D8B34195091D"><!-- --></a><p>Two kernel-side DLLs,
+each of which exports a single factory function at ordinal 1 to create the
+necessary kernel-side objects, namely </p>
+ <ul>
+<li id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-33F58387-8EB1-559B-9410-F06F76DA436C"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-33F58387-8EB1-559B-9410-F06F76DA436C"><!-- --></a><p>Logical device driver
+DLL with a file name extension <samp class="codeph">.ldd</samp> </p>
+ </li>
+
+<li id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-ED88F823-7883-5BEC-8E50-728F59901D05"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-ED88F823-7883-5BEC-8E50-728F59901D05"><!-- --></a><p>Physical device driver
+DLL with a file name extension .pdd </p>
+ </li>
+
+</ul>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-A51AA612-F9DC-4A57-A110-BABB0002B624"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-A51AA612-F9DC-4A57-A110-BABB0002B624"><!-- --></a><h2 class="sectiontitle">Components</h2> <p>The
+following components make up the generic driver support collection: </p>
+ <ul>
+<li id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-10D21882-F873-5A7A-BF95-1099CF2D1105"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-10D21882-F873-5A7A-BF95-1099CF2D1105"><!-- --></a><p>Generic Board Support
+Packages </p>
+ </li>
+
+<li id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-3537A6C7-9DA1-57D8-9C41-BA15A7647979"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-3537A6C7-9DA1-57D8-9C41-BA15A7647979"><!-- --></a><p>Media Drivers </p>
+ </li>
+
+<li id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-0DDB7C2E-2231-5C12-9650-5BEA71A21A89"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-0DDB7C2E-2231-5C12-9650-5BEA71A21A89"><!-- --></a><p>SD Card 3C Driver </p>
+ </li>
+
+<li id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-60CCAEA4-0260-55DB-AD7E-4565C9866A9F"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-60CCAEA4-0260-55DB-AD7E-4565C9866A9F"><!-- --></a><p>SD Card 4C Driver </p>
+ </li>
+
+<li id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-D196EB31-A9A9-591D-B193-D51A51CBF36C"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-D196EB31-A9A9-591D-B193-D51A51CBF36C"><!-- --></a><p>System On Chip ASSP </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-B6DCB613-80AF-416C-A8E2-3321CE02C1C6"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-B6DCB613-80AF-416C-A8E2-3321CE02C1C6"><!-- --></a><h2 class="sectiontitle">Using Generic
+Driver Support</h2> <ul>
+<li id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-F905C135-E1B0-5AB1-A131-5136CC4B45F7"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-F905C135-E1B0-5AB1-A131-5136CC4B45F7"><!-- --></a><p>Generic Board Support
+Packages - Generic Board Support Packages provides generic code for DMA framework,
+power management and digitizer. </p>
+ </li>
+
+<li id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-44105C97-F2CD-597C-8645-2A3556B711AE"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-44105C97-F2CD-597C-8645-2A3556B711AE"><!-- --></a><p>Media Drivers - The
+Media Drivers collection provides the physical device drivers, called media
+drivers, and associated libraries that manage storage media hardware. Some
+media drivers have platform specific layers that a base port can implement
+for particular types of storage hardware. </p>
+ </li>
+
+<li id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-1A009040-46D7-5BE9-A31E-CECBF3FC0DF4"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-1A009040-46D7-5BE9-A31E-CECBF3FC0DF4"><!-- --></a><p>SD Card 3C Driver -
+SD Card 3C Driver provides media drivers and generic (PIL) parts of the stack
+for accessing Secure Digital flash memory cards. </p>
+ </li>
+
+<li id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-813297BC-3DC3-519A-9193-EACB6DDFBA2F"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-813297BC-3DC3-519A-9193-EACB6DDFBA2F"><!-- --></a><p>SD Card 4C Driver -
+SD Card 4C Driver provides media drivers and generic (PIL) parts of the stack
+for accessing 4C type Secure Digital flash memory cards. </p>
+ </li>
+
+<li id="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-A424393A-EDA6-524A-9117-6AFB8595EF2D"><a name="GUID-A849B353-76E5-5AD6-851A-AF18C66AED48__GUID-A424393A-EDA6-524A-9117-6AFB8595EF2D"><!-- --></a><p>System On Chip ASSP
+- System On Chip ASSP contains source for common hardware peripherals that
+may be used by multiple BSPs. </p>
+ </li>
+
+</ul>
+<div class="note"><span class="notetitle">Note:</span>  4C and 3C type SD card drivers are split, as they are available
+under different licenses.</div>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-CFD2236E-7775-5532-89CD-7D0E1E219FD8.html" title="Provides an overview of generic driver support.">Generic Driver Support</a></div>
+</div>
+<div class="relinfo"><strong>Related information</strong><br/>
+<div><a href="GUID-52371DAB-A231-558C-B3E6-220DAAEE566B.html#GUID-52371DAB-A231-558C-B3E6-220DAAEE566B__GUID-D25228C5-D51E-54A3-A5D0-0B68A9E8E7C8">Logical Device                 Drivers and Generic Driver Support</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

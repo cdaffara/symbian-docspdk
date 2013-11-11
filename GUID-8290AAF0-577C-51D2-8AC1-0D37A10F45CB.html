@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="CSPRNG Implementation in Kernel"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>CSPRNG Implementation in Kernel</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB"><a name="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2399880 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html" title="Describes the architecture and technology features of the Kernel that are important for a base port.">Concepts</a> &gt; </div>
+<h1 class="topictitle1">CSPRNG
+Implementation in Kernel</h1>
+<div>
+<div class="section" id="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-6125753A-78E8-4C9F-B25C-B1285A50AE9A"><a name="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-6125753A-78E8-4C9F-B25C-B1285A50AE9A"><!-- --></a><h2 class="sectiontitle">Purpose</h2> <p>The
+Cryptographically Secure/Strong Pseudo-Random Number Generator (CSPRNG) generates
+random numbers that are cryptographically secure. The CSPRNG generates a sequence
+of numbers that approximates the properties of random numbers. The strength
+of CSPRNG not only depends on the generation algorithm, but also
+on the strength of entropy (the degree of uncertainty in the random number
+or the extent to which the number is random).</p>
+<p>In Symbian platform, the
+CSPRNG is implemented in the kernel. This provides the kernel and user-level
+threads and processes easy access to secure random numbers. For an overview
+of the various APIs by means of which the CSPRNG can be accessed, see <a href="GUID-BAA558C1-8613-43A0-899E-F53DCAA68F4B.html">APIs for Accessing Random
+Number Generator</a>.</p>
+ </div>
+
+<div class="section" id="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-B5BD3E1A-AFBB-5526-B5EA-8FA51A17E596-GENID-1-12-1-18-1-1-11-1-5-1-19-1-2-2"><a name="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-B5BD3E1A-AFBB-5526-B5EA-8FA51A17E596-GENID-1-12-1-18-1-1-11-1-5-1-19-1-2-2"><!-- --></a><h2 class="sectiontitle">Description</h2> <p>The
+CSPRNG uses Hash_DRBG algorithm to generate pseudo-random number. Hash_DRBG
+algorithm is a standard recommended by National Institute of Secure Technology
+(<a href="http://csrc.nist.gov/publications/nistpubs/800-90/SP800-90revised_March2007.pdf" target="_blank">NIST SP800-90</a>), which uses cryptographic hash functions
+(SHA-256) to generate random numbers. The strength of CSPRNG not only depends
+on the generation algorithm, but also on the strength of entropy input. </p>
+<p>A
+key process in the generation of random numbers is entropy accumulation. During
+initialization of the CSPRNG,  it is critical to accumulate entropy from the
+entropy sources. Entropy accumulation is the process by which a CSPRNG acquires
+a new unpredictable internal state. The entropies are collected into a hash-based
+pool using <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-85F0FCA1-1998-3863-94E7-1E9D4496E682"><span class="apiname">Kern::RandomSalt</span></a>. </p>
+ </div>
+
+<div class="section" id="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-4E6F8E44-43E9-473B-8733-029FD3036224"><a name="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-4E6F8E44-43E9-473B-8733-029FD3036224"><!-- --></a><h2 class="sectiontitle">Generating
+Random Data</h2> <ul>
+<li><p><strong>To generate random numbers on the user side</strong>: Applications can
+call <a href="GUID-1DB7AE7A-A505-3530-AC2B-EBAEFCD3F36A.html#GUID-1DB7AE7A-A505-3530-AC2B-EBAEFCD3F36A__GUID-9D7451C0-A293-3DCB-AF73-69CEB41AF13D"><span class="apiname">Math::Random</span></a> and its overloaded functions, which call <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-FA565586-92EB-3727-9824-FCD5ED341E58"><span class="apiname">Kern::Random</span></a> to
+generate a random number. The overloaded functions of <a href="GUID-1DB7AE7A-A505-3530-AC2B-EBAEFCD3F36A.html"><span class="apiname">Math</span></a> class
+are listed below: </p>
+ <ul>
+<li id="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-49840D10-1AA9-5B1E-89F2-EE76AA6EE168"><a name="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-49840D10-1AA9-5B1E-89F2-EE76AA6EE168"><!-- --></a><p> <samp class="codeph">TUint32 Math::Random()</samp>  </p>
+ </li>
+
+<li id="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-44B4E31A-F2CD-57B1-841C-5D49FB31F761"><a name="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-44B4E31A-F2CD-57B1-841C-5D49FB31F761"><!-- --></a><p> <samp class="codeph">void Math::Random(TDes8&amp;
+aRandomValue)</samp>  </p>
+ </li>
+
+<li id="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-A44D2225-FD37-58F0-8371-93BE55FE0B14"><a name="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-A44D2225-FD37-58F0-8371-93BE55FE0B14"><!-- --></a><p> <samp class="codeph">TUint32 Math::RandomL()</samp>  </p>
+ </li>
+
+<li id="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-CDA30955-23FE-574B-9C9D-EF60905AE143"><a name="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-CDA30955-23FE-574B-9C9D-EF60905AE143"><!-- --></a><p> <samp class="codeph">void Math::RandomL(TDes8&amp;
+aRandomValue)</samp>  </p>
+ </li>
+
+</ul>
+</li>
+
+<li><p><strong>To generate random numbers on the kernel side</strong>: Random numbers
+can be accessed using the following methods: </p>
+ <ul>
+<li id="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-7B3E4D44-394F-5D51-8DA1-DC7515C6BD14"><a name="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-7B3E4D44-394F-5D51-8DA1-DC7515C6BD14"><!-- --></a><p> <samp class="codeph">EXPORT_C TInt
+Kern::SecureRandom(TDes8&amp; aRandomValue)</samp>  </p>
+ </li>
+
+<li id="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-8DD4B45E-4659-5F72-92CB-6774C8CCE12F"><a name="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-8DD4B45E-4659-5F72-92CB-6774C8CCE12F"><!-- --></a><p> <samp class="codeph">EXPORT_C TUint32
+Kern::Random()</samp>  </p>
+ </li>
+
+</ul>
+</li>
+
+</ul>
+<div class="note"><span class="notetitle">Note:</span> <p>If the generated random number is not secure, the <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html"><span class="apiname">Kern</span></a> and <a href="GUID-1DB7AE7A-A505-3530-AC2B-EBAEFCD3F36A.html"><span class="apiname">Math</span></a> random
+functions return appropriate error codes or leave. </p>
+<p>The <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-FA565586-92EB-3727-9824-FCD5ED341E58"><span class="apiname">Kern::Random</span></a> and <a href="GUID-1DB7AE7A-A505-3530-AC2B-EBAEFCD3F36A.html#GUID-1DB7AE7A-A505-3530-AC2B-EBAEFCD3F36A__GUID-9D7451C0-A293-3DCB-AF73-69CEB41AF13D"><span class="apiname">Math::Random</span></a> are
+the only functions that do not return any error codes.</p>
+</div>
+ </div>
+
+<div class="example"><p>The following examples show the use of the various user-side APIs
+to generate a random number:</p>
+<ul>
+<li><p> Example of <a href="GUID-1DB7AE7A-A505-3530-AC2B-EBAEFCD3F36A.html#GUID-1DB7AE7A-A505-3530-AC2B-EBAEFCD3F36A__GUID-F37E64ED-4DE4-3F0D-9BE2-756CF9D00B13"><span class="apiname">Math::RandomL(TDes8&amp;)</span></a> </p>
+<pre class="codeblock">const TInt KRandomBufferSize = 1024;
+TBuf8 &lt;KRandomBufferSize&gt; buffer(KRandomBufferSize);
+Math::RandomL(buffer); // The function will leave if the number is not secure</pre>
+</li>
+
+<li><p>Example of <a href="GUID-1DB7AE7A-A505-3530-AC2B-EBAEFCD3F36A.html#GUID-1DB7AE7A-A505-3530-AC2B-EBAEFCD3F36A__GUID-4B6E5650-682D-32FA-87E8-B64DBCB74BC5"><span class="apiname">Math::RandomL(</span></a>)</p>
+<pre class="codeblock">TUint randomValue = Math::RandomL();// The function will leave if the number is not secure</pre>
+</li>
+
+<li><p>Example of <a href="GUID-1DB7AE7A-A505-3530-AC2B-EBAEFCD3F36A.html#GUID-1DB7AE7A-A505-3530-AC2B-EBAEFCD3F36A__GUID-0B4A64E4-7EC3-300F-ACA0-7F53AAEF7066"><span class="apiname">Math::Random()</span></a></p>
+<pre class="codeblock">TUint randomValue = Math::Random();</pre>
+</li>
+
+</ul>
+<p>The following examples show the use of the kernel side APIs to generate
+a random number:</p>
+<ul>
+<li><p> Example of <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-EA575BCE-D227-3D4A-8581-542DFAFB4E6C"><span class="apiname">Kern::SecureRandom(TDes8&amp;)</span></a> </p>
+<pre class="codeblock">const TInt KRandomBufferSize = 1024;
+TBuf8 &lt;KRandomBufferSize&gt; buffer(KRandomBufferSize);
+Tint err = Kern::SecureRandom(buffer); // Number is secure if err is KErrNone else the number is not secure</pre>
+</li>
+
+<li><p>Example of <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-13B7C085-495E-36BB-97CE-141A8E5776B6"><span class="apiname">Kern::Random()</span></a></p>
+<pre class="codeblock">TUint randomValue = Kern::Random();</pre>
+</li>
+
+</ul>
+</div>
+
+<div class="section" id="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-157FE439-6C53-407A-8909-2CB88E89857C"><a name="GUID-8290AAF0-577C-51D2-8AC1-0D37A10F45CB__GUID-157FE439-6C53-407A-8909-2CB88E89857C"><!-- --></a><h2 class="sectiontitle">Providing Entropy</h2><p>The
+quality of the output of the CSPRNG can be improved by providing it with data
+known to be random. Such data is referred to as entropy data. Entropy data
+sources can either be:</p>
+<ul>
+<li><p>Independent of user input. For example, hardware RNG oscillator and
+specific interrupts. </p>
+</li>
+
+<li><p>Influenced by user input. For example, audio (microphone input), video
+(camera input), keypad input, touch screen input and accelerometer.</p>
+</li>
+
+</ul>
+<p>The kernel provides various functions to allow entropy data to be
+contributed to the CSPRNG. The functions are as follows:</p>
+<ul>
+<li><p><a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-5AFC49C0-CDAB-317E-B88A-BD1A4C9307CB"><span class="apiname">Kern::RandomSalt(TUint32 aEntropyData, TUint aBitsOfEntropy)</span></a>:
+Allows entropy data up to 32 bits in length to be contributed to the CSPRNG.
+This function is low-latency and safe to be called from an Interrupt Service
+Routine (ISR).</p>
+</li>
+
+<li><p><a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-35F5D818-0C74-3C6E-8EF1-7EF49BB43705"><span class="apiname">Kern::RandomSalt(TUint64 aEntropyData, TUint aBitsOfEntropy)</span></a>:
+Allows entropy data up to 64 bits in length to be contributed to the CSPRNG.
+This function is low-latency and safe to be called from an ISR.</p>
+</li>
+
+<li><p><a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-1E340F3C-DCE5-3599-A0B9-29E9419807E9"><span class="apiname">Kern::RandomSalt(const TUint8* aEntropyData, TUint aEntropyDataLength,
+TUint aBitsOfEntropy)</span></a>: Allows entropy data larger than 64 bits to
+be contributed to the CSPRNG. This function cannot be called from an ISR.</p>
+</li>
+
+<li><p><a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-C46E48EE-6F4A-3A61-A3C9-84B145119541"><span class="apiname">Interrupt::AddTimingEntropy()</span></a>: This function allows
+the timing of an interrupt to be contributed as entropy data, the highest
+resolution timer available is automatically used for the timestamp. This function
+can only be called from an ISR. For an example of its usage, see the section <strong>Interrupt
+Service Routine (ISR) implementation</strong> in <a href="GUID-2E42E7EA-FED8-522C-8A5F-F65D799476C9.html" title="This topic describes how to implement an interrupt driven keyboard driver.">Keyboard
+Driver Implementation Tutorial</a>.</p>
+</li>
+
+</ul>
+<div class="note"><span class="notetitle">Note:</span> In all these cases, <samp class="codeph">aBitsOfEntropy</samp> is an estimate
+of the number of bits of entropy contained in the sample and not necessarily
+the length of the sample. Failure to provide accurate entropy estimations
+may affect the quality of the CSPRNG’s output.</div>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-A16F9F31-182E-5301-B228-A457BD3530FE.html" title="Describes the architecture and technology features of the Kernel that are important for a base port.">Concepts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

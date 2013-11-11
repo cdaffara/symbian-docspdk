@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Secure stream encryption example support code"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-18358882-A4DD-5010-BED7-4ACAE021495D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5B112A34-1CBA-5B28-A941-27847FC1D30A.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-18358882-A4DD-5010-BED7-4ACAE021495D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-267D1E20-002E-53C7-8AE5-E063206C1562"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Secure stream encryption example support code</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-267D1E20-002E-53C7-8AE5-E063206C1562"><a name="GUID-267D1E20-002E-53C7-8AE5-E063206C1562"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2858558 id2859177 id2859334 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html">OS Security Guide</a> &gt; <a href="GUID-5B112A34-1CBA-5B28-A941-27847FC1D30A.html">Cryptography overview</a> &gt; <a href="GUID-18358882-A4DD-5010-BED7-4ACAE021495D.html">Example code</a> &gt; </div>
+<h1 class="topictitle1">Secure stream encryption example support code</h1>
+<div><p>Below is the supporting code for the <a href="GUID-598B6698-3518-50CA-98DE-D85CB255BA2D.html">secure stream example code</a>. </p>
+ <div class="section" id="GUID-267D1E20-002E-53C7-8AE5-E063206C1562__GUID-77E39C51-FE08-4EEB-B94A-4ECD8104E1ED"><a name="GUID-267D1E20-002E-53C7-8AE5-E063206C1562__GUID-77E39C51-FE08-4EEB-B94A-4ECD8104E1ED"><!-- --></a><pre class="codeblock" id="GUID-267D1E20-002E-53C7-8AE5-E063206C1562__GUID-02ECEC04-E291-51B3-86DF-2FB28347F5AD"><a name="GUID-267D1E20-002E-53C7-8AE5-E063206C1562__GUID-02ECEC04-E291-51B3-86DF-2FB28347F5AD"><!-- --></a>
+#include "e32std.h"
+#include "f32file.h"
+#include "s32file.h"
+#include "pbe.h"
+#include "pbedata.h"
+#include "s32crypt.h"
+            </pre>
+ <pre class="codeblock" id="GUID-267D1E20-002E-53C7-8AE5-E063206C1562__GUID-13A09565-981A-56C0-9AC7-B849FFBE7395"><a name="GUID-267D1E20-002E-53C7-8AE5-E063206C1562__GUID-13A09565-981A-56C0-9AC7-B849FFBE7395"><!-- --></a>
+/*
+ * Class to demonstrate the use of secure stream encryption APIs.
+ */
+class CSecureStreamExample : public CBase
+         {
+public:
+         static CSecureStreamExample* NewLC();
+         virtual ~CSecureStreamExample();
+         
+         void WriteEncryptedDataL(const TDesC8&amp; aInput, const TDesC&amp; aFilename, const TDesC&amp; aPassword);
+         HBufC8* ReadEncryptedDataLC(const TDesC&amp; aFilename, const TDesC&amp; aPassword);
+private:
+         CSecureStreamExample();
+         void ConstructL();
+private:
+         RFs iFs;
+         };
+            </pre>
+ <pre class="codeblock" id="GUID-267D1E20-002E-53C7-8AE5-E063206C1562__GUID-B23E19C7-F6AD-5CB4-A944-EFEDC45AB623"><a name="GUID-267D1E20-002E-53C7-8AE5-E063206C1562__GUID-B23E19C7-F6AD-5CB4-A944-EFEDC45AB623"><!-- --></a>
+CSecureStreamExample* CSecureStreamExample::NewLC()
+         {
+         CSecureStreamExample* self = new (ELeave) CSecureStreamExample();
+         CleanupStack::PushL(self);
+         self-&gt;ConstructL();
+         return self;
+         }
+
+CSecureStreamExample::CSecureStreamExample()
+         {
+         }
+
+void CSecureStreamExample::ConstructL()
+         {
+         User::LeaveIfError(iFs.Connect());
+         }
+
+CSecureStreamExample::~CSecureStreamExample()
+         {
+         iFs.Close();
+         }
+            </pre>
+ <pre class="codeblock" id="GUID-267D1E20-002E-53C7-8AE5-E063206C1562__GUID-11B8C0DD-AD05-53BB-BAD2-6F31457A2DD9"><a name="GUID-267D1E20-002E-53C7-8AE5-E063206C1562__GUID-11B8C0DD-AD05-53BB-BAD2-6F31457A2DD9"><!-- --></a>
+LOCAL_D void RunPBEExampleL()
+         {
+         _LIT(KFilename, "c:\\pbe_example_data.dat");
+         _LIT8(KInputData, "This is the data to be encrypted.");
+         _LIT(KPassword, "pa55w0rd");
+
+         CSecureStreamExample* main = CSecureStreamExample::NewLC();
+         main-&gt;WriteEncryptedDataL(KInputData, KFilename, KPassword);
+         HBufC8* outputData = main-&gt;ReadEncryptedDataLC(KFilename, KPassword);
+         ASSERT(*outputData == KInputData);
+         CleanupStack::PopAndDestroy(2, main);
+         }
+            </pre>
+ <pre class="codeblock" id="GUID-267D1E20-002E-53C7-8AE5-E063206C1562__GUID-0B93114C-6801-5053-85C3-181779A6185F"><a name="GUID-267D1E20-002E-53C7-8AE5-E063206C1562__GUID-0B93114C-6801-5053-85C3-181779A6185F"><!-- --></a>
+GLDEF_C TInt E32Main() // main function called by E32
+    {
+         __UHEAP_MARK;
+         CTrapCleanup* cleanup = CTrapCleanup::New(); // get clean-up stack
+         TRAPD(error, RunPBEExampleL());
+         __ASSERT_ALWAYS(!error,User::Panic(_L("pbe_example_code"),error));
+         delete cleanup; // destroy clean-up stack
+         __UHEAP_MARKEND;
+         return 0;
+    }
+        </pre>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-18358882-A4DD-5010-BED7-4ACAE021495D.html">Example code</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

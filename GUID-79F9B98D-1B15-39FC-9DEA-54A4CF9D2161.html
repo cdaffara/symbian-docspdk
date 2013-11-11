@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CComposerPlugin"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-79F9B98D-1B15-39FC-9DEA-54A4CF9D2161"/>
+
+<title>CComposerPlugin</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-79F9B98D-1B15-39FC-9DEA-54A4CF9D2161"><a name="GUID-79F9B98D-1B15-39FC-9DEA-54A4CF9D2161"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2383086 id2434397 id2434482 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CComposerPlugin Class Reference</h1>
+	<table class="signature"><tr><td>class CComposerPlugin : public CBase</td></tr></table><div class="section"><div>
+			<p>Composer Plug-in ECom interface definition. Composer plug-in implementation needs to inherit this class and implement the pure virtual methods which exist in this interface.</p>
+
+			<p>Example:</p>
+
+			<p>class CMyVideoComposerPlugin: public <a href="GUID-79F9B98D-1B15-39FC-9DEA-54A4CF9D2161.html#GUID-79F9B98D-1B15-39FC-9DEA-54A4CF9D2161">CComposerPlugin</a> { protected: void <a href="GUID-79F9B98D-1B15-39FC-9DEA-54A4CF9D2161.html#GUID-5EABE4E3-35B7-316B-B322-75E696036B79">SetObservers()</a>; void <a href="GUID-79F9B98D-1B15-39FC-9DEA-54A4CF9D2161.html#GUID-CDA7F76B-B92D-3CA6-ADD1-82481373A636">RemoveObservers()</a>;</p>
+
+			<p>// Because <a href="GUID-79F9B98D-1B15-39FC-9DEA-54A4CF9D2161.html#GUID-79F9B98D-1B15-39FC-9DEA-54A4CF9D2161">CComposerPlugin</a> inherits MMdEObjectObserver void HandleObjectNotification(CMdESession&amp; aSession, TObserverNotificationType aType, const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html#GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707">RArray&lt;TItemId&gt;</a>&amp; aObjectIdArray);</p>
+
+			<p>private: // Active object which does the actual binary writing // so that this interface and its observers remain responsive CMyVideoComposerAO* iVideoComposerAO; }</p>
+
+			<p>void <a href="GUID-79F9B98D-1B15-39FC-9DEA-54A4CF9D2161.html#GUID-5EABE4E3-35B7-316B-B322-75E696036B79">SetObservers()</a> { // We want to listen to changes in Video metadata objects // and setup an observer for this CMdENamespaceDef&amp; defaultNamespace = iSession-&gt;GetDefaultNamespaceDefL(); CMdEObjectDef&amp; videoDef = defaultNamespace.GetObjectDefL( MdeConstants::Video::KVideoObject ); CMdELogicCondition* condition = CMdELogicCondition::NewL( ELogicConditionOperatorAnd ); condition-&gt;AddObjectConditionL( videoDef );</p>
+
+			<p>// iSession is reference to CMdESession which is always set in <a href="GUID-79F9B98D-1B15-39FC-9DEA-54A4CF9D2161.html#GUID-69995DAF-FE8B-3881-88A1-5E5A7247563B">CComposerPlugin::SetSession()</a> iSession-&gt;AddObjectObserverL( *this, condition, ENotifyModify, &amp;defaultNamespace ); }</p>
+
+			<p>void <a href="GUID-79F9B98D-1B15-39FC-9DEA-54A4CF9D2161.html#GUID-CDA7F76B-B92D-3CA6-ADD1-82481373A636">RemoveObservers()</a> { iSession-&gt;RemoveObjectObserverL( *this ) }</p>
+
+			<p>void CComposerImagePlugin::HandleObjectNotification(CMdESession&amp; aSession, TObserverNotificationType aType, const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html#GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707">RArray&lt;TItemId&gt;</a>&amp; aObjectIdArray) { // We give ID-array of changed Video objects to our active object // which adds then to a its internal queue and processes them one-by-one // with different RunL-calls so that we don't stuck the thread by composing // for example 1000 binary files in a row. iVideoComposerAO-&gt;AddToQueue( aObjectIdArray ); } </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CComposerPlugin<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-F7574BF7-FEA5-3DC2-AA9E-775351C160BA">~CComposerPlugin</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-1824CE23-C81A-3604-AC89-E02AA14A17EE">IsComposingComplete</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-A1501F31-C48D-36BF-9A54-D298032DBD0E">ListImplementationsL</a>(<a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RImplInfoPtrArray</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-79F9B98D-1B15-39FC-9DEA-54A4CF9D2161.html">CComposerPlugin</a> *</td><td><a href="#GUID-1E7F12AD-AC6D-323D-8F08-67A341AFC2B4">NewL</a>(const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-308BA8CB-22C3-3A0E-8724-0C8EBE995AA6">RemoveSession</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-69995DAF-FE8B-3881-88A1-5E5A7247563B">SetSession</a>(CMdESession &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">void</td><td><a href="#GUID-CDA7F76B-B92D-3CA6-ADD1-82481373A636">RemoveObservers</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-5EABE4E3-35B7-316B-B322-75E696036B79">SetObservers</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">CMdESession *</td><td><a href="#GUID-AA720CEC-790B-39FD-B820-32F0B08EAF10">iSession</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>
+				</td><td><a href="#GUID-8330B8CC-E9D6-3A19-BB9D-DDB310EDAF8D">iDtor_ID_Key</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-F7574BF7-FEA5-3DC2-AA9E-775351C160BA"><a name="GUID-F7574BF7-FEA5-3DC2-AA9E-775351C160BA"><!-- --></a>
+		<h2 class="topictitle2">~CComposerPlugin()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CComposerPlugin</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Destructor. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-1824CE23-C81A-3604-AC89-E02AA14A17EE"><a name="GUID-1824CE23-C81A-3604-AC89-E02AA14A17EE"><!-- --></a>
+		<h2 class="topictitle2">IsComposingComplete()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>IsComposingComplete</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Checks if composing is completed.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-A1501F31-C48D-36BF-9A54-D298032DBD0E"><a name="GUID-A1501F31-C48D-36BF-9A54-D298032DBD0E"><!-- --></a>
+		<h2 class="topictitle2">ListImplementationsL(RImplInfoPtrArray &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ListImplementationsL</td><td>(</td><td><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RImplInfoPtrArray</a> &amp;</td><td>aImplInfoArray</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Lists all available implementations which satisfy this given interface.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RImplInfoPtrArray</a> &amp; aImplInfoArray</td><td>Reference to a list which will be populated with plug-in implementation details.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1E7F12AD-AC6D-323D-8F08-67A341AFC2B4"><a name="GUID-1E7F12AD-AC6D-323D-8F08-67A341AFC2B4"><!-- --></a>
+		<h2 class="topictitle2">NewL(const TUid &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-79F9B98D-1B15-39FC-9DEA-54A4CF9D2161.html">CComposerPlugin</a> *</td><td>NewL</td><td>(</td><td>const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;</td><td>aUid</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Construction.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp; aUid</td><td>Implementation UID which plug-in to invoke.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CDA7F76B-B92D-3CA6-ADD1-82481373A636"><a name="GUID-CDA7F76B-B92D-3CA6-ADD1-82481373A636"><!-- --></a>
+		<h2 class="topictitle2">RemoveObservers()</h2>
+		<table class="signature"><tr><td>void</td><td>RemoveObservers</td><td>(</td><td>)</td><td>[protected, pure virtual]</td></tr></table><div class="section"><div>
+				<p>Unsets observers. Called by the interface itself when RemoveSession method is called from Harvester server side. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-308BA8CB-22C3-3A0E-8724-0C8EBE995AA6"><a name="GUID-308BA8CB-22C3-3A0E-8724-0C8EBE995AA6"><!-- --></a>
+		<h2 class="topictitle2">RemoveSession()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RemoveSession</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Unsets Mde session. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-5EABE4E3-35B7-316B-B322-75E696036B79"><a name="GUID-5EABE4E3-35B7-316B-B322-75E696036B79"><!-- --></a>
+		<h2 class="topictitle2">SetObservers()</h2>
+		<table class="signature"><tr><td>void</td><td>SetObservers</td><td>(</td><td>)</td><td>[protected, pure virtual]</td></tr></table><div class="section"><div>
+				<p>Sets observers to be notified. Called by the interface itself when SetSession method is called from Harvester server side. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-69995DAF-FE8B-3881-88A1-5E5A7247563B"><a name="GUID-69995DAF-FE8B-3881-88A1-5E5A7247563B"><!-- --></a>
+		<h2 class="topictitle2">SetSession(CMdESession &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetSession</td><td>(</td><td>CMdESession &amp;</td><td>aSession</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets Mde session to be used.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CMdESession &amp; aSession</td><td>Open MdE session to utilize in the Composer plug-in  </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-8330B8CC-E9D6-3A19-BB9D-DDB310EDAF8D"><a name="GUID-8330B8CC-E9D6-3A19-BB9D-DDB310EDAF8D"><!-- --></a>
+		<h2 class="topictitle2">
+					TUid
+				 iDtor_ID_Key</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>
+				</td><td>iDtor_ID_Key</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-AA720CEC-790B-39FD-B820-32F0B08EAF10"><a name="GUID-AA720CEC-790B-39FD-B820-32F0B08EAF10"><!-- --></a>
+		<h2 class="topictitle2">CMdESession * iSession</h2>
+		<table class="signature"><tr><td>CMdESession *</td><td>iSession</td><td>[protected]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Alarm server events"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-6457E7C4-1203-47B6-8AD3-A6998798943B"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Alarm server events</title>
+
+     
+<?php     
+   include_once ($_SERVER["DOCUMENT_ROOT"]. '/includes/skin_constants.php');
+   include_once (CURRENT_SKIN_PATH.'/sdl_head.html');
+?>
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-6457E7C4-1203-47B6-8AD3-A6998798943B"><a name="GUID-6457E7C4-1203-47B6-8AD3-A6998798943B"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"/>
+<h1 class="topictitle1">Alarm
+server events</h1>
+<div>
+<p>The Alarm Server sends notifications to applications when alarm settings
+change; this includes indications when an alarm goes off. A client-side API
+for the alarm server is <a href="GUID-3598EAEE-0EF4-35A2-89E5-F3B2555B1AB4.html"><span class="apiname">RASCliSession</span></a>. It is a standard
+asynchronous service provider, and the client application should implement
+an active object to receive events. </p>
+
+<p>To be able to use the Alarm Server services, client applications must
+first be connected to the server.</p>
+
+<pre class="codeblock" id="GUID-6457E7C4-1203-47B6-8AD3-A6998798943B__GUID-6F5DAB79-F391-4DDD-A85C-EE1C0663E766"><a name="GUID-6457E7C4-1203-47B6-8AD3-A6998798943B__GUID-6F5DAB79-F391-4DDD-A85C-EE1C0663E766"><!-- --></a>User::LeaveIfError( iAlarmServer.Connect() );
+</pre>
+
+<p>To receive events, the <span class="parmname">NotifyChange( TRequestStatus &amp;aStatus,
+TAlarmId &amp;aAlarmId</span> ) function is called and the active object
+is set active.</p>
+
+<pre class="codeblock" id="GUID-6457E7C4-1203-47B6-8AD3-A6998798943B__GUID-6B9CCD08-AE3C-440E-A220-BB3C1766E432"><a name="GUID-6457E7C4-1203-47B6-8AD3-A6998798943B__GUID-6B9CCD08-AE3C-440E-A220-BB3C1766E432"><!-- --></a>iAlarmServer.NotifyChange( iStatus, iAlarmId ); SetActive();</pre>
+
+<p>Notifications are cancelled by calling the <span class="parmname">NotifyOnChangeCancel()</span> function.</p>
+
+<pre class="codeblock" id="GUID-6457E7C4-1203-47B6-8AD3-A6998798943B__GUID-CC3EF80B-FF85-4F7C-9665-04C350E5F110"><a name="GUID-6457E7C4-1203-47B6-8AD3-A6998798943B__GUID-CC3EF80B-FF85-4F7C-9665-04C350E5F110"><!-- --></a> iAlarmServer.NotifyChangeCancel();</pre>
+
+<p>When alarm settings change, the <span class="parmname">RunL()</span> function
+of the active object is called. Alarms in the alarm server database can be
+retrieved using the <span class="parmname">GetAlarmIdListL()</span> function, which
+fills an array of alarm IDs.</p>
+
+<pre class="codeblock" id="GUID-6457E7C4-1203-47B6-8AD3-A6998798943B__GUID-C583D59A-28BB-46D1-A929-82B748B2CAED"><a name="GUID-6457E7C4-1203-47B6-8AD3-A6998798943B__GUID-C583D59A-28BB-46D1-A929-82B748B2CAED"><!-- --></a>void GetAlarmIdListL( RArray&lt; TAlarmId &gt; &amp;aAlarmIds )</pre>
+
+<p>When using <span class="parmname">RArray</span>, remember to call <span class="parmname">Close()</span> or <span class="parmname">Reset()</span> on
+it when it is not needed anymore. The <span class="parmname">RASCliSession::GetAlarmDetails()</span> function
+returns the <span class="parmname">TASShdAlarm</span> structure for a specific alarm,
+which is identified by the alarm ID. </p>
+
+<pre class="codeblock" id="GUID-6457E7C4-1203-47B6-8AD3-A6998798943B__GUID-4870E0F6-42D2-489E-B1AF-2E65D852AEA1"><a name="GUID-6457E7C4-1203-47B6-8AD3-A6998798943B__GUID-4870E0F6-42D2-489E-B1AF-2E65D852AEA1"><!-- --></a>TInt GetAlarmDetails( TAlarmId aAlarmId, TASShdAlarm &amp;aAlarm )</pre>
+
+<p>The <span class="parmname">TASShdAlarm</span> structure contains information
+about an alarm, and information is accessed through simple inline functions.
+See the <span class="parmname">ASShdAlarm.h</span> header file for further information.</p>
+
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

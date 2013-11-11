@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Registering for Sub-Connection events: Tutorial"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2139B04C-6ED6-599B-A018-D92451B8353E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-61E0CD76-A2E3-5066-84A8-146EECA8ADCD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-4C7ABD1C-B42C-590A-AD24-7FA6C3A8D18C"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Registering for Sub-Connection events: Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-4C7ABD1C-B42C-590A-AD24-7FA6C3A8D18C"><a name="GUID-4C7ABD1C-B42C-590A-AD24-7FA6C3A8D18C"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2682451 id2518388 id2518454 id2518515 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html" title="The Communications Framework is the base for all communications, network and telephony services that Symbian platform provides. The Communications Framework manages the communications threads and the flow of information between those threads. The Framework also manages and stores the communications related settings.">Communications Framework Guide</a> &gt; <a href="GUID-2139B04C-6ED6-599B-A018-D92451B8353E.html">Data Communications Server</a> &gt; <a href="GUID-61E0CD76-A2E3-5066-84A8-146EECA8ADCD.html">Socket Server</a> &gt; <a href="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html">Socket Server Tutorials</a> &gt; </div>
+<h1 class="topictitle1"> Registering for Sub-Connection events: Tutorial</h1>
+<div><p>This tutorial describes how an application can register for sub-connection events. </p>
+ <p>This tutorial has three parts. The first part describes how the application can register for all events. The second part describes how the application can register for a subset of events. The third part describes how the application can extract information from an event response. </p>
+ <div class="section"><h2 class="sectiontitle">Registering for events – Simple case</h2> <p>The following example shows the simplest case of how an application can register for events occurring on a sub-connection. In this example the application registers for notification of all events. </p>
+ <pre class="codeblock" id="GUID-4C7ABD1C-B42C-590A-AD24-7FA6C3A8D18C__GUID-A57F97F1-B0A2-5631-8F7B-1D38EA18E0D4"><a name="GUID-4C7ABD1C-B42C-590A-AD24-7FA6C3A8D18C__GUID-A57F97F1-B0A2-5631-8F7B-1D38EA18E0D4"><!-- --></a>// Create the container for all sub connection parameters
+RSubConParameterBundle subconParams;
+CleanupClosePushL(subconParams);
+
+………
+………
+// Create and initialise parameters sets as above
+………
+………
+
+// Create a new sub-connection
+subconn.Open(ss, RSubConnection::ECreateNew, conn);
+
+TNotificationEventBuf eventBuffer;
+TRequestStatus eventStatus;
+subconn.EventNotification(eventBuffer, EFalse, eventStatus);
+
+// Set Properties of the sub-connection
+subconn.SetParameters(subconParams);
+
+// Destroy parameters
+CleanupStack::PopAndDestroy();         // subconParams
+
+// Open and connect a TCP socket on the sub-connection
+sock.Open(ss, KAfInet, KSockStream, KProtocolInetTcp, subconn);
+sock.Connect(destAddr, status);
+User::WaitForRequest(status);
+
+// Negotiation may not occur until a socket is assigned to the sub-connection
+// First event should be cSubConGenEventDataClientJoining
+User::WaitForRequest(eventStatus);
+
+// Next we’d expect a CSubconGenEventParamsGranted/ CSubconGenEventParamsRejected
+subconn.EventNotification(eventBuffer, EFalse, eventStatus);
+User::WaitForRequest(eventStatus);
+</pre>
+ <p> <strong>Note:</strong> Error handling is not included to aid clarity. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Registering for events – Using filters</h2> <p>The following example shows how to register for specific events by using filters. In this example the application registers for notification when sub-connection parameters have been granted or rejected. Each <a href="GUID-FDE12D94-17D3-3646-B645-26A08926F86C.html"><span class="apiname">TEventFilter</span></a> contains the factory Uid of the events and a mask of event Ids bitwise OR’d together. </p>
+ <pre class="codeblock" id="GUID-4C7ABD1C-B42C-590A-AD24-7FA6C3A8D18C__GUID-01830B80-B62E-5D88-AD0E-BF805EDAC150"><a name="GUID-4C7ABD1C-B42C-590A-AD24-7FA6C3A8D18C__GUID-01830B80-B62E-5D88-AD0E-BF805EDAC150"><!-- --></a>// Create the container for all sub connection parameters
+RSubConParameterBundle subconParams;
+CleanupClosePushL(subconParams);
+
+………
+………
+// Create and initialise parameters sets as above
+………
+………
+
+// Create a new sub-connection
+subconn.Open(ss, RSubConnection::ECreateNew, conn);
+
+// Create event filter
+TEventFilter filter;
+filter.iEventGroupUid = KSubConnGenericEventsImplUid;
+filter.iEventMask = KSubConGenericEventParamsRejected | KSubConGenericEventParamsGranted;
+
+// Register for event
+TNotificationEventBuf eventBuffer;
+TRequestStatus eventStatus;
+subconn.EventNotification(eventBuffer, &amp;filter, 1, eventStatus);
+
+// Set Properties of the sub-connection
+subconn.SetParameters(subconParams);
+
+// Destroy parameters
+CleanupStack::PopAndDestroy();         // subconParams
+
+// Open and connect a TCP socket on the sub-connection
+sock.Open(ss, KAfInet, KSockStream, KProtocolInetTcp, subconn);
+sock.Connect(destAddr, status);
+User::WaitForRequest(status);
+
+// Event should be CSubconGenEventParamsGranted/CSubconGenEventParamsRejected
+User::WaitForRequest(eventStatus);
+</pre>
+ <p> <strong>Note:</strong> Error handling is not included to aid clarity. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Extracting information from received events</h2> <p>The following example shows how to extract the information contained within an event notification once it has been received. </p>
+ <pre class="codeblock" id="GUID-4C7ABD1C-B42C-590A-AD24-7FA6C3A8D18C__GUID-FC08CC07-469E-5048-930F-E04F4AE8FDE3"><a name="GUID-4C7ABD1C-B42C-590A-AD24-7FA6C3A8D18C__GUID-FC08CC07-469E-5048-930F-E04F4AE8FDE3"><!-- --></a>// Create the container for all sub connection parameters
+RSubConParameterBundle subconParams;
+CleanupClosePushL(subconParams);
+
+………
+………
+// Create and initialise parameters sets as above
+………
+………
+
+// Create a new sub-connection
+subconn.Open(ss, RSubConnection::ECreateNew, conn);
+
+// Create filter, register for events, and set parameters as above
+……
+subconn.EventNotification(eventBuffer, &amp;filter, 1, eventStatus);
+……
+
+// Open and connect a TCP socket on the sub-connection
+……
+
+// Receive the event notification
+User::WaitForRequest(eventStatus);
+
+CSubConNotificationEvent* event;
+event = CSubConNotificationEvent::NewL(eventBuffer);
+CleanupStack::PushL (event);
+
+if (event-&gt;GroupId() == KSubConnGenericEventsImplUid
+    &amp;&amp; event-&gt;Id() == CSubConGenEventParamsRejected)
+    {
+    CSubConGenEventParamsRejected* rejectedEvent =
+        static_cast&lt; CSubConGenEventParamsRejected*&gt;(event);
+
+    TInt error = rejectedEvent-&gt;Error();
+    ……
+    // Do something with the error
+    ……
+    }
+
+CleanupStack::PopAndDestroy (event);
+</pre>
+ <p> <strong>Note:</strong> Error handling is not included to aid clarity. </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html">Socket Server Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

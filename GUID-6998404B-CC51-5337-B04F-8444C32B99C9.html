@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="Writing an Inbound Hook Tutorial"/>
+<meta name="abstract" content="This topic describes how to write an inbound hook."/>
+<meta name="description" content="This topic describes how to write an inbound hook."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C003FB53-05EF-529B-8892-3013A9A5B609.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B144EAB9-53AB-579B-9E12-B16518E4FC01.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-82438A0F-819C-5CDC-81DC-A8BFE3AA4A6A.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2466CE3D-48B1-58A5-AA63-C76B47FF950E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C003FB53-05EF-529B-8892-3013A9A5B609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-340C57A4-B799-502D-8B86-39955E2F4268.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-88AB6957-6D2B-5668-8CC3-4E426E68C9B7.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-6998404B-CC51-5337-B04F-8444C32B99C9"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Writing an Inbound Hook Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-6998404B-CC51-5337-B04F-8444C32B99C9"><a name="GUID-6998404B-CC51-5337-B04F-8444C32B99C9"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2398162 id2398330 id2398460 id2398485 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-B144EAB9-53AB-579B-9E12-B16518E4FC01.html" title="Networking Services provides a standard framework for accessing network services and actual implementations of network protocols. The components of the Networking Services are closely related to the framework provided by the Communications Framework module.">Networking Services Guide</a> &gt; <a href="GUID-82438A0F-819C-5CDC-81DC-A8BFE3AA4A6A.html" title="This collection is a set of plugins to the Sockets Server. The plugins implement network protocols. The network protcocols can be accessed through a sockets type interface.">Network Protocols</a> &gt; <a href="GUID-2466CE3D-48B1-58A5-AA63-C76B47FF950E.html" title="IP Hook provides a standard hook interface and standard flow behaviour for the TCP/IPv4 and TCP/IPv6 protocols.">IP Hook</a> &gt; <a href="GUID-C003FB53-05EF-529B-8892-3013A9A5B609.html" title="This section describes how to write an IPHook plug-in.">Tutorials</a> &gt; </div>
+<h1 class="topictitle1"> Writing
+an Inbound Hook Tutorial</h1>
+<div><p>This topic describes how to write an inbound hook. </p>
+
+<a name="GUID-6998404B-CC51-5337-B04F-8444C32B99C9__GUID-538FFCBC-31FB-5B6A-B997-E38B68C54123"><!-- --></a><ol id="GUID-6998404B-CC51-5337-B04F-8444C32B99C9__GUID-538FFCBC-31FB-5B6A-B997-E38B68C54123"><li class="stepexpand" id="GUID-6998404B-CC51-5337-B04F-8444C32B99C9__GUID-6170D075-3962-59EA-BD58-28933D6214B9"><a name="GUID-6998404B-CC51-5337-B04F-8444C32B99C9__GUID-6170D075-3962-59EA-BD58-28933D6214B9"><!-- --></a><span>The <a href="GUID-1A52EC87-DAD1-32C8-B530-295A65EB7292.html"><span class="apiname">CIp6Hook()</span></a> is
+a base class for all hook protocols. For more information, see the <a href="GUID-3490B79F-7D03-3071-864E-D9C7107608DE.html"><span class="apiname">MIp6Hook()</span></a> and <a href="GUID-9A313A0F-FCEE-3C3E-808F-DE46FB577BD7.html"><span class="apiname">CProtocolBaseUnbind()</span></a> classes. </span>
+</li>
+<li class="stepexpand" id="GUID-6998404B-CC51-5337-B04F-8444C32B99C9__GUID-EACF710B-9FAB-511E-B3B9-45A33E553267"><a name="GUID-6998404B-CC51-5337-B04F-8444C32B99C9__GUID-EACF710B-9FAB-511E-B3B9-45A33E553267"><!-- --></a><span/><br/>
+ The <a href="GUID-10F2F06B-003E-3F29-AE09-6A85D3682729.html"><span class="apiname">ApplyL()</span></a> function is derived from the <samp class="codeph">CIp6Hook()</samp> class
+to create an inbound hook. The following are the parameters of an <samp class="codeph">ApplyL()</samp> function: 
+<a name="GUID-6998404B-CC51-5337-B04F-8444C32B99C9__GUID-37EC06D0-A557-4B55-B09E-33BD4B59DD7D"><!-- --></a>
+<table border="1" frame="hsides" rules="rows" cellpadding="4" cellspacing="0" summary="" class="choicetableborder" id="GUID-6998404B-CC51-5337-B04F-8444C32B99C9__GUID-37EC06D0-A557-4B55-B09E-33BD4B59DD7D">
+<thead><tr><th id="d1004555e52-option" valign="bottom" align="left">Option</th>
+<th id="d1004555e52-desc" valign="bottom" align="left">Description</th></tr></thead>
+<tbody>
+<tr>
+<td valign="top" headers="d1004555e52-option" id="d1004555e56"><strong><p>aPacket</p>
+</strong></td>
+
+<td valign="top" headers="d1004555e52-desc d1004555e56"><p>Packet to process</p>
+</td>
+
+</tr>
+
+<tr>
+<td valign="top" headers="d1004555e52-option" id="d1004555e67"><strong><p>aInfo</p>
+</strong></td>
+
+<td valign="top" headers="d1004555e52-desc d1004555e67"><p>Packet information </p>
+</td>
+
+</tr>
+
+</tbody></table>
+
+   Note: The <samp class="codeph">ApplyL()</samp> function is not used for post
+or pre-processing hooks. 
+</li>
+</ol>
+
+<div class="example"><h2 class="sectiontitle">How to write an Inbound Hook example </h2> <p>The following
+is an example code for how to write an inbound hook: </p>
+ <pre class="codeblock" id="GUID-6998404B-CC51-5337-B04F-8444C32B99C9__GUID-9EB3E680-7CAE-5EE3-8B15-8FF06E3294CA"><a name="GUID-6998404B-CC51-5337-B04F-8444C32B99C9__GUID-9EB3E680-7CAE-5EE3-8B15-8FF06E3294CA"><!-- --></a>
+CHookExample::ApplyL(RMBufHookPacket &amp;aPacket, RMBufRecvInfo &amp;aInfo)
+ {
+   if (aInfo.iProtocol != iProtocol)
+        // Normally, it should never get here in this example. But,
+       // if the prototocol was just changed via SetOption...
+   return KIp6Hook_PASS;
+   TInet6Packet&lt;TExtensionHeader&gt; ext(aPacket, aInfo.iOffset);
+   if (ext.iHdr == NULL)
+   return KIp6Hook_PASS;   // Bad packet? But let someone else worry about it.
+     if (ext.iHdr-&gt;Port() != iPort)
+         return KIp6Hook_PASS;   // Not for me, let someone else handle it.
+
+     const TInt hdrlen = aInfo.CheckL(ext.iHdr-&gt;HeaderLength());
+     if (aInfo.iIcmp)
+         {
+         // Header is in returned packet of an ICMP Error
+         const TInt offset = aInfo.iOffset - aInfo.iOffsetIp;// Relative offset within problem packet
+         if (aInfo.iIcmp == KProtocolInet6Icmp &amp;&amp; // only ICMP6 can be tested like this
+             aInfo.iType == KInet6ICMP_ParameterProblem &amp;&amp;// A parameter problem...
+             offset &lt;= (TInt)aInfo.iParameter &amp;&amp; // after start of this header?
+             offset + hdrlen &gt; (TInt)aInfo.iParameter)// and before end of this header?
+             {
+             // Someone didn't accept my strange header.
+             // Could set some flag and stop sending it.
+             aPacket.Free();
+             return -1;
+             }
+         // Error is not about my header, fall to DONE
+         }
+     else
+         {
+         // Implement header semantics
+         // (none in this example).
+         }
+     // Header processed (Done), skip over
+     // - need to indicate the location of "my next header" field,
+     aInfo.iPrevNextHdr = (TUint16)(aInfo.iOffset+1);
+     // - need to make the protocol of the following header available
+     aInfo.iProtocol = ext.iHdr-&gt;NextHeader();
+     // - and finally, update the offset over my header.
+     aInfo.iOffset += hdrlen;
+     return KIp6Hook_DONE;
+     }
+
+</pre>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C003FB53-05EF-529B-8892-3013A9A5B609.html" title="This section describes how to write an IPHook plug-in.">Tutorials</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-340C57A4-B799-502D-8B86-39955E2F4268.html" title="This topic describes how to create an ESK file.">Creating
+an ESK File</a></div>
+</div>
+<div class="relinfo reltasks"><strong>Related tasks</strong><br/>
+<div><a href="GUID-88AB6957-6D2B-5668-8CC3-4E426E68C9B7.html" title="This topic describes how to write an outflow hook.">Writing an
+Outflow  Hook</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

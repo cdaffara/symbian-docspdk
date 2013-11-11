@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Certificate Validation in PKIX"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-69B005F8-9038-546F-8ADF-8499984A18E1.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2663ED06-8C97-5867-B7F6-6167EBFEA223.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C3290344-486B-554D-97FC-42DF48E150AA.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-69B005F8-9038-546F-8ADF-8499984A18E1.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-A3B58436-07E4-565B-800B-86435D205461"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Certificate Validation in PKIX</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-A3B58436-07E4-565B-800B-86435D205461"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2858558 id2859383 id2859414 id2859429 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html">OS Security Guide</a> &gt; <a href="GUID-2663ED06-8C97-5867-B7F6-6167EBFEA223.html">Crypto Services</a> &gt; <a href="GUID-C3290344-486B-554D-97FC-42DF48E150AA.html">Certificate and Key Management</a> &gt; <a href="GUID-69B005F8-9038-546F-8ADF-8499984A18E1.html">Certificate and Key Management Concepts</a> &gt; </div>
+<h1 class="topictitle1">Certificate
+Validation in PKIX</h1>
+<div>
+<p>Certificates of different types are trusted by different applications.
+Therefore certificates need to be signed by certification authority (CA) and
+the signature must be verified and validated. This section describes about
+certificate chain and certificate validation processes. </p>
+
+<div class="section"><h2 class="sectiontitle">Certificate Chain</h2> <p>Certificate validation is a recursive
+process. It begins with the need to verify the signature on some data presented
+by an End Entity (EE). This involves checking that the key pair is actually
+owned by that EE. To do this the public signing key of that EE is acquired
+by getting its certificate. That certificate would have been signed by the
+EE's certification authority (CA), so the signature on the certificate can
+be verified by getting the CA's public signing key. In turn the CA's certificate
+might require verifying in which case the process is repeated until the process
+bottoms out when an entity which is already trusted is reached; that entity
+is usually self signed. This process is illustrated in the figure below: </p>
+ <div class="fignone" id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-A0956B2A-B12F-58E1-9172-C1EDBBE593CE"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-A0956B2A-B12F-58E1-9172-C1EDBBE593CE"><!-- --></a><span class="figcap">Figure 1.               Certificate chain            </span>
+
+<img src="GUID-EA5E9A07-587C-5E64-A157-1077AD9E56ED_d0e600075_href.png"/>
+</div>
+ <p>The set of certificates from an EE up to a trusted root CA certificate
+is called a <span class="keyword">certificate chain</span>. Once a certificate chain
+has been constructed ,the EE's key pair at the start can be validated. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle"> Input to Certificate Validation</h2> <p id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-21CE5C18-856E-57B6-A5B6-3C1104EB8151"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-21CE5C18-856E-57B6-A5B6-3C1104EB8151"><!-- --></a><strong> End
+Entity &amp; Intermediate Certificates</strong> </p>
+ <p>A set of certificates,
+from the entity requesting authentication up to, but not including, one already
+trusted by the relying party. </p>
+ <p>Where these certificates come from is
+potentially a difficult problem if certificate management is expected to search
+for intermediate certificates in remote repositories; however for TLS at least
+servers are required to supply a complete, ordered set of certificates in
+the form of DER-encoded ASN.1; so client code can just pass this into the
+certificate chain object. </p>
+ <p id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-2533ACD8-29FC-5297-A462-7D93BF029A59"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-2533ACD8-29FC-5297-A462-7D93BF029A59"><!-- --></a><strong> Trusted
+Root Certificates</strong> </p>
+ <p>Authentication cannot be done entirely by software:
+there must be a point at which the user confirms that they trust a particular
+entity. The validation algorithm can only ascertain that if the user trusts
+certificate X then they may also trust certificate Y. Certificates which the
+user trusts directly are called root certificates because they are the root
+of the validation chain. They are usually self-signed. </p>
+ <p>It is likely
+that different applications will have different requirements about which certificates
+may be considered trust roots and for the level of protection they require
+for trust roots. To this end, applications will pass in a unique ID (<samp class="codeph">TUid</samp>)
+which Certificate and Key Management will use to identify the application,
+and so work out which certificates can be considered trusted for that application. </p>
+ <p>For
+additional flexibility, an overload is provided enabling clients to pass a
+set of root certificates directly into the validation function. </p>
+ <p>For
+more detailed discussion of the storage and management of root certificates
+see <a href="GUID-2800C486-2FB4-5C5C-990F-CC1A290F7E0C.html" title="To validate a certificate, a client application must have at least one certificate which it directly trusts. This is a root certificate. Different applications trust different root certificates. For example, TLS might trust VeriSign's secure server root, but Software Install may not.">Root Certificate
+Management, Storage, and Client registration</a>. </p>
+ <p id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-0E4B09EF-74B8-5272-98F4-60C423614F50"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-0E4B09EF-74B8-5272-98F4-60C423614F50"><!-- --></a><strong> Validation
+Time</strong> </p>
+ <p>The time for which validation will be performed. </p>
+ <p id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-288B55BA-E0B0-5F67-BD62-A08832A09889"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-288B55BA-E0B0-5F67-BD62-A08832A09889"><!-- --></a><strong> Acceptable Policies</strong> </p>
+ <p>A
+set of OIDs, each of which represents a certification policy acceptable to
+the application. This enables client code to restrict the certificates that
+may occur in a valid certificate chain. Client code does not have to specify
+any preferred policies here. An empty set is interpreted as any policy. </p>
+ </div>
+
+<div class="section" id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-AE46492C-5F13-5B73-B1F5-81DD6C15AFAF"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-AE46492C-5F13-5B73-B1F5-81DD6C15AFAF"><!-- --></a><h2 class="sectiontitle">Configuring
+for Certificate Validation</h2> <p>The following settings can be configured
+for the validation process: </p>
+ 
+<div class="tablenoborder"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-D88105DD-347A-5E33-8B79-1A75CCC28ED0"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-D88105DD-347A-5E33-8B79-1A75CCC28ED0" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p>Supported critical extensions </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>You can list supported X.509 v3 critical extensions. Once you have
+set a list, you have full control over the processing of X.509 v3 critical
+extensions. If a critical extension is found whose OID matches an element
+in this list, certificate validation treats this as a warning instead of an
+error. </p>
+ <p>You can set, add, remove and reset the list of supported critical
+extensions. </p>
+ <p>If critical extensions are not configured, the validation
+process uses a default set. This includes standard X.509 critical extensions
+and Symbian specific critical extensions. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p>Date validity checks </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>You can specify whether a failed check on the certificate validity
+date is treated as an error or a warning. You can use this to verify the certificate
+validity period post-installation. By default the certificate validity period
+only needs to be checked at installation. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ </div>
+
+<div class="section"><h2 class="sectiontitle"> Chain Validation</h2> <p><strong> Chain Construction</strong> </p>
+ <p>The
+chain object parses the encoded set of certificates. The first certificate
+is considered to be the EE certificate, and subsequent certificates must each
+certify the preceding one. The chain object then searches the set of trusted
+root certificates for a certificate trusted by the client and whose subject
+name matches the issuer name in the last certificate in the decoded set. If
+two or more match, it will attempt to resolve this be comparing the authority
+key ID in the last certificate with the subject key ID in each candidate root.
+If this extension is not present, it will attempt to find a single root by
+signature verification. If no root is found validation will fail immediately
+with an error. </p>
+ <p><strong> Initialisation of Chain Validation Algorithm</strong> </p>
+ <p>The
+certificate chain initialises the following state variables: </p>
+ <ul>
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-00BFA3CA-ECE2-5D69-B90F-B1B01D40006D"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-00BFA3CA-ECE2-5D69-B90F-B1B01D40006D"><!-- --></a><p>Validation Time: time
+for which validation is calculated. Initialised to the time supplied by client
+code. </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-266D360B-2793-5963-B2B2-D79E9745AF4D"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-266D360B-2793-5963-B2B2-D79E9745AF4D"><!-- --></a><p>Initial Policies: set
+of policy OIDs, initialised to the policies supplied by client code </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-4DEBA756-99FA-54CB-9E93-85F8F54301B7"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-4DEBA756-99FA-54CB-9E93-85F8F54301B7"><!-- --></a><p>Acceptable Policies:
+set of X.509 policy information objects, initially any policy </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-B7FD8FF3-61E1-5CAB-8B6E-25092186727E"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-B7FD8FF3-61E1-5CAB-8B6E-25092186727E"><!-- --></a><p>Mapped Policies: set
+of policy OIDs, initially empty </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-280A775A-4F34-5A1B-9A9A-BAFFE7A4E77B"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-280A775A-4F34-5A1B-9A9A-BAFFE7A4E77B"><!-- --></a><p>Excluded Subtrees: set
+of X.500 General Name objects, initially empty </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-C4059DDE-16AC-5B3F-8001-09DC1FF789A8"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-C4059DDE-16AC-5B3F-8001-09DC1FF789A8"><!-- --></a><p>Permitted Subtrees:
+set of X.500 General Name objects, initially any subtree </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-A27F8096-0F6B-5942-9019-3D7685AE3E10"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-A27F8096-0F6B-5942-9019-3D7685AE3E10"><!-- --></a><p>Max Path Length: integer
+representing the maximum path length. Initially the actual path length </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-89B057B9-E26E-594C-B23F-E73FA97E07C8"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-89B057B9-E26E-594C-B23F-E73FA97E07C8"><!-- --></a><p>Inhibit Policy Mapping:
+integer whose value is the number of certificates that may appear after the
+current one before policy mapping is no longer permitted. Initially the chain
+length </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-3D92E10D-2BF5-5DD3-B061-9CB332631880"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-3D92E10D-2BF5-5DD3-B061-9CB332631880"><!-- --></a><p>Require Explicit Policy:
+integer whose value is the number of certificates that may appear after the
+current one before an acceptable policy OID must appear in the certificate.
+Initially the chain length </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-1CEA8529-2141-5083-9279-F464B217BDE1"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-1CEA8529-2141-5083-9279-F464B217BDE1"><!-- --></a><p>Current Cert: integer
+whose value is the position of the current certificate in the chain. Initially
+the chain length -1 </p>
+ </li>
+
+</ul>
+ <p><strong> Validation Algorithm</strong> </p>
+ <p>Validation of a certificate
+chain starts at the root and ends at the End Entity. </p>
+ <p><em>Validation
+warnings </em></p>
+ <p>Validation returns warnings. Warnings enable client code
+to evaluate whether irregularities are errors. </p>
+ <p>From Version 9.3, validation
+returns a warning object for every certificate in the chain. Each warning
+object has the following characteristics: </p>
+ <ul>
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-4C016BA3-99EF-5D7C-9EDC-AC958C9AA937"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-4C016BA3-99EF-5D7C-9EDC-AC958C9AA937"><!-- --></a><p>It includes the object's
+index. Clients use the index to get the certificate from the certificate chain
+object (<a href="GUID-A919BE84-8257-3911-9AD1-B1DB736346CE.html#GUID-A919BE84-8257-3911-9AD1-B1DB736346CE__GUID-9A843DCB-54C7-3BF4-BF30-2515969079A9"><span class="apiname">CX509CertChain::Cert()</span></a>). </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-81C9B8B1-F8B4-50E8-B7DC-53C131B646B9"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-81C9B8B1-F8B4-50E8-B7DC-53C131B646B9"><!-- --></a><p>It encapsulates the
+warnings and the critical extensions' OID values for that certificate. </p>
+ <p> </p>
+ </li>
+
+</ul>
+ <p>Clients can query the object for two sets of data: </p>
+ <ul>
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-A7E6D671-1966-5DA7-821C-C7AD3880D7F1"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-A7E6D671-1966-5DA7-821C-C7AD3880D7F1"><!-- --></a><p>the critical extensions
+for the certificate </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-5FCA36E5-CEDB-567C-8E95-759C13A64362"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-5FCA36E5-CEDB-567C-8E95-759C13A64362"><!-- --></a><p>a set of warning values,
+each consisting of a reason for the warning and an integer identifying the
+certificate that the warning is associated with. </p>
+ </li>
+
+</ul>
+ <p>After querying the warning object for the critical extension, the
+client must process any custom critical extensions it supplied that are not
+in the supported list. This meets the X.509 certificate specification. </p>
+<div class="note"><span class="notetitle">Note:</span>  Prior
+to version 9.3, the set of warning values returned included any warnings about
+critical extensions. Warning values no longer include this information. But
+backward compatibility has been maintained for warning objects prior to version
+9.3. </div>
+ <p><em>Certificate validation step</em>s </p>
+ <p>Certificate
+validation takes place through the following steps: </p>
+ <ul>
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-70351BB4-CE56-559E-81A2-1EE0DBA19AFD"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-70351BB4-CE56-559E-81A2-1EE0DBA19AFD"><!-- --></a><p>Signature Verification
+&amp; Name Chaining </p>
+ <p>Each certificate must be signed by, and its subject
+name should match the issuer name in, the certificate above it in the chain.
+The only exception is the root certificate, which, if it claims to be self
+signed (i.e. its subject and issuer names match) must really be self signed;
+otherwise its signature is not verified, but a warning is generated. </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-9597F61C-7ECE-5754-85BC-12D50035D7D1"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-9597F61C-7ECE-5754-85BC-12D50035D7D1"><!-- --></a><p>Validity Period Checking </p>
+ <p>For
+each certificate, the Validation Time must lie within the validity period
+in the certificate. The check is always carried out. The check treats a failure
+as an error or a warning depending on how the validation process is configured
+(See Date validity checks in <a href="GUID-A3B58436-07E4-565B-800B-86435D205461.html#GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-AE46492C-5F13-5B73-B1F5-81DD6C15AFAF">Configuring
+for Certificate Validation</a>). By default the check treats the failure
+as an error. </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-1EB6F83B-C10D-5809-B5A8-4AF45FFA9A92"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-1EB6F83B-C10D-5809-B5A8-4AF45FFA9A92"><!-- --></a><p>Extension Processing </p>
+ <p>Extensions
+can be marked critical. All critical extensions must be in the supported list
+to be recognized and processed. When a critical extension that is not in the
+supported list is encountered, an error results and validation fails. The
+client must process critical extensions that are not in the supported list. </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-463F6C6E-7C3B-514E-A7E8-91D07CFFD102"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-463F6C6E-7C3B-514E-A7E8-91D07CFFD102"><!-- --></a><p>Revocation Checking </p>
+ </li>
+
+</ul>
+ <p>Additionally, for each certificate: </p>
+ <ul>
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-91579F6C-2C98-50DF-9637-E08EBDEC4CDE"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-91579F6C-2C98-50DF-9637-E08EBDEC4CDE"><!-- --></a><p>the <em>Max Path Length</em>, <em>Inhibit
+Policy Mapping</em> and <em>Require Explicit Policy</em> variables are decremented, </p>
+ </li>
+
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-05687909-8111-53D0-9760-88FF557C26AA"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-05687909-8111-53D0-9760-88FF557C26AA"><!-- --></a><p>and Current Cert must
+be less than or equal to <em>Max Path Length</em>. </p>
+ </li>
+
+</ul>
+ <p>When validation is complete the <em>Acceptable Policies</em> variable
+will be copied into the set of policies in the result object. </p>
+ </div>
+
+<div class="section"><h2 class="sectiontitle">See also</h2> <ul>
+<li id="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-A6095947-6CFF-50CC-BBAC-181B91CD9132"><a name="GUID-A3B58436-07E4-565B-800B-86435D205461__GUID-A6095947-6CFF-50CC-BBAC-181B91CD9132"><!-- --></a><p><a href="GUID-E326C00B-6E07-5902-AB19-F00D1761795C.html">PKIXCert</a>  </p>
+ </li>
+
+</ul>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-69B005F8-9038-546F-8ADF-8499984A18E1.html">Certificate and Key Management Concepts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

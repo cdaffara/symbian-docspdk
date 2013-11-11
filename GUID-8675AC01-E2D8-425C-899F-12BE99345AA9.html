@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="C++ and Machine Architecture"/>
+<meta name="abstract" content="The C++ language, following its foundation in C, is close to the machine architecture. This allows applications to be implemented efficiently, but, especially for developers new to the language, presents some issues of which you need to be aware. This topic reviews the basic language features from this perspective, and discusses how the resulting issues are handled."/>
+<meta name="description" content="The C++ language, following its foundation in C, is close to the machine architecture. This allows applications to be implemented efficiently, but, especially for developers new to the language, presents some issues of which you need to be aware. This topic reviews the basic language features from this perspective, and discusses how the resulting issues are handled."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>C++ and Machine Architecture</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9"><a name="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id1198324 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a> &gt; </div>
+<h1 class="topictitle1">C++
+and Machine Architecture</h1>
+<div><p>The C++ language, following its foundation in C, is close to the
+machine architecture. This allows applications to be implemented efficiently,
+but, especially for developers new to the language, presents some issues of
+which you need to be aware. This topic reviews the basic language features
+from this perspective, and discusses how the resulting issues are handled.</p>
+
+<div class="section" id="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-4E54823B-31A2-4FFB-997D-6FF6056F2643"><a name="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-4E54823B-31A2-4FFB-997D-6FF6056F2643"><!-- --></a><h2 class="sectiontitle">Arithmetic types</h2>              <p>An <samp class="codeph">int</samp> is
+usually implemented as the natural machine word size of the particular implementation.
+This is 32 bits in most modern machines. It was 16 bits in older machines,
+and in a few machines it may even be 64 bits.     </p>
+<p>Similarly, a pointer
+(a <samp class="codeph">void*</samp>, for instance) is usually implemented as a machine
+word but, in some machines with special architectures, a pointer may be more
+complex.     </p>
+<p>It is assumed that Symbian is implemented on a machine
+with a 32-bit or greater machine word, and 32-bit pointers. The types <samp class="codeph">TInt</samp> and <samp class="codeph">TUint</samp> are<samp class="codeph"> typedefed</samp> onto the built-in <samp class="codeph">int</samp> and <samp class="codeph">unsigned int</samp> types,
+and are guaranteed to be at least 32 bits.     </p>
+<p>When you need a specific
+size, regardless of implementation, use a sized type. Several of these are
+available: </p>
+
+<div class="tablenoborder"><a name="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-8E1CEF20-AF41-4980-AA56-5CBF2B7F6A9E"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-8E1CEF20-AF41-4980-AA56-5CBF2B7F6A9E" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p><samp class="codeph">TInt32</samp>, <samp class="codeph">TUint32</samp> </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>32-bit signed and unsigned integer</p>
+    <p> In each case, the
+representation is a 32-bit machine word which, in the ARM architecture, must
+be aligned to a four-byte boundary. The compiler ensures that this is always
+the case.</p>
+  </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p><samp class="codeph">TInt8</samp>, <samp class="codeph">TUint8</samp>, <samp class="codeph">TText8</samp></p>
+  </td>
+
+<td class="cellrowborder" valign="top"><p>8-bit signed and unsigned integer, and 8-bit character     </p>
+<p>In
+each case, the representation is an 8-bit byte, which has no specific alignment
+requirements.  </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p><samp class="codeph">TInt16</samp>, <samp class="codeph">TUint16</samp>, <samp class="codeph">TText16</samp> </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>16-bit signed and unsigned integer, and 16-bit character     </p>
+<p>In
+each case, the representation is a 16-bit halfword, which should be aligned
+to a two-byte boundary.  </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p><samp class="codeph">TInt64</samp>, <samp class="codeph">TUint64</samp>  </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>64-bit signed and unsigned integer     </p>
+<p>These are typedefed
+to appropriate built-in types for the compiler being used (long long, and
+unsigned long long for ARM RVCT).  </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p><samp class="codeph">TReal</samp>, <samp class="codeph">TReal64</samp> </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>Double-precision floating point, IEEE754 64-bit representation 
+   This is the floating-point type recommended for general use.     </p>
+<p>You
+are recommended to perform operations in integer arithmetic if possible (for
+instance, most GUI calculations), and to use floating-point only when the
+problem demands it (for instance, a spreadsheet application).     </p>
+<p>On
+processors that have floating point hardware, the compiler generates host
+instructions which use that hardware directly. On processors which don't have
+a floating point unit, the compiler implements the calculations in software.
+ </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p><samp class="codeph">TReal32</samp> </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>32-bit floating point     </p>
+<p>This is smaller and quicker, but
+should only be used when space and/or time are at a true premium, as its precision
+is unsatisfactory for many applications.  </p>
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+     </div>
+
+<div class="section" id="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-A89DBA31-B739-48E3-92E1-E00F50029269"><a name="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-A89DBA31-B739-48E3-92E1-E00F50029269"><!-- --></a><h2 class="sectiontitle">Compound types</h2><p>Apart from classes, C++ inherits
+from C various other types of compounding.     </p>
+<p>A struct maps an area
+of memory: </p>
+<pre class="codeblock">struct TEg
+    {
+    TInt iInt; // offset 0, 4 bytes
+    TText8 iText; // offset 4, 1 byte
+        // 3 wasted bytes
+    TReal iReal; // offset 8, 8 bytes
+    } // total length = 16 bytes</pre>
+<div class="fignone" id="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-70477651-EC14-4321-ACA5-79CEE4AEC69E"><a name="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-70477651-EC14-4321-ACA5-79CEE4AEC69E"><!-- --></a>
+<img src="GUID-7E801A44-4509-5AC0-88D5-7DEA1AF7969D_d0e7889_href.png"/>
+</div>
+<p>Structures are regarded as <samp class="codeph">T</samp> types: that is they
+may not own heap-allocated resources such as <samp class="codeph">C</samp> type classes.
+    </p>
+<p>An array contains many built-ins or other types </p>
+<pre class="codeblock">TInt a[32]; // 32 TInts, = 128 bytes  
+S b[3]; // 3 Ss, = 48 bytes </pre>
+<p>The main disadvantage of using
+C++ arrays is that there is no automatic checking of index values. For this
+reason, and to support more complex containers, C++ has evolved the Standard
+Template Library (STL). Symbian does not use STL, but provides its own range
+of efficient container classes, for fixed, dynamic, and associative arrays.
+For details, see <a href="GUID-2F64B579-73D3-548A-9104-16483AF77BCB.html">Dynamic
+Arrays</a>. </p>
+</div>
+
+<div class="section" id="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-F925F040-C1A3-420A-A9A9-BDFBCDA212B2"><a name="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-F925F040-C1A3-420A-A9A9-BDFBCDA212B2"><!-- --></a><h2 class="sectiontitle">Pointers</h2><p>A pointer is a memory address. If you can
+take the address of an object, then you can refer to it by pointer:</p>
+<pre class="codeblock">S* ps; // pointer to an S
+ps=&amp;s // take address of existing S
+</pre>
+<p>A pointer is a 32-bit machine word, and could point to anything.</p>
+<div class="fignone" id="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-D33AB198-0B62-4391-B86D-088595AE6B8B"><a name="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-D33AB198-0B62-4391-B86D-088595AE6B8B"><!-- --></a>
+<img src="GUID-045F3455-2B5A-5B20-ABCE-ED202DC5078A_d0e7920_href.png"/>
+</div>
+<p>The specifier is placed next to the type rather than the name.   </p>
+<p>There
+is often a need to refer to memory as anything: for this, a <samp class="codeph">void*</samp> pointer
+is used in C++. In Symbian, a <samp class="codeph">TAny*</samp> may be referred to instead.
+A <samp class="codeph">TAny*</samp> is a pointer to anything. </p>
+</div>
+
+<div class="section" id="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-51EBCCA6-8E19-43CC-819E-8A7F0560DE4C"><a name="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-51EBCCA6-8E19-43CC-819E-8A7F0560DE4C"><!-- --></a><h2 class="sectiontitle">Strings</h2><p>In C++, the basic string is an array of
+characters:</p>
+<pre class="codeblock">char* hello="hello";</pre>
+<p>This statement
+does two things: firstly, it sets aside six bytes of memory containing the
+characters 'h', 'e', 'l', 'l', 'o', '\0'. Secondly, it sets the pointer hello
+to contain the address of the first of those bytes. </p>
+<div class="fignone" id="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-08C1AF40-8D93-414E-B103-1E57AB17480F"><a name="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-08C1AF40-8D93-414E-B103-1E57AB17480F"><!-- --></a>
+<img src="GUID-512D0DA7-0BC2-534F-9233-11F46D285CA6_d0e7947_href.png"/>
+</div>
+<p>Functions accessing the string rely on this address as its starting
+point, and the terminating <samp class="codeph">\0</samp> to indicate its end. Functions
+which manipulate the string must either deliberately not extend it, or must
+have some cue as to the amount of memory reserved for the string (beyond the
+trailing<samp class="codeph">\0</samp>) so they know how much it can be extended. This
+leads to an awkward programming style, and every C++ library provides a way
+to manipulate strings more elegantly. The Symbian platform solution is <em>descriptors</em>:
+these are introduced in <a href="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230.html">Descriptors</a></p>
+</div>
+
+<div class="section" id="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-9D9ED4A6-5C8A-4369-BCFB-0082A3A97599"><a name="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-9D9ED4A6-5C8A-4369-BCFB-0082A3A97599"><!-- --></a><h2 class="sectiontitle">Functions</h2><p>Functions are a piece of code which can
+be called and executed from anywhere else in a program. The stack is used
+to pass parameters and to contain local variables. The stack is often augmented
+by machine registers, especially in a register-rich processor such as the
+ARM, so that memory is often not used. But, conceptually, there is a stack,
+and for the purposes of this explanation it is convenient to consider the
+stack as if it were implemented entirely in memory.   </p>
+<p>Parameters are
+passed by copying or evaluating onto the called functions stack frame. It
+is bad practice to pass large parameters, such as an entire struct, or, in
+fact, anything beyond two machine words in size, because this involves excessive
+copying. Instead, a pointer or a reference should be used to pass the address,
+instead of the data itself.   </p>
+<p>In a multi-tasking system such as Symbian,
+each thread has its own stack, which is a pre-allocated area of memory. Each
+function then allocates its own frame from the stack on entry, and de-allocates
+it on exit. The advantage of the stack mechanism is that allocation and de-allocation
+are very rapid indeed— just a couple of instructions. Also, the lifetime of
+any variable on the stack is very well defined: it is the lifetime of its
+owning function, or, in fact, its owning block, since functions may have blocks
+within them.   </p>
+<p>When a function returns, its stack memory is still there:
+it is just not allocated. The stack memory will be re-used by the next function
+that is called. A potential source of error is to allocate an object on a
+functions stack frame, and then return a pointer to it: </p>
+<pre class="codeblock">TEg* foo()
+    {
+    TEg s;
+    TEg* ps=&amp;s
+    return ps; // !! error !!
+    }
+</pre>
+<p>This pointer will not be valid for long, because the memory
+will be re-used when the next function is called. You should never allow this
+to happen. This error is so obvious that a compiler will trap it. But it can
+occur in more subtle forms: </p>
+<pre class="codeblock">foo(CContainer* aContainer)
+    {
+    TEg s;
+    TEg* ps=&amp;s
+    aContainer-&gt;iMember=ps;
+    }
+</pre>
+<p>These cannot be trapped so easily. </p>
+</div>
+
+<div class="section" id="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-19A4F40C-1177-4F71-B547-A00DE447CF55"><a name="GUID-8675AC01-E2D8-425C-899F-12BE99345AA9__GUID-19A4F40C-1177-4F71-B547-A00DE447CF55"><!-- --></a><h2 class="sectiontitle">Heap</h2><p>Each thread also has a heap. You can allocate
+and de-allocate objects on the heap at will, and refer to them by pointer.
+The benefit of a heap is that the lifetime of an object is entirely within
+your control. This power comes with responsibility: you must not forget to
+de-allocate objects once you have finished with them, and you must not use
+pointers to objects that have been de-allocated. </p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Migration Tutorial: Fair Scheduling and File Caching"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F3BD37EC-0CCB-5859-908F-215E22C9FC20.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F3BD37EC-0CCB-5859-908F-215E22C9FC20.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Migration Tutorial: Fair Scheduling and File Caching</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2399453 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-F3BD37EC-0CCB-5859-908F-215E22C9FC20.html" title="The File Server component manages all files on a Symbian platform phone. This section describes how to extend the File Server for your phone hardware.">File Server Extensions</a> &gt; </div>
+<h1 class="topictitle1">Migration
+Tutorial: Fair Scheduling and File Caching</h1>
+<div>
+<p>Describes how to implement and configure the <a href="GUID-5B24741C-7CE0-58E8-98C9-1D1CACCD476F.html" title="This document describes the fair scheduling and file caching features of the File Server.">fair
+scheduling and file caching</a> features for file systems implementations. </p>
+
+<div class="section" id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-450D57A3-928B-5389-B941-595DB20A7CEA"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-450D57A3-928B-5389-B941-595DB20A7CEA"><!-- --></a><h2 class="sectiontitle">Enabling fair
+scheduling</h2><p>The <samp class="codeph">MExtendedFileInterface</samp> API enables
+fair scheduling. The FAT, FAT32 and LFFS file systems support <samp class="codeph">MExtendedFileInterface</samp>,
+this API allows requests to be split into one or more segments with the <samp class="codeph">aOffset</samp> parameter.
+Support has been built in for large files by changing the file’s position
+parameter (<samp class="codeph">aPos</samp>) from a <a href="GUID-7A2A43EC-6125-3BFE-834B-23C37F7B40D5.html"><span class="apiname">TInt</span></a> to a <a href="GUID-AAE85115-A8AA-3F6C-BA8C-69F5A23B0D90.html"><span class="apiname">TInt64</span></a>. </p>
+ <p>To
+enable fair scheduling, the file system mounted on a particular drive must
+support <a href="GUID-63DF657C-434D-353D-A536-8AF9D97C8260.html#GUID-63DF657C-434D-353D-A536-8AF9D97C8260__GUID-E57D0ED6-C351-37F4-8E80-5A64144B6655"><span class="apiname">CFileCB::MExtendedFileInterface</span></a>. The object returned
+by <a href="GUID-0012B043-9FC4-3953-928E-CB6107E0486A.html#GUID-0012B043-9FC4-3953-928E-CB6107E0486A__GUID-EFDD2A6C-1319-30FC-9FC6-9653E0A2F827"><span class="apiname">CFileSystem::NewFileL()</span></a> must be derived from <samp class="codeph">CFileCB</samp> and <samp class="codeph">CFileCB::MExtendedFileInterface</samp>.
+The file server determines whether this is the case by calling <a href="GUID-63DF657C-434D-353D-A536-8AF9D97C8260.html#GUID-63DF657C-434D-353D-A536-8AF9D97C8260__GUID-D3628A6F-8E6D-39CA-8D36-EB3BC4154DF2"><span class="apiname">CFileCB::GetInterface</span></a>. </p>
+ <p>The <a href="GUID-63DF657C-434D-353D-A536-8AF9D97C8260.html#GUID-63DF657C-434D-353D-A536-8AF9D97C8260__GUID-E57D0ED6-C351-37F4-8E80-5A64144B6655"><span class="apiname">CFileCB::MExtendedFileInterface</span></a> interface is as follows: </p>
+<pre class="codeblock" id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-27EC7D5D-7BB6-5427-9EF0-71561F7AB847"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-27EC7D5D-7BB6-5427-9EF0-71561F7AB847"><!-- --></a>class MExtendedFileInterface
+{
+public:
+    virtual void ReadL(TInt64 aPos, TInt&amp; aLength, TDes8* aDes, const RMessagePtr2&amp; aMessage, TInt aOffset) = 0;
+    virtual void WriteL(TInt64 aPos, TInt&amp; aLength, const TDesC8* aDes, const RMessagePtr2&amp; aMessage, TInt aOffset) = 0;
+    virtual void SetSizeL(TInt64 aSize) = 0;
+};</pre>
+ <p>The file system indicates its support for <samp class="codeph">MExtendedFileInterface</samp> by
+intercepting the <a href="GUID-63DF657C-434D-353D-A536-8AF9D97C8260.html#GUID-63DF657C-434D-353D-A536-8AF9D97C8260__GUID-F13F53A3-502A-38E4-B8E3-4099DC44EEC0"><span class="apiname">CFileCB::EExtendedFileInterface</span></a> enumeration
+in the <a href="GUID-63DF657C-434D-353D-A536-8AF9D97C8260.html#GUID-63DF657C-434D-353D-A536-8AF9D97C8260__GUID-CBCFC605-C942-3D4E-8ABA-2EF454E5A44B"><span class="apiname">CFileCB::GetInterface()</span></a> method as in the following
+example: </p>
+<pre class="codeblock" id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-714AB83B-0A24-5E81-92B8-CB425002B426"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-714AB83B-0A24-5E81-92B8-CB425002B426"><!-- --></a>TInt CFatFileCB::GetInterface(TInt aInterfaceId, TAny*&amp; aInterface, TAny* aInput)
+    {
+    switch(aInterfaceId)
+        {
+        case EExtendedFileInterface:
+            ((CFileCB::MExtendedFileInterface*&amp;) aInterface) = this;
+            return KErrNone;
+
+        //etc.
+
+        default:
+            return CFileCB::GetInterface(aInterfaceId, aInterface, aInput);
+        }
+    }</pre>
+ </div>
+
+<div class="section" id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-719C7E0C-790B-5C61-9EA8-E2687397340F"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-719C7E0C-790B-5C61-9EA8-E2687397340F"><!-- --></a><h2 class="sectiontitle">Enabling read
+and write caching</h2><p>To enable caching, the file system must support
+reads and writes to local buffers, which are buffers created and owned by
+the file server itself rather by a client of the file server. </p>
+<p>The local
+media subsystem already supports local messages, but the file system and any
+file system extensions need to be examined carefully to ensure that they do
+not call any <a href="GUID-78E0DEDD-C020-3174-AD0A-E4C18C4C9213.html"><span class="apiname">RMessagePtr2</span></a> methods, otherwise a panic results. </p>
+ <p>The
+file server calls <a href="GUID-FADDE053-CC1C-39BC-A52D-27093041BE20.html#GUID-FADDE053-CC1C-39BC-A52D-27093041BE20__GUID-239159E5-1A98-3FE1-9A0D-803BEDB99DCE"><span class="apiname">CMountCB::LocalBufferSupport()</span></a> to find
+out whether the file system and all file system extensions mounted on a particular
+drive fully support local buffers before it enables caching. The file system
+handles the <a href="GUID-FADDE053-CC1C-39BC-A52D-27093041BE20.html#GUID-FADDE053-CC1C-39BC-A52D-27093041BE20__GUID-87F36D0F-CAA5-35ED-9E99-BB8F7B9564C2"><span class="apiname">CMountCB::ELocalBufferSupport</span></a> enumeration in
+its <a href="GUID-FADDE053-CC1C-39BC-A52D-27093041BE20.html#GUID-FADDE053-CC1C-39BC-A52D-27093041BE20__GUID-CABEF8F6-637C-3223-80C6-FBC8B7247030"><span class="apiname">CMountCB::GetInterface()</span></a> method and passes the request
+on to the first proxy drive, as in the following example: </p>
+<pre class="codeblock" id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-969BBBAE-5C1F-5032-831D-3C17E58285AE"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-969BBBAE-5C1F-5032-831D-3C17E58285AE"><!-- --></a>TInt CFatMountCB::GetInterface(TInt aInterfaceId, TAny*&amp; aInterface, TAny* /*aInput*/) 
+    {
+    TInt r= KErrNone;
+    switch(aInterfaceId)
+        {
+        // file caching supported, so pass query on to first proxy drive
+        case CMountCB::ELocalBufferSupport:
+            r = LocalDrive()-&gt;LocalBufferSupport();
+            break;
+        default:
+            r=KErrNotSupported;
+        }
+    return r;
+    }</pre>
+ <p>If no file system extensions are loaded, then the query
+is eventually handled by <a href="GUID-F47F56E4-3754-365B-B529-53C1D2A29503.html#GUID-F47F56E4-3754-365B-B529-53C1D2A29503__GUID-7C0145B1-531A-367C-92DF-61EBB46F01CB"><span class="apiname">CLocalProxyDrive::GetInterface()</span></a>,
+which returns <samp class="codeph">KErrNone</samp> to indicate that <a href="GUID-32659A02-6541-3D15-AB88-B70FBD7DF9B0.html"><span class="apiname">TBusLocalDrive</span></a> and
+the local media sub-system support local buffers. </p>
+ <p>If there are any
+file system extensions, they must handle the <a href="GUID-B0BD0F3D-9081-3DBE-8375-F5000D6D39ED.html#GUID-B0BD0F3D-9081-3DBE-8375-F5000D6D39ED__GUID-53AC960F-9EE3-3410-9DD6-1BAC08C7B8E8"><span class="apiname">CProxyDrive::ELocalBufferSupport</span></a> enumeration,
+as in the following example: </p>
+<pre class="codeblock" id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-67D3FAA1-9FC3-5653-B21D-73BC13AA36AE"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-67D3FAA1-9FC3-5653-B21D-73BC13AA36AE"><!-- --></a>TInt CBitExtProxyDrive::GetInterface(TInt aInterfaceId, TAny*&amp; aInterface, TAny* aInput)
+    {
+    switch(aInterfaceId)
+        {
+        // file caching supported, so pass query on to next proxy drive
+        case ELocalBufferSupport:
+            return CBaseExtProxyDrive::LocalBufferSupport();
+
+        default:
+            return CBaseExtProxyDrive::GetInterface(aInterfaceId, aInterface, aInput);
+        }       
+    }</pre>
+ </div>
+
+<div class="section" id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-020006B9-1A1E-523B-9CFA-927CDE5D5058"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-020006B9-1A1E-523B-9CFA-927CDE5D5058"><!-- --></a><h2 class="sectiontitle">Configuring
+caching</h2><p>The global and drive-specific cache property defaults are
+defined in <span class="filepath">f32\sfile\sf_file_cache_defs.h</span>. They may be
+overridden for a particular drive by appropriate entries in the Base Starter
+component's <span class="filepath">ESTART.TXT</span> configuration file. The format
+of this file has been enhanced to support the<samp class="codeph"> .ini</samp> file style
+syntax: </p>
+<pre class="codeblock" id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-E0DBF04F-8F7E-55E4-8210-D5697A5B3FDB"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-E0DBF04F-8F7E-55E4-8210-D5697A5B3FDB"><!-- --></a>C: 0  ELOCAL FAT  0       FS_FORMAT_COLD,FS_SYNC_DRIVE     # IRAM
+D: 1  ELOCAL FAT  0       FS_SCANDRIVE                     # MMC (textshell)
+I: 2  ELOCAL FAT  0       FS_FORMAT_CORRUPT                # NAND - USER DATA
+K: 8  ELFFS  LFFS 0       FS_FORMAT_CORRUPT                # LFFS 
+
+[DriveD]
+FileCacheSize 256
+FairSchedulingLen 128
+FileCacheRead ON
+FileCacheReadAhead ON
+FileCacheWrite ON
+ClosedFileKeepAliveTime 3000
+DirtyDataFlushTime 3000
+FileCacheReadAsync ON
+
+[DriveI]
+FileCacheWrite ENABLED
+
+[DriveK]
+FileCacheWrite ENABLED
+
+[FileCache]
+GlobalCacheEnabled ON
+GlobalCacheSize 32768
+GlobalCacheMaxLockedSize 1024
+LowMemoryThreshold 10</pre>
+ <p>In this example, write caching is enabled
+on drives I and K and has been turned on by default on drive D.</p>
+<div class="note"><span class="notetitle">Note:</span> Most
+of the properties in the example are set to their default values: the definitions
+are redundant but are shown for illustrative purposes. </div>
+ <p>For details,
+see <a href="GUID-8BA1EEC2-78A3-54CC-95D9-81BF2659963D.html" title="This topic describes the purpose of the Base Starter, and which parts of it can be customised by phone developers.">Base Starter Technology</a>. </p>
+ <p id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-16751410-EFC2-55B8-8BC0-ED5F97F98EBB"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-16751410-EFC2-55B8-8BC0-ED5F97F98EBB"><!-- --></a><strong>Global cache settings</strong> </p>
+<p>The
+following table holds the global caching properties: </p>
+
+<div class="tablenoborder"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-4CBAD2A4-52DE-5BA1-98CC-0B1F6BFC54E1"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-4CBAD2A4-52DE-5BA1-98CC-0B1F6BFC54E1" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <strong>Property</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Type</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Comments</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Default value</strong>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-91B81C0D-72F9-3226-BEEF-2E8153104102.html"><span class="apiname">GlobalCacheEnabled</span></a>  </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>boolean </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>on or off</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>on</p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-BAC3ED91-7A3A-3255-B22E-6B6C0CB266E0.html"><span class="apiname">GlobalCacheSize</span></a>  </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>integer </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Size of disconnected chunk shared by all files in kilobytes.</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>32768K (32MB) </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-BEE48B25-B374-3348-B97C-BA2D634E0330.html"><span class="apiname">GlobalCacheMaxLockedSize</span></a>  </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>integer </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Maximum amount of locked RAM for all files in kilobytes.</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>1024K (1 MB) </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-36596759-4ABC-3F8E-A09E-97464094A58A.html"><span class="apiname">LowMemoryThreshold</span></a>  </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>integer </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>Low memory threshold expressed as a percentage of total RAM. If
+the amount of RAM drops below this value, attempts to allocate memory for
+file caching fails.</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>10% </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-E7F45784-14F2-505C-B21C-0A8010B0B232"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-E7F45784-14F2-505C-B21C-0A8010B0B232"><!-- --></a><strong>File cache settings</strong> </p>
+<p>The
+properties <a href="GUID-9278B920-FFEF-3710-8080-B33D028B7A12.html"><span class="apiname">FileCacheRead</span></a>, <a href="GUID-33E32FCF-9E02-3254-A9DA-3A6D0B1A52B5.html"><span class="apiname">FileCacheReadAhead</span></a> and <a href="GUID-C869ED9F-7F9D-33BC-A1C2-5E21B50A6BFC.html"><span class="apiname">FileCacheWrite</span></a> may
+each be in one of 3 states: </p>
+<ul>
+<li id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-71396310-22E1-564A-A094-3EED4721688D"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-71396310-22E1-564A-A094-3EED4721688D"><!-- --></a><p> <samp class="codeph">OFF</samp> -
+file caching is permanently off and cannot be turned on.</p>
+ </li>
+
+<li id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-032E8EB7-4291-5276-852E-BD910CEC8633"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-032E8EB7-4291-5276-852E-BD910CEC8633"><!-- --></a><p> <samp class="codeph">ENABLED</samp> -
+file caching is off by default but may be turned on using an appropriate file
+open mode, such as <a href="GUID-4310DC20-300C-3FEB-B1A5-DBA37D5FC940.html"><span class="apiname">EFileReadBuffered</span></a>  </p>
+ </li>
+
+<li id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-2644023A-855F-5BDE-8A43-57A534E3367A"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-2644023A-855F-5BDE-8A43-57A534E3367A"><!-- --></a><p> <samp class="codeph">ON</samp> -
+file caching is on by default but may be turned off using an appropriate file
+open mode, such as <a href="GUID-449D6D3A-3F00-35F6-BDFB-DF957F98CA8B.html"><span class="apiname">EFileReadDirectIO</span></a>. </p>
+ </li>
+
+</ul>
+<p>See <a href="GUID-3FEEFC4D-19B5-502A-8310-40646B9C34BC.html" title="This topic describes the rum time cache settings.">Run time
+cache settings</a>. </p>
+<p>If <a href="GUID-7F7B7C49-5F60-3B10-A241-98306795A768.html"><span class="apiname">FileCacheReadAsync</span></a> is
+set, media driver reads on this drive are asynchronous. This results in read
+ahead requests being issued before completing a client read request. However,
+if <samp class="codeph">FileCacheReadAsync</samp> is OFF, then media driver reads on
+this drive are synchronous. So, issuing a read ahead is likely to block any
+client thread that is normally running at lower priority than the media driver's
+thread. In this case read ahead requests only happen during periods of inactivity
+to improve latency. </p>
+
+<div class="tablenoborder"><a name="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-B022918E-9335-5D44-B029-D48B36E45937"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-89BCF9A5-ABBD-5523-BA76-FDB00B806A30__GUID-B022918E-9335-5D44-B029-D48B36E45937" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p> <strong>Property</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Type</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Comments</strong>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p> <strong>Default value</strong>  </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-3B777E89-8E4C-3540-958F-C621741895C8.html"><span class="apiname">FileCacheSize</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>integer </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Maximum amount of locked or unlocked RAM per file.</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>128K </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-23E2F01D-BD7B-39D3-B7B2-F23E20D273C5.html"><span class="apiname">FairSchedulingLen</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>integer </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Read &amp; write requests greater than this length are split up
+into 2 or more requests.</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>128K </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-9278B920-FFEF-3710-8080-B33D028B7A12.html"><span class="apiname">FileCacheRead</span></a>  </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>string </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>OFF, ENABLED or ON.</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>ENABLED </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-33E32FCF-9E02-3254-A9DA-3A6D0B1A52B5.html"><span class="apiname">FileCacheReadAhead</span></a>  </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>string </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>OFF, ENABLED or ON.</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>ON </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-C869ED9F-7F9D-33BC-A1C2-5E21B50A6BFC.html"><span class="apiname">FileCacheWrite</span></a>  </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>string </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>OFF, ENABLED or ON.</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>ENABLED </p>
+</td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-7F7B7C49-5F60-3B10-A241-98306795A768.html"><span class="apiname">FileCacheReadAsync</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>boolean </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>ON or OFF. If set, media driver reads on this drive are asynchronous.</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>OFF </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-A91BE0A1-A79D-3828-9E86-7850839BBFE9.html"><span class="apiname">ClosedFileKeepAliveTime</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>integer </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Time after which a file is removed from the closed file queue, in
+milliseconds. </p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>3000ms (3 secs) </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-78907F25-9D0F-3B76-BDB0-514FC22CAECA.html"><span class="apiname">DirtyDataFlushTime</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>integer </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Time after which a file containing dirty data is flushed, in milliseconds.</p>
+</td>
+
+<td class="cellrowborder" valign="top"><p>3000ms (3 secs) </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-F3BD37EC-0CCB-5859-908F-215E22C9FC20.html" title="The File Server component manages all files on a Symbian platform phone. This section describes how to extend the File Server for your phone hardware.">File Server Extensions</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

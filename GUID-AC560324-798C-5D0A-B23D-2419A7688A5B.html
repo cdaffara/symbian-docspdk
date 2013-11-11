@@ -1,0 +1,967 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Channel Implementation"/>
+<meta name="abstract" content="Describes how to implement the physical channels with the template port."/>
+<meta name="description" content="Describes how to implement the physical channels with the template port."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3335663A-BC11-556E-B5A6-F83622AE34C3.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-52371DAB-A231-558C-B3E6-220DAAEE566B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-669C77A3-89BA-5321-ABB1-4356A5FE478C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3335663A-BC11-556E-B5A6-F83622AE34C3.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Channel Implementation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2400778 id2402156 id2402216 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-52371DAB-A231-558C-B3E6-220DAAEE566B.html" title="Provides software components that implement the interface between Symbian platform and peripherals.">Logical Device Drivers</a> &gt; <a href="GUID-669C77A3-89BA-5321-ABB1-4356A5FE478C.html" title="Describes how to create a port of the sound driver for your phone hardware.">Sound Driver</a> &gt; <a href="GUID-3335663A-BC11-556E-B5A6-F83622AE34C3.html" title="Describes the steps to implement a physical device driver (PDD) for the Sound Driver.">Audio Driver Porting Implementation Tutorial</a> &gt; </div>
+<h1 class="topictitle1">Channel
+Implementation</h1>
+<div><p>Describes how to implement the physical channels with the template
+port. </p>
+
+<p>A Sound Driver PDD must implement physical channels to use the audio hardware
+of the phone. The main Sound Driver PDD class is derived from <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html"><span class="apiname">DSoundScPdd</span></a>.
+A Sound Driver PDD that provides record and playback functions must implement
+a record driver channel and a playback driver channel. </p>
+
+<p>The template defines two classes: <samp class="codeph">DTemplateSoundScRxPdd</samp> and <samp class="codeph">DTemplateSoundScTxPdd</samp>,
+corresponding to record and playback respectively. The classes provide default
+implementations for the virtual functions defined by <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html"><span class="apiname">DSoundScPdd</span></a>,
+together with a constructor and destructor, and typically need little or no
+modification. </p>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-61725EEB-5114-5A85-9C28-57A47F14000C"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-61725EEB-5114-5A85-9C28-57A47F14000C"><!-- --></a><h2 class="sectiontitle">PDD class constructor</h2> <p>Implement
+the PDD class constructor for both the playback and record driver channels.
+This is normally limited to </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E02B0EE1-5171-5E9F-9BFE-FFAB6E15B290"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E02B0EE1-5171-5E9F-9BFE-FFAB6E15B290"><!-- --></a><p>initialising any data
+members that need values other than zero </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-4B39AEC4-0A02-5099-9805-F35B2AF4AD90"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-4B39AEC4-0A02-5099-9805-F35B2AF4AD90"><!-- --></a><p>initialising any DFC
+call-backs added. </p>
+ </li>
+
+</ul>
+ <p>Access to hardware has the potential to fail and so should be deferred
+to the second stage constructor <a href="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B.html#GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-F66BF339-FCE6-5859-87D1-7A0B0ED69D84">DoCreate()</a>. </p>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-CD12E6E9-C363-5CF9-91E1-694C34DE2BD9"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-CD12E6E9-C363-5CF9-91E1-694C34DE2BD9"><!-- --></a><h2 class="sectiontitle">PDD class destructor</h2> <p>Implement
+the PDD class destructor for both the playback and record driver channels.
+The destructor must release any hardware and Symbian platform resources that
+have been allocated to the driver. For example, this might include: </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-6D33C44B-B88F-504B-B750-FF010A72A290"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-6D33C44B-B88F-504B-B750-FF010A72A290"><!-- --></a><p>unbinding ISRs </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-9DF0D93B-6782-5E94-80EB-A806BC1AB6B9"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-9DF0D93B-6782-5E94-80EB-A806BC1AB6B9"><!-- --></a><p>cancelling private DFCs </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-157C24A6-52F6-5BF1-BF94-035394F274F5"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-157C24A6-52F6-5BF1-BF94-035394F274F5"><!-- --></a><p>closing DMA channels </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-47452140-FA8E-55A8-BE2D-32AC87FF215E"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-47452140-FA8E-55A8-BE2D-32AC87FF215E"><!-- --></a><p>deleting any mono-to-stereo
+conversion buffers </p>
+ </li>
+
+</ul>
+ <p>The template versions of this function delete each DMA request object
+created in the PDD second stage constructor <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-C0CA28E4-2356-333D-B708-CBE469F1614F"><span class="apiname">DSoundScPdd::DoCreate()</span></a> and
+close the DMA channel. </p>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-F66BF339-FCE6-5859-87D1-7A0B0ED69D84"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-F66BF339-FCE6-5859-87D1-7A0B0ED69D84"><!-- --></a><h2 class="sectiontitle">DoCreate()</h2> <p>Implement
+a PDD class second stage constructor for both the playback and record driver
+channels. In the template version, the function <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-C0CA28E4-2356-333D-B708-CBE469F1614F"><span class="apiname">DSoundScPdd::DoCreate()</span></a> is
+called from the PDD factory when a channel is opened on the device. Generally,
+any hardware or Symbian platform resources required by the driver
+channel should be acquired here. However, powering up the sound device should
+be deferred to the <a href="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B.html#GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-B72057E6-B93C-505F-9789-83251D09B78E">PowerUp()</a> function.
+Operations performed by this function include: </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-C3E2E6ED-14AE-52D1-9F11-618DCE7D2C1E"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-C3E2E6ED-14AE-52D1-9F11-618DCE7D2C1E"><!-- --></a><p>binding an ISR to an
+audio related interrupt </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-129BD014-9302-50AE-A33B-728D40DBF428"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-129BD014-9302-50AE-A33B-728D40DBF428"><!-- --></a><p>open a DMA channel </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-51B51BEC-B8B8-50CF-8618-BB0B5B00F999"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-51B51BEC-B8B8-50CF-8618-BB0B5B00F999"><!-- --></a><p>allocate a mono-to-stereo
+conversion buffer </p>
+ </li>
+
+</ul>
+ <p>The template versions of this function include code to set up a DMA
+channel. This involves opening a DMA channel in the appropriate direction
+for the driver channel and then allocating a set of DMA request objects. However,
+to use this implementation you must supply the missing platform specific information: </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-64F62CF9-9D26-5E39-A632-39DF91AB1E98"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-64F62CF9-9D26-5E39-A632-39DF91AB1E98"><!-- --></a><p>Provide values for the
+maximum number of DMA requests outstanding on the DMA channel. These values
+determine the number of separate DMA request objects allocated for the DMA
+channel, and so the number of transfer fragments that the PDD can accept from
+the LDD at any time. See <a href="GUID-15FDDEED-89F1-5BE5-97AD-8DFD3640369A.html" title="Describes the operation of the Sound Driver for sound playback.">playback</a> and <a href="GUID-4AEF7595-17C0-513E-9568-B212E6194388.html" title="Describes the operation of the Sound Driver for sound recording.">record</a>. </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-60C86EBD-B26F-501D-B7D5-CE113D4368C0"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-60C86EBD-B26F-501D-B7D5-CE113D4368C0"><!-- --></a><p>Set the appropriate
+DMA values for your device within the file <span class="filepath">soundsc_plat.h</span>.
+These values, renamed in section <a href="GUID-C6ABE2CA-901E-55F1-9837-7018A1612BCF.html" title="Describes how to use the template port to start your port.">copying
+the template port implementation</a> to reflect your device name, are <samp class="codeph">KTemplateMaxTxDmaRequests</samp> or <samp class="codeph">KTemplateMaxRxDmaRequests</samp> for playback and record respectively. </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-BBF4F320-22A7-54AE-ACD1-6C10138F5031"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-BBF4F320-22A7-54AE-ACD1-6C10138F5031"><!-- --></a><p>Setup the DMA channel
+information for the device. This includes the following members of <a href="GUID-83882548-FAC5-3EFF-92ED-14D1D9A85D37.html#GUID-83882548-FAC5-3EFF-92ED-14D1D9A85D37__GUID-6B973278-8BE7-3CE5-97D8-60E8D3F4D473"><span class="apiname">TDmaChannel::SCreateInfo</span></a>. </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-084CF2BA-308D-5F32-9BC2-C5B39DEC497B"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-084CF2BA-308D-5F32-9BC2-C5B39DEC497B"><!-- --></a><p> <samp class="codeph">iCookie</samp>:
+The platform specific ID used by the DMA controller to select the DMA channel
+to open. </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-7EE1F596-9FB5-5C29-8130-097CE6129F91"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-7EE1F596-9FB5-5C29-8130-097CE6129F91"><!-- --></a><p> <samp class="codeph">iDesCount</samp>:
+The number of DMA descriptors the DMA controller should create. This is typically
+set with the same value as <samp class="codeph">KTemplateMaxTxDmaRequests</samp> or <samp class="codeph">KTemplateMaxRxDmaRequests</samp>. </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-0B12DDF1-AC34-5592-AC55-E0363C60449A"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-0B12DDF1-AC34-5592-AC55-E0363C60449A"><!-- --></a><p> <samp class="codeph">iDfcQ</samp>:
+The DFC queue to use to service DMA interrupts. This should point to the same
+DFC queue that is returned to the LDD for client request handling. See the <a href="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B.html#GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-32C77B77-76CE-54AE-B791-28A7DD309A7D">DfcQ()</a> section. </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-AE4E59DD-4FBB-54A8-BE79-F4138AB34D5C"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-AE4E59DD-4FBB-54A8-BE79-F4138AB34D5C"><!-- --></a><p> <samp class="codeph">iDfcPriority</samp>:
+The DFC priority. This should be set to a higher value than that used by the
+LDD for handling client requests. For example, higher than one. </p>
+ </li>
+
+</ul>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-32C77B77-76CE-54AE-B791-28A7DD309A7D"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-32C77B77-76CE-54AE-B791-28A7DD309A7D"><!-- --></a><h2 class="sectiontitle">DfcQ()</h2> <p>Make
+sure that the template version of the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-C41B9733-BE86-3CF1-83A7-150EC9D35249"><span class="apiname">DSoundScPdd::DfcQ()</span></a> function
+is appropriate for your configuration. This function has the following signature: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-28E301B7-C032-5F6E-BCA7-A6D20FC541EA"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-28E301B7-C032-5F6E-BCA7-A6D20FC541EA"><!-- --></a>TDfcQue* DfcQ()</pre>
+ <p>The
+supplied implementation is as follows </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-D95DC9F9-C68A-50E2-ADA6-8D1268A18147"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-D95DC9F9-C68A-50E2-ADA6-8D1268A18147"><!-- --></a>TDfcQue* DTemplateSoundScTxPdd::DfcQ()
+    {
+    return(iPhysicalDevice-&gt;iDfcQPtr);
+    }</pre>
+ <p>Many requests are executed in the context of a kernel-side
+thread. Rather than assign a kernel thread for the driver in the LDD, the
+Sound Driver allows the PDD to specify the DFC thread returned via the <a href="GUID-71190437-912E-3E23-8E68-4FA8FF913D7A.html"><span class="apiname">DfcQ()</span></a> function,
+which it calls when the driver channel is opened. </p>
+ <p>The default implementation
+for the record and playback driver channels, returns a pointer to the DFC
+queue created by the PDD factory class. </p>
+ <p>See also <a href="GUID-1138D29D-2EC5-59DF-9AA7-2D863FBC024F.html" title="Describes how to implement a factory.">Implementing
+the PDD factory</a>  </p>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-B549F062-061D-5876-AB43-AC10C62477EE"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-B549F062-061D-5876-AB43-AC10C62477EE"><!-- --></a><h2 class="sectiontitle">GetChunkCreateInfo()</h2> <p>Implement
+the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-9F845935-A6AA-320B-AF09-F121F95C44B2"><span class="apiname">DSoundScPdd::GetChunkCreateInfo()</span></a> function for both
+the playback and record driver channels. This function has the following signature: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-934D39E5-5DDE-5165-BCED-255CA6D0B0F2"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-934D39E5-5DDE-5165-BCED-255CA6D0B0F2"><!-- --></a>void DSoundScPdd::GetChunkCreateInfo(TChunkCreateInfo&amp; aChunkCreateInfo)</pre>
+ <p>The
+supplied implementation is as follows: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-47334636-5E5D-59CF-A894-62747DD648BD"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-47334636-5E5D-59CF-A894-62747DD648BD"><!-- --></a>void DTemplateSoundScTxPdd::GetChunkCreateInfo(TChunkCreateInfo&amp; aChunkCreateInfo)
+    {
+    __KTRACE_SND(Kern::Printf("&gt;DTemplateSoundScTxPdd::GetChunkCreateInfo"));
+
+    // TO DO: (mandatory)
+    // Setup the shared chunk create information in aChunkCreateInfo for this play device.
+    aChunkCreateInfo.iType=TChunkCreateInfo::ESharedKernelMultiple;
+    // aChunkCreateInfo.iMapAttr=???
+    aChunkCreateInfo.iOwnsMemory=ETrue;                 // Using RAM pages.
+    aChunkCreateInfo.iDestroyedDfc=NULL;                // No chunk destroy DFC.
+    }</pre>
+ <p>The PDD must initialise the <a href="GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4.html"><span class="apiname">TChunkCreateInfo</span></a> object
+with the information that defines the characteristics of the shared chunk
+required for the audio device. This function is called by the LDD just before
+it creates a shared chunk for the channel, in response to an <a href="GUID-B0118EDD-2B08-353E-BE92-2DC75E5622B3.html#GUID-B0118EDD-2B08-353E-BE92-2DC75E5622B3__GUID-1978D84C-6E2A-39C0-AF5F-17C85E5B25B4"><span class="apiname">RSoundSc::SetBufferChunkCreate()</span></a> request
+from the client. </p>
+ <p>Values for the following data members must be supplied
+by the PDD: </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-10F7ED98-299F-5D90-A7EC-85BD97BBECEF"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-10F7ED98-299F-5D90-A7EC-85BD97BBECEF"><!-- --></a><p> <a href="GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4.html#GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4__GUID-4384AF76-CECE-3B86-BE92-375C1DEA36DA"><span class="apiname">TChunkCreateInfo::iType</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-10159693-8680-5CD7-88C8-A967DDC53024"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-10159693-8680-5CD7-88C8-A967DDC53024"><!-- --></a><p> <a href="GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4.html#GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4__GUID-4D355352-04CA-34D2-B1F4-684E07E7DDE9"><span class="apiname">TChunkCreateInfo::iMapAttr</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-06459B1A-5D5A-5013-912D-0C52E7FD398A"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-06459B1A-5D5A-5013-912D-0C52E7FD398A"><!-- --></a><p> <a href="GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4.html#GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4__GUID-106850A0-5498-387F-AF70-F9D04EB6318D"><span class="apiname">TChunkCreateInfo::iOwnsMemory</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-D8DE49EB-04D5-50BA-8CEA-7EFFA7584A74"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-D8DE49EB-04D5-50BA-8CEA-7EFFA7584A74"><!-- --></a><p> <a href="GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4.html#GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4__GUID-58271733-146A-3ECB-91AC-C38BD2ADC9A0"><span class="apiname">TChunkCreateInfo::iDestroyedDfc</span></a>  </p>
+ </li>
+
+</ul>
+ <p>The data member <a href="GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4.html#GUID-51F7DBCF-BFB6-31F9-8882-5D263A1AD4B4__GUID-3BE6D452-84D0-3E80-8238-7A9114A89ED5"><span class="apiname">TChunkCreateInfo::iMaxSize</span></a> is
+calculated by the LDD so there is no need to define it. </p>
+ <p>See <a href="GUID-51514A4B-0220-557B-9F7A-FB110CEFEF10.html" title="A shared chunk is a mechanism that kernel-side code uses to share memory buffers safely with user-side code.">How to share chunks</a>. </p>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-9D4D9F06-8C88-51C1-9E29-D0B95B523A8D"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-9D4D9F06-8C88-51C1-9E29-D0B95B523A8D"><!-- --></a><h2 class="sectiontitle">Caps()</h2> <p>Implement
+the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-B80B86C6-696A-37AA-9ACD-2BC76B88762C"><span class="apiname">DSoundScPdd::Caps()</span></a> function for both the playback
+and record driver channels. The function has the following signature: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-8306A135-350C-5F8D-B51D-F8A2EED41244"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-8306A135-350C-5F8D-B51D-F8A2EED41244"><!-- --></a>void DSoundScPdd::Caps(TDes8&amp; aCapsBuf) const</pre>
+ <p>The
+supplied implementation is as follows: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-27BE7DD7-D42B-54BA-AC77-1201C1F09F68"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-27BE7DD7-D42B-54BA-AC77-1201C1F09F68"><!-- --></a>void DTemplateSoundScTxPdd::Caps(TDes8&amp; aCapsBuf) const
+    {
+    __KTRACE_SND(Kern::Printf("&gt;DTemplateSoundScTxPdd::Caps"));
+    
+    // Copy iCaps back.
+    TPtrC8 ptr((const TUint8*)&amp;iCaps,sizeof(iCaps));
+    aCapsBuf.FillZ(aCapsBuf.MaxLength());
+    aCapsBuf=ptr.Left(Min(ptr.Length(),aCapsBuf.MaxLength()));      
+    }</pre>
+ <p> <a href="GUID-39915413-31A6-360F-9758-5DBDF9D70103.html"><span class="apiname">TSoundFormatsSupportedV02</span></a> is the
+main audio capabilities class. The PDD must fill this object with the capabilities
+for the particular audio device. the LDD uses this to get the play or record
+capabilities of a particular sound device once a driver channel to the device
+has been opened. </p>
+ <p>Values for the following variables must be supplied
+by the PDD: </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-2F03F186-D9AF-5431-B3F8-D3B794352208"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-2F03F186-D9AF-5431-B3F8-D3B794352208"><!-- --></a><p> <a href="GUID-39915413-31A6-360F-9758-5DBDF9D70103.html#GUID-39915413-31A6-360F-9758-5DBDF9D70103__GUID-1FE2868A-1823-308A-B1C9-2DAD557F6F3A"><span class="apiname">TSoundFormatsSupportedV02::iDirection</span></a>  </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-053B114E-2A52-53FD-912F-F8FF890601C4"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-053B114E-2A52-53FD-912F-F8FF890601C4"><!-- --></a><p> <a href="GUID-AF772B74-0D5F-3270-BA61-2503BA5DFE6B.html"><span class="apiname">ESoundDirRecord</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-CEADC6F1-6016-5AB1-9349-EEFB63EF26AA"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-CEADC6F1-6016-5AB1-9349-EEFB63EF26AA"><!-- --></a><p> <a href="GUID-708043EB-5ED5-3923-B41A-321AD7DF3D8C.html"><span class="apiname">ESoundDirPlayback</span></a>  </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-95FC1D2B-BBFB-52DC-ADE3-BA980E7E46F3"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-95FC1D2B-BBFB-52DC-ADE3-BA980E7E46F3"><!-- --></a><p> <a href="GUID-39915413-31A6-360F-9758-5DBDF9D70103.html#GUID-39915413-31A6-360F-9758-5DBDF9D70103__GUID-75B0E2F7-44BE-3A97-B482-E1CB29D9F2E5"><span class="apiname">TSoundFormatsSupportedV02::iChannels</span></a>  </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-998425C3-E73B-5DB4-94F8-10BDCFBBE779"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-998425C3-E73B-5DB4-94F8-10BDCFBBE779"><!-- --></a><p> <a href="GUID-65BCF594-59A1-335F-AADB-1920E7AD3F71.html"><span class="apiname">KSoundMonoChannel</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-7D5EE578-16AC-56A0-B064-6000F5A9C2DF"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-7D5EE578-16AC-56A0-B064-6000F5A9C2DF"><!-- --></a><p> <a href="GUID-4E63CE9C-C604-3B2C-993D-9A0502A39064.html"><span class="apiname">KSoundStereoChannel</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-0C17CB17-7452-5A1A-B76D-75A57960BDE8"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-0C17CB17-7452-5A1A-B76D-75A57960BDE8"><!-- --></a><p> <a href="GUID-30E8F803-39E1-3F53-AB5A-3B593BC1D69F.html"><span class="apiname">KSoundThreeChannel</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E1DE0CD0-DD63-5140-A5C5-7141A5E9632D"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E1DE0CD0-DD63-5140-A5C5-7141A5E9632D"><!-- --></a><p> <a href="GUID-BD021640-3457-3721-9DF1-A15EE8A874AC.html"><span class="apiname">KSoundFourChannel</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E59E9D5E-F360-52FD-A0D0-C7CDAE5593DC"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E59E9D5E-F360-52FD-A0D0-C7CDAE5593DC"><!-- --></a><p> <a href="GUID-3E3B5485-F69B-3ECC-A0A4-12183444E61F.html"><span class="apiname">KSoundFiveChannel</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-56DD5098-0C0C-5175-B375-766FE628C359"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-56DD5098-0C0C-5175-B375-766FE628C359"><!-- --></a><p> <a href="GUID-83C9F5FE-DE44-3940-B738-BD4486293C39.html"><span class="apiname">KSoundSixChannel</span></a>  </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-A6847CF6-48DC-510E-BCFF-33E7E5FB0161"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-A6847CF6-48DC-510E-BCFF-33E7E5FB0161"><!-- --></a><p> <a href="GUID-39915413-31A6-360F-9758-5DBDF9D70103.html#GUID-39915413-31A6-360F-9758-5DBDF9D70103__GUID-1F79E9BB-BF7C-31AD-AA0C-A85748F4231A"><span class="apiname">TSoundFormatsSupportedV02::iRates</span></a>  </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-99377F03-BA89-5DB0-AC4D-5F8892EB1F65"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-99377F03-BA89-5DB0-AC4D-5F8892EB1F65"><!-- --></a><p> <a href="GUID-F98BADA5-852B-3859-B74A-B9747F79A754.html"><span class="apiname">KSoundRate7350Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-99FFC99B-740B-5809-9C75-C8CC1157F4E3"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-99FFC99B-740B-5809-9C75-C8CC1157F4E3"><!-- --></a><p> <a href="GUID-47512813-5787-3328-9980-399AA782E6A2.html"><span class="apiname">KSoundRate8000Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-D2C75BB5-5D8B-556B-A5BF-6A8C24D07D74"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-D2C75BB5-5D8B-556B-A5BF-6A8C24D07D74"><!-- --></a><p> <a href="GUID-A622C93B-DF18-359D-B74A-0F90695900B7.html"><span class="apiname">KSoundRate8820Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-83D98EBD-AD0E-588E-8CFD-59B44C22FE6A"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-83D98EBD-AD0E-588E-8CFD-59B44C22FE6A"><!-- --></a><p> <a href="GUID-165180AC-1227-30BF-97DA-860C3AC3AA4E.html"><span class="apiname">KSoundRate9600Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-8D99D6B7-7FA7-5B8A-BEB9-2D982273C201"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-8D99D6B7-7FA7-5B8A-BEB9-2D982273C201"><!-- --></a><p> <a href="GUID-8DF1D395-4AC1-38AA-9F6A-C8867B1F4A60.html"><span class="apiname">KSoundRate11025Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-98353A3A-EFAC-5B6C-A779-8F12BB9150BA"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-98353A3A-EFAC-5B6C-A779-8F12BB9150BA"><!-- --></a><p> <a href="GUID-512150A4-0796-3016-9CBC-83117E2930ED.html"><span class="apiname">KSoundRate12000Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-C27DD198-13FA-522A-9079-0BAA37094E16"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-C27DD198-13FA-522A-9079-0BAA37094E16"><!-- --></a><p> <a href="GUID-892B4698-4914-348B-AB88-A1AC33D1E5EE.html"><span class="apiname">KSoundRate14700Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-71087DE2-06A9-536A-94DF-74FFFCB2F0DF"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-71087DE2-06A9-536A-94DF-74FFFCB2F0DF"><!-- --></a><p> <a href="GUID-1A199051-5D76-396B-AA44-89506A128BFF.html"><span class="apiname">KSoundRate16000Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-666FA027-30AF-593B-894B-443B5C57E2DF"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-666FA027-30AF-593B-894B-443B5C57E2DF"><!-- --></a><p> <a href="GUID-4021CE80-6667-36BB-9839-583E84AB9E83.html"><span class="apiname">KSoundRate22050Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-9D0D7E14-1FBE-5C80-A108-D3903D57ED49"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-9D0D7E14-1FBE-5C80-A108-D3903D57ED49"><!-- --></a><p> <a href="GUID-73C38AA3-92AD-3EF0-BF60-3A207CD29C0E.html"><span class="apiname">KSoundRate24000Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-721DCA57-6E9B-5B02-9EA4-7640C652C5CE"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-721DCA57-6E9B-5B02-9EA4-7640C652C5CE"><!-- --></a><p> <a href="GUID-9092C33B-C406-3044-AC8F-885F3EAE8B86.html"><span class="apiname">KSoundRate29400Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-5362CD78-1981-559B-9E1B-C999CDC8E3D9"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-5362CD78-1981-559B-9E1B-C999CDC8E3D9"><!-- --></a><p> <a href="GUID-0237DB93-3C16-3DCF-836E-CDECE95EAB1E.html"><span class="apiname">KSoundRate32000Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-61D0A788-2160-538F-82DB-414E6A34EC97"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-61D0A788-2160-538F-82DB-414E6A34EC97"><!-- --></a><p> <a href="GUID-D3045D52-3092-3CCA-9AA5-05DE1ACAB92C.html"><span class="apiname">KSoundRate44100Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-28474DAC-AD25-506B-9112-F56825F845D2"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-28474DAC-AD25-506B-9112-F56825F845D2"><!-- --></a><p> <a href="GUID-DBD2AD6A-79F9-3D94-B6CB-1ED1E45F401A.html"><span class="apiname">KSoundRate48000Hz</span></a>  </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-CB112345-C035-5F7E-9AE5-B5222FF4F0A9"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-CB112345-C035-5F7E-9AE5-B5222FF4F0A9"><!-- --></a><p> <a href="GUID-39915413-31A6-360F-9758-5DBDF9D70103.html#GUID-39915413-31A6-360F-9758-5DBDF9D70103__GUID-21F664A7-046E-3B1F-8C0B-A8B0EC0EC16C"><span class="apiname">TSoundFormatsSupportedV02::iEncodings</span></a>  </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-F5833DD3-D273-5B62-9F4B-FEEC51D8CDF2"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-F5833DD3-D273-5B62-9F4B-FEEC51D8CDF2"><!-- --></a><p> <a href="GUID-5BE58F42-47B2-3EB8-9F3B-DEF019C79499.html"><span class="apiname">KSoundEncodings8BitPCM</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-B58CB616-CDCD-5CD0-AEC4-622F5AAB2474"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-B58CB616-CDCD-5CD0-AEC4-622F5AAB2474"><!-- --></a><p> <a href="GUID-790BA733-2B34-33B2-BF7B-7113DB1856A6.html"><span class="apiname">KSoundEncodings16BitPCM</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-A4019328-CC8B-5224-8808-F3822230C389"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-A4019328-CC8B-5224-8808-F3822230C389"><!-- --></a><p> <a href="GUID-EAB5A509-B0D6-3E2F-8106-D87A7C9D504F.html"><span class="apiname">KSoundEncodings24BitPCM</span></a>  </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-52DDB751-925B-5CC5-81F9-6F65A9D2039E"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-52DDB751-925B-5CC5-81F9-6F65A9D2039E"><!-- --></a><p> <a href="GUID-39915413-31A6-360F-9758-5DBDF9D70103.html#GUID-39915413-31A6-360F-9758-5DBDF9D70103__GUID-7950BC29-5C2E-34E0-B037-DDDDE0261DB7"><span class="apiname">TSoundFormatsSupportedV02::iDataFormats</span></a>  </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-AD7EA560-7914-5D9D-B548-14DB3FA4AC7A"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-AD7EA560-7914-5D9D-B548-14DB3FA4AC7A"><!-- --></a><p> <a href="GUID-E02D661C-430F-306F-BD12-42238A91D83A.html"><span class="apiname">KSoundDataFormatInterleaved</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-36EAAA69-B18A-555A-9646-FB8F6EC66505"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-36EAAA69-B18A-555A-9646-FB8F6EC66505"><!-- --></a><p> <a href="GUID-ACC09AC6-A29B-3926-8AE4-4DA60416A3C1.html"><span class="apiname">KSoundDataFormatNonInterleaved</span></a>  </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-905CC707-760B-52F3-A942-0ADA02B69FA8"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-905CC707-760B-52F3-A942-0ADA02B69FA8"><!-- --></a><p> <a href="GUID-39915413-31A6-360F-9758-5DBDF9D70103.html#GUID-39915413-31A6-360F-9758-5DBDF9D70103__GUID-6F2D37B3-C465-3C77-A861-7FF9061F8EB9"><span class="apiname">TSoundFormatsSupportedV02::iRequestMinSize</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-8FCD4F3E-F70F-5E1B-8952-B667DC9D4AD2"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-8FCD4F3E-F70F-5E1B-8952-B667DC9D4AD2"><!-- --></a><p> <a href="GUID-39915413-31A6-360F-9758-5DBDF9D70103.html#GUID-39915413-31A6-360F-9758-5DBDF9D70103__GUID-472BCD65-11CE-3AEE-8DAE-9E56523AC096"><span class="apiname">TSoundFormatsSupportedV02::iRequestAlignment</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-749CE201-0554-5202-ABFC-FF9C0C4B1C1A"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-749CE201-0554-5202-ABFC-FF9C0C4B1C1A"><!-- --></a><p> <a href="GUID-39915413-31A6-360F-9758-5DBDF9D70103.html#GUID-39915413-31A6-360F-9758-5DBDF9D70103__GUID-AB35243B-ECD9-3268-A6FF-5079D1A45EA0"><span class="apiname">TSoundFormatsSupportedV02::iHwConfigNotificationSupport</span></a> </p>
+ </li>
+
+</ul>
+ <p>Many of the attribute ranges are passed as bit settings, and can
+assume all the values independently of one another. </p>
+ <p>The following
+is a portion of the <a href="GUID-161BA615-FD2C-3A7E-992E-FBBED621CBBB.html"><span class="apiname">Caps()</span></a> function for the template port
+for the playback path of the AC97 Controller Unit (UCB140) codec device. </p>
+ <p>The
+PDD maintains a <a href="GUID-39915413-31A6-360F-9758-5DBDF9D70103.html"><span class="apiname">TSoundFormatsSupportedV02</span></a> object as one
+of its data members named <samp class="codeph">iCaps</samp>. The contents of <samp class="codeph">iCaps</samp> is
+copied into the descriptor and passed as an argument to the <a href="GUID-161BA615-FD2C-3A7E-992E-FBBED621CBBB.html"><span class="apiname">Caps()</span></a> function: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-21B70DCD-7133-53A1-AE5C-848E0F68DF43"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-21B70DCD-7133-53A1-AE5C-848E0F68DF43"><!-- --></a>void DTemplateSoundScTxPdd::Caps(TDes8&amp; aCapsBuf) const
+    {
+     __KTRACE_SND(Kern::Printf("&gt;DTemplateSoundScTxPdd::Caps"));
+    
+     // Copy iCaps back.
+     TPtrC8 ptr((const TUint8*)&amp;iCaps,sizeof(iCaps));
+     aCapsBuf.FillZ(aCapsBuf.MaxLength());
+     aCapsBuf=ptr.Left(Min(ptr.Length(),aCapsBuf.MaxLength()));        
+    }
+</pre>
+ <p>The data member <samp class="codeph">iCaps</samp> is initialised by the
+function <a href="GUID-681FB26E-0027-38E6-88A1-9E9046011312.html"><span class="apiname">SetCaps()</span></a> called from the second stage constructor
+of the PDD object: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-B17BA93D-14D6-56A9-8F1F-9FFEF88559D3"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-B17BA93D-14D6-56A9-8F1F-9FFEF88559D3"><!-- --></a>void DTemplateSoundScTxPdd::SetCaps()
+    {
+     __KTRACE_SND(Kern::Printf("&gt;DTemplateSoundScTxPdd::SetCaps"));
+    
+     // The data transfer direction for this unit is play.
+     iCaps.iDirection=ESoundDirPlayback;
+    
+     // TO DO: (mandatory)
+     // Setup the rest of the capabilities structure DTemplateSoundScTxPdd::iCaps with the capabilities of this
+     // audio playback device.
+    }</pre>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-A2A7A6FF-8F46-589D-B5D6-E33ED3FF0692"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-A2A7A6FF-8F46-589D-B5D6-E33ED3FF0692"><!-- --></a><h2 class="sectiontitle">MaxTransferLen()</h2> <p>Implement
+the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-534D46F4-2CB1-3130-9E72-A1C3BF085865"><span class="apiname">DSoundScPdd::MaxTransferLen()</span></a> function for both playback
+and record driver channels. The function has the following signature: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-039E8EF1-AA13-5C38-92DD-46AFC8E1E8F3"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-039E8EF1-AA13-5C38-92DD-46AFC8E1E8F3"><!-- --></a>TInt DSoundScPdd::MaxTransferLen() const</pre>
+ <p>The
+supplied implementation is as follows: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E27E52F5-175A-5264-8B08-AE0BDAD5B495"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E27E52F5-175A-5264-8B08-AE0BDAD5B495"><!-- --></a>TInt DTemplateSoundScTxPdd::MaxTransferLen() const
+    {
+    return(KTemplateMaxTxDmaTransferLen);
+    }</pre>
+ <p>This function is called each time the LDD alters the
+audio configuration of the channel. For example, after calling <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-39AA2B2D-E98B-33A0-9C46-08B783413860"><span class="apiname">DSoundScPdd::SetConfig()</span></a>.
+The LDD uses the value returned to fragment record and playback data transfers
+so that they are manageable by the PDD. See <a href="GUID-15FDDEED-89F1-5BE5-97AD-8DFD3640369A.html" title="Describes the operation of the Sound Driver for sound playback.">playback</a> and <a href="GUID-4AEF7595-17C0-513E-9568-B212E6194388.html" title="Describes the operation of the Sound Driver for sound recording.">record</a>. </p>
+ <p>The
+value returned by <a href="GUID-615DF55C-EC50-3BF0-9C46-AB24E9505C5E.html"><span class="apiname">MaxTransferLen()</span></a> is not as important
+for PDDs that use the Symbian DMA framework because the DMA framework handles
+fragmentation. </p>
+ <p>If the PDD has to employ mono-to-stereo data conversion
+using a conversion buffer when configured in mono mode, then it needs to return
+the value that corresponds with the size of the conversion buffer each time
+it is configured in mono mode. See <a href="GUID-E2641957-8163-5EF4-B282-FC3FD9CA75A6.html#GUID-E2641957-8163-5EF4-B282-FC3FD9CA75A6__GUID-5C66667B-55C0-521D-86E3-67593DB381C9">mono
+to stereo conversion</a>. </p>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-B72057E6-B93C-505F-9789-83251D09B78E"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-B72057E6-B93C-505F-9789-83251D09B78E"><!-- --></a><h2 class="sectiontitle">PowerUp()</h2> <p>Implement
+the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-6301A4AA-CC41-3DBC-A349-9BD5C9B01276"><span class="apiname">DSoundScPdd::PowerUp</span></a> function for both the playback
+and record driver channels. The function has the following signature: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-F9706BE3-125F-56B3-947E-3534FB3A5D23"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-F9706BE3-125F-56B3-947E-3534FB3A5D23"><!-- --></a>TInt DSoundScPdd::PowerUp()</pre>
+ <p>The
+supplied implementation is as follows: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-DB986B0B-CC10-5842-BB54-76683A35EB38"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-DB986B0B-CC10-5842-BB54-76683A35EB38"><!-- --></a>TInt DTemplateSoundScTxPdd::PowerUp()
+    {
+    // TO DO: (mandatory)
+    // Power up the audio device.
+    
+    return(KErrNone);
+    }</pre>
+ <p>This function initialises the codec device and any associated
+controller hardware that allows the CPU to communicate with it. However, at
+this stage only basic initialisation of these hardware components is required,
+as the specific audio configuration has not yet been specified, and data transfer
+has not yet started. </p>
+ <p>If the PDD supports both record and playback
+driver channels then most, if not all, of this hardware initialisation is
+common to both channels. It may be necessary to ensure that such initialisation
+on one channel cannot interfere with the other. For example, when calling <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-1B2E2F89-75A8-3740-893A-4DCDB0A350D3"><span class="apiname">DSoundScPdd::PowerUp()</span></a> on
+the record driver channel while the playback driver channel is active, make
+sure that it does not interfere with audio playback. This typically requires
+hardware status information to be held in the PDD factory object that is common
+to both channels. </p>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-3764C238-A458-5D13-8AB2-EE53CA91F6E5"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-3764C238-A458-5D13-8AB2-EE53CA91F6E5"><!-- --></a><h2 class="sectiontitle">SetConfig()</h2> <p>Implement
+the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-39AA2B2D-E98B-33A0-9C46-08B783413860"><span class="apiname">DSoundScPdd::SetConfig()</span></a> function for both playback
+and record driver channels. The function has the following signature: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-DB782F12-E5CE-5D13-8C12-8E57AB47BDB4"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-DB782F12-E5CE-5D13-8C12-8E57AB47BDB4"><!-- --></a>TInt DSoundScPdd::SetConfig(const TDesC8&amp; aConfigBuf)</pre>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-868A3301-3CAD-5077-88AC-2A2A6C125AFD"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-868A3301-3CAD-5077-88AC-2A2A6C125AFD"><!-- --></a>TInt DTemplateSoundScTxPdd::SetConfig(const TDesC8&amp; aConfigBuf)
+    {
+    __KTRACE_SND(Kern::Printf("&gt;DTemplateSoundScTxPdd::SetConfig"));
+    
+    // Read the new configuration from the LDD.
+    TCurrentSoundFormatV02 config;
+    TPtr8 ptr((TUint8*)&amp;config,sizeof(config));
+    Kern::InfoCopy(ptr,aConfigBuf);
+    
+    // TO DO: (mandatory)
+    // Apply the specified audio configuration to the audio device.
+    TInt r=KErrNone;
+    
+    __KTRACE_SND(Kern::Printf("&lt;DTemplateSoundScTxPdd::SetConfig - %d",r));
+    return(r);
+    }</pre>
+ <p>A configuration buffer in a packaged <a href="GUID-EF1D41AB-929D-3E51-98AA-F175DDB58F68.html"><span class="apiname">TCurrentSoundFormatV02</span></a> object
+containing the new configuration settings. </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-2D88064E-2258-55FA-BE68-831889E9E2C8"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-2D88064E-2258-55FA-BE68-831889E9E2C8"><!-- --></a><p> <a href="GUID-EF1D41AB-929D-3E51-98AA-F175DDB58F68.html#GUID-EF1D41AB-929D-3E51-98AA-F175DDB58F68__GUID-AE4EDE94-5902-3D73-BAE4-4A49B3E3CC6C"><span class="apiname">TCurrentSoundFormatV02::iChannels</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-CBACC0C9-1C73-59E0-BAA4-63110DECDED9"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-CBACC0C9-1C73-59E0-BAA4-63110DECDED9"><!-- --></a><p> <a href="GUID-EF1D41AB-929D-3E51-98AA-F175DDB58F68.html#GUID-EF1D41AB-929D-3E51-98AA-F175DDB58F68__GUID-FA39A28F-4B0C-3B89-AB4B-763E0369AD31"><span class="apiname">TCurrentSoundFormatV02::iRate</span></a>  </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-00FD1F5A-7941-5ED8-9878-69EDAE03F630"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-00FD1F5A-7941-5ED8-9878-69EDAE03F630"><!-- --></a><p> <a href="GUID-306655BD-FD24-37CE-8F67-F6BC5FBAA455.html"><span class="apiname">ESoundRate7350Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-3BEB74D8-B829-5B49-A740-F4BC0597E389"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-3BEB74D8-B829-5B49-A740-F4BC0597E389"><!-- --></a><p> <a href="GUID-F6D595E9-BE6E-3D5F-AEEF-57FEBA5D165F.html"><span class="apiname">ESoundRate8000Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E077B1A6-A625-55C8-8587-96EF7242C5F0"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E077B1A6-A625-55C8-8587-96EF7242C5F0"><!-- --></a><p> <a href="GUID-256AD4BA-8D30-38B8-8AC3-A63AFDCDF82E.html"><span class="apiname">ESoundRate8820Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-5664E1E2-DBC3-5F2C-A5BD-3EE5512C254E"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-5664E1E2-DBC3-5F2C-A5BD-3EE5512C254E"><!-- --></a><p> <a href="GUID-3A48C172-FEEF-3A5A-A986-E5C1FD8E5048.html"><span class="apiname">ESoundRate9600Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-7E607F76-3975-591F-AEE3-D4CBC2B0F003"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-7E607F76-3975-591F-AEE3-D4CBC2B0F003"><!-- --></a><p> <a href="GUID-0B13D3F1-57D0-3741-BCC8-3E3BE50B59DE.html"><span class="apiname">ESoundRate11025Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-8054CF86-27CF-531A-9233-C6602BB958EF"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-8054CF86-27CF-531A-9233-C6602BB958EF"><!-- --></a><p> <a href="GUID-88C3603E-D69F-3DE9-9AA0-F6F724432C76.html"><span class="apiname">ESoundRate12000Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-1AD1415C-0D0D-508F-B63E-69B553AA4109"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-1AD1415C-0D0D-508F-B63E-69B553AA4109"><!-- --></a><p> <a href="GUID-D49E0BA6-AB68-334A-BECF-7221996C71CF.html"><span class="apiname">ESoundRate14700Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-1D23B890-0AFC-5E2B-8D00-E56CF1E75D07"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-1D23B890-0AFC-5E2B-8D00-E56CF1E75D07"><!-- --></a><p> <a href="GUID-6FDDFE56-B32E-3DA1-8E90-DCAE1476A75F.html"><span class="apiname">ESoundRate16000Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-A2637B2C-AD6B-5A87-86AC-FDB56DBF46C0"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-A2637B2C-AD6B-5A87-86AC-FDB56DBF46C0"><!-- --></a><p> <a href="GUID-86882923-4DB3-3461-AF9E-D36BF75125AB.html"><span class="apiname">ESoundRate22050Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-8682C600-A7C8-5B8B-9824-DD670812C598"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-8682C600-A7C8-5B8B-9824-DD670812C598"><!-- --></a><p> <a href="GUID-2E1FC700-5B43-39DE-8B67-7DADD38B55A5.html"><span class="apiname">ESoundRate24000Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-51A42D66-5B71-5325-90B7-B5A1503F21C5"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-51A42D66-5B71-5325-90B7-B5A1503F21C5"><!-- --></a><p> <a href="GUID-244A1091-0F4A-376B-AE3E-93F09029ECF0.html"><span class="apiname">ESoundRate29400Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-04621385-220C-587B-9C59-68115E251D8C"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-04621385-220C-587B-9C59-68115E251D8C"><!-- --></a><p> <a href="GUID-1C1526A2-4BA2-3296-BBE0-152070B43EE9.html"><span class="apiname">ESoundRate32000Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-5DECBAD3-09E7-5967-82B3-7C923F870DA6"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-5DECBAD3-09E7-5967-82B3-7C923F870DA6"><!-- --></a><p> <a href="GUID-028FCDA8-E1FC-3E5D-827B-E4513991C1F2.html"><span class="apiname">ESoundRate44100Hz</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-27AA4D39-3CA5-52A0-9F97-C8543AAECB97"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-27AA4D39-3CA5-52A0-9F97-C8543AAECB97"><!-- --></a><p> <a href="GUID-14D9C50A-2F72-3D1D-A15B-BDE4FAA33ED8.html"><span class="apiname">ESoundRate48000Hz</span></a>  </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-95DDDF4C-B70E-56B1-92E6-616ADCB45025"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-95DDDF4C-B70E-56B1-92E6-616ADCB45025"><!-- --></a><p> <a href="GUID-EF1D41AB-929D-3E51-98AA-F175DDB58F68.html#GUID-EF1D41AB-929D-3E51-98AA-F175DDB58F68__GUID-1A4256A2-A2FE-3FD0-8849-A9F37E1D7A77"><span class="apiname">TCurrentSoundFormatV02::iEncoding</span></a>  </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-48484A2E-6970-59AE-9CD5-C93BE349C28D"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-48484A2E-6970-59AE-9CD5-C93BE349C28D"><!-- --></a><p> <a href="GUID-866386CC-C9CA-3029-95C2-800F6B6C3C2D.html"><span class="apiname">ESoundEncoding8BitPCM</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-357130A0-C112-5803-A4D3-9B1237B5931C"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-357130A0-C112-5803-A4D3-9B1237B5931C"><!-- --></a><p> <a href="GUID-E69FCDC5-9A22-3C5A-89C9-A7B869744948.html"><span class="apiname">ESoundEncoding16BitPCM</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E2920329-BDFC-5B28-BF53-F4CF45DBE9AC"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E2920329-BDFC-5B28-BF53-F4CF45DBE9AC"><!-- --></a><p> <a href="GUID-289CBD4B-ACEF-3A43-8935-201635AC658F.html"><span class="apiname">ESoundEncoding24BitPCM</span></a>  </p>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-406F8EE9-885D-5569-98E0-A473BB7462FB"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-406F8EE9-885D-5569-98E0-A473BB7462FB"><!-- --></a><p> <a href="GUID-EF1D41AB-929D-3E51-98AA-F175DDB58F68.html#GUID-EF1D41AB-929D-3E51-98AA-F175DDB58F68__GUID-3A9546CB-33D6-3171-A8F7-0E642EB8E798"><span class="apiname">TCurrentSoundFormatV02::iDataformat</span></a>  </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-D21416A0-3E78-5D5C-BFE3-0C8A75F80429"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-D21416A0-3E78-5D5C-BFE3-0C8A75F80429"><!-- --></a><p> <a href="GUID-5ADC3C98-2D05-35E1-96D2-42B3A65BF25F.html"><span class="apiname">ESoundDateFormatInterleaved</span></a>  </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-1A7EC2CC-D94F-514E-BB8A-9A3B3551B13F"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-1A7EC2CC-D94F-514E-BB8A-9A3B3551B13F"><!-- --></a><p> <a href="GUID-352ED2EF-C98C-305E-80F1-FE30DF1BE4CA.html"><span class="apiname">ESoundDateFormatNonInterleaved</span></a>  </p>
+ </li>
+
+</ul>
+ </li>
+
+</ul>
+ <p>The PDD must read and locally save the contents of the <a href="GUID-EF1D41AB-929D-3E51-98AA-F175DDB58F68.html"><span class="apiname">TCurrentSoundFormatV02</span></a> configuration
+object that has been passed as a descriptor from the LDD. The template version
+contains the following code to achieve this: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-7FF5383E-FAE0-51A7-8E9E-0F489D841C72"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-7FF5383E-FAE0-51A7-8E9E-0F489D841C72"><!-- --></a>// Read the new configuration from the LDD.
+TCurrentSoundFormatV02 config;
+TPtr8 ptr((TUint8*)&amp;config, sizeof(config));
+Kern::InfoCopy(ptr, aConfigBuf);</pre>
+ <p>It is not necessary to check
+for configurations requested by the LDD that are not supported by the audio
+hardware device if the <a href="GUID-161BA615-FD2C-3A7E-992E-FBBED621CBBB.html"><span class="apiname">Caps()</span></a> function has been implemented
+correctly by the PDD. This is because the LDD rejects such audio configuration
+requests from the client. However, if the PDD supports both playback and record
+driver channels then it needs to check that the specified configuration does
+not conflict with one already in use by the other channel. </p>
+ <p>The PDD
+sets up the audio hardware device according to the audio configuration specified
+if it is required. Some, if not all of this hardware configuration may be
+put off until data transfer is started, this is when <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-54D3CC19-0C00-3FFA-BD1A-62618D36EB20"><span class="apiname">DSoundScPdd::StartTransfer()</span></a> is
+called, so for now the PDD needs to save the configuration. </p>
+ <p>If the
+PDD has to employ mono-to-stereo conversion of data using a conversion buffer
+while the audio configuration is set to mono, then the memory for the conversion
+buffer should be allocated at this time. </p>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-51420A2F-180B-5916-AF5A-685ABD156A2D"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-51420A2F-180B-5916-AF5A-685ABD156A2D"><!-- --></a><h2 class="sectiontitle">SetVolume()</h2> <p>Implement
+the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-3C56E870-1F05-31BC-B799-AF49F77E2930"><span class="apiname">DSoundScPdd::SetVolume</span></a> function for both the playback
+and record driver channels. This has the following signature: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-6FEA0876-7753-54C7-A414-9A54913F1778"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-6FEA0876-7753-54C7-A414-9A54913F1778"><!-- --></a>TInt DSoundScPdd::SetVolume(TInt aVolume)</pre>
+ <p>The
+supplied implementation is as follows: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-14196DC5-8630-5E06-869A-D9A5EE423BF6"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-14196DC5-8630-5E06-869A-D9A5EE423BF6"><!-- --></a>TInt DTemplateSoundScTxPdd::SetVolume(TInt aVolume)
+    {
+    __KTRACE_SND(Kern::Printf("&gt;DTemplateSoundScTxPdd::SetVolume"));
+    
+    // TO DO: (mandatory)
+    // Set the specified play volume on the audio device.
+    TInt r=KErrNone;
+    
+    return(r);
+    }</pre>
+ <p>The PDD must first convert the volume/record level information
+specified into a form which can be used to program the hardware. This may
+require converting the value from a gain factor to an attenuation factor and/or
+applying a scaling factor. The LDD detects situations where the client specifies
+a record level /volume that is already in effect, and in this case does not
+unnecessarily call the PDD. </p>
+ <p>The PDD may opt to setup the audio hardware
+device within this function or it may defer this until data transfer is started
+with the function <a href="GUID-CCACE58D-8884-37A4-B7DB-F1DFDEE4A8F1.html#GUID-CCACE58D-8884-37A4-B7DB-F1DFDEE4A8F1__GUID-788592C9-FCCA-3E34-BEA7-5DC5E6A497C8"><span class="apiname">DSOundScPdd::StartTransfer()</span></a>. For PDDs
+which support both record and playback driver channels, it is normal for audio
+devices to allow the record and playback gains to be programmed independently,
+this means that checking for conflicts between the channels is rarely required
+for this function. </p>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-287BB55C-E0FD-5214-9FAA-857AB46C64ED"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-287BB55C-E0FD-5214-9FAA-857AB46C64ED"><!-- --></a><h2 class="sectiontitle">StartTransfer()</h2> <p>Implement
+the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-66F3D9DA-F61F-3C1D-8C95-02C7C561AE64"><span class="apiname">DSoundScPdd::StartTransfer</span></a> function for both the playback
+and record driver channels. This has the following signature: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-02F7B0B7-35A7-525C-A88D-6555113D6D62"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-02F7B0B7-35A7-525C-A88D-6555113D6D62"><!-- --></a>TInt DSoundScPdd::StartTransfer()</pre>
+ <p>The
+supplied implementation is as follows: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-DE7BF31A-B5D4-5348-9280-0C326D37DAF8"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-DE7BF31A-B5D4-5348-9280-0C326D37DAF8"><!-- --></a>TInt DTemplateSoundScTxPdd::StartTransfer()
+    {
+    __KTRACE_SND(Kern::Printf("&gt;DTemplateSoundScTxPdd::StartTransfer"));
+    
+    // TO DO: (mandatory)
+    // Prepare the audio device for playback.
+    TInt r=KErrNone;
+    
+    __KTRACE_SND(Kern::Printf("&lt;DTemplateSoundScTxPdd::StartTransfer - %d",r));
+    return(r);
+    }</pre>
+ <p>This function performs any configurations of the audio
+hardware device that were deferred from the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-39AA2B2D-E98B-33A0-9C46-08B783413860"><span class="apiname">DSoundScPdd::SetConfig()</span></a> function.
+These configurations may include start-up of the DMA engine, enabling any
+interrupts related to audio transfer and interrupts that detect error conditions,
+for example. At this stage, no data has yet been supplied to the device for
+transfer as the function <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-8C79D09B-317A-3D8E-B9C2-474812F17529"><span class="apiname">DSoundScPdd::TransferData()</span></a> has
+not yet been called. </p>
+ <p>If the PDD supports both record and playback
+driver channels then it may be necessary to ensure that such hardware configuration
+on one channel cannot interfere with the other. </p>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-5E29637F-140F-5F1B-B969-DF9682CEF5E2"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-5E29637F-140F-5F1B-B969-DF9682CEF5E2"><!-- --></a><h2 class="sectiontitle">TransferData()</h2> <p>Implement
+the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-EF749829-6C35-3954-A48D-483FD0182CC9"><span class="apiname">DSoundScPdd::TransferData</span></a> function for both playback
+and record driver channels. This has the following signature: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-F13C3C46-D208-5E24-B986-3A32FAFBE453"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-F13C3C46-D208-5E24-B986-3A32FAFBE453"><!-- --></a>TInt DSoundScPdd::TransferData(TUint aTransferID,TLinAddr aLinAddr,
+                               TPhysAddr aPhysAddr,TInt aNumBytes)</pre>
+ <p>Once
+transfer has been started by calling <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-54D3CC19-0C00-3FFA-BD1A-62618D36EB20"><span class="apiname">DSoundScPdd::StartTransfer()</span></a>,
+the function <a href="GUID-209D8909-56BD-3601-98C4-FB6E004D78EE.html"><span class="apiname">TransferData</span></a> is called repeatedly by the LDD
+for the transfer of each fragment. See the <a href="GUID-15FDDEED-89F1-5BE5-97AD-8DFD3640369A.html" title="Describes the operation of the Sound Driver for sound playback.">playback</a> and <a href="GUID-4AEF7595-17C0-513E-9568-B212E6194388.html" title="Describes the operation of the Sound Driver for sound recording.">record</a> sections for
+details. </p>
+ <p>The template version for the record driver channel contains
+the following code: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-C86982D4-A2FE-5904-A46C-D52D349D018E"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-C86982D4-A2FE-5904-A46C-D52D349D018E"><!-- --></a>TInt DTemplateSoundScRxPdd::TransferData(TUint aTransferID, TLinAddr aLinAddr,
+                                         TPhysAddr /*aPhysAddr*/, TInt aNumBytes)
+    {  
+    TInt r=KErrNone;
+   
+    // Check that we can accept the request
+    if (iPendingRecord&gt;=KTemplateMaxRxDmaRequests)
+        r=KErrNotReady;
+    else
+        {
+        // Start a DMA transfer.
+        iDmaRequest[iFlag]-&gt;iTransferID=aTransferID;
+        iDmaRequest[iFlag]-&gt;iTransferSize=aNumBytes;
+        // TO DO: (mandatory)
+        // Supply the DMA source information.
+        TUint32 src=0; // ???
+        r=iDmaRequest[iFlag]-&gt;Fragment(src,aLinAddr,aNumBytes,KDmaMemDest|KDmaIncDest,0);
+        if (r==KErrNone)
+            {
+            iDmaRequest[iFlag]-&gt;Queue();
+            iPendingRecord++;
+            if ((++iFlag)&gt;=KTemplateMaxRxDmaRequests)
+                iFlag=0;
+         
+            // TO DO: (mandatory)
+            // Start the audio device transferring data.
+            }
+        }
+                                    
+    return(r);
+    }</pre>
+ <div class="p"><div class="note"><span class="notetitle">Note:</span>  The template version used by the playback function
+is very similar. </div>
+</div>
+ <p>The first step is for the PDD to check that
+it has the capacity to accept a further transfer. For example, check that
+the PDD has a DMA request object that is free and that the DMA controller
+has the capacity for another transfer to be queued. If the PDD does not have
+the capacity to accept another transfer then it should immediately return <a href="GUID-51298FCE-7857-39F8-BFAB-49AF5556D0CC.html"><span class="apiname">KErrNotReady</span></a> to
+signal this. </p>
+ <p>Otherwise, the PDD can start a DMA transfer. To do this
+it must acquire a DMA request object. The class <a href="GUID-6B0DB695-9033-3F85-AC3A-1867E99BE2BD.html"><span class="apiname">DTemplateSoundScRxDmaRequest</span></a> is
+the abstraction for a DMA record request and is defined as follows: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-04B1D7FD-4E17-5CD0-974F-A3A1BCB04C58"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-04B1D7FD-4E17-5CD0-974F-A3A1BCB04C58"><!-- --></a>/** Wrapper function for a shared chunk sound driver record DMA request. */
+class DTemplateSoundScRxDmaRequest : public DDmaRequest
+    {
+public:  
+    DTemplateSoundScRxDmaRequest(TDmaChannel&amp; aChannel, DTemplateSoundScRxPdd* aPdd,
+                                 TInt aMaxTransferSize=0);
+    static void DmaService(TResult aResult, TAny* aArg);
+public:
+    /** Pointer back to the PDD. */
+    DTemplateSoundScRxPdd* iPdd;
+    /** The transfer ID for this DMA request - supplied by the LDD. */
+    TUint iTransferID;
+    /** The transfer sizes in progress. */
+    TUint iTransferSize;
+    };
+    This is derived from DDmaRequest the base class
+    for a DMA request.</pre>
+ <p>The data member <samp class="codeph">iPdd</samp> is
+a pointer to the owning PDD object. This is used within the member function <a href="GUID-8B538AA6-9489-309F-8756-2474310CD5DA.html"><span class="apiname">DmaService()</span></a> which
+is the DMA callback function, and is called when the DMA request has been
+completed by the DMA framework. The data member <samp class="codeph">iTransferID</samp> is
+a value supplied by the LDD which it uses to identify the transfer fragment.
+The PDD must save this value and pass it back to the LDD when the transfer
+is completed. Similarly, the member <samp class="codeph">iTransferSize</samp> is used
+to hold the length of the transfer fragment in bytes. If the transfer is successful
+then this value is also passed back to the LDD to allow it to maintain its
+count of bytes recorded. </p>
+ <p>The record PDD class owns an array of DMA
+request objects: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-8314BE9B-2D19-585F-B44E-17C8529CEFEF"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-8314BE9B-2D19-585F-B44E-17C8529CEFEF"><!-- --></a>/** The DMA request structures used for transfers. */             
+DTemplateSoundScRxDmaRequest* iDmaRequest[KTemplateMaxRxDmaRequests];</pre>
+ <p>It
+also owns the data member <samp class="codeph">iFlag</samp>, which always holds the number
+for the next DMA request that should be used for transfer. Before starting
+the DMA transfer, setup the appropriate DMA request object with the transfer
+ID and the transfer length. </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-2F4CB025-C2E2-52DD-A679-CF1DCC3677FA"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-2F4CB025-C2E2-52DD-A679-CF1DCC3677FA"><!-- --></a>/** A flag selecting the next DMA request for transfer. */
+TInt iFlag;</pre>
+ <p>Next the function <a href="GUID-780F4D53-5546-3B69-B328-0226C70EBDE2.html#GUID-780F4D53-5546-3B69-B328-0226C70EBDE2__GUID-B14B0478-80D6-3F5E-88B6-1676411D9CF2"><span class="apiname">DDmaRequest::Fragment()</span></a> is
+called to specify the details of the transfer to the DMA framework and to
+allow it to analyse this. Here the appropriate platform specific 32-bit DMA
+source identifier, <samp class="codeph">src</samp>, needs to be supplied. The template
+driver shown previously specifies the destination memory address as a linear
+address but the physical address may be used instead. Both forms of this address
+are passed as arguments to the <a href="GUID-34E7FF1F-091A-3C45-B83A-AEB64E2AD286.html"><span class="apiname">TransferData()</span></a> function. </p>
+ <p>If
+fragmentation is successful then the request object is queued on the DMA channel <a href="GUID-780F4D53-5546-3B69-B328-0226C70EBDE2.html#GUID-780F4D53-5546-3B69-B328-0226C70EBDE2__GUID-0A83F782-DB62-39ED-8D32-DBD5949C8D3F"><span class="apiname">DDmaRequest::Queue()</span></a> and
+the value of <samp class="codeph">iFlag</samp> is updated ready for the next transfer.
+The PDD class also keeps a count of the number of transfer fragments outstanding
+by incrementing the variable <samp class="codeph">iPendingRecord</samp>: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-5C738134-0683-5FAB-8733-29D9A336402F"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-5C738134-0683-5FAB-8733-29D9A336402F"><!-- --></a>/** The number of outstanding DMA record requests on the DMA channel. */   
+TInt iPendingRecord;</pre>
+ <p>The final part of this function requires
+platform specific code to start the audio hardware device transferring data.
+This needs to be executed for each fragment transferred or just for the first
+fragment queued following the <a href="GUID-FE6DE994-719C-3900-B4A0-009914697380.html"><span class="apiname">StartTransfer()</span></a> function. </p>
+ <p>Once
+the transfer is complete, either successfully or with an error, the DMA framework
+executes the static DMA callback function, <a href="GUID-6B0DB695-9033-3F85-AC3A-1867E99BE2BD.html#GUID-6B0DB695-9033-3F85-AC3A-1867E99BE2BD__GUID-E12BA027-3D58-30A8-A9F7-B7B7DC55D0D5"><span class="apiname">DTemplateSoundScRxDmaRequest::DmaService()</span></a>,
+as follows: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-2ED07474-F489-5545-9FB6-BC229C00D4F3"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-2ED07474-F489-5545-9FB6-BC229C00D4F3"><!-- --></a>/**
+DMA rx service routine. Called in the sound thread's DFC context by the s/w DMA controller.
+@param aResult Status of DMA transfer.
+@param aArg Argument passed to DMA controller.
+*/ 
+void DTemplateSoundScRxDmaRequest::DmaService(TResult aResult, TAny* aArg)
+    {
+    DTemplateSoundScRxDmaRequest&amp; req=*(DTemplateSoundScRxDmaRequest*)aArg;
+   
+    TInt res=KErrNone;
+    TInt bytesTransferred=req.iTransferSize;
+    if (aResult!=DDmaRequest::EOk)
+        {
+        res=KErrCorrupt;
+        bytesTransferred=0;
+        }
+      
+    // Inform the LDD of the result of the transfer.
+    req.iPdd-&gt;RecordCallback(req.iTransferID,res,bytesTransferred);   
+    return;
+    }</pre>
+ <p>This function receives two arguments: </p>
+ <ul>
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-7D4D15BD-3BA0-5899-B67E-C7F24F548D22"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-7D4D15BD-3BA0-5899-B67E-C7F24F548D22"><!-- --></a><p>the result of the transfer
+from the DMA framework </p>
+ </li>
+
+<li id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-FE18B3C9-A3B3-5599-8CC6-66977D0FA56A"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-FE18B3C9-A3B3-5599-8CC6-66977D0FA56A"><!-- --></a><p>an argument supplied
+to the DMA framework when the request object was created </p>
+ </li>
+
+</ul>
+ <p>In this specific case, the argument type is a pointer to the DMA
+request object, and allows the retrieval of the transfer ID and the transfer
+size. In the template driver version an unsuccessful transfer returns an error
+value of <a href="GUID-253F06EA-F14E-3A8E-BA4C-8E787B5F0670.html"><span class="apiname">KErrCorrupt</span></a> with a transfer byte count of zero. </p>
+ <p>From
+the callback function we call the record PDD function to decrement the count
+of transfer fragments outstanding and to inform the LDD of the completion
+of transfer. </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-69C81D24-D725-51B2-8099-1D089A70AE00"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-69C81D24-D725-51B2-8099-1D089A70AE00"><!-- --></a>void DTemplateSoundScRxPdd::RecordCallback(TUint aTransferID, TInt aTransferResult,TInt aBytesTransferred)
+    {
+    iPendingRecord--;
+    Ldd()-&gt;RecordCallback(aTransferID,aTransferResult,aBytesTransferred);
+    } 
+</pre>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E9B63AC5-4AED-53E3-B7CA-21AACE04FC37"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E9B63AC5-4AED-53E3-B7CA-21AACE04FC37"><!-- --></a><h2 class="sectiontitle">StopTransfer()</h2> <p>Implement
+the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-7C629A7C-0C64-32AB-8159-A4075DEEF544"><span class="apiname">DSoundScPdd::StopTransfer</span></a> function for both the play
+and record driver channels. This has the following signature: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E56EFFEC-59CA-595F-BFA8-72299999DD05"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-E56EFFEC-59CA-595F-BFA8-72299999DD05"><!-- --></a>void DSoundScPdd::StopTransfer()</pre>
+ <p>The
+PDD must reverse any operation performed on the audio hardware device done
+as part of <a href="GUID-FE6DE994-719C-3900-B4A0-009914697380.html"><span class="apiname">StartTransfer()</span></a> or <a href="GUID-34E7FF1F-091A-3C45-B83A-AEB64E2AD286.html"><span class="apiname">TransferData()</span></a>.
+This includes stopping the audio hardware device from transferring data and
+stopping the DMA channel. </p>
+ <p>The template version for the record driver
+channel contains the following code: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-D8A0C5F9-3E9D-54F5-8906-465801CC3A3E"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-D8A0C5F9-3E9D-54F5-8906-465801CC3A3E"><!-- --></a>void DTemplateSoundScRxPdd::StopTransfer()
+    {
+    // Stop the DMA channel.
+    iDmaChannel-&gt;CancelAll();
+    iFlag=0;
+    iPendingRecord=0;
+    
+    // TO DO: (mandatory)
+    // Stop the audio device transferring data.
+    }</pre>
+ <div class="p"> <div class="note"><span class="notetitle">Note:</span>  The version used by the playback function is
+very similar. </div>
+</div>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-2F694050-660B-5941-B9AA-FB21C1D33400"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-2F694050-660B-5941-B9AA-FB21C1D33400"><!-- --></a><h2 class="sectiontitle">PauseTransfer()</h2> <p>Implement
+the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-0608766F-2645-3E28-B804-BD4B953DB5FF"><span class="apiname">DSoundScPdd::PauseTransfer()</span></a> function for both the
+playback and record driver channels. This has the following signature: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-51C0B918-4883-574A-B1AF-476C61A85120"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-51C0B918-4883-574A-B1AF-476C61A85120"><!-- --></a>TInt DSoundScPdd::PauseTransfer()</pre>
+ <p>When
+pausing playback, there is normally some way to temporarily stop the codec
+and pause the DMA channel so that it can be resumed later starting from the
+next play sample. </p>
+ <p>Pausing record requires a different implementation.
+All active transfers must be aborted. When this has been achieved, the PDD
+must report back to the LDD how much data has been received for the fragment
+that was actively being transferred when the abort took place by calling <a href="GUID-5807543D-A30F-3EB9-8F28-91A623B0D484.html#GUID-5807543D-A30F-3EB9-8F28-91A623B0D484__GUID-9112E399-DC3C-334F-BE16-B5F42216F903"><span class="apiname">DSoundScLdd::RecordCallBack()</span></a>.
+If it is not possible to determine the byte count for the last fragment from
+the DMA controller, then you must find some other way to discover its value.
+One solution is to re-start a timer at the start of each record fragment,
+and use this to calculate how much data will have been written into the record
+buffer at the point the transfer is aborted. </p>
+<div class="p"><div class="note"><span class="notetitle">Note:</span>  In this case the
+returned transfer ID is not important.</div>
+ </div>
+ <p>The supplied template
+implementation is as follows: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-5B5B290E-C751-5599-AA67-0AC59E697898"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-5B5B290E-C751-5599-AA67-0AC59E697898"><!-- --></a>TInt DTemplateSoundScRxPdd::PauseTransfer()
+    {    
+    // Stop the DMA channel.
+    iDmaChannel-&gt;CancelAll();
+   
+    if (iPendingRecord)
+        {
+        // TO DO: (mandatory)
+        // Determine how much data was successfully transferred to the
+        // record buffer before transfer was aborted.
+        TInt byteCount=0; // ???
+        Ldd()-&gt;RecordCallback(0,KErrNone,byteCount);
+        iPendingRecord=0;
+        }
+    iFlag=0;
+    
+    // TO DO: (mandatory)
+    // Halt recording on the audio device.
+    TInt r=KErrNone;
+    
+    return(r); 
+    }
+</pre>
+ <div class="p"> <div class="note"><span class="notetitle">Note:</span>  There is no need for the PDD to perform any state
+checking as this is already performed by the LDD. For example, checking that
+the device is not already paused or transferring data. </div>
+</div>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-00368C95-2AE6-5EBA-8C09-787D0E7C10BC"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-00368C95-2AE6-5EBA-8C09-787D0E7C10BC"><!-- --></a><h2 class="sectiontitle">ResumeTransfer()</h2> <p>Implement
+the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-788AEAF9-E33A-3BD2-8B60-9A066DBA2496"><span class="apiname">DSoundScPdd::ResumeTransfer</span></a> function for both the playback
+and record driver channels. This has the following signature: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-81A86CB7-E089-5B3D-A28F-A371AFDF5471"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-81A86CB7-E089-5B3D-A28F-A371AFDF5471"><!-- --></a>TInt DSoundScPdd::ResumeTransfer()</pre>
+ <p>The
+template version for the record driver channel contains the following code: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-D72D3F34-197F-500F-8483-E307418127F6"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-D72D3F34-197F-500F-8483-E307418127F6"><!-- --></a>TInt DTemplateSoundScTxPdd::ResumeTransfer()
+    {
+    __KTRACE_SND(Kern::Printf("&gt;DTemplateSoundScTxPdd::ResumeTransfer"));
+    
+    // TO DO: (mandatory)
+    // Resume playback on the audio device.
+    TInt r=KErrNone;
+            
+    return(r);
+    }</pre>
+ <p>To resume playback, it is normally necessary to re-start
+the codec and resume the DMA channel in order to restart playback from the
+next play sample. </p>
+ <p>To resume record, all active transfers should have
+been aborted when the device was paused with the function <a href="GUID-1126E802-39C1-3BAD-85BA-A6DDED981B8A.html"><span class="apiname">PauseTransfer()</span></a>.
+However, the LDD issues a new <a href="GUID-34E7FF1F-091A-3C45-B83A-AEB64E2AD286.html"><span class="apiname">TransferData()</span></a> request subsequent
+to this function to resume record data transfer so the only action required
+here is to recreate the same audio hardware setup that was achieved in response
+to the <a href="GUID-FE6DE994-719C-3900-B4A0-009914697380.html"><span class="apiname">StartTransfer()</span></a> function. </p>
+ <p>There is no need
+for the PDD to perform any state checking as this is already performed by
+the LDD. For example, checking that the device is not already paused. </p>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-3155494B-AFFD-5E07-8E2F-D6EC81E4E69B"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-3155494B-AFFD-5E07-8E2F-D6EC81E4E69B"><!-- --></a><h2 class="sectiontitle">PowerDown()</h2> <p>Implement
+the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-53CDB4F4-470C-3A40-B948-C14B0FCA0E24"><span class="apiname">DSoundScPdd::PowerDown()</span></a> function for both the playback
+and record driver channels. This has the following signature: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-69B46DDC-DA62-55E2-9E7C-A4E0B1550E03"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-69B46DDC-DA62-55E2-9E7C-A4E0B1550E03"><!-- --></a>void DSoundScPdd::PowerDown()</pre>
+ <p>The
+PDD must reverse any operation performed on the audio hardware as part of <a href="GUID-B70A3916-5644-330F-872B-FADB8E3D80B5.html"><span class="apiname">PowerUp()</span></a>. </p>
+ </div>
+
+<div class="section" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-4B71AE98-3692-54B3-9CD8-525991DBAEAA"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-4B71AE98-3692-54B3-9CD8-525991DBAEAA"><!-- --></a><h2 class="sectiontitle">CustomConfig()</h2> <p>Implement
+the <a href="GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424.html#GUID-61CC68CB-A01D-3CA0-93D9-F3717ABD6424__GUID-B0F89BCD-69AF-3D40-A601-EB22C6FA0435"><span class="apiname">DSoundScPdd::CustomConfig()</span></a> function for both the playback
+and record driver channels. This has the following signature: </p>
+ <pre class="codeblock" id="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-C24D93F2-9A7E-5E43-8750-6BE8978B9C01"><a name="GUID-AC560324-798C-5D0A-B23D-2419A7688A5B__GUID-C24D93F2-9A7E-5E43-8750-6BE8978B9C01"><!-- --></a>TInt DSoundScPdd::CustomConfig(TInt aFunction,TAny* aParam)</pre>
+ <p> <a href="GUID-B0118EDD-2B08-353E-BE92-2DC75E5622B3.html#GUID-B0118EDD-2B08-353E-BE92-2DC75E5622B3__GUID-78AA2782-80D0-3815-8F71-AA218756BAE6"><span class="apiname">RSoundSc::CustomConfig()</span></a> is called by the LDD in response to a custom configuration request by the
+client. Custom configurations allow clients to issue requests to setup platform
+specific audio configuration settings. Any such requests from the client with
+a function identifier equal to or above 0x10000000 are passed straight through
+to the PDD for function identification and implementation. These are handled
+in the context of the sound driver DFC thread. </p>
+ <p>If custom configuration
+is not supported, then the PDD should simply return <samp class="codeph">KErrNotSupported</samp>. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-3335663A-BC11-556E-B5A6-F83622AE34C3.html" title="Describes the steps to implement a physical device driver (PDD) for the Sound Driver.">Audio Driver Porting Implementation Tutorial</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

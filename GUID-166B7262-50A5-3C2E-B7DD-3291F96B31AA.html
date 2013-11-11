@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="LManagedPtr"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA"/>
+
+<title>LManagedPtr</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA"><a name="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2653464 id2544523 id2545139 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">LManagedPtr Class Reference</h1>
+	<table class="signature"><tr><td>class LManagedPtr : protected LManagedPtrBase</td></tr></table><div class="section"><div>
+			<p>A class template that provides automatic management of pointers held in the data members of objects.</p>
+
+			<div class="p">
+				<div class="note"><span class="notetitle">Note:</span> 
+					<p>This class should not used to define locals. See below for an explanation and links to management classes suitable for use in that context.</p>
+
+				</div>
+This class template can be used to protect a pointer to type T such that the instance of T referred to is automatically cleaned up when the management object is destroyed; typically when the object containing it is deleted.</div>
+
+			<p>By default, the cleanup action is to delete the managed pointer using a (non-array) delete operation. An alternative cleanup strategy can be specified using the optional CleanupStrategy class template parameter of the <a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html#GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA">LManagedPtr</a> class template. The most common alternative cleanup strategies are predefined (e.g. <a href="GUID-5073F469-386E-3B06-BAD5-16A910D74BD9.html#GUID-5073F469-386E-3B06-BAD5-16A910D74BD9">TPointerFree</a>).</p>
+
+			<p>The constructors of this class never leave, so data members defined with this type may be initialized safely during any phase of construction of the owning class.</p>
+
+			<p>As a convenience, the methods of the managed pointer may be accessed via "-&gt;" notation directly on the management object, while "." notation is used to access the interface of the management object itself. Using "*" to dereference the management object yields a T&amp;, and is often useful when passing the managed object as an argument.</p>
+
+			<p>Automatic cleanup may be disabled at any time by calling <a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html#GUID-4372F2FB-282F-3B35-9500-BA8B45626F08">Unmanage()</a>, while cleanup may be forced at any time by calling <a href="GUID-424822E2-E971-3BAA-B346-C75C5C1A2FC5.html#GUID-2BF013C9-E139-3090-A1E4-A334E0420D79">ReleaseResource()</a>.</p>
+
+			<div class="p">Example: <pre class="codeblock">   class CComposite : public CBase
+	   {
+	 public:
+	   CONSTRUCTORS_MAY_LEAVE
+
+	   CComposite()
+		   : iComponent(CComponent::NewL())
+		   {
+		   //...
+		   }
+
+	   ~CComposite()
+		   {
+		   // the pointer to the CComponent object is automatically
+		   // deleted
+		   }
+
+	 private:
+	   LManagedPtr&lt;CComponent&gt; iComponent;
+	   };</pre>
+</div>
+
+			<p>Behind the scenes, this class template simply relies on reliable execution of its destructor. If used for a local variable rather than a data member, cleanup will occur but out-of-order compared to objects protected using the LCleanupXxx variants or the <a href="GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA.html#GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA">CleanupStack</a> directly. Therefore it is not recommended for use in that context.</p>
+
+			<p>These management classes may be used as the basis for implementing leave-safe single-phase construction, since fully initialized data members protected in this way will get destroyed (so reliably triggering cleanup) if their containing classes leave during execution of their constructors. Note, however, that single-phase construction must be explicitly enabled in the containing class using the CONSTRUCTORS_MAY_LEAVE macro.</p>
+
+			<p>This class template together with the cleanup strategy class templates provide a template-based implementation of the Strategy design pattern (See also: Policy-based design).</p>
+
+			<p>TPointerDelete which implements the default deleting cleanup strategy <a href="GUID-5073F469-386E-3B06-BAD5-16A910D74BD9.html#GUID-5073F469-386E-3B06-BAD5-16A910D74BD9">TPointerFree</a> which implements the alternative <a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-0B290931-C7DE-3E72-A9A0-818A87A172AE">User::Free()</a> cleanup strategy <a href="GUID-BD4E0CC4-75A2-306D-A860-06B4138F86EB.html#GUID-BD4E0CC4-75A2-306D-A860-06B4138F86EB">LCleanedupPtr</a> which has the same interface, but uses the cleanup stack and is suitable for protecting locals CONSTRUCTORS_MAY_LEAVE </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">LManagedPtr<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-424822E2-E971-3BAA-B346-C75C5C1A2FC5.html">LManagedPtrBase</a><ul class="derivation"><li class="derivation-depth-2 "><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase&lt; TPtrCleanupTraits&lt; T, CleanupStrategyType &gt;::BaseManagedType &gt;</a></li></ul></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-01C53681-807A-3383-8235-5E2F1CDB24B0">LManagedPtr</a>()</td></tr><tr class="bg"><td align="right" class="code"/><td><a href="#GUID-A5CA9897-3DDB-3C16-A3C6-CA90B2DB47A1">LManagedPtr</a>(T *)</td></tr><tr><td align="right" class="code">T *</td><td><a href="#GUID-8D73F78A-D0AA-385F-9AD4-E4B03A054B6F">Get</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-8485CE27-FBDC-3D1C-B614-0F9B32203A24">Swap</a>(<a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html">LManagedPtr</a> &amp;)</td></tr><tr><td align="right" class="code">T *</td><td><a href="#GUID-4372F2FB-282F-3B35-9500-BA8B45626F08">Unmanage</a>()</td></tr><tr class="bg"><td align="right" class="code"/><td><a href="#GUID-C11B6ED1-9790-35B3-8D8E-8B287B997933">operator TUnspecifiedBoolType</a>()</td></tr><tr><td align="right" class="code">T &amp;</td><td><a href="#GUID-346D7653-95E9-3426-B69C-1758930CD394">operator*</a>()</td></tr><tr class="bg"><td align="right" class="code">T *</td><td><a href="#GUID-DD248B42-527F-3B05-9E81-3051489BA58F">operator-&gt;</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html">LManagedPtr</a> &amp;</td><td><a href="#GUID-88D1552C-3915-3351-84BF-EB2DCF9AB1DD">operator=</a>(T *)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html">LManagedPtr</a> &amp;</td><td><a href="#GUID-798F7BB6-BD53-347F-A0DE-02CD120DF513">operator=</a>(U *)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase&lt; TPtrCleanupTraits&lt; T, CleanupStrategyType &gt;::BaseManagedType &gt;::Disable()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase&lt; TPtrCleanupTraits&lt; T, CleanupStrategyType &gt;::BaseManagedType &gt;::IsEnabled()const</a></td></tr><tr><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase&lt; TPtrCleanupTraits&lt; T, CleanupStrategyType &gt;::BaseManagedType &gt;::LAutoPtrBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase&lt; TPtrCleanupTraits&lt; T, CleanupStrategyType &gt;::BaseManagedType &gt;::LAutoPtrBase(TPtrCleanupTraits&lt; T, CleanupStrategyType &gt;::BaseManagedType *)</a></td></tr><tr><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase&lt; TPtrCleanupTraits&lt; T, CleanupStrategyType &gt;::BaseManagedType &gt;::Swap(LAutoPtrBase &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase&lt; TPtrCleanupTraits&lt; T, CleanupStrategyType &gt;::BaseManagedType &gt;::operator=(TPtrCleanupTraits&lt; T, CleanupStrategyType &gt;::BaseManagedType *)</a></td></tr><tr><td> </td><td><a href="GUID-424822E2-E971-3BAA-B346-C75C5C1A2FC5.html">LManagedPtrBase::LManagedPtrBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-424822E2-E971-3BAA-B346-C75C5C1A2FC5.html">LManagedPtrBase::LManagedPtrBase(U *)</a></td></tr><tr><td> </td><td><a href="GUID-424822E2-E971-3BAA-B346-C75C5C1A2FC5.html">LManagedPtrBase::ReleaseResource()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-424822E2-E971-3BAA-B346-C75C5C1A2FC5.html">LManagedPtrBase::Swap(LManagedPtrBase &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-424822E2-E971-3BAA-B346-C75C5C1A2FC5.html">LManagedPtrBase::~LManagedPtrBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Type Definitions</th></tr></thead><tbody><tr><td align="right" valign="top">typedef</td><td>CleanupStrategyType <a href="#GUID-93B0D3F1-B719-38D0-942D-1B103680F724">CleanupStrategy</a></td></tr><tr class="bg"><td align="right" valign="top">typedef</td><td>
+					<a href="GUID-424822E2-E971-3BAA-B346-C75C5C1A2FC5.html">LManagedPtrBase::BaseManagedType</a> * <a href="#GUID-BB9E4487-F031-3B3C-82FC-4BD4942AAFE5">LManagedPtr&lt; T, CleanupStrategy &gt;TUnspecifiedBoolType</a></td></tr><tr><td align="right" valign="top">typedef</td><td>T <a href="#GUID-65688EEA-B7EE-3708-BBA8-A16071168796">ManagedType</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Type Definitions</th></tr></thead><tbody><tr><td align="right" valign="top">typedef</td><td>
+					<a href="GUID-424822E2-E971-3BAA-B346-C75C5C1A2FC5.html">LManagedPtrBase</a>&lt; T, CleanupStrategyType &gt; <a href="#GUID-862E6515-C36D-3F5A-A425-D2AC23FDF3C4">LManagedPtrBase</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Attributes</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-6F527857-9A92-31EE-9FED-5E6A57441DE2.html">LAutoPtrBase&lt; TPtrCleanupTraits&lt; T, CleanupStrategyType &gt;::BaseManagedType &gt;::iPtr</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-01C53681-807A-3383-8235-5E2F1CDB24B0"><a name="GUID-01C53681-807A-3383-8235-5E2F1CDB24B0"><!-- --></a>
+		<h2 class="topictitle2">LManagedPtr()</h2>
+		<table class="signature"><tr><td>LManagedPtr</td><td>(</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Default constructor. Constructs an empty <a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html#GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA">LManagedPtr</a> object.</p>
+
+				<div class="p">
+					<dl class="postcondition">
+						
+							<dt class="dlterm">Post-condition</dt>
+
+							<dd>
+								<a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html#GUID-8D73F78A-D0AA-385F-9AD4-E4B03A054B6F">Get()</a> == NULL </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-A5CA9897-3DDB-3C16-A3C6-CA90B2DB47A1"><a name="GUID-A5CA9897-3DDB-3C16-A3C6-CA90B2DB47A1"><!-- --></a>
+		<h2 class="topictitle2">LManagedPtr(T *)</h2>
+		<table class="signature"><tr><td>LManagedPtr</td><td>(</td><td>T *</td><td>aPtr</td><td>)</td><td>[inline, explicit]</td></tr></table><div class="section"><div>
+				<p>Explicit constructor template. Constructs a <a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html#GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA">LManagedPtr</a> object that manages the pointer aPtr of a type convertible to T* that can be cleaned up using the cleanup strategy of the <a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html#GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA">LManagedPtr</a> class. The default cleanup strategy is to delete the pointer to a heap-allocated object by using non-array delete. Alternative cleanup strategies can be specified by using the CleanupStrategy template parameter of the <a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html#GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA">LManagedPtr</a> class template.</p>
+
+				<div class="p">
+					<dl class="precondition">
+						
+							<dt class="dlterm">Pre-condition</dt>
+
+							<dd>aPtr is of a type convertible to T* and can be cleaned up using the cleanup strategy.</dd>
+
+						
+					</dl>
+
+					<dl class="postcondition">
+						
+							<dt class="dlterm">Post-condition</dt>
+
+							<dd>
+								<a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html#GUID-8D73F78A-D0AA-385F-9AD4-E4B03A054B6F">Get()</a> == aPtr </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">T * aPtr</td><td>A pointer of a type that is convertible to T* that can be cleaned up using the cleanup strategy. </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-8D73F78A-D0AA-385F-9AD4-E4B03A054B6F"><a name="GUID-8D73F78A-D0AA-385F-9AD4-E4B03A054B6F"><!-- --></a>
+		<h2 class="topictitle2">Get()</h2>
+		<table class="signature"><tr><td>T *</td><td>Get</td><td>(</td><td>)</td><td>const [inline]</td></tr></table><div class="section"><div>
+				<p>Returns a pointer to the managed object of type T.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-8485CE27-FBDC-3D1C-B614-0F9B32203A24"><a name="GUID-8485CE27-FBDC-3D1C-B614-0F9B32203A24"><!-- --></a>
+		<h2 class="topictitle2">Swap(LManagedPtr &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>Swap</td><td>(</td><td><a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html">LManagedPtr</a> &amp;</td><td>aManagedPtr</td><td>)</td><td>[inline]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html">LManagedPtr</a> &amp; aManagedPtr</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4372F2FB-282F-3B35-9500-BA8B45626F08"><a name="GUID-4372F2FB-282F-3B35-9500-BA8B45626F08"><!-- --></a>
+		<h2 class="topictitle2">Unmanage()</h2>
+		<table class="signature"><tr><td>T *</td><td>Unmanage</td><td>(</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Disables the automatic resource management for this object and returns a pointer to the object of type T.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C11B6ED1-9790-35B3-8D8E-8B287B997933"><a name="GUID-C11B6ED1-9790-35B3-8D8E-8B287B997933"><!-- --></a>
+		<h2 class="topictitle2">operator TUnspecifiedBoolType()</h2>
+		<table class="signature"><tr><td>operator TUnspecifiedBoolType</td><td>(</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Conversion operator that enables <a href="GUID-BD4E0CC4-75A2-306D-A860-06B4138F86EB.html#GUID-BD4E0CC4-75A2-306D-A860-06B4138F86EB">LCleanedupPtr</a> objects to be used in boolean contexts.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-346D7653-95E9-3426-B69C-1758930CD394"><a name="GUID-346D7653-95E9-3426-B69C-1758930CD394"><!-- --></a>
+		<h2 class="topictitle2">operator*()</h2>
+		<table class="signature"><tr><td>T &amp;</td><td>operator*</td><td>(</td><td>)</td><td>const [inline]</td></tr></table><div class="section"><div>
+				<p>Overloaded indirection operator function.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-DD248B42-527F-3B05-9E81-3051489BA58F"><a name="GUID-DD248B42-527F-3B05-9E81-3051489BA58F"><!-- --></a>
+		<h2 class="topictitle2">operator-&gt;()</h2>
+		<table class="signature"><tr><td>T *</td><td>operator-&gt;</td><td>(</td><td>)</td><td>const [inline]</td></tr></table><div class="section"><div>
+				<p>Overloaded class member access operator function.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-88D1552C-3915-3351-84BF-EB2DCF9AB1DD"><a name="GUID-88D1552C-3915-3351-84BF-EB2DCF9AB1DD"><!-- --></a>
+		<h2 class="topictitle2">operator=(T *)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html">LManagedPtr</a> &amp;</td><td>operator=</td><td>(</td><td>T *</td><td>aPtr</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Destructor. When automatic resource management is enabled, the destructor invokes the specified cleanup strategy for the managed pointer. Assigns a new pointer to be managed. The new pointer must be of a type convertible to T* and it must be possible to use the cleanup strategy of the <a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html#GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA">LManagedPtr</a> object for the cleanup of the new managed pointer. If the <a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html#GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA">LManagedPtr</a> object already contains a managed pointer, then the cleanup strategy is invoked with the managed pointer before assigning the new managed pointer.</p>
+
+				<div class="p">
+					<dl class="precondition">
+						
+							<dt class="dlterm">Pre-condition</dt>
+
+							<dd>aPtr is a pointer of a type that is convertible to T* and can be cleaned up using the cleanup strategy.</dd>
+
+						
+					</dl>
+
+					<dl class="postcondition">
+						
+							<dt class="dlterm">Post-condition</dt>
+
+							<dd>
+								<a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html#GUID-8D73F78A-D0AA-385F-9AD4-E4B03A054B6F">Get()</a> == aPtr </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">T * aPtr</td><td>A pointer of a type that is convertible to T* that can be cleaned up using the cleanup strategy. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-798F7BB6-BD53-347F-A0DE-02CD120DF513"><a name="GUID-798F7BB6-BD53-347F-A0DE-02CD120DF513"><!-- --></a>
+		<h2 class="topictitle2">operator=(U *)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html">LManagedPtr</a> &amp;</td><td>operator=</td><td>(</td><td>U *</td><td>aPtr</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Assigns a new pointer to be managed. The new pointer must be of a type convertible to T* and it must be possible to use the cleanup strategy of the <a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html#GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA">LManagedPtr</a> object for the cleanup of the new managed pointer. If the <a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html#GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA">LManagedPtr</a> object already contains a managed pointer, then the cleanup strategy is invoked with the managed pointer before assigning the new managed pointer.</p>
+
+				<div class="p">
+					<dl class="precondition">
+						
+							<dt class="dlterm">Pre-condition</dt>
+
+							<dd>aPtr is a pointer of a type that is convertible to T* and can be cleaned up using the cleanup strategy.</dd>
+
+						
+					</dl>
+
+					<dl class="postcondition">
+						
+							<dt class="dlterm">Post-condition</dt>
+
+							<dd>
+								<a href="GUID-166B7262-50A5-3C2E-B7DD-3291F96B31AA.html#GUID-8D73F78A-D0AA-385F-9AD4-E4B03A054B6F">Get()</a> == aPtr </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">U * aPtr</td><td>A pointer of a type that is convertible to T* that can be cleaned up using the cleanup strategy. </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Type Definitions Documentation</h1><div class="nested1" id="GUID-93B0D3F1-B719-38D0-942D-1B103680F724"><a name="GUID-93B0D3F1-B719-38D0-942D-1B103680F724"><!-- --></a>
+		<h2 class="topictitle2">Typedef CleanupStrategy</h2>
+		<table class="signature"><tr><td>typedef CleanupStrategyType</td><td>CleanupStrategy</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-BB9E4487-F031-3B3C-82FC-4BD4942AAFE5"><a name="GUID-BB9E4487-F031-3B3C-82FC-4BD4942AAFE5"><!-- --></a>
+		<h2 class="topictitle2">Typedef LManagedPtr&lt; T, CleanupStrategy &gt;TUnspecifiedBoolType</h2>
+		<table class="signature"><tr><td>typedef 
+					<a href="GUID-424822E2-E971-3BAA-B346-C75C5C1A2FC5.html">LManagedPtrBase::BaseManagedType</a> *</td><td>LManagedPtr&lt; T, CleanupStrategy &gt;TUnspecifiedBoolType</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-862E6515-C36D-3F5A-A425-D2AC23FDF3C4"><a name="GUID-862E6515-C36D-3F5A-A425-D2AC23FDF3C4"><!-- --></a>
+		<h2 class="topictitle2">Typedef LManagedPtrBase</h2>
+		<table class="signature"><tr><td>typedef 
+					<a href="GUID-424822E2-E971-3BAA-B346-C75C5C1A2FC5.html">LManagedPtrBase</a>&lt; T, CleanupStrategyType &gt;</td><td>LManagedPtrBase</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-65688EEA-B7EE-3708-BBA8-A16071168796"><a name="GUID-65688EEA-B7EE-3708-BBA8-A16071168796"><!-- --></a>
+		<h2 class="topictitle2">Typedef ManagedType</h2>
+		<table class="signature"><tr><td>typedef T</td><td>ManagedType</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

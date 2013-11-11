@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Porting Control Panel Plug-ins"/>
+<meta name="abstract" content="The purpose of this document is to help migrate polymorphic DLLs to plug-ins as applications."/>
+<meta name="description" content="The purpose of this document is to help migrate polymorphic DLLs to plug-ins as applications."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4CC3CA3-8C02-5F73-A482-4F849DD08111.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-58035B49-2EAE-5144-B226-28AF2EDD62E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-58CA15F8-D984-5D07-8C00-161FA16A8FD3.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1578590A-FC00-5C3B-8BF9-F6E43CA9D9A0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D2E19490-4179-548F-9DA8-9AE637FAC9E2.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4CC3CA3-8C02-5F73-A482-4F849DD08111.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-827AFAA3-75A4-5F08-8F83-1E36DAD8533D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Porting Control Panel Plug-ins</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC"><a name="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2520040 id2520048 id2520063 id2520123 id2520201 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-58035B49-2EAE-5144-B226-28AF2EDD62E7.html">Generic Application Support Guide</a> &gt; <a href="GUID-58CA15F8-D984-5D07-8C00-161FA16A8FD3.html">Application Framework</a> &gt; <a href="GUID-1578590A-FC00-5C3B-8BF9-F6E43CA9D9A0.html">Application Architecture</a> &gt; <a href="GUID-D2E19490-4179-548F-9DA8-9AE637FAC9E2.html">Application Architecture Tutorials</a> &gt; <a href="GUID-C4CC3CA3-8C02-5F73-A482-4F849DD08111.html">Porting Tutorial</a> &gt; </div>
+<h1 class="topictitle1">Porting Control Panel Plug-ins</h1>
+<div><p>The purpose of this document is to help migrate polymorphic DLLs to plug-ins as applications. </p>
+<div class="section" id="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-D2B22D1F-BADC-5BCB-8B1F-3F5148179A38"><a name="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-D2B22D1F-BADC-5BCB-8B1F-3F5148179A38"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p>Different control panel plug-ins are likely to need different capabilities in order to change the phone's configuration. Rather than each plug-in running in a parent process with a dangerously large set of capabilities, each plug-in should run in its own process, so that each can have the minimal set of capabilities that it requires. For this reason, the decision was made to convert all existing control panel plug-ins, which are implemented as polymorphic DLLs, into standard applications, but with a special registration file. This registration file is used by the application server to distinguish the plug-in from a normal application. </p>
+ </div>
+ <div class="section" id="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-637E0247-3127-5E4E-BE0B-1644141C1CF9"><a name="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-637E0247-3127-5E4E-BE0B-1644141C1CF9"><!-- --></a><h2 class="sectiontitle">Required background</h2> <ul><li id="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-CD6A341B-CD18-5261-8AC0-9F77810B3953"><a name="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-CD6A341B-CD18-5261-8AC0-9F77810B3953"><!-- --></a><p>The control panel application must be located in <span class="filepath">\sys\bin\&lt;appname.exe&gt;</span>. Only executables (EXEs and DLLs) must exist in <span class="filepath">\sys\bin\</span>. </p>
+ </li>
+ <li id="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-034BA5BD-E7A3-5C48-821C-D8ED99646CD6"><a name="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-034BA5BD-E7A3-5C48-821C-D8ED99646CD6"><!-- --></a><p>The control panel application's UI resource file must be located in <span class="filepath">\Resource\apps\&lt;appname.rsc&gt;</span>. </p>
+ </li>
+ <li id="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-E39EA29A-6D93-5122-8C1B-87992050868E"><a name="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-E39EA29A-6D93-5122-8C1B-87992050868E"><!-- --></a><p>There must be a registration resource file for each control panel application in </p>
+ <p> <span class="filepath">\private\10003a3f\apps\</span> if it is either on the emulator or built into the ROM, or </p>
+ <p> <span class="filepath">\private\10003a3f\import\apps\</span> if it is installed using SWI. </p>
+ </li>
+ </ul>
+ </div>
+ <div class="section" id="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-0E173D05-301B-5C51-B39A-8B60884FBFC1"><a name="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-0E173D05-301B-5C51-B39A-8B60884FBFC1"><!-- --></a><h2 class="sectiontitle">Source code changes</h2> <p>Each existing control panel plug-in has only one exported function, which is called by default. To convert the plug-in into an application, the four classes which are required components of any application must be provided, for example: </p>
+ <ul><li id="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-AB6F5FBC-05C2-5A76-977A-7AC37167EFB1"><a name="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-AB6F5FBC-05C2-5A76-977A-7AC37167EFB1"><!-- --></a><p> <samp class="codeph">class CExampleAppView : public</samp> <a href="GUID-B06F99BD-F032-3B87-AB26-5DD6EBE8C160.html"><span class="apiname">CCoeControl</span></a>  </p>
+ </li>
+ <li id="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-2B90796B-A708-5ABF-908C-DEAFA17C1F29"><a name="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-2B90796B-A708-5ABF-908C-DEAFA17C1F29"><!-- --></a><p> <samp class="codeph">class CExampleAppUi : public</samp> <a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html"><span class="apiname">CEikAppUi</span></a>  </p>
+ </li>
+ <li id="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-01695E40-61CF-586F-9733-9BC9264D77B1"><a name="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-01695E40-61CF-586F-9733-9BC9264D77B1"><!-- --></a><p> <samp class="codeph"> class CExampleDocument : public</samp> <a href="GUID-B33A8A56-D1BE-3E3D-B5AC-F644A5C764DB.html"><span class="apiname">CEikDocument</span></a>  </p>
+ </li>
+ <li id="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-519A9912-947D-5633-9D35-DA729CFA71DF"><a name="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-519A9912-947D-5633-9D35-DA729CFA71DF"><!-- --></a><p> <samp class="codeph">class CExampleApplication : public</samp> <a href="GUID-E36E2F07-09E7-32BC-BB83-14DF9232E7D9.html"><span class="apiname">CEikApplication</span></a>  </p>
+ </li>
+ </ul>
+ <p> <strong> Note:</strong> that each System GUI provides its own application, app UI and document base classes. </p>
+ <p>The executable's entry points need to be modified as follows: </p>
+ <pre class="codeblock" id="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-8F791856-BD98-5B1A-9582-DF52C159673F"><a name="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-8F791856-BD98-5B1A-9582-DF52C159673F"><!-- --></a>LOCAL_C CApaApplication* NewApplication()
+    {
+ return new CExampleApplication;
+    } 
+GLDEF_C TInt E32Main()
+    {
+    return EikStart::RunApplication(NewApplication);
+    } 
+#if defined(__WINS__) &amp;&amp; !defined(EKA2) 
+GLDEF_C TInt E32Dll(TDllReason)
+    {
+    return KErrNone;
+    } 
+EXPORT_C TInt WinsMain(TDesC* aCmdLine)
+    {
+    return EikStart::RunApplication(NewApplication, aCmdLine);
+    } 
+#endif</pre>
+ </div>
+ <div class="section" id="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-B1412B39-8480-5DF4-ABC5-C0CB5DE4A6B8"><a name="GUID-C0BA02F6-E852-55B3-8026-1056B2ADF6BC__GUID-B1412B39-8480-5DF4-ABC5-C0CB5DE4A6B8"><!-- --></a><h2 class="sectiontitle">Resource and MMP file changes</h2> <p>For details on converting existing control panel plug-ins into applications, refer to the migration document: <a href="GUID-3CAD7211-2164-5F93-9EA7-7167E1C14012.html">Porting apps to exes</a>. </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C4CC3CA3-8C02-5F73-A482-4F849DD08111.html">Porting Tutorial</a></div>
+</div>
+<div class="relinfo"><strong>Related information</strong><br/>
+<div><a href="GUID-827AFAA3-75A4-5F08-8F83-1E36DAD8533D.html">Secure Software Install</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Handling EEikCmdExit"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-11FE772A-E662-4B88-B871-97A40A40FBAB"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Handling EEikCmdExit</title>
+
+     
+<?php     
+   include_once ($_SERVER["DOCUMENT_ROOT"]. '/includes/skin_constants.php');
+   include_once (CURRENT_SKIN_PATH.'/sdl_head.html');
+?>
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-11FE772A-E662-4B88-B871-97A40A40FBAB"><a name="GUID-11FE772A-E662-4B88-B871-97A40A40FBAB"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"/>
+<h1 class="topictitle1">Handling
+EEikCmdExit</h1>
+<div>
+<p>If your Symbian GUI-based application should close, for example, in
+out of memory situations, you must handle the <span class="parmname">EEikCmdExit</span> command
+ID in your override of <a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html#GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E__GUID-D6E5C363-CF39-3E56-B717-57CCEE8DC96F"><span class="apiname">CEikAppUi::HandleCommandL()</span></a>. The
+UI architecture of your application determines where you override <a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html#GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E__GUID-D6E5C363-CF39-3E56-B717-57CCEE8DC96F"><span class="apiname">CEikAppUi::HandleCommandL()</span></a>.
+A typical implementation is as follows:</p>
+
+<pre class="codeblock" id="GUID-11FE772A-E662-4B88-B871-97A40A40FBAB__GUID-80E7C5FF-A507-42FA-ACF0-808539FFF6A5"><a name="GUID-11FE772A-E662-4B88-B871-97A40A40FBAB__GUID-80E7C5FF-A507-42FA-ACF0-808539FFF6A5"><!-- --></a>void CMyCommandHandlingAppUi::HandleCommandL(TInt aCommand)
+    {
+    	
+    switch(aCommand)
+        {
+        case EEikCmdExit:
+        case EAknSoftkeyExit:
+            Exit();
+            break;
+       
+        default:
+            break;
+        }
+    }
+</pre>
+
+<p>where <a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html#GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E__GUID-6DB0AB66-DC74-33EB-9DA4-8DB6383728F9"><span class="apiname">CEikAppUi::Exit()</span></a> closes the application. <a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html"><span class="apiname">CEikAppUi</span></a> also
+provides <samp class="codeph">SaveAnyChangesL()</samp> and <span class="parmname">SaveL()</span> methods
+in case you need to save the application document.</p>
+
+<div class="note"><span class="notetitle">Note:</span> 
+<p>In Symbian view architecture applications, the <span class="parmname">EEikCmdExit</span> command
+must be only handled once: either in the UI controller or in a view. Since
+the exit command is an application wide command, it is recommended that it
+be handled in the UI controller implementation.</p>
+
+</div>
+
+<p><a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html#GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E__GUID-6DB0AB66-DC74-33EB-9DA4-8DB6383728F9"><span class="apiname">CEikAppUi::Exit()</span></a> exits the application. If the application
+is embedded, control returns to the parent, which should also exit. The application
+framework sends an <span class="parmname">EEikCmdExit</span> command ID to each application
+in this chain to support this behavior.</p>
+
+<div class="note"><span class="notetitle">Note:</span> 
+<p><a href="GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E.html#GUID-1185F595-0488-3E93-8D60-6B3A1A3AC32E__GUID-6DB0AB66-DC74-33EB-9DA4-8DB6383728F9"><span class="apiname">CEikAppUi::Exit()</span></a> is guaranteed not to return. This
+means that you should not trap this method. Among other things, do not call
+another method when you handle the command ID that triggers an exit.</p>
+
+</div>
+
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

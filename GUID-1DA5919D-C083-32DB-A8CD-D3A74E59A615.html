@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="conn::CSBGenericDataType"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615"/>
+
+<title>conn::CSBGenericDataType</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615"><a name="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2391687 id2391691 id2391696 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">conn::CSBGenericDataType Class Reference</h1>
+	<table class="signature"><tr><td>class conn::CSBGenericDataType : public CBase</td></tr></table><div class="section"><div>
+			<p>Generic Data Type is a class for representing any type of data owner so that it may be passed through a common interface</p>
+
+			<p>
+				<strong>Introduction</strong>
+			</p>
+
+			<p>The <a href="GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C.html#GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C">CSBEClient</a> Secure backup interface class is designed to perform backup operations on many different types of data owners. This presents a problem in that the interfaces sometimes require arguments that are specific to the data type in question. In addition, we can't predict the new data types that may appear in future, therefore a "generic" data type was proposed that could be passed through interfaces as a base class and contained enough information to enable Runtime Type Identification (RTTI) to be performed.</p>
+
+			<p>This approach means that only one interface needs to be maintained for each backup operation whilst still allowing the Secure Backup Engine to determine which type was originally sent by a PC client.</p>
+
+			<p>As well as acting as an identifier for different Data Owner's (DO's), it was decided to extend the usage of the class to identify Data Owner's Data as each DO may require specific information to identify data being transferred (such as finished flags etc.)</p>
+
+			<p>The identifier is transparent to the user of <a href="GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C.html#GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C">CSBEClient</a>, meaning that it can be extracted directly from the message sent by the PC into a generic type and passed through to the SBEngine without being instantiated as a derived class.</p>
+
+			<p>
+				<strong>Usage</strong>
+			</p>
+
+			<p>The general usage of the generic data type is to extract it from a PC sent message as a <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615">CSBGenericDataType</a> object using <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-8EF3A6E2-AF44-302D-9FC2-962E69814D91">CSBGenericDataType::NewL(const TDesC8&amp; aDes)</a>.</p>
+
+			<p>There are a few conventions that have been followed within the Secure Backup component that a developer must bear in mind:</p>
+
+			<div class="p">
+				<ul>
+					<li>
+						<p>Ownership of the <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615">CSBGenericDataType</a>, <a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html#GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC">CSBGenericTransferType</a> or derived object is generally passed between interfaces and as such it is the resposibility of the receiving function to delete it. Unless otherwise stated in the documentation for an interface, this is assumed to be the case;</p>
+
+					</li>
+
+				</ul>
+
+				<ul>
+					<li>
+						<p>When a <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615">CSBGenericDataType</a> or <a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html#GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC">CSBGenericTransferType</a> is to be converted into a derived type, it must be passed in as a parameter to the constructor of the derived type. It must not be downcasted as it may never have been a derived type, and the derived types contain extra member data;</p>
+
+					</li>
+
+				</ul>
+In order to convert a base type to a derived type, a method <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-7B347B67-542A-3F90-ADAD-D085AE356D85">CSBGenericDataType::DerivedTypeL()</a> that returns a conn::TSBDerivedType can be called to query the base object for it's derived type.</div>
+
+			<p>A typical mechanism would be to use a switch statement, switching on the return value of <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-7B347B67-542A-3F90-ADAD-D085AE356D85">DerivedTypeL()</a> and taking appropriate action with regards to creating a derived object.</p>
+
+			<p>
+				<strong>Internal Operation</strong>
+			</p>
+
+			<p>
+				<strong>Initialisation</strong>
+			</p>
+
+			<p>
+				<a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615">CSBGenericDataType</a> is underneath basically a descriptor buffer. All accessor functions simply extract and pack values from this descriptor. This means that the type can be safely transferred via IPC between processes and safely transferred between a device and a PC independently of communications bearer or transport.</p>
+
+			<p>The base class <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615">CSBGenericDataType</a> has ownership of the data buffer, iDataBuffer, used to store the member data in and in order to keep the derived classes atomic, a running total size variable is updated by the C++ constructors of each class in the inheritence chain. Because of Symbian's static NewL idiom, all C++ constructors are executed before <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-84C5000A-1D5D-3527-94CD-58BF932B86B8">CSBGenericDataType::ConstructL()</a> is called to instantiate the buffer, hence the size can be guaranteed to be big enough to hold all of the derived type's data.</p>
+
+			<p>In order to ensure that the derived types know whereabouts in the descriptor to extract and pack values, an initialisation routine, <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-182BE8F7-FAAF-3E4C-9990-C1768C3672B9">InitialiseL(TInt&amp; aOffset)</a>, is implemented by each class. Each class is responsible for calling it's parents <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-182BE8F7-FAAF-3E4C-9990-C1768C3672B9">InitialiseL()</a>, before initialising itself and passing in an offset. The job of the initialisation method is to walk the descriptor, storing the offset's of it's member data. The offset is a reference and is hence updated so that the child class begins unpacking after the parents data ends. In this way, each class is atomic apart from having to explicitly scope it's parent's <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-182BE8F7-FAAF-3E4C-9990-C1768C3672B9">InitialiseL()</a> method.</p>
+
+			<p>
+				<strong>Accessing Data</strong>
+			</p>
+
+			<p>Data is accessed by the use of packing and unpacking bytes directly from the descriptor using the UnpackType, PackType and associated function templates. These will be unpacked in the endianness of the system and therefore the PC will have to ensure that this is taken into account when packing the type into the message.</p>
+
+			<p>Although this method suffers in terms of performance, for the reasons of platform independence, this is the most reliable method of packing/unpacking.</p>
+
+			<p>
+				<strong>Byte Structure</strong>
+			</p>
+
+			<p>All child classes have their data following on from the parent classes so that the parent classes may remain atomic with respect to the structure of their data. The binary structure of this data type inside the descriptor buffer is as follows. Note that the endianness of the data types specified below is determined by the platform and the PC must pack accordingly:</p>
+
+			<div class="p">
+				<table cellpadding="4" cellspacing="0" summary="" border="0" class="simpletableborder"><tr>
+						<td valign="top">
+							<p>TSBDerivedType [4-bytes]  </p>
+
+						</td>
+
+					</tr>
+</table>
+
+			</div>
+
+			<p/>
+
+			<p>Generic Data Type is a class for representing any type of data owner so that it may be passed through a common interface</p>
+
+			<p>
+				<strong>Introduction</strong>
+			</p>
+
+			<p>The <a href="GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C.html#GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C">CSBEClient</a> Secure backup interface class is designed to perform backup operations on many different types of data owners. This presents a problem in that the interfaces sometimes require arguments that are specific to the data type in question. In addition, we can't predict the new data types that may appear in future, therefore a "generic" data type was proposed that could be passed through interfaces as a base class and contained enough information to enable Runtime Type Identification (RTTI) to be performed.</p>
+
+			<p>This approach means that only one interface needs to be maintained for each backup operation whilst still allowing the Secure Backup Engine to determine which type was originally sent by a PC client.</p>
+
+			<p>As well as acting as an identifier for different Data Owner's (DO's), it was decided to extend the usage of the class to identify Data Owner's Data as each DO may require specific information to identify data being transferred (such as finished flags etc.)</p>
+
+			<p>The identifier is transparent to the user of <a href="GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C.html#GUID-FB671D02-0F15-396F-9FB7-EE3E9372093C">CSBEClient</a>, meaning that it can be extracted directly from the message sent by the PC into a generic type and passed through to the SBEngine without being instantiated as a derived class.</p>
+
+			<p>
+				<strong>Usage</strong>
+			</p>
+
+			<p>The general usage of the generic data type is to extract it from a PC sent message as a <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615">CSBGenericDataType</a> object using <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-8EF3A6E2-AF44-302D-9FC2-962E69814D91">CSBGenericDataType::NewL(const TDesC8&amp; aDes)</a>.</p>
+
+			<p>There are a few conventions that have been followed within the Secure Backup component that a developer must bear in mind:</p>
+
+			<div class="p">
+				<ul>
+					<li>
+						<p>Ownership of the <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615">CSBGenericDataType</a>, <a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html#GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC">CSBGenericTransferType</a> or derived object is generally passed between interfaces and as such it is the resposibility of the receiving function to delete it. Unless otherwise stated in the documentation for an interface, this is assumed to be the case;</p>
+
+					</li>
+
+				</ul>
+
+				<ul>
+					<li>
+						<p>When a <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615">CSBGenericDataType</a> or <a href="GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC.html#GUID-27BF6AEB-72A0-3E39-9598-AB97BE2569FC">CSBGenericTransferType</a> is to be converted into a derived type, it must be passed in as a parameter to the constructor of the derived type. It must not be downcasted as it may never have been a derived type, and the derived types contain extra member data;</p>
+
+					</li>
+
+				</ul>
+In order to convert a base type to a derived type, a method <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-7B347B67-542A-3F90-ADAD-D085AE356D85">CSBGenericDataType::DerivedTypeL()</a> that returns a conn::TSBDerivedType can be called to query the base object for it's derived type.</div>
+
+			<p>A typical mechanism would be to use a switch statement, switching on the return value of <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-7B347B67-542A-3F90-ADAD-D085AE356D85">DerivedTypeL()</a> and taking appropriate action with regards to creating a derived object.</p>
+
+			<p>
+				<strong>Internal Operation</strong>
+			</p>
+
+			<p>
+				<strong>Initialisation</strong>
+			</p>
+
+			<p>
+				<a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615">CSBGenericDataType</a> is underneath basically a descriptor buffer. All accessor functions simply extract and pack values from this descriptor. This means that the type can be safely transferred via IPC between processes and safely transferred between a device and a PC independently of communications bearer or transport.</p>
+
+			<p>The base class <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615">CSBGenericDataType</a> has ownership of the data buffer, iDataBuffer, used to store the member data in and in order to keep the derived classes atomic, a running total size variable is updated by the C++ constructors of each class in the inheritence chain. Because of Symbian's static NewL idiom, all C++ constructors are executed before <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-84C5000A-1D5D-3527-94CD-58BF932B86B8">CSBGenericDataType::ConstructL()</a> is called to instantiate the buffer, hence the size can be guaranteed to be big enough to hold all of the derived type's data.</p>
+
+			<p>In order to ensure that the derived types know whereabouts in the descriptor to extract and pack values, an initialisation routine, <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-182BE8F7-FAAF-3E4C-9990-C1768C3672B9">InitialiseL(TInt&amp; aOffset)</a>, is implemented by each class. Each class is responsible for calling it's parents <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-182BE8F7-FAAF-3E4C-9990-C1768C3672B9">InitialiseL()</a>, before initialising itself and passing in an offset. The job of the initialisation method is to walk the descriptor, storing the offset's of it's member data. The offset is a reference and is hence updated so that the child class begins unpacking after the parents data ends. In this way, each class is atomic apart from having to explicitly scope it's parent's <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-182BE8F7-FAAF-3E4C-9990-C1768C3672B9">InitialiseL()</a> method.</p>
+
+			<p>
+				<strong>Accessing Data</strong>
+			</p>
+
+			<p>Data is accessed by the use of packing and unpacking bytes directly from the descriptor using the UnpackType, PackType and associated function templates. These will be unpacked in the endianness of the system and therefore the PC will have to ensure that this is taken into account when packing the type into the message.</p>
+
+			<p>Although this method suffers in terms of performance, for the reasons of platform independence, this is the most reliable method of packing/unpacking.</p>
+
+			<p>
+				<strong>Byte Structure</strong>
+			</p>
+
+			<p>All child classes have their data following on from the parent classes so that the parent classes may remain atomic with respect to the structure of their data. The binary structure of this data type inside the descriptor buffer is as follows. Note that the endianness of the data types specified below is determined by the platform and the PC must pack accordingly:</p>
+
+			<div class="p">
+				<table cellpadding="4" cellspacing="0" summary="" border="0" class="simpletableborder"><tr>
+						<td valign="top">
+							<p>TSBDerivedType [4-bytes]  </p>
+
+						</td>
+
+					</tr>
+</table>
+
+			</div>
+
+			<p/>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">conn::CSBGenericDataType<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-690911A5-D070-3710-AAD7-9115CD4513CB">~CSBGenericDataType</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-116DAFF8-6AA2-3AE0-B5B7-3E05738B0399.html">TSBDerivedType</a></td><td><a href="#GUID-D9AA130E-BD31-3FC3-BCD4-BF3D718342E6">DerivedTypeL</a>()</td></tr><tr><td align="right" class="code">IMPORT_C const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td><a href="#GUID-7611AE63-67F4-3752-A382-88C5F2B2D383">Externalise</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html">CSBGenericDataType</a> *</td><td><a href="#GUID-8EF3A6E2-AF44-302D-9FC2-962E69814D91">NewL</a>(const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-53898F35-63D0-3E80-BC09-AE06EAC7A47D">CSBGenericDataType</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-84C5000A-1D5D-3527-94CD-58BF932B86B8">ConstructL</a>(const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-182BE8F7-FAAF-3E4C-9990-C1768C3672B9">InitialiseL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-32CB353A-C3F8-3201-9B5A-167D34C65F9F">PackDescriptorTypeAdvance</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC16</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-F2F28E9B-A1FD-31EA-BC3F-8BFD06D9A85D">PackDescriptorTypeAdvance</a>(const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-A7B31FB4-7965-3F20-AB27-3E9E9C866244">UnpackDescriptorTypeAdvance</a>(<a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC16</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-6B0C0F75-8096-3AB4-8709-C387ACCC7396">UnpackTPtrAdvance</a>(<a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC16</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-E284246D-1B31-39CE-9D8C-9C3854AEC76A">UnpackTPtrAdvance</a>(<a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td><a href="#GUID-684C88B7-42F7-3979-BA6C-039D5C9394E5">iDataBuffer</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-1213A0A1-6DCB-39FF-8E7E-C1DF2470ADA6">iDerivedTypeOffset</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-8CCFA02F-64C9-3690-97EA-542BFF7F37E8">iSize</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-53898F35-63D0-3E80-BC09-AE06EAC7A47D"><a name="GUID-53898F35-63D0-3E80-BC09-AE06EAC7A47D"><!-- --></a>
+		<h2 class="topictitle2">CSBGenericDataType()</h2>
+		<table class="signature"><tr><td>CSBGenericDataType</td><td>(</td><td>)</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>C++ Constructor. Any derived types must increment iSize in their C++ constructors in order that when <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-4E1FC1C9-F3A1-3E73-85CA-D8860A5533B3">CSBGenericDataType::BaseConstructL()</a> is called, the data buffer is initialised to be large enough to accomodate the data stored by the derived type </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-690911A5-D070-3710-AAD7-9115CD4513CB"><a name="GUID-690911A5-D070-3710-AAD7-9115CD4513CB"><!-- --></a>
+		<h2 class="topictitle2">~CSBGenericDataType()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CSBGenericDataType</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>C++ Destructor </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-84C5000A-1D5D-3527-94CD-58BF932B86B8"><a name="GUID-84C5000A-1D5D-3527-94CD-58BF932B86B8"><!-- --></a>
+		<h2 class="topictitle2">ConstructL(const TDesC8 &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ConstructL</td><td>(</td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aDes</td><td>)</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Symbian OS 2nd phase constructor. Called when creating a base class from raw data i.e. off the wire/IPC. Creates the base type data buffer to store object data in</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aDes</td><td>descriptor containing the buffer of data  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D9AA130E-BD31-3FC3-BCD4-BF3D718342E6"><a name="GUID-D9AA130E-BD31-3FC3-BCD4-BF3D718342E6"><!-- --></a>
+		<h2 class="topictitle2">DerivedTypeL()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-116DAFF8-6AA2-3AE0-B5B7-3E05738B0399.html">TSBDerivedType</a></td><td>DerivedTypeL</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-7611AE63-67F4-3752-A382-88C5F2B2D383"><a name="GUID-7611AE63-67F4-3752-A382-88C5F2B2D383"><!-- --></a>
+		<h2 class="topictitle2">Externalise()</h2>
+		<table class="signature"><tr><td>IMPORT_C const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>Externalise</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-182BE8F7-FAAF-3E4C-9990-C1768C3672B9"><a name="GUID-182BE8F7-FAAF-3E4C-9990-C1768C3672B9"><!-- --></a>
+		<h2 class="topictitle2">InitialiseL(TInt &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>InitialiseL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aOffset</td><td>)</td><td>[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>Initialise all of member data offsets inside the base and derived classes</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aOffset</td><td>The running offset indicating the position in the descriptor that has been parsed up to  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8EF3A6E2-AF44-302D-9FC2-962E69814D91"><a name="GUID-8EF3A6E2-AF44-302D-9FC2-962E69814D91"><!-- --></a>
+		<h2 class="topictitle2">NewL(const TDesC8 &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html">CSBGenericDataType</a> *</td><td>NewL</td><td>(</td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aDes</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Symbian constructor. A base <a href="GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615.html#GUID-1DA5919D-C083-32DB-A8CD-D3A74E59A615">CSBGenericDataType</a> may only be instantiated from a previously externalised data type. This is the method that is used to take a generic data type from either an IPC response or from a message sent by the PC. This method will not take ownership of the descriptor aDes</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aDes</td><td>descriptor containing the buffer of data  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-32CB353A-C3F8-3201-9B5A-167D34C65F9F"><a name="GUID-32CB353A-C3F8-3201-9B5A-167D34C65F9F"><!-- --></a>
+		<h2 class="topictitle2">PackDescriptorTypeAdvance(const TDesC16 &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>PackDescriptorTypeAdvance</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC16</a> &amp;</td><td>aDes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aOffset</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC16</a> &amp; aDes</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aOffset</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F2F28E9B-A1FD-31EA-BC3F-8BFD06D9A85D"><a name="GUID-F2F28E9B-A1FD-31EA-BC3F-8BFD06D9A85D"><!-- --></a>
+		<h2 class="topictitle2">PackDescriptorTypeAdvance(const TDesC8 &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>PackDescriptorTypeAdvance</td><td>(</td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aDes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aOffset</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aDes</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aOffset</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A7B31FB4-7965-3F20-AB27-3E9E9C866244"><a name="GUID-A7B31FB4-7965-3F20-AB27-3E9E9C866244"><!-- --></a>
+		<h2 class="topictitle2">UnpackDescriptorTypeAdvance(TDesC16 &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>UnpackDescriptorTypeAdvance</td><td>(</td><td><a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC16</a> &amp;</td><td>aDes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aOffset</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected]</td></tr></table><div class="section"><div>
+				<p>Function to copy a simple type from a specified position in aDes defined by aOffset. aOffset is advanced so that on return, the new offset is stored enabling the next call to UnpackType() to point at the position following this type.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC16</a> &amp; aDes</td><td>The buffer that contains the type T pointed to by aPtr  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aOffset</td><td>The running index of where the following type begins. Updated by ExtractPointer  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6B0C0F75-8096-3AB4-8709-C387ACCC7396"><a name="GUID-6B0C0F75-8096-3AB4-8709-C387ACCC7396"><!-- --></a>
+		<h2 class="topictitle2">UnpackTPtrAdvance(TPtrC16 &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>UnpackTPtrAdvance</td><td>(</td><td><a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC16</a> &amp;</td><td>aDes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aOffset</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected]</td></tr></table><div class="section"><div>
+				<p>Function to copy a simple type from a specified position in aDes defined by aOffset. aOffset is advanced so that on return, the new offset is stored enabling the next call to UnpackType() to point at the position following this type.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-8FE95467-D48B-3E61-9028-29C0F15F567E.html">TPtrC16</a> &amp; aDes</td><td>The buffer that contains the type T pointed to by aPtr  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aOffset</td><td>The running index of where the following type begins. Updated by ExtractPointer  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E284246D-1B31-39CE-9D8C-9C3854AEC76A"><a name="GUID-E284246D-1B31-39CE-9D8C-9C3854AEC76A"><!-- --></a>
+		<h2 class="topictitle2">UnpackTPtrAdvance(TPtrC8 &amp;, TInt &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>UnpackTPtrAdvance</td><td>(</td><td><a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp;</td><td>aDes,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aOffset</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp; aDes</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aOffset</td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-684C88B7-42F7-3979-BA6C-039D5C9394E5"><a name="GUID-684C88B7-42F7-3979-BA6C-039D5C9394E5"><!-- --></a>
+		<h2 class="topictitle2">
+					HBufC8 * iDataBuffer</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2A528453-0279-3E47-838C-F8A8D29B88F1.html">HBufC8</a> *</td><td>iDataBuffer</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>the data buffer </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-1213A0A1-6DCB-39FF-8E7E-C1DF2470ADA6"><a name="GUID-1213A0A1-6DCB-39FF-8E7E-C1DF2470ADA6"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iDerivedTypeOffset</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iDerivedTypeOffset</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>the derived type </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-8CCFA02F-64C9-3690-97EA-542BFF7F37E8"><a name="GUID-8CCFA02F-64C9-3690-97EA-542BFF7F37E8"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iSize</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iSize</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Cumulative size of the derived type. All ctors in the inheritence tree increment with their size </p>
+
+			</div></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

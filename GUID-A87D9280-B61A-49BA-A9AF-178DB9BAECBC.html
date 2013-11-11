@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Reading and Writing"/>
+<meta name="abstract" content="This document describes how device drivers should open, read from and write to shared chunks."/>
+<meta name="description" content="This document describes how device drivers should open, read from and write to shared chunks."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-132349A6-9A5F-4866-A54D-F01B6F58ABDD.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E90DBF35-0A05-4751-904D-4F06987FFF48.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-132349A6-9A5F-4866-A54D-F01B6F58ABDD.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Reading and Writing</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC"><a name="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 id2388215 id2388242 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; <a href="GUID-E90DBF35-0A05-4751-904D-4F06987FFF48.html" title="These documents describe how device drivers handle memory buffers and transfer data.">Memory Management</a> &gt; <a href="GUID-132349A6-9A5F-4866-A54D-F01B6F58ABDD.html" title="This document describes the use of shared chunks to share data.">Shared Chunks</a> &gt; </div>
+<h1 class="topictitle1">Reading and Writing</h1>
+<div><p>This document describes how device drivers should open, read from
+and write to shared chunks.</p>
+
+<p>Both user-side code and drivers can read and write to shared chunks. Once
+the chunk is created, opened, and memory committed to it, data can be written
+and read to the shared chunk using the base address. </p>
+
+<div class="section" id="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC__GUID-4CF7C47A-24D2-4D6D-B577-F0351178CA38"><a name="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC__GUID-4CF7C47A-24D2-4D6D-B577-F0351178CA38"><!-- --></a><h2 class="sectiontitle">Opening</h2> <p>If a shared chunk has already been created
+by a driver, then another driver can access that shared chunk through its
+handle by using one of the following functions: </p>
+ <pre class="codeblock" id="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC__GUID-EB073A6D-5DC3-5572-BD7C-E96F63BB8DCF"><a name="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC__GUID-EB073A6D-5DC3-5572-BD7C-E96F63BB8DCF"><!-- --></a>DChunk* Kern::OpenSharedChunk(DThread* aThread, TInt aChunkHandle,
+                    TBool aWrite);
+
+DChunk* Kern::OpenSharedChunk(DThread *aThread, 
+                    const TAny *aAddress, TBool aWrite, 
+                    TInt &amp;aOffset);
+</pre>
+</div>
+
+<div class="section" id="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC__GUID-95D166D2-C6BE-45F5-84E7-6F5ACB1BFA38"><a name="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC__GUID-95D166D2-C6BE-45F5-84E7-6F5ACB1BFA38"><!-- --></a><h2 class="sectiontitle">User-side access</h2> <p> <a href="GUID-326A2F4D-0E99-31C0-A35D-E8BF45913F07.html"><span class="apiname">RChunk</span></a> is
+the user side representation of a shared chunk. The user gets a shared chunk
+handle from a driver, and initialises the <samp class="codeph">RChunk</samp> object with
+it using <samp class="codeph">RChunk::SetHandle(TInt aHandle)</samp>. </p>
+ <p>The user
+can now obtain the base address of the chunk by calling <a href="GUID-326A2F4D-0E99-31C0-A35D-E8BF45913F07.html#GUID-326A2F4D-0E99-31C0-A35D-E8BF45913F07__GUID-D19E68E8-3C5F-3F97-80F2-B2F80A814A80"><span class="apiname">RChunk::Base()</span></a>.
+Data can be read or written to this memory location, in same way as any other
+memory. </p>
+ <pre class="codeblock" id="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC__GUID-E0F57FBB-1F43-564F-8350-A49B6AFEE3F1"><a name="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC__GUID-E0F57FBB-1F43-564F-8350-A49B6AFEE3F1"><!-- --></a>// User side chunk object.     
+ RChunk chunkTx; 
+     
+// Get the handle to the chunk. A driver creates the chunk and
+// returns the handle to the user to access it. The handle is  
+// assigned to the user side chunk object using RChunk::SetHandle(). 
+// (here done in the GetTxChunkHandle function). The handle has to be a positive 
+// value. It can be obtained using RChunk::Handle(), if required.
+//
+r=ldd.GetTxChunkHandle(chunkTx);     
+test(r==KErrNone);        
+     
+// Create a constant descriptor with test data
+_LIT8(KTestSendData,"&lt;&lt; TEST DATA FOR TUTORIAL DRIVER EXAMPLE &gt;&gt;");
+     
+TUint8* chunkbase;
+// Retrieve the base address of the chunk. Using this address, the user 
+// can access the shared chunk just like any memory pointer. 
+// RChunk::Base() returns the linear address of the shared chunk.
+//
+chunkbase=chunkTx.Base(); 
+    
+// Write the data to the shared chunk, using the chunk base address.
+// Note here we do not need to send data to the driver. We just write to 
+// the buffer and the driver directly accesses the chunk from the kernel side.
+//
+TPtr8 inbuf(chunkbase,KTestSendData().Size());
+inbuf = KTestSendData;
+…
+
+// Call the LDD interface TransmitData(). There is no need to send the 
+// data, instead we send only a TRequestStatus object (as it's an  
+// asynchronous function), and buffer size. If required, an offset in the shared chunk 
+// can be passed to the driver.
+r = ldd.TransmitData(txStatus,inbuf.Size());
+ test(r==KErrNone);</pre>
+ </div>
+
+<div class="section" id="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC__GUID-5524489D-37FB-41CF-BC87-540569FF943F"><a name="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC__GUID-5524489D-37FB-41CF-BC87-540569FF943F"><!-- --></a><h2 class="sectiontitle">Kernel-side access</h2> <p>On the kernel side, a chunk
+is represented by a <a href="GUID-85454082-6734-3F1D-983F-734D4C2AB12D.html"><span class="apiname">DChunk</span></a> object. A chunk is created,
+mapped, or opened as shown in earlier sections. The linear and physical addresses
+of the chunk are returned when this is done. At a later stage in the driver,
+use <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-626CCD99-63D8-322A-A807-9DB96523C82D"><span class="apiname">Kern::ChunkAddress()</span></a> and <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-79F110C1-2764-34B5-857B-6C0012D2049D"><span class="apiname">Kern::ChunkPhysicalAddress()</span></a> to
+get the linear and physical addresses respectively. A chunk is read or written
+to using this address pointer and an offset. </p>
+ <pre class="codeblock" id="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC__GUID-1E341298-F67A-5A21-8C21-405E1BB97946"><a name="GUID-A87D9280-B61A-49BA-A9AF-178DB9BAECBC__GUID-1E341298-F67A-5A21-8C21-405E1BB97946"><!-- --></a>// Note: Following lines of code are located in different 
+// functions and different files. Here they are shown together for 
+// easy comprehension.
+
+// Linear address of the Rx Shared chunk
+TLinAddr iRxChunkKernAddr;
+...
+
+// iRxChunkKernAddr returns the linear address of the Rx chunk
+TInt r=Kern::ChunkCreate(info,chunk,iRxChunkKernAddr, mapAttr);
+...
+
+// iRxBufPhysAddr returns the physical address of the Rx chunk
+r=Kern::ChunkCommitContiguous(chunk, bufoffset, size, iRxBufPhysAddr);
+...
+
+// Here we are directly using the linear address of the shared 
+// chunk, and so can get rid of any buffer copies. If the DMA 
+// port supports physical address, then the physical address can be
+// used instead of a linear address.
+// 
+TInt retval = iRxDmaRequest-&gt;Fragment(
+            TUint32)iUartComm-&gt;iPortAddr+KHoUART_RHR,
+            TUint32)(iUartComm-&gt;iRxChunkKernAddr), aCount, 
+            KDmaMemDest|KDmaIncDest, 0 /* no HW Flags*/);</pre>
+ <p>Synchronization
+between user access and kernel access to a shared chunk is handled by the
+shared chunk API. </p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-132349A6-9A5F-4866-A54D-F01B6F58ABDD.html" title="This document describes the use of shared chunks to share data.">Shared Chunks</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="HAL Handler Implementation"/>
+<meta name="abstract" content="Describes how to implement or change a new HAL handler when you create a base port."/>
+<meta name="description" content="Describes how to implement or change a new HAL handler when you create a base port."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-05DAF5EF-6F2E-562D-9DB1-0985AD4A1E48.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2D977A02-5928-5441-8AE7-42A722F2A4B8.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-05DAF5EF-6F2E-562D-9DB1-0985AD4A1E48.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-124AC7EE-E227-5358-A755-628FFE257250"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>HAL Handler Implementation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-124AC7EE-E227-5358-A755-628FFE257250"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2402268 id2402299 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-2D977A02-5928-5441-8AE7-42A722F2A4B8.html" title="The User-Side Hardware Abstraction (HAL) component provides a simple interface for programs to read and set hardware-specific settings, for example, the display contrast.">User-Side Hardware Abstraction</a> &gt; <a href="GUID-05DAF5EF-6F2E-562D-9DB1-0985AD4A1E48.html" title="Describes the steps to implement a port of the User-Side Hardware Abstraction component.">Port Implementation Tutorial</a> &gt; </div>
+<h1 class="topictitle1">HAL Handler Implementation</h1>
+<div><p>Describes how to implement or change a new HAL handler
+when you create a base port. </p>
+
+<p>A HAL handler gets or sets hardware-specific settings, for example,
+the display contrast.</p>
+
+<p>A HAL handler is normally implemented in the kernel extension or
+a driver that provides the hardware-specific functionality. </p>
+
+<p>The easiest way to see the general pattern for implementing HAL
+handlers is to look at a real example. We will use the screen (i.e.
+video or LCD) driver for the template reference board, which is implemented
+in <span class="filepath">...\template_variant\specific\lcd.cpp</span>. </p>
+
+<div class="section" id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-B0EF5EC5-E7DA-5700-A187-4B8D14A3956A"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-B0EF5EC5-E7DA-5700-A187-4B8D14A3956A"><!-- --></a><h2 class="sectiontitle">HAL
+handler function signature</h2> <p>The HAL handler function has
+a signature that is defined by the <a href="GUID-A65A16CA-488D-3A16-A034-F01C9C0B9D15.html"><span class="apiname">THalFunc</span></a> typedef
+that is exported in <span class="filepath">epoc32\include\kernel\kernel.h</span>. </p>
+ <p>For example: </p>
+ <pre class="codeblock" id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-0C6E606C-7916-50D3-8E89-D27BC3EB8C54"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-0C6E606C-7916-50D3-8E89-D27BC3EB8C54"><!-- --></a>TInt halFunction(TAny* aPtr, TInt aFunction, TAny* a1, TAny* a2)</pre>
+ </div>
+
+<div class="section" id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-217DAB35-D227-5FB7-8342-7EFD69E6CDBC"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-217DAB35-D227-5FB7-8342-7EFD69E6CDBC"><!-- --></a><h2 class="sectiontitle">Registering
+the HAL handler</h2> <p>Before the handler can do anything, the
+extension or driver must register its handler for a specific HAL group.
+It does so by calling: </p>
+ <pre class="codeblock" id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-0B935CC7-DA21-56A7-9BBE-F90B61EACDE0"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-0B935CC7-DA21-56A7-9BBE-F90B61EACDE0"><!-- --></a>Kern::AddHalEntry(group, handler_func, ptr);</pre>
+ <p>where: </p>
+ <ul>
+<li id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-17F56160-DFE5-5703-959F-EE93C748F74D"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-17F56160-DFE5-5703-959F-EE93C748F74D"><!-- --></a><p> <samp class="codeph">group</samp> is the number of the <a href="GUID-9AE254D4-AA60-579E-8D9D-F2797106A413.html#GUID-9AE254D4-AA60-579E-8D9D-F2797106A413__GUID-366CC4B8-C6BD-5DCC-B55D-6D87CD5C8E64">HAL group attribute</a> for which the HAL handler is being registered. </p>
+ </li>
+
+<li id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-C6D34824-AD21-514E-BC4E-EE1323E5A9C9"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-C6D34824-AD21-514E-BC4E-EE1323E5A9C9"><!-- --></a><p> <samp class="codeph">handler_func</samp> is a pointer to the HAL handler function. </p>
+ </li>
+
+<li id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-195CE0E3-9658-51D4-B5FA-10B0263FBE60"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-195CE0E3-9658-51D4-B5FA-10B0263FBE60"><!-- --></a><p> <samp class="codeph">ptr</samp> is a pointer that is passed to the HAL handler function when it
+is called. This is usually a pointer to an object that can handle
+the specified HAL attribute. </p>
+ </li>
+
+</ul>
+ <div class="p"><div class="note"><span class="notetitle">Note:</span>  A group can only have one handler, any attempt to
+register another handler returns an error. Typically, a driver will
+register its handler during its initialisation phase. </div>
+</div>
+ <p>Nearly all the functionality of the template screen driver is implemented
+in a single class, the LCD power handler object; its <samp class="codeph">DLcdPowerHandler::Create()</samp> function is called as part of startup processing. It is this function
+that registers the HAL handler: </p>
+ <pre class="codeblock" id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-09BCD8E9-60DB-5805-9A32-F5652C434AEE"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-09BCD8E9-60DB-5805-9A32-F5652C434AEE"><!-- --></a>...
+// install the HAL function
+r=Kern::AddHalEntry(EHalGroupDisplay,halFunction,this);
+if (r!=KErrNone)
+    return r;
+...
+</pre>
+ <p>Note that the third parameter is, in general, an optional
+pointer. It is a pointer to the current object, i.e. the <samp class="codeph">DLcdPowerHandler</samp> object. It is this pointer that is passed on to the HAL handler
+function as its first argument. </p>
+ </div>
+
+<div class="section" id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-DAE573D1-EAA1-530F-93D4-0F4F8BC7EA60"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-DAE573D1-EAA1-530F-93D4-0F4F8BC7EA60"><!-- --></a><h2 class="sectiontitle">Common
+implementation pattern</h2> <p>Using the template screen driver
+as an example, the driver provides the HAL handler for dealing with
+information related to the display HAL group, <a href="GUID-7F299BFC-D8A5-3A5A-B8DA-39BF42C99DC6.html"><span class="apiname">EHalGroupDisplay</span></a>. The HAL handler is the function: </p>
+ <pre class="codeblock" id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-646A151D-79E3-54A8-8D52-D732C3E5F5AE"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-646A151D-79E3-54A8-8D52-D732C3E5F5AE"><!-- --></a>LOCAL_C TInt halFunction(TAny* aPtr, TInt aFunction, TAny* a1, TAny* a2)
+    {
+    DLcdPowerHandler* pH=(DLcdPowerHandler*)aPtr;
+    return pH-&gt;HalFunction(aFunction,a1,a2);
+    }
+</pre>
+ <p>This is a stand-alone function. The first parameter <samp class="codeph">aPtr</samp> is the pointer that was originally passed to the kernel
+when the HAL handler was registered via the <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-8C8DCE9D-0094-3909-8FDA-2F3134D0BC88"><span class="apiname">Kern::AddHalEntry()</span></a> call, and in this case, points to the LCD's power handler object.
+In this example, the main implementation of the HAL handler is the
+member function <samp class="codeph">HalFunction()</samp> of the <samp class="codeph">DLcdPowerHandler</samp> instance. </p>
+ <p>Whether you use this kind of technique depends
+on the way your drivers are implemented, but it is a pattern that
+is also used by the digitiser and the keyboard driver, as well as
+by the Symbian implemented HAL handlers. </p>
+ <p>The other parameters
+passed to the HAL handler function, i.e. <samp class="codeph">aFunction</samp>, <samp class="codeph">a1</samp>, and <samp class="codeph">a2</samp> are the ones passed
+into a call to <a href="GUID-9EF04FB9-B36F-3A6F-AF3F-F2238BD181E9.html#GUID-9EF04FB9-B36F-3A6F-AF3F-F2238BD181E9__GUID-7F07C14C-E69A-3277-8BFF-0CE2A820166D"><span class="apiname">UserSvr::HalFunction()</span></a>, which itself
+is called by the various accessory functions; see <a href="GUID-9D4B8CDF-60D7-5952-AAAF-94A3C1E8908F.html" title="Explains architecture of the User-Side Hardware Abstraction (HAL) component.">the Architecture</a> of User-Side Hardware Abstraction (HAL) component. </p>
+ <p>It's useful to note that a single HAL handler may end up being
+called as a result of calls to different accessory functions. For
+example, <samp class="codeph">ProcessDisplayCurrentModeInfo()</samp> and <samp class="codeph">GetBacklightPresent()</samp> are accessory functions that result
+in a call to the screen driver's HAL handler. </p>
+ <p>To further distinguish
+between the different characteristics represented by a group, each
+group has an associated set of function-ids. The function id is the
+second parameter passed to the HAL handler function, and the most
+common pattern for an implementation is to code a simple switch statement
+based on this value. For example, the function-ids associated with
+the <a href="GUID-7F299BFC-D8A5-3A5A-B8DA-39BF42C99DC6.html"><span class="apiname">EHalGroupDisplay</span></a> are represented by the set
+of enum values defined by the <a href="GUID-BB011D9B-105F-345C-9FC0-39B0BA509394.html"><span class="apiname">TDisplayHalFunction</span></a> enum. This is a fragment taken from the template screen driver: </p>
+ <pre class="codeblock" id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-F1CA7147-4659-572E-8AEB-437B7E9CA2CF"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-F1CA7147-4659-572E-8AEB-437B7E9CA2CF"><!-- --></a>TInt DLcdPowerHandler::HalFunction(TInt aFunction, TAny* a1, TAny* a2)
+    {
+    TInt r=KErrNone;
+    switch(aFunction)
+        {
+        case EDisplayHalScreenInfo:
+            {
+            TPckgBuf&lt;TScreenInfoV01&gt; vPckg;
+            ScreenInfo(vPckg());
+            Kern::InfoCopy(*(TDes8*)a1,vPckg);
+            break;
+            }
+
+        case EDisplayHalWsRegisterSwitchOnScreenHandling:
+            iWsSwitchOnScreen=(TBool)a1;
+            break;
+        
+        case EDisplayHalWsSwitchOnScreen:
+            WsSwitchOnScreen();
+            break;
+        
+        case EDisplayHalMaxDisplayContrast:
+            {
+            TInt mc=KMaxDisplayContrast;
+            kumemput32(a1,&amp;mc,sizeof(mc));
+            break;
+            }
+        ...
+        default:
+            r=KErrNotSupported;
+            break;
+        }
+    ...
+    }</pre>
+ <p>If the HAL handler function does not deal with
+a specific function-id, then it returns <samp class="codeph">KErrNotSupported</samp>. </p>
+ <p>The meaning of the parameters <samp class="codeph">a1</samp> and <samp class="codeph">a2</samp> passed to the HAL handler depends on the group and function-id;
+see the list: <a href="GUID-857F981E-711B-5CA8-AB37-5C700A6140FA.html" title="List of HAL groups and the location of their associated handlers.">HAL Groups and Handlers</a> and <a href="GUID-E49A8036-EACF-5181-91DA-AE89D3B6E815.html" title="List of HAL attributes, their related function IDs and links to the related reference documentation.">HAL Attributes and
+Function IDs</a> for the more detail. </p>
+ <p id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-D75D3A65-590D-5716-84A7-0195DFCD1656"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-D75D3A65-590D-5716-84A7-0195DFCD1656"><!-- --></a><strong>Dealing with the
+HAL::GetAll() function</strong> </p>
+ <p>Calls that come through the <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-EF03B832-E9AA-32CF-903F-DFFA63A3E9AB"><span class="apiname">HAL::GetAll()</span></a> function must be dealt with by the HAL handler
+implementation in a particular way. </p>
+ <p> <samp class="codeph">GetAll()</samp> calls the HAL handler and passes -1. The HAL handler must return
+the HAL attribute value when it is passed a -1 as its parameter unless
+the handler requires additional parameters. If the handler expects
+more than one parameter then it must return the error code <samp class="codeph">KErrArgument</samp>. </p>
+ <p>For example, using a <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-573C49D6-7763-37AE-B2B2-4C8FB1327E21"><span class="apiname">HAL::Get()</span></a> request with the attribute <a href="GUID-DEEDAD63-57EB-3FFC-9D1C-5AD32C424879.html"><span class="apiname">EDisplayBrightness</span></a> returns the brightness for the <em>specified</em> device (screen). </p>
+ <pre class="codeblock" id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-27357ABD-D38C-5B09-85B7-3B33440FC911"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-27357ABD-D38C-5B09-85B7-3B33440FC911"><!-- --></a>HALArg = 0;
+ret = HAL::Get(screen, HAL::EDisplayBrightness, HALArg);</pre>
+ <p>The information cannot be retrieved by the <samp class="codeph">GetAll()</samp> function. </p>
+ <p>When the HAL handler is expecting a value that
+specifies a particular mode or setting but receives a -1 the HAL handler
+must return the error code <a href="GUID-0BEA3647-7888-3612-A2D3-7E27AC405E29.html"><span class="apiname">KErrArgument</span></a> to indicate
+that an additional parameter was expected. </p>
+<p>See <a href="GUID-85AB6B6F-216E-3716-8A86-D0C44EE8008E.html"><span class="apiname">&gt;THalImplementation</span></a> and <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-EF03B832-E9AA-32CF-903F-DFFA63A3E9AB"><span class="apiname">HAL::GetAll()</span></a>.</p>
+ </div>
+
+<div class="section" id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-01D6179B-F1B6-5186-A96E-A1A5EDDC7A7A"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-01D6179B-F1B6-5186-A96E-A1A5EDDC7A7A"><!-- --></a><h2 class="sectiontitle">Context
+of the call to the HAL handler</h2> <p>The HAL handler itself is
+only called by the kernel, and is the end result of a sequence that
+starts either with a call to the user interface functions provided
+by the HAL class (<a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-9454F1B2-D525-3D6D-A872-C6457CACD4FC"><span class="apiname">HAL::Set()</span></a>, <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-573C49D6-7763-37AE-B2B2-4C8FB1327E21"><span class="apiname">HAL::Get()</span></a> or <a href="GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8.html#GUID-BD00E7FC-C234-3111-87A5-10F79EB0F2B8__GUID-EF03B832-E9AA-32CF-903F-DFFA63A3E9AB"><span class="apiname">HAL::GetAll()</span></a>), or with a call to the kernel
+side <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-DA115709-A225-3E2A-BCCD-6E2BB15979B9"><span class="apiname">Kern::HalFunction()</span></a>. </p>
+ <p>The handler runs
+on the kernel side in the context of the calling thread with no kernel
+mutexes or fast mutexes held; the calling thread is not placed into
+a critical section. It is the responsibility of the handler to do
+any thread synchronisation required. The handler returns a <a href="GUID-7A2A43EC-6125-3BFE-834B-23C37F7B40D5.html"><span class="apiname">TInt</span></a>, which is passed back to the user side, or the caller
+of <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-DA115709-A225-3E2A-BCCD-6E2BB15979B9"><span class="apiname">Kern::HalFunction()</span></a>. </p>
+ </div>
+
+<div class="section" id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-9C3570E1-50F6-5178-B9A1-99BCBB01ECA3"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-9C3570E1-50F6-5178-B9A1-99BCBB01ECA3"><!-- --></a><h2 class="sectiontitle">Platform
+security</h2> <p>If you are providing or porting a HAL handler,
+you need to be aware of platform security issues. In principle, for
+each call into the HAL handler, you need to check the capabilities
+of the caller's process. </p>
+ <p>Recall that <a href="GUID-9AE254D4-AA60-579E-8D9D-F2797106A413.html#GUID-9AE254D4-AA60-579E-8D9D-F2797106A413__GUID-366CC4B8-C6BD-5DCC-B55D-6D87CD5C8E64">function-ids</a> are used to distinguish between the different
+requests made on a given HAL handler. Different requests may require
+different capabilities, although many requests require no special
+capabilities. This means that each function-id is associated with
+a capability, and means that code that is dealing with a request associated
+with a specific function-id, must check the associated capability. </p>
+ <p>For example, the screen (i.e. video or LCD) driver must check
+that the caller has the <a href="GUID-C607209F-6FC5-31DE-8034-E5B799B857A8.html"><span class="apiname">ECapabilityWriteDeviceData</span></a> capability before proceeding with a request to set the device's
+backlight on. This is a capability that grants write access to settings
+that control the behaviour of the device. </p>
+ <pre class="codeblock" id="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-AC4567DA-400E-53FB-8D90-E3D537AF68A3"><a name="GUID-124AC7EE-E227-5358-A755-628FFE257250__GUID-AC4567DA-400E-53FB-8D90-E3D537AF68A3"><!-- --></a>TInt DLcdPowerHandler::HalFunction(TInt aFunction, TAny* a1, TAny* a2)
+    {
+    TInt r=KErrNone;
+    switch(aFunction)
+        {
+        ...
+        case EDisplayHalSetBacklightOn:
+        if(!Kern::CurrentThreadHasCapability(ECapabilityWriteDeviceData,__PLATSEC_DIAGNOSTIC_STRING("Checked by Hal function EDisplayHalSetBacklightOn")))
+            {
+            return KErrPermissionDenied;
+            )
+        ...
+        break;
+        ...
+    }</pre>
+ <p>To find the capabilities associated with function-ids,
+see the <a href="GUID-E49A8036-EACF-5181-91DA-AE89D3B6E815.html" title="List of HAL attributes, their related function IDs and links to the related reference documentation.">HAL
+Attributes and Related Function IDs Tables</a> section. Capabilities
+are documented as part of the API reference for each function-id. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-05DAF5EF-6F2E-562D-9DB1-0985AD4A1E48.html" title="Describes the steps to implement a port of the User-Side Hardware Abstraction component.">Port Implementation Tutorial</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

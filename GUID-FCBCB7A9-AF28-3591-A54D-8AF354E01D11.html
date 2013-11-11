@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="LManagedHandle"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-FCBCB7A9-AF28-3591-A54D-8AF354E01D11"/>
+
+<title>LManagedHandle</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-FCBCB7A9-AF28-3591-A54D-8AF354E01D11"><a name="GUID-FCBCB7A9-AF28-3591-A54D-8AF354E01D11"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2653464 id2544523 id2545139 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">LManagedHandle Class Reference</h1>
+	<table class="signature"><tr><td>class LManagedHandle : protected LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;</td></tr></table><div class="section"><div>
+			<p>A class template for the creation and automatic management of resource handles (typically R-class instances) held in the data members of objects.</p>
+
+			<div class="p">
+				<div class="note"><span class="notetitle">Note:</span> 
+					<p>This class should not used to define locals. See below for an explanation and links to management classes suitable for use in that context.</p>
+
+				</div>
+This class template can be used to protect a resource handle of type T (typically an R-class instance) such that the instance of T protected is automatically cleaned up when the management object is destroyed; typically when the object containing it is deleted.</div>
+
+			<p>By default, the cleanup action is to call the Close() member function of the managed handle. An alternative cleanup strategy may be selected by specifying a cleanup strategy template class in the optional second template parameter position. The most common alternative cleanup strategies are predefined. It is also possible to specialize the default cleanup action for a given class using the DEFINE_CLEANUP_FUNCTION macro.</p>
+
+			<p>The constructors of this class never leave (unless construction of the underlying T instance can leave, which is rare), so data members defined with this type may be initialized safely during any phase of construction of the owning class.</p>
+
+			<p>Any arguments supplied when initializing an instance of this class are automatically passed through to T's constructors.</p>
+
+			<p>As a convenience, the methods of the managed pointer may be accessed via "-&gt;" notation directly on the management object, while "." notation is used to access the interface of the management object itself. Using "*" to dereference the management object yields a T&amp;, and is often useful when passing the managed object as an argument.</p>
+
+			<p>Automatic cleanup may be disabled at any time by calling <a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html#GUID-2B7DC342-46D7-3F28-AD80-A51E4CE9A1BC">Unmanage()</a>, while cleanup may be forced at any time by calling <a href="GUID-FCBCB7A9-AF28-3591-A54D-8AF354E01D11.html#GUID-46399E69-251C-3358-8600-1E7F044F2175">ReleaseResource()</a>.</p>
+
+			<div class="p">Example: <pre class="codeblock">   class CComposite : public CBase
+	   {
+	 public:
+	   CONSTRUCTORS_MAY_LEAVE
+
+	   CComposite()
+		   {
+		   iFileServ-&gt;Connect() OR_LEAVE;
+		   iFile-&gt;Open(*iFileServ, ...);
+		   }
+
+	   ~CComposite()
+		   {
+		   // the handles are automatically closed
+		   }
+
+	 private:
+
+	   LManagedHandle&lt;RFs&gt; iFileServ;
+	   LManagedHandle&lt;RFile&gt; iFile;
+	   };</pre>
+</div>
+
+			<p>Behind the scenes, this class template simply relies on reliable execution of its destructor. If used for a local variable rather than a data member, cleanup will occur but out-of-order compared to objects protected using the LCleanupXxx variants or the <a href="GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA.html#GUID-0DD554D7-B9B1-3FD3-898F-4D855144FCEA">CleanupStack</a> directly. Therefore it is not recommended for use in that context.</p>
+
+			<p>These management classes may be used as the basis for implementing leave-safe single-phase construction, since fully initialized data members protected in this way will get destroyed (so reliably triggering cleanup) if their containing classes leave during execution of their constructors. Note, however, that single-phase construction must be explicitly enabled in the containing class using the CONSTRUCTORS_MAY_LEAVE macro.</p>
+
+			<p>This class template together with the cleanup strategy class templates provide a template-based implementation of the Strategy design pattern (See also: Policy-based design).</p>
+
+			<p>
+				<a href="GUID-33268411-26FD-39EF-9D21-A046023BFAE9.html#GUID-33268411-26FD-39EF-9D21-A046023BFAE9">TClose</a> which implements the default Close() calling cleanup strategy <a href="GUID-2455FD29-1396-38DE-B90D-F8099DCCA524.html#GUID-2455FD29-1396-38DE-B90D-F8099DCCA524">TResetAndDestroy</a> which implements an alternative ResetAndDestroy() calling cleanup strategy <a href="GUID-B5DB195A-C656-3BF6-8DCD-22AB6674B8F6.html#GUID-B5DB195A-C656-3BF6-8DCD-22AB6674B8F6">TFree</a> which implements an alternative Free() calling cleanup strategy <a href="GUID-9E005556-76E5-306B-982C-B2C2BC268EB8.html#GUID-9E005556-76E5-306B-982C-B2C2BC268EB8">TDestroy</a> which implements an alternative Destroy() calling cleanup strategy <a href="GUID-05EC3007-E3F2-3FA3-B07D-618EDC2EB55F.html#GUID-05EC3007-E3F2-3FA3-B07D-618EDC2EB55F">TRelease</a> which implements an alternative Release() calling cleanup strategy <a href="GUID-9ECEAE0C-3D5A-3B1F-88DD-28B37CE9950D.html#GUID-9ECEAE0C-3D5A-3B1F-88DD-28B37CE9950D">LCleanedupHandle</a> which has the same interface, but uses the cleanup stack and is suitable for protecting locals CONSTRUCTORS_MAY_LEAVE </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">LManagedHandle<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-393233EB-CF38-35E8-8AA0-9F1BC06DBBE8">LManagedHandle</a>()</td></tr><tr class="bg"><td align="right" class="code"/><td><a href="#GUID-8156EDB1-63B8-34CF-816A-F0A3C21A9352">LManagedHandle</a>(const Param1 &amp;)</td></tr><tr><td align="right" class="code"/><td><a href="#GUID-37379BC8-DB02-3404-AC86-F305F77B27F1">LManagedHandle</a>(Param1 &amp;)</td></tr><tr class="bg"><td align="right" class="code"/><td><a href="#GUID-5A8975FC-4B6B-3B98-9A42-ED4B6AD700FB">LManagedHandle</a>(const Param1 &amp;, const Param2 &amp;)</td></tr><tr><td align="right" class="code"/><td><a href="#GUID-C53ED3AC-0C7A-35CF-A62C-E3B87737917B">LManagedHandle</a>(const Param1 &amp;, Param2 &amp;)</td></tr><tr class="bg"><td align="right" class="code"/><td><a href="#GUID-E126D4B0-8783-3AD3-BA08-9C47E9999F44">LManagedHandle</a>(Param1 &amp;, const Param2 &amp;)</td></tr><tr><td align="right" class="code"/><td><a href="#GUID-2077B903-6C79-3864-B0DC-79C179074DBF">LManagedHandle</a>(Param1 &amp;, Param2 &amp;)</td></tr><tr class="bg"><td align="right" class="code"/><td><a href="#GUID-A950973B-ADFC-3073-BAC4-41B78B3E1BC6">~LManagedHandle</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-46399E69-251C-3358-8600-1E7F044F2175">ReleaseResource</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-F5D53A2C-39C1-3D2F-8CFF-2DF9BF2658BB">Swap</a>(<a href="GUID-FCBCB7A9-AF28-3591-A54D-8AF354E01D11.html">LManagedHandle</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FCBCB7A9-AF28-3591-A54D-8AF354E01D11.html">LManagedHandle</a> &amp;</td><td><a href="#GUID-4B8D940C-6FD8-3FB9-8B44-2D5C991131B6">operator=</a>(const U &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::Disable()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::Get()</a></td></tr><tr><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::Get()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::IsEnabled()const</a></td></tr><tr><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::LAutoHandleBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::LAutoHandleBase(Param1 &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::LAutoHandleBase(Param1 &amp;,Param2 &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::LAutoHandleBase(Param1 &amp;,const Param2 &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::LAutoHandleBase(const Param1 &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::LAutoHandleBase(const Param1 &amp;,Param2 &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::LAutoHandleBase(const Param1 &amp;,const Param2 &amp;)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::Swap(LAutoHandleBase &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::Unmanage()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::operator*()</a></td></tr><tr><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::operator*()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::operator-&gt;()</a></td></tr><tr><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::operator-&gt;()const</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Type Definitions</th></tr></thead><tbody><tr><td align="right" valign="top">typedef</td><td>CleanupStrategyType <a href="#GUID-C69802F3-C317-3903-9806-1BB82086DAB8">CleanupStrategy</a></td></tr><tr class="bg"><td align="right" valign="top">typedef</td><td>T <a href="#GUID-9AC35183-88AC-3B0A-A852-025DA7CE06E7">ManagedType</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Type Definitions</th></tr></thead><tbody><tr><td align="right" valign="top">typedef</td><td>
+					<a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase</a>&lt; T, <a href="GUID-D6F8671C-DACB-3910-A9B7-E82EA3D2CE1D.html">TIsBaseOf</a>&lt; <a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase</a>, T &gt;::EValue?EAutoRHandleBaseDerived:((<a href="GUID-A4646B56-5A3D-33AF-9945-2C5CD4040EE0.html">TIsSame</a>&lt; <a href="GUID-955061A8-A83E-39E5-8745-8FAC7DEA7BCC.html">RBuf8</a>, T &gt;::EValue||<a href="GUID-A4646B56-5A3D-33AF-9945-2C5CD4040EE0.html">TIsSame</a>&lt; <a href="GUID-BEFF9C91-DA64-3032-96E8-F5054405DC74.html">RBuf16</a>, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt; <a href="#GUID-1B69AD41-D3D3-3817-B681-1C3DF57D69C0">LAutoHandleBase</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Attributes</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::iEnabled</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase&lt; T, TIsBaseOf&lt; RHandleBase, T &gt;::EValue?EAutoRHandleBaseDerived:((TIsSame&lt; RBuf8, T &gt;::EValue||TIsSame&lt; RBuf16, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;::iHandle</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-393233EB-CF38-35E8-8AA0-9F1BC06DBBE8"><a name="GUID-393233EB-CF38-35E8-8AA0-9F1BC06DBBE8"><!-- --></a>
+		<h2 class="topictitle2">LManagedHandle()</h2>
+		<table class="signature"><tr><td>LManagedHandle</td><td>(</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Default constructor. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-8156EDB1-63B8-34CF-816A-F0A3C21A9352"><a name="GUID-8156EDB1-63B8-34CF-816A-F0A3C21A9352"><!-- --></a>
+		<h2 class="topictitle2">LManagedHandle(const Param1 &amp;)</h2>
+		<table class="signature"><tr><td>LManagedHandle</td><td>(</td><td>const Param1 &amp;</td><td>aParam1</td><td>)</td><td>[inline, explicit]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const Param1 &amp; aParam1</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-37379BC8-DB02-3404-AC86-F305F77B27F1"><a name="GUID-37379BC8-DB02-3404-AC86-F305F77B27F1"><!-- --></a>
+		<h2 class="topictitle2">LManagedHandle(Param1 &amp;)</h2>
+		<table class="signature"><tr><td>LManagedHandle</td><td>(</td><td>Param1 &amp;</td><td>aParam1</td><td>)</td><td>[inline, explicit]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">Param1 &amp; aParam1</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5A8975FC-4B6B-3B98-9A42-ED4B6AD700FB"><a name="GUID-5A8975FC-4B6B-3B98-9A42-ED4B6AD700FB"><!-- --></a>
+		<h2 class="topictitle2">LManagedHandle(const Param1 &amp;, const Param2 &amp;)</h2>
+		<table class="signature"><tr><td>LManagedHandle</td><td>(</td><td>const Param1 &amp;</td><td>aParam1,</td></tr><tr><td colspan="2"> </td><td>const Param2 &amp;</td><td>aParam2</td></tr><tr><td colspan="1"> </td><td>)</td><td colspan="2">[inline]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const Param1 &amp; aParam1</td><td> </td></tr><tr class="bg"><td class="parameter">const Param2 &amp; aParam2</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C53ED3AC-0C7A-35CF-A62C-E3B87737917B"><a name="GUID-C53ED3AC-0C7A-35CF-A62C-E3B87737917B"><!-- --></a>
+		<h2 class="topictitle2">LManagedHandle(const Param1 &amp;, Param2 &amp;)</h2>
+		<table class="signature"><tr><td>LManagedHandle</td><td>(</td><td>const Param1 &amp;</td><td>aParam1,</td></tr><tr><td colspan="2"> </td><td>Param2 &amp;</td><td>aParam2</td></tr><tr><td colspan="1"> </td><td>)</td><td colspan="2">[inline]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const Param1 &amp; aParam1</td><td> </td></tr><tr class="bg"><td class="parameter">Param2 &amp; aParam2</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E126D4B0-8783-3AD3-BA08-9C47E9999F44"><a name="GUID-E126D4B0-8783-3AD3-BA08-9C47E9999F44"><!-- --></a>
+		<h2 class="topictitle2">LManagedHandle(Param1 &amp;, const Param2 &amp;)</h2>
+		<table class="signature"><tr><td>LManagedHandle</td><td>(</td><td>Param1 &amp;</td><td>aParam1,</td></tr><tr><td colspan="2"> </td><td>const Param2 &amp;</td><td>aParam2</td></tr><tr><td colspan="1"> </td><td>)</td><td colspan="2">[inline]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">Param1 &amp; aParam1</td><td> </td></tr><tr class="bg"><td class="parameter">const Param2 &amp; aParam2</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2077B903-6C79-3864-B0DC-79C179074DBF"><a name="GUID-2077B903-6C79-3864-B0DC-79C179074DBF"><!-- --></a>
+		<h2 class="topictitle2">LManagedHandle(Param1 &amp;, Param2 &amp;)</h2>
+		<table class="signature"><tr><td>LManagedHandle</td><td>(</td><td>Param1 &amp;</td><td>aParam1,</td></tr><tr><td colspan="2"> </td><td>Param2 &amp;</td><td>aParam2</td></tr><tr><td colspan="1"> </td><td>)</td><td colspan="2">[inline]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">Param1 &amp; aParam1</td><td> </td></tr><tr class="bg"><td class="parameter">Param2 &amp; aParam2</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A950973B-ADFC-3073-BAC4-41B78B3E1BC6"><a name="GUID-A950973B-ADFC-3073-BAC4-41B78B3E1BC6"><!-- --></a>
+		<h2 class="topictitle2">~LManagedHandle()</h2>
+		<table class="signature"><tr><td>~LManagedHandle</td><td>(</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Destructor. When automatic resource management is enabled, the destructor calls the cleanup function defined by the cleanup strategy with the contained resource handle object. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-46399E69-251C-3358-8600-1E7F044F2175"><a name="GUID-46399E69-251C-3358-8600-1E7F044F2175"><!-- --></a>
+		<h2 class="topictitle2">ReleaseResource()</h2>
+		<table class="signature"><tr><td>void</td><td>ReleaseResource</td><td>(</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>If automatic resource management is enabled, calls the cleanup function defined by the cleanup strategy with the managed resource handle object and then disables the automatic resource management for this object. The cleanup strategy is specified by the CleanupStrategy template template parameter. The default cleanup strategy is to call the cleanup member function on the contained resource handle object. which is a member function named Close(), unless explicitly defined otherwise for the class of the object, for example by using the provided DEFINE_CLEANUP_FUNCTION macro. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-F5D53A2C-39C1-3D2F-8CFF-2DF9BF2658BB"><a name="GUID-F5D53A2C-39C1-3D2F-8CFF-2DF9BF2658BB"><!-- --></a>
+		<h2 class="topictitle2">Swap(LManagedHandle &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>Swap</td><td>(</td><td><a href="GUID-FCBCB7A9-AF28-3591-A54D-8AF354E01D11.html">LManagedHandle</a> &amp;</td><td>aManagedHandle</td><td>)</td><td>[inline]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FCBCB7A9-AF28-3591-A54D-8AF354E01D11.html">LManagedHandle</a> &amp; aManagedHandle</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4B8D940C-6FD8-3FB9-8B44-2D5C991131B6"><a name="GUID-4B8D940C-6FD8-3FB9-8B44-2D5C991131B6"><!-- --></a>
+		<h2 class="topictitle2">operator=(const U &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FCBCB7A9-AF28-3591-A54D-8AF354E01D11.html">LManagedHandle</a> &amp;</td><td>operator=</td><td>(</td><td>const U &amp;</td><td>aHandle</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>Assigns a new resource to be managed. If the <a href="GUID-FCBCB7A9-AF28-3591-A54D-8AF354E01D11.html#GUID-FCBCB7A9-AF28-3591-A54D-8AF354E01D11">LManagedHandle</a> object already contains a managed resource handle, then the managed resource is released using the specified cleanup strategy before assigning the new managed resource.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const U &amp; aHandle</td><td>a reference to a handle object of a type that can be assigned to a handle object of type T  </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Type Definitions Documentation</h1><div class="nested1" id="GUID-C69802F3-C317-3903-9806-1BB82086DAB8"><a name="GUID-C69802F3-C317-3903-9806-1BB82086DAB8"><!-- --></a>
+		<h2 class="topictitle2">Typedef CleanupStrategy</h2>
+		<table class="signature"><tr><td>typedef CleanupStrategyType</td><td>CleanupStrategy</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-1B69AD41-D3D3-3817-B681-1C3DF57D69C0"><a name="GUID-1B69AD41-D3D3-3817-B681-1C3DF57D69C0"><!-- --></a>
+		<h2 class="topictitle2">Typedef LAutoHandleBase</h2>
+		<table class="signature"><tr><td>typedef 
+					<a href="GUID-B462E903-B9CF-32B1-B293-C731C7BE25C7.html">LAutoHandleBase</a>&lt; T, <a href="GUID-D6F8671C-DACB-3910-A9B7-E82EA3D2CE1D.html">TIsBaseOf</a>&lt; <a href="GUID-727D2B62-09A9-3CBC-AB6F-591E52EC68EB.html">RHandleBase</a>, T &gt;::EValue?EAutoRHandleBaseDerived:((<a href="GUID-A4646B56-5A3D-33AF-9945-2C5CD4040EE0.html">TIsSame</a>&lt; <a href="GUID-955061A8-A83E-39E5-8745-8FAC7DEA7BCC.html">RBuf8</a>, T &gt;::EValue||<a href="GUID-A4646B56-5A3D-33AF-9945-2C5CD4040EE0.html">TIsSame</a>&lt; <a href="GUID-BEFF9C91-DA64-3032-96E8-F5054405DC74.html">RBuf16</a>, T &gt;::EValue)?EAutoHandleRBuf:EAutoHandleNonSpecial)&gt;</td><td>LAutoHandleBase</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-9AC35183-88AC-3B0A-A852-025DA7CE06E7"><a name="GUID-9AC35183-88AC-3B0A-A852-025DA7CE06E7"><!-- --></a>
+		<h2 class="topictitle2">Typedef ManagedType</h2>
+		<table class="signature"><tr><td>typedef T</td><td>ManagedType</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

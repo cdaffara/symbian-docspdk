@@ -1,0 +1,937 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="TulTextResourceUtils"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D"/>
+
+<title>TulTextResourceUtils</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D"><a name="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2364582 id2429276 id2467538 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">TulTextResourceUtils Class Reference</h1>
+	<table class="signature"><tr><td>class TulTextResourceUtils</td></tr></table><div class="section"><div>
+			<p>Utility that provides methods to load and format resource strings. String Loader API provides an interface to load and format resource strings that may contain parameter(s) (%U for (unicode) text or or %N for numerical). Resource strings are usually defined in an RSS file.</p>
+
+			<p>The API consists of the <a href="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D.html#GUID-E19C9DB8-2C8B-366B-B650-2673B066256D">TulTextResourceUtils</a> class. All methods are static, so there is no need to explicitly allocate memory for the interface class. The implementation needs a <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40">CCoeEnv</a> instance to access for example the resource files.</p>
+
+			<p>Usage:</p>
+
+			<p>Applications load and format resource strings from normal resources with static methods of the <a href="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D.html#GUID-E19C9DB8-2C8B-366B-B650-2673B066256D">TulTextResourceUtils</a> class. The loading is done with the LoadL and LoadLC methods and with the Load method in situations where memory allocation from the heap is not possible. Formatting is done automatically after loading in the LoadL and LoadLC methods, but it can also be done separately with the Format method in situations where memory allocation from the heap is not possible. For reading the resource strings with the Load, LoadL and LoadLC methods, the user should provide a pointer to <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40">CCoeEnv</a> for efficiency reasons. If the pointer is not provided, the implementation uses the <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> method internally to get it.</p>
+
+			<p>Different size displays can handle different length strings. To take full advantage of this fact, <a href="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D.html#GUID-E19C9DB8-2C8B-366B-B650-2673B066256D">TulTextResourceUtils</a> supports resource strings with multiple options for strings, separated by the character 0x0001. Each such string can contain the same or different sub string keys (%U and %N). <a href="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D.html#GUID-E19C9DB8-2C8B-366B-B650-2673B066256D">TulTextResourceUtils</a> returns all strings, it is the responsibility of the caller to parse the result and choose the proper string to display.</p>
+
+			<p>Setting the maximum sub string length may be done in the text resources. Sub string maximum lengths can be localized separately for every language. The maximum sub string length is of the format: %U[NN] where NN is a number [01..99]. Please note that NN must always consist of two characters, i.e. if the sub string maximum length is eight characters, the value to be used is 08, not plain 8. If the number of characters exceeds the maximum length, the sub string is cut to fit and the last character is replaced with an ellipsis character.</p>
+
+			<p>The following examples describe the usage of the String Loader API.</p>
+
+			<p>Usage when one TInt is added:</p>
+
+			<div class="p">
+				<pre class="codeblock"> // In .loc -file
+ // #define text_example "You have %N undone tasks."
+
+ // In .rss -file
+ // RESOURCE TBUF r_text_example { buf = text_example; }
+
+ // (In the .cpp -file)
+ #include &lt;coeutils.h&gt;
+
+ // Get CCoeEnv instance
+ CEikonEnv* iEikonEnv = CEikonEnv::Static();
+
+ TInt number(324);
+
+ // Method reads a resource string with memory allocation
+ // and replaces the first %N-string in it with replacement TInt.
+ // The heap descriptor must be destroyed when it is no longer needed.
+ // iEikonEnv is needed for loading the resource string.
+ HBufC* stringholder = TulTextResourceUtils::LoadL(R_TEXT_EXAMPLE, number, iEikonEnv);
+
+ // The 'number' is added to the resource string. The result is
+ // that stringholder points to a heap descriptor containing string:
+ // "You have 324 undone tasks."
+
+ // Delete the heap descriptor
+ delete stringholder;</pre>
+
+			</div>
+
+			<p>Usage when several strings are added:</p>
+
+			<p>An index can be included to parameters. Several parameters can have same index if the same replacement is needed multiple times.</p>
+
+			<div class="p">
+				<pre class="codeblock"> // In .loc -file
+ // #define text_example "I'm %2U%1U %3U%0U fine."
+
+ // In .rss -file
+ // RESOURCE TBUF r_text_example { buf = text_example; }
+
+ // In the .cpp -file
+ #include &lt;coeutils.h&gt;
+
+ // Get CCoeEnv instance
+ CEikonEnv* iEikonEnv = CEikonEnv::Static();
+
+ CDesCArrayFlat* strings = new CDesCArrayFlat(4);
+ CleanupStack::PushL(strings);
+
+ strings-&gt;AppendL(_L("orking")); //First string
+
+ strings-&gt;AppendL(_L("ll")); //Second string
+
+ strings-&gt;AppendL(_L("sti")); //Third string
+
+ strings-&gt;AppendL(_L("w")); //Fourth string
+
+ // Method reads a resource string with memory allocation and replaces
+ // the %(index)U strings in it with replacement strings from an array.
+ // The heap descriptor must be destroyed when it is no longer needed.
+ // iEikonEnv is needed for loading the resource string.
+ HBufC* stringholder = TulTextResourceUtils::LoadL(R_TEXT_EXAMPLE, *strings, iEikonEnv);
+
+ // Four strings are added to the resource string. The result is
+ // that stringholder points to a heap descriptor containing string:
+ // "I'm still working fine."
+
+ // Pop and delete strings array
+ CleanupStack::PopAndDestroy();
+
+ // Delete the heap descriptor
+ delete stringholder;</pre>
+
+			</div>
+
+			<p>Usage with scalable UI support:</p>
+
+			<div class="p">
+				<pre class="codeblock"> // In .loc -file
+ // #define TEXT_EXAMPLE "You have missed %N messages from %U."&lt;0x0001&gt;"Missed %N msgs from %U."&lt;0x0001&gt;"Missed %N msgs."
+
+ // In .rss -file
+ // RESOURCE TBUF R_TEXT_EXAMPLE { buf = TEXT_EXAMPLE; }
+
+ // In the .cpp -file
+ #include &lt;coeutils.h&gt;
+
+ // Get CCoeEnv instance
+ CEikonEnv* iEikonEnv = CEikonEnv::Static();
+
+ TInt number(12);
+ _LIT(name, "John Doe");
+
+ // Method reads a resource string with memory allocation,
+ // replaces all %N strings in it with a replacement TInt and
+ // all %U strings in it with a replacement string.
+ // The heap descriptor must be destroyed  when it is no longer needed.
+ // iEikonEnv is needed for loading the resource string.
+ HBufC stringholder = TulTextResourceUtils::LoadL(R_TEXT_EXAMPLE, name, number, iEikonEnv);
+
+ // The number and name are added to the resource string. The result is
+ // that stringholder points to a heap descriptor containing string:
+ // "You have missed 12 messages from John Doe.\001Missed 12 msgs from John
+ // Doe.\001Missed 12 msgs."
+
+ // Delete the heap descriptor
+ delete stringholder;</pre>
+
+			</div>
+
+			<p>Error handling:</p>
+
+			<p>The leave mechanism of the Symbian OS environment is used to handle memory exhaustion. The panic mechanism is used to handle programming errors while debugging. <a href="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D.html#GUID-E19C9DB8-2C8B-366B-B650-2673B066256D">TulTextResourceUtils</a> panics for seven different reasons. The panic category is named <a href="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D.html#GUID-E19C9DB8-2C8B-366B-B650-2673B066256D">TulTextResourceUtils</a>. The panic codes are:</p>
+
+			<div class="p">
+				<ul>
+					<li>
+						<p>ETooFewArguments = 0 (Unsolved parameters in resource string.)</p>
+
+					</li>
+
+					<li>
+						<p>ETooManyArguments = 1 (Already solved all parameters in resource string.)</p>
+
+					</li>
+
+					<li>
+						<p>EKeyStringNotFound = 2 (The key string wasn't found in formatting.)</p>
+
+					</li>
+
+					<li>
+						<p>EInvalidIndex = 3 (Invalid index in Format-method)</p>
+
+					</li>
+
+					<li>
+						<p>EDescriptorTooSmall = 4 (Too small destination descriptor.)</p>
+
+					</li>
+
+					<li>
+						<p>ECCoeEnvNotInitialized = 5 (<a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40">CCoeEnv</a> is not initialized)</p>
+
+					</li>
+
+					<li>
+						<p>EInvalidSubstitute = 6 (Substituted string contains KSubStringSeparator)</p>
+
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-ABE89382-DCDE-35D9-9F43-6D996E81E127">Format</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-FDA804B8-78A5-3C5A-8D77-B3FD11CA9646">Format</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-42C3909B-3746-3A2C-9715-2E058C896BBB">Load</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-3826685A-5448-3BAF-ABFB-CD463784DA53">LoadL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-46349789-B4D8-34E5-925E-125E0D920BAD">LoadL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-EB7D0BEC-8ECF-3053-83DA-6C4A73B2F58F">LoadL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-17F13D0A-AFA1-3BFD-9293-D1959A920BE0">LoadL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-67A61315-B38A-35F6-9EF1-85A8A3D0BCA0">LoadL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-6CED764D-320E-3C2A-8C4D-92ADB82D4676">LoadL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const MDesCArray &amp;, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-404EE74D-0455-38DA-A7D2-5CC1E0A822E3">LoadL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const MDesCArray &amp;, const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-933BC7FB-90C5-3219-9819-646622034AAC">LoadLC</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-790512D6-83BE-3401-AA31-D6A4121D5FF2">LoadLC</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-0EEAAB17-42AC-3083-8527-7BE9083FFE79">LoadLC</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-D8681F9D-47A4-367B-BED2-EDB018100F4D">LoadLC</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-4E422B6D-1095-3719-9FB7-0C034FDAF9ED">LoadLC</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-FC8966D6-B26A-34B8-A1D5-DF7879A005FB">LoadLC</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const MDesCArray &amp;, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-A87C2724-E154-30A7-BF91-E5160B811D58">LoadLC</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const MDesCArray &amp;, const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;, <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-39F33416-8A17-322A-B78B-D5895A871729">TulTextResourceUtils</a>()</td></tr><tr class="bg"><td align="right" class="code"/><td><a href="#GUID-75A2C60E-7291-3031-9DCB-F8D9B4BE9F8A">TulTextResourceUtils</a>(const <a href="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D.html">TulTextResourceUtils</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a>
+				</td><td><a href="#GUID-F237B9C7-89BF-361B-9719-C607694C749E">DirectionalityL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> *)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-749F4816-9E65-3B56-A90C-FD4819EC7F85">FormatL</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-71E548A1-A7A4-38D6-BABD-D6E2C407C579">FormatStringL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a>)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-099D7766-58E7-3C77-913A-BF13C35DF418">FormatStringL</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-5851B1FE-8637-36B4-B51C-745D252F5E22">FormatStringL</a>(<a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a>)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-1541A36C-FAA8-3BEE-9287-42B19F086EDA">FormatStringL</a>(<a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const MDesCArray &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-64E0F582-78FE-3674-8FDB-B6870848CC6E">Formater</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a>)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-CD40394C-7B12-364E-91CC-5CA8ECA4AA89">GetParamCount</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-0AFC4B74-C8A2-386D-A38A-FB2EFF4367E9">GetSubStringCount</a>(const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-326978B2-A156-3F49-AD70-490BEC06818A">KeyStringFormater</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;, const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TText</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-1C0FC4A4-3068-372C-B0DB-8176F2BE72BE">RemoveNoDirMarkers</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a>
+				</td><td><a href="#GUID-B99C7FEA-9FB8-3906-AD54-2D10D105F14C">ResolveDirectionality</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> *)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-C855F413-E7E5-34EA-98F7-D95B93060B5A">ResolveSubStringDirsL</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> *)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td><a href="#GUID-24E11CA6-72C5-3738-ACC8-659CE963308B">ResolveSubStringL</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> *)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D.html">TulTextResourceUtils</a> &amp;</td><td><a href="#GUID-459DFEFA-4421-38CB-B1BB-87D06A0147A1">operator=</a>(const <a href="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D.html">TulTextResourceUtils</a> &amp;)</td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-39F33416-8A17-322A-B78B-D5895A871729"><a name="GUID-39F33416-8A17-322A-B78B-D5895A871729"><!-- --></a>
+		<h2 class="topictitle2">TulTextResourceUtils()</h2>
+		<table class="signature"><tr><td>TulTextResourceUtils</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-75A2C60E-7291-3031-9DCB-F8D9B4BE9F8A"><a name="GUID-75A2C60E-7291-3031-9DCB-F8D9B4BE9F8A"><!-- --></a>
+		<h2 class="topictitle2">TulTextResourceUtils(const TulTextResourceUtils &amp;)</h2>
+		<table class="signature"><tr><td>TulTextResourceUtils</td><td>(</td><td>const <a href="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D.html">TulTextResourceUtils</a> &amp;</td><td/><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D.html">TulTextResourceUtils</a> &amp; </td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-F237B9C7-89BF-361B-9719-C607694C749E"><a name="GUID-F237B9C7-89BF-361B-9719-C607694C749E"><!-- --></a>
+		<h2 class="topictitle2">DirectionalityL(const TDesC &amp;, TBool *)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a>
+				</td><td>DirectionalityL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aText,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> *</td><td>aFound</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aText</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> * aFound</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-ABE89382-DCDE-35D9-9F43-6D996E81E127"><a name="GUID-ABE89382-DCDE-35D9-9F43-6D996E81E127"><!-- --></a>
+		<h2 class="topictitle2">Format(TDes &amp;, const TDesC &amp;, TInt, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Format</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aDest,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSource,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPosition,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aSubs</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aDest</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSource</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPosition</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aSubs</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-FDA804B8-78A5-3C5A-8D77-B3FD11CA9646"><a name="GUID-FDA804B8-78A5-3C5A-8D77-B3FD11CA9646"><!-- --></a>
+		<h2 class="topictitle2">Format(TDes &amp;, const TDesC &amp;, TInt, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Format</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aDest,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSource,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPosition,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSubs</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Formats a resource string without memory allocation. The formatted string is stored in the destination TDes&amp;. Since this method doesn't allocate memory the destination descriptor must be long enough. In aPosition -1 means that there is no index in the key string and all %U-strings in the original string are replaced with aSubs. In debug builds the Symbian OS panic mechanism is used to notify programming errors.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>EInvalidIndex In debug build if the index of the key string is invalid. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>EDescriptorTooSmall In debug build if the length of the destination descriptor is too small. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>EKeyStringNotFound In debug build if the key string 'U' wasn't found, aDest is empty.</dd>
+
+						
+					</dl>
+One small sample describing the usage of the method. <pre class="codeblock"> // Load example string "%0U %1U" defined in rss- and loc-files.
+ // %0U stands for weekday string and %1U for date string.
+ HBufC* timeFormat = TulTextResourceUtils::LoadLC(R_TIME_FORMAT, iEikonEnv);
+
+ // The replacing string.
+ _LIT(dateString, "02/10/2006");
+
+ TulTextResourceUtils::Format(destBuf, timeFormat, 
+                       1, // %1U stands for date string
+                       dateString);
+
+ // After returning destBuf contains string "%0U 02/10/2006".</pre>
+ </div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aDest</td><td>Reference to the descriptor where the resource string is formatted.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSource</td><td>Reference to the original string.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPosition</td><td>The index of the key string.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSubs</td><td>Reference to the replacing string. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-749F4816-9E65-3B56-A90C-FD4819EC7F85"><a name="GUID-749F4816-9E65-3B56-A90C-FD4819EC7F85"><!-- --></a>
+		<h2 class="topictitle2">FormatL(TDes &amp;, const TDesC &amp;, const TDesC &amp;, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>FormatL</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aDest,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSource,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aKeybuf,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSubs</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aDest</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSource</td><td> </td></tr><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aKeybuf</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSubs</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-71E548A1-A7A4-38D6-BABD-D6E2C407C579"><a name="GUID-71E548A1-A7A4-38D6-BABD-D6E2C407C579"><!-- --></a>
+		<h2 class="topictitle2">FormatStringL(const TDesC &amp;, const TDesC &amp;, const TDesC &amp;, TBidiText::TDirectionality)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>FormatStringL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSource,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aKey,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSubs,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a></td><td>aDir</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSource</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aKey</td><td> </td></tr><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSubs</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a> aDir</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-099D7766-58E7-3C77-913A-BF13C35DF418"><a name="GUID-099D7766-58E7-3C77-913A-BF13C35DF418"><!-- --></a>
+		<h2 class="topictitle2">FormatStringL(const TDesC &amp;, const TDesC &amp;, const TDesC &amp;, TBidiText::TDirectionality, TInt &amp;, TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>FormatStringL</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSource,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aKey,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSubs,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a></td><td>aDirectionality,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aParamCount,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aSubCount</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSource</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aKey</td><td> </td></tr><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSubs</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a> aDirectionality</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aParamCount</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aSubCount</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5851B1FE-8637-36B4-B51C-745D252F5E22"><a name="GUID-5851B1FE-8637-36B4-B51C-745D252F5E22"><!-- --></a>
+		<h2 class="topictitle2">FormatStringL(TDesC &amp;, const CArrayFix&lt; TInt &gt; &amp;, TInt, TBidiText::TDirectionality)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>FormatStringL</td><td>(</td><td><a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSource,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;</td><td>aInts,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aMax,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a></td><td>aDir</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSource</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp; aInts</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aMax</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a> aDir</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1541A36C-FAA8-3BEE-9287-42B19F086EDA"><a name="GUID-1541A36C-FAA8-3BEE-9287-42B19F086EDA"><!-- --></a>
+		<h2 class="topictitle2">FormatStringL(TDesC &amp;, const MDesCArray &amp;, TInt, TBidiText::TDirectionality)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>FormatStringL</td><td>(</td><td><a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSource,</td></tr><tr><td colspan="3"> </td><td>const MDesCArray &amp;</td><td>aStrings,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aMax,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a></td><td>aDir</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSource</td><td> </td></tr><tr class="bg"><td class="parameter">const MDesCArray &amp; aStrings</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aMax</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a> aDir</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-64E0F582-78FE-3674-8FDB-B6870848CC6E"><a name="GUID-64E0F582-78FE-3674-8FDB-B6870848CC6E"><!-- --></a>
+		<h2 class="topictitle2">Formater(TDes &amp;, const TDesC &amp;, const TDesC &amp;, const TDesC &amp;, TBidiText::TDirectionality)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>Formater</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aDest,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSource,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aKey,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aSubs,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a></td><td>aDirectionality</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aDest</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSource</td><td> </td></tr><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aKey</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aSubs</td><td> </td></tr><tr><td class="parameter"><a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a> aDirectionality</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CD40394C-7B12-364E-91CC-5CA8ECA4AA89"><a name="GUID-CD40394C-7B12-364E-91CC-5CA8ECA4AA89"><!-- --></a>
+		<h2 class="topictitle2">GetParamCount(const TDesC &amp;, TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>GetParamCount</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aText,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex = -1</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aText</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex = -1</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0AFC4B74-C8A2-386D-A38A-FB2EFF4367E9"><a name="GUID-0AFC4B74-C8A2-386D-A38A-FB2EFF4367E9"><!-- --></a>
+		<h2 class="topictitle2">GetSubStringCount(const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>GetSubStringCount</td><td>(</td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aText</td><td>)</td><td>[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aText</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-326978B2-A156-3F49-AD70-490BEC06818A"><a name="GUID-326978B2-A156-3F49-AD70-490BEC06818A"><!-- --></a>
+		<h2 class="topictitle2">KeyStringFormater(TDes &amp;, const TText &amp;, TInt, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>KeyStringFormater</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aDest,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TText</a> &amp;</td><td>aKey,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aPosition,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aKeyString</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aDest</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TText</a> &amp; aKey</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aPosition</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aKeyString</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-42C3909B-3746-3A2C-9715-2E058C896BBB"><a name="GUID-42C3909B-3746-3A2C-9715-2E058C896BBB"><!-- --></a>
+		<h2 class="topictitle2">Load(TDes &amp;, TInt, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Load</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aDest,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string without memory allocation. The loaded string is stored in the destination TDes&amp;. Because this method doesn't allocate memory the destination descriptor must be long enough.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>ECCoeEnvNotInitialized Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aDest</td><td>Reference to the descriptor where the resource string is loaded.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3826685A-5448-3BAF-ABFB-CD463784DA53"><a name="GUID-3826685A-5448-3BAF-ABFB-CD463784DA53"><!-- --></a>
+		<h2 class="topictitle2">LoadL(TInt, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>LoadL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string with memory allocation.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-46349789-B4D8-34E5-925E-125E0D920BAD"><a name="GUID-46349789-B4D8-34E5-925E-125E0D920BAD"><!-- --></a>
+		<h2 class="topictitle2">LoadL(TInt, TInt, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>LoadL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aInt,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string with memory allocation and replaces the first %N-string in it with replacement TInt. In debug builds the Symbian OS panic mechanism is used to notify programming errors.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>EKeyStringNotFound In debug build if the key string 'N' wasn't found in formatting. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aInt</td><td>The replacing TInt.  </td></tr><tr><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EB7D0BEC-8ECF-3053-83DA-6C4A73B2F58F"><a name="GUID-EB7D0BEC-8ECF-3053-83DA-6C4A73B2F58F"><!-- --></a>
+		<h2 class="topictitle2">LoadL(TInt, const TDesC &amp;, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>LoadL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aString,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string with memory allocation and replaces the first %U-string in it with replacement string. In debug builds the Symbian OS panic mechanism is used to notify programming errors.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>EKeyStringNotFound In debug build if the key string 'U' wasn't found in formatting. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aString</td><td>Reference to the replacing string.  </td></tr><tr><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-17F13D0A-AFA1-3BFD-9293-D1959A920BE0"><a name="GUID-17F13D0A-AFA1-3BFD-9293-D1959A920BE0"><!-- --></a>
+		<h2 class="topictitle2">LoadL(TInt, const TDesC &amp;, TInt, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>LoadL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aString,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aInt,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string with memory allocation, replaces the first %N-string in it with replacement TInt and the first %U-string in it with replacement string. In debug builds the Symbian OS panic mechanism is used to notify programming errors.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>EKeyStringNotFound In debug build if the key string 'N' or 'U' wasn't found in formatting. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aString</td><td>Reference to the replacing string.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aInt</td><td>The replacing TInt.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-67A61315-B38A-35F6-9EF1-85A8A3D0BCA0"><a name="GUID-67A61315-B38A-35F6-9EF1-85A8A3D0BCA0"><!-- --></a>
+		<h2 class="topictitle2">LoadL(TInt, const CArrayFix&lt; TInt &gt; &amp;, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>LoadL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;</td><td>aInts,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string with memory allocation and replaces the %(index)N-strings in it with replacement TInts from an array. In debug builds the Symbian OS panic mechanism is used to notify programming errors.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>ETooManyArguments In debug build if too many replacing elements in aInts array. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp; aInts</td><td>Reference to the array including the replacing TInts.  </td></tr><tr><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6CED764D-320E-3C2A-8C4D-92ADB82D4676"><a name="GUID-6CED764D-320E-3C2A-8C4D-92ADB82D4676"><!-- --></a>
+		<h2 class="topictitle2">LoadL(TInt, const MDesCArray &amp;, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>LoadL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td>const MDesCArray &amp;</td><td>aStrings,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string with memory allocation and replaces the %(index)U-strings in it with replacement strings from an array. In debug builds the Symbian OS panic mechanism is used to notify programming errors.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>ETooManyArguments In debug build if too many replacing elements in aStrings array. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr class="bg"><td class="parameter">const MDesCArray &amp; aStrings</td><td>Reference to the array including pointers to the replacing strings.  </td></tr><tr><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-404EE74D-0455-38DA-A7D2-5CC1E0A822E3"><a name="GUID-404EE74D-0455-38DA-A7D2-5CC1E0A822E3"><!-- --></a>
+		<h2 class="topictitle2">LoadL(TInt, const MDesCArray &amp;, const CArrayFix&lt; TInt &gt; &amp;, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>LoadL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td>const MDesCArray &amp;</td><td>aStrings,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;</td><td>aInts,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string with memory allocation and replaces the %(index)U-strings in it with replacement strings from an array and the %(index)N-strings in it with replacement TInts from another array. In debug builds the Symbian OS panic mechanism is used to notify programming errors.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>ETooManyArguments In debug build if too many replacing elements in aStrings and/or aInts arrays. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr class="bg"><td class="parameter">const MDesCArray &amp; aStrings</td><td>Reference to the array including pointers to the replacing strings.  </td></tr><tr><td class="parameter">const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp; aInts</td><td>Reference to the array including the replacing TInts.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-933BC7FB-90C5-3219-9819-646622034AAC"><a name="GUID-933BC7FB-90C5-3219-9819-646622034AAC"><!-- --></a>
+		<h2 class="topictitle2">LoadLC(TInt, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>LoadLC</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string with memory allocation and pushes the string onto the cleanup stack.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-790512D6-83BE-3401-AA31-D6A4121D5FF2"><a name="GUID-790512D6-83BE-3401-AA31-D6A4121D5FF2"><!-- --></a>
+		<h2 class="topictitle2">LoadLC(TInt, TInt, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>LoadLC</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aInt,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string with memory allocation, replaces the first %N-string in it with replacement TInt and pushes the string onto the cleanup stack. In debug builds the Symbian OS panic mechanism is used to notify programming errors.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>EKeyStringNotFound In debug build if the key string 'N' wasn't found in formatting. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aInt</td><td>the replacing TInt.  </td></tr><tr><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0EEAAB17-42AC-3083-8527-7BE9083FFE79"><a name="GUID-0EEAAB17-42AC-3083-8527-7BE9083FFE79"><!-- --></a>
+		<h2 class="topictitle2">LoadLC(TInt, const TDesC &amp;, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>LoadLC</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aString,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string with memory allocation, replaces the first %U-string in it with replacement string and pushes the string onto the cleanup stack. In debug builds the Symbian OS panic mechanism is used to notify programming errors.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>EKeyStringNotFound In debug build if the key string 'U' wasn't found in formatting. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aString</td><td>Reference to the replacing string.  </td></tr><tr><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-D8681F9D-47A4-367B-BED2-EDB018100F4D"><a name="GUID-D8681F9D-47A4-367B-BED2-EDB018100F4D"><!-- --></a>
+		<h2 class="topictitle2">LoadLC(TInt, const TDesC &amp;, TInt, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>LoadLC</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aString,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aInt,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string with memory allocation, replaces the first %N-string in it with replacement TInt and the first %U-string in it with replacement string and pushes the string onto the cleanup stack. In debug builds the Symbian OS panic mechanism is used to notify programming errors.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>EKeyStringNotFound In debug build if the key string 'N' or 'U' wasn't found in formatting. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aString</td><td>Reference to the replacing string.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aInt</td><td>The replacing TInt.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4E422B6D-1095-3719-9FB7-0C034FDAF9ED"><a name="GUID-4E422B6D-1095-3719-9FB7-0C034FDAF9ED"><!-- --></a>
+		<h2 class="topictitle2">LoadLC(TInt, const CArrayFix&lt; TInt &gt; &amp;, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>LoadLC</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;</td><td>aInts,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string with memory allocation, replaces the %(index)N-strings in it with replacement TInts from an array and pushes the string onto the cleanup stack. In debug builds the Symbian OS panic mechanism is used to notify programming errors.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>ETooManyArguments In debug build if too many replacing elements in aInts array. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp; aInts</td><td>Reference to the array including the replacing TInts.  </td></tr><tr><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-FC8966D6-B26A-34B8-A1D5-DF7879A005FB"><a name="GUID-FC8966D6-B26A-34B8-A1D5-DF7879A005FB"><!-- --></a>
+		<h2 class="topictitle2">LoadLC(TInt, const MDesCArray &amp;, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>LoadLC</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td>const MDesCArray &amp;</td><td>aStrings,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string with memory allocation, replaces the %(index)U-strings in it with replacement strings from an array and pushes the string onto the cleanup stack. In debug builds the Symbian OS panic mechanism is used to notify programming errors.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>ETooManyArguments In debug build if too many replacing elements in aStrings array. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr class="bg"><td class="parameter">const MDesCArray &amp; aStrings</td><td>Reference to the array including pointers to the replacing strings.  </td></tr><tr><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A87C2724-E154-30A7-BF91-E5160B811D58"><a name="GUID-A87C2724-E154-30A7-BF91-E5160B811D58"><!-- --></a>
+		<h2 class="topictitle2">LoadLC(TInt, const MDesCArray &amp;, const CArrayFix&lt; TInt &gt; &amp;, CCoeEnv *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>LoadLC</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aResourceId,</td></tr><tr><td colspan="3"> </td><td>const MDesCArray &amp;</td><td>aStrings,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp;</td><td>aInts,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> *</td><td>aLoaderEnv = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Reads a resource string with memory allocation, replaces the %(index)U-strings in it with replacement strings from an array. Replaces the %(index)N-strings with replacement TInts from another array. Pushes the string onto the cleanup stack. In debug builds the Symbian OS panic mechanism is used to notify programming errors.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>panic</strong>
+							</dt>
+
+							<dd>ETooManyArguments In debug build if too many replacing elements in aStrings and/or aInts arrays. </dd>
+
+						
+					</dl>
+
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotSupported Parameter aLoaderEnv is NULL and <a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html#GUID-9DFA8EAF-03B7-34FA-A946-D88A3D624599">CCoeEnv::Static</a> returned NULL. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aResourceId</td><td>The numeric ID of the resource string to be read.  </td></tr><tr class="bg"><td class="parameter">const MDesCArray &amp; aStrings</td><td>Reference to the array including pointers to the replacing strings.  </td></tr><tr><td class="parameter">const <a href="GUID-79EFD210-2C4F-31E5-83CD-DC9FE54FD585.html">CArrayFix</a>&lt; <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &gt; &amp; aInts</td><td>Reference to the array including the replacing TInts.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-12A9389D-363B-3F54-857F-89EE0EDCDF40.html">CCoeEnv</a> * aLoaderEnv = NULL</td><td>Pointer to the control environment. If user doesn't give this, CCoeEnv::Static is called to get it.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1C0FC4A4-3068-372C-B0DB-8176F2BE72BE"><a name="GUID-1C0FC4A4-3068-372C-B0DB-8176F2BE72BE"><!-- --></a>
+		<h2 class="topictitle2">RemoveNoDirMarkers(TDes &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>RemoveNoDirMarkers</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aText</td><td>)</td><td>[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aText</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B99C7FEA-9FB8-3906-AD54-2D10D105F14C"><a name="GUID-B99C7FEA-9FB8-3906-AD54-2D10D105F14C"><!-- --></a>
+		<h2 class="topictitle2">ResolveDirectionality(TDes &amp;, TBool *)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-07D86324-ED54-3FCD-B301-53B7A6E04AE3.html">TBidiText::TDirectionality</a>
+				</td><td>ResolveDirectionality</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aText,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> *</td><td>aFound</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aText</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> * aFound</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C855F413-E7E5-34EA-98F7-D95B93060B5A"><a name="GUID-C855F413-E7E5-34EA-98F7-D95B93060B5A"><!-- --></a>
+		<h2 class="topictitle2">ResolveSubStringDirsL(TDes &amp;, TInt, TBool *)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>ResolveSubStringDirsL</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aText,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aCount,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> *</td><td>aMarker</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aText</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aCount</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> * aMarker</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-24E11CA6-72C5-3738-ACC8-659CE963308B"><a name="GUID-24E11CA6-72C5-3738-ACC8-659CE963308B"><!-- --></a>
+		<h2 class="topictitle2">ResolveSubStringL(TDes &amp;, TBool *)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-3D3D9CD7-C8FD-3F81-9CC5-1A71D4F9751E.html">HBufC</a> *</td><td>ResolveSubStringL</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aText,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> *</td><td>aMarker</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private, static]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aText</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> * aMarker</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-459DFEFA-4421-38CB-B1BB-87D06A0147A1"><a name="GUID-459DFEFA-4421-38CB-B1BB-87D06A0147A1"><!-- --></a>
+		<h2 class="topictitle2">operator=(const TulTextResourceUtils &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D.html">TulTextResourceUtils</a> &amp;</td><td>operator=</td><td>(</td><td>const <a href="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D.html">TulTextResourceUtils</a> &amp;</td><td/><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-E19C9DB8-2C8B-366B-B650-2673B066256D.html">TulTextResourceUtils</a> &amp; </td><td> </td></tr></table></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

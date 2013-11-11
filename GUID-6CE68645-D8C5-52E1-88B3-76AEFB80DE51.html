@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Peripherals As Power Resources"/>
+<meta name="abstract" content="Peripherals that provide services to other peripherals can be considered as power resources from the point of view of the client driver."/>
+<meta name="description" content="Peripherals that provide services to other peripherals can be considered as power resources from the point of view of the client driver."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-6CE68645-D8C5-52E1-88B3-76AEFB80DE51"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Peripherals As Power Resources</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-6CE68645-D8C5-52E1-88B3-76AEFB80DE51"><a name="GUID-6CE68645-D8C5-52E1-88B3-76AEFB80DE51"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2399872 id2400380 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-A91C6359-E547-51AD-AA8C-45BCAFBA98AC.html" title="EKA2 is the principal Hardware and Kernel Services module. It manages the CPU and memory resources of a phone, and provides an architecture for device drivers to manage other hardware resources.">Kernel Architecture (EKA2)</a> &gt; <a href="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html" title="This topic describes how to implement a power controller in a base port.">Power Management Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Peripherals
+As Power Resources</h1>
+<div><p>Peripherals that provide services to other peripherals can be considered
+as power resources from the point of view of the client driver.</p>
+
+<p>As they can offer a service to more than one other peripheral, we suggest
+that the driver that manages them presents a <a href="GUID-10105403-AF16-3908-AE9E-96CF2A03AD3A.html"><span class="apiname">MPowerInput</span></a> derived
+interface to client peripheral drivers, providing <samp class="codeph">Use()</samp> and <samp class="codeph">Release()</samp> functions
+that can be used by dependent peripheral drivers to issue power requests.
+The driver for the peripheral providing that interface may then use the built-in
+usage counting feature to control the peripheral power state. </p>
+
+<p>A typical example of a shared Peripheral is an Inter-Component serial Bus
+(I2C, SPI, etc): </p>
+
+<pre class="codeblock" id="GUID-6CE68645-D8C5-52E1-88B3-76AEFB80DE51__GUID-2E454D22-496D-5D9C-9F67-281D6F340459"><a name="GUID-6CE68645-D8C5-52E1-88B3-76AEFB80DE51__GUID-2E454D22-496D-5D9C-9F67-281D6F340459"><!-- --></a>class MySharedPeripheral : public MPowerInput , (other parent classes)
+    {
+public:    
+    // from MPowerInput
+    void Use();
+    void Release();
+    TUint GetCount();
+    ...
+    (other methods and data members required to model the interface)
+    };
+      </pre>
+
+<p>Special care must be taken to not create circular dependencies, for example,
+Peripheral A depends on Peripheral B, which depends on Peripheral C which
+depends on Peripheral A. Such circular dependencies would cause the <a href="GUID-10105403-AF16-3908-AE9E-96CF2A03AD3A.html#GUID-10105403-AF16-3908-AE9E-96CF2A03AD3A__GUID-606ECD77-A5F7-3408-9B63-C68C0A7B73C6"><span class="apiname">MPowerInput::Release()</span></a> mechanism
+not to work properly, and preventing the chain of peripherals from powering
+down when due. </p>
+
+<p>The shared peripheral driver’s power handler asynchronous <samp class="codeph">PowerDown()</samp> must
+examine the usage count of that peripheral if the power manager issues a <samp class="codeph">PowerDown()</samp> request
+to the shared peripheral driver’s power handler while the peripheral is still
+in use by another driver. In this situation, the shared peripheral driver
+must defer powering down until all the dependent peripherals have released
+their request on it. </p>
+
+<p>Some peripherals may also be represented as power resources to prevent
+the base port power saving operations inhibiting their usage. For example,
+a base port may consider DRAM to be a shared power resource with the DMA controller,
+or the DSP controller as clients. This will allow them to still be able to
+access DRAM whilst the CPU is idling, thus stopping the DRAM going into self-refresh
+if either one of its clients has pending operations on it. </p>
+
+<p>As another example, to save power some base ports might decide to reduce
+the refresh rate of the LCD whilst the CPU is idling or even power it down
+for short periods and rely on the persistence of the LCD to prevent degredation
+of the user experience. However, on a multiple core solution the LCD might
+be used by the second core (e.g. DSP), for example, for playing back video
+whilst the main CPU is idling. In this situation the LCD should be represented
+as a shared power resource and the DSP must be able to request usage of this
+resource. The DSP controller software could assert a request on the LCD preventing
+the main CPU from initiating the power saving measures. </p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-3773A78D-F491-52EB-AA1D-201636497F28.html" title="This topic describes how to implement a power controller in a base port.">Power Management Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

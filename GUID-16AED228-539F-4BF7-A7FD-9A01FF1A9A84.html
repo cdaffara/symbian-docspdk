@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Locking"/>
+<meta name="abstract" content="This document describes SMP locks and outlines the need of introducing locks in the code."/>
+<meta name="description" content="This document describes SMP locks and outlines the need of introducing locks in the code."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CE72E71B-6ED3-4961-B4C5-C43D823ACA9D.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-629EAA30-ED77-4CA9-91ED-36C818D7B4F4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CE72E71B-6ED3-4961-B4C5-C43D823ACA9D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-387E98B0-568D-4DBB-9A9E-616E41E96B58.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-FA120B3F-4EC4-5A0A-8A36-D5CD032CF1B0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9D00655C-AFBA-5DF7-B11B-6B2355BDF08D.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-16AED228-539F-4BF7-A7FD-9A01FF1A9A84"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Locking</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-16AED228-539F-4BF7-A7FD-9A01FF1A9A84"><a name="GUID-16AED228-539F-4BF7-A7FD-9A01FF1A9A84"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2561665 id2561671 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-629EAA30-ED77-4CA9-91ED-36C818D7B4F4.html" title="Provides summary of documents to make SMP-safe applications.">SMP</a> &gt; <a href="GUID-CE72E71B-6ED3-4961-B4C5-C43D823ACA9D.html" title="Symmetric Multiprocessing (SMP) applies to a multiprocessor computer architecture where 2 or more identical processes can connect to a single shared main memory. SMP allows simultaneous execution of threads. This means that overall performance is improved and ultimately battery life is extended. This section introduces the main concepts applied to SMP including Threading Models, Interrupt Handling, Locking and Memory Barriers.">SMP Concepts</a> &gt; </div>
+<h1 class="topictitle1">Locking</h1>
+<div><p>This document describes SMP locks and outlines the need of introducing
+locks in the code.</p>
+
+<p>Locks are used to synchronize the data between threads in the kernel. They
+can be also used to synchronize access to data in user side threads In SMP,
+threads are executed in parallel, which means that if locks are not applied
+to the code it could result in a race condition. Race conditions lead to system
+crashes and data corruptions. </p>
+
+<div class="section" id="GUID-16AED228-539F-4BF7-A7FD-9A01FF1A9A84__GUID-6DA960AD-4E33-4B15-B960-F8077530AC88"><a name="GUID-16AED228-539F-4BF7-A7FD-9A01FF1A9A84__GUID-6DA960AD-4E33-4B15-B960-F8077530AC88"><!-- --></a><h2 class="sectiontitle">Locking Granularity</h2><p>An
+important property of a lock is its granularity. The granularity is a measure
+of the amount of data the lock is protecting. There are two different granularities
+for locks:</p>
+<ul>
+<li><p><strong>Coarse-Grained Locks</strong> enclose a large area of shared code or
+multiple areas of unrelated data. The lock reduces the number of threads that
+run concurrently resulting in serial execution making the code behave like
+a single thread process. Coarse locks are applied in parallel. One lock can
+be applied to each kernel subsystem.</p>
+</li>
+
+</ul>
+<p>The following diagram illustrates how a Coarse-Grained Lock covers
+many parts of code. It not only simplifies the locking action itself but also
+frees developers from having to load all the members of a code in order to
+lock them. In order to get concurrency in the operating system, the operating
+system must allow more than one process (or interrupt) to execute at the same
+time. To do this, we divide the OS into sections and give each section a lock.
+For a small number of processors, we only need a small number of locks, each
+covering a large region of the OS. This model of coarse-grained locking provides
+good scaling on small numbers of processors.</p>
+<div class="fignone" id="GUID-16AED228-539F-4BF7-A7FD-9A01FF1A9A84__GUID-D70A45BC-E281-403E-9D7F-519D990F0DAE"><a name="GUID-16AED228-539F-4BF7-A7FD-9A01FF1A9A84__GUID-D70A45BC-E281-403E-9D7F-519D990F0DAE"><!-- --></a><span class="figcap">Figure 1. Coarse-Grained Lock</span>. <span class="figdesc"/>
+
+
+<img src="GUID-91BD4E81-4CDC-4279-8E19-5B79A63B838E_d0e17336_href.png"/>
+</div>
+<ul>
+<li><p><strong>Fine-Grained Locks</strong> enclose a small area of code for example
+a data structure. These locks are added to the code and the user must remember
+to release the lock. Fine locks are error prone. </p>
+</li>
+
+</ul>
+<p>As the number of processors increases, the number of locks also increases.
+The following diagram illustrates how fine locks are applied to data. In other
+words, fine locks protect individual data structures or even parts of data
+structures. All those locks add instructions and data.  To do this, we divide
+the OS into sections and divide the section into small pieces of code and
+apply lock for each piece of code. Fine-grained locking can result in near
+perfect scaling.</p>
+<div class="fignone" id="GUID-16AED228-539F-4BF7-A7FD-9A01FF1A9A84__GUID-97F40770-1B6C-435B-AFF0-3BA3AC66F7DA"><a name="GUID-16AED228-539F-4BF7-A7FD-9A01FF1A9A84__GUID-97F40770-1B6C-435B-AFF0-3BA3AC66F7DA"><!-- --></a><span class="figcap">Figure 2. Fine-Grained Lock</span>
+
+<img src="GUID-2E3F9FBD-21FE-4F02-B410-F756012805D2_d0e17353_href.png"/>
+</div>
+</div>
+
+<div class="section" id="GUID-16AED228-539F-4BF7-A7FD-9A01FF1A9A84__GUID-94FDD42D-9D26-4A41-BFB6-57648083EC41"><a name="GUID-16AED228-539F-4BF7-A7FD-9A01FF1A9A84__GUID-94FDD42D-9D26-4A41-BFB6-57648083EC41"><!-- --></a><h2 class="sectiontitle">Type of Locks</h2><ul>
+<li><p><a href="GUID-FB1605A8-9946-364C-A649-DEF60E1F761B.html"><span class="apiname">TSpinLock</span></a> is the lightest weight lock available
+kernel side. If a process attempts to acquire a spinlock and one is not available,
+the process will keep trying (spinning) until it can acquire the lock. Spinlocks
+should be used to lock data in situations where the lock is not held for a
+long time.</p>
+</li>
+
+</ul>
+<ul>
+<li><p><a href="GUID-669D0368-7ADE-35FA-881C-51D476D45B8A.html"><span class="apiname">RFastLock</span></a> is the lightest weight lock available
+user side. There is no priority inheritance. This is a layer over a standard
+semaphore, and only calls into the kernel side if there is contention.</p>
+</li>
+
+</ul>
+<ul>
+<li><p><a href="GUID-C0FEA3A0-7DD3-3B87-A919-CB973BC05766.html"><span class="apiname">RMutex</span></a> is used to serialize access to a section
+of re-entrant code that cannot be executed concurrently by more than one thread.
+A mutex object allows one thread into a controlled section, forcing other
+threads which attempt to gain access to that section to wait until the first
+thread has exited from that section.</p>
+</li>
+
+</ul>
+<ul>
+<li><p><a href="GUID-AED27A76-3645-3A04-B80D-10473D9C5A27.html"><span class="apiname">RSemaphore</span></a> is used for Inter Process Communication
+(IPC), they are similar in performance to <samp class="codeph">RMutex</samp>. <samp class="codeph">RSemaphore</samp> locks
+are used when the lock must be held for a long time. These locks put the thread
+into sleep mode and are used to synchronize user contexts.</p>
+</li>
+
+</ul>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-CE72E71B-6ED3-4961-B4C5-C43D823ACA9D.html" title="Symmetric Multiprocessing (SMP) applies to a multiprocessor computer architecture where 2 or more identical processes can connect to a single shared main memory. SMP allows simultaneous execution of threads. This means that overall performance is improved and ultimately battery life is extended. This section introduces the main concepts applied to SMP including Threading Models, Interrupt Handling, Locking and Memory Barriers.">SMP Concepts</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-387E98B0-568D-4DBB-9A9E-616E41E96B58.html" title="This document introduces Symmetric Multiprocessing (SMP) on the Symbian platform.">SMP - Overview</a></div>
+<div><a href="GUID-FA120B3F-4EC4-5A0A-8A36-D5CD032CF1B0.html" title="This document describes how to use mutexes.">Using Mutexes</a></div>
+<div><a href="GUID-9D00655C-AFBA-5DF7-B11B-6B2355BDF08D.html" title="This document describes how to use semaphores.">Using Semaphores</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

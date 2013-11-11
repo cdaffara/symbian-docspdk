@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Porting with Zsh"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0C0A85D1-BC15-502F-9DD1-A48C0A908CED.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-58035B49-2EAE-5144-B226-28AF2EDD62E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9B8655A7-2F6D-53E0-8855-78D88BB84643.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0C0A85D1-BC15-502F-9DD1-A48C0A908CED.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-DE099071-8401-5DD0-B72A-672B307463A2"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Porting with Zsh</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-DE099071-8401-5DD0-B72A-672B307463A2"><a name="GUID-DE099071-8401-5DD0-B72A-672B307463A2"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2520040 id2380387 id2380396 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-58035B49-2EAE-5144-B226-28AF2EDD62E7.html">Generic Application Support Guide</a> &gt; <a href="GUID-9B8655A7-2F6D-53E0-8855-78D88BB84643.html">Open Environment Utilities</a> &gt; <a href="GUID-0C0A85D1-BC15-502F-9DD1-A48C0A908CED.html">Text Shell (Zsh) and Telnet Daemon</a> &gt; </div>
+<h1 class="topictitle1">Porting with Zsh</h1>
+<div><p>Zsh has no platform security capabilities, that is, it cannot directly access the private directories on a device. However, you can make use of two library functions from the static library (<span class="filepath">copydatafile.lib</span>) to copy data between public and private directories: </p>
+ <ul><li id="GUID-DE099071-8401-5DD0-B72A-672B307463A2__GUID-923D67FF-81DA-5EE1-BFE3-3D8219436EC6"><a name="GUID-DE099071-8401-5DD0-B72A-672B307463A2__GUID-923D67FF-81DA-5EE1-BFE3-3D8219436EC6"><!-- --></a><p> <samp class="codeph">static TInt CopyDataFile::CopyToPrivateL(TDesC&amp;
+             aFileName)</samp>: This function copies data from the public directory (<span class="filepath">c:\shellpub\&lt;SID&gt;</span> where <samp class="codeph">SID</samp> refers to the Secure ID of the application) to the private directory. </p>
+ </li>
+ <li id="GUID-DE099071-8401-5DD0-B72A-672B307463A2__GUID-A615BD9B-90DF-5152-A20C-623225E9DCB9"><a name="GUID-DE099071-8401-5DD0-B72A-672B307463A2__GUID-A615BD9B-90DF-5152-A20C-623225E9DCB9"><!-- --></a><p> <samp class="codeph">static TInt CopyDataFile::CopyToPublicL(TDesC&amp;
+             aFileName)</samp>: This function copies data from the private directory to the public directory (<span class="filepath">c:\shellpub\&lt;SID&gt;</span> ). </p>
+ </li>
+ </ul>
+ <p>These library functions can be linked to <a href="GUID-00FFF2B3-F8E4-5CBF-B031-240D98BB2111.html">External Programs</a> to copy the data under a private directory to and from a public directory, <span class="filepath">c:\shellpub</span>. Note that these functions are not part of Zsh; they are in a separate library and it is not mandatory to use them. </p>
+ <p>Using these library functions, here is one way of copying data, so that it can be accessed with Zsh: </p>
+ <a name="GUID-DE099071-8401-5DD0-B72A-672B307463A2__GUID-44659080-B22F-5DC0-ADE3-916358577BA6"><!-- --></a><ol id="GUID-DE099071-8401-5DD0-B72A-672B307463A2__GUID-44659080-B22F-5DC0-ADE3-916358577BA6"><li id="GUID-DE099071-8401-5DD0-B72A-672B307463A2__GUID-11871E6E-B602-5088-A904-630B15B9BF79"><a name="GUID-DE099071-8401-5DD0-B72A-672B307463A2__GUID-11871E6E-B602-5088-A904-630B15B9BF79"><!-- --></a><p>To copy the files from public directory <span class="filepath">c:\shellpub\&lt;SID&gt;</span> to <span class="filepath">\private\&lt;SID&gt;</span>, call the <samp class="codeph">CopyToPrivateL()</samp> function while you start the application. </p>
+ </li>
+ <li id="GUID-DE099071-8401-5DD0-B72A-672B307463A2__GUID-40192D29-FAE0-50F5-9E41-2E80C6623658"><a name="GUID-DE099071-8401-5DD0-B72A-672B307463A2__GUID-40192D29-FAE0-50F5-9E41-2E80C6623658"><!-- --></a><p>As the <span class="filepath">c:\shellpub</span> directory is public, you can view or modify files in it from Zsh. </p>
+ </li>
+ <li id="GUID-DE099071-8401-5DD0-B72A-672B307463A2__GUID-BF759BA2-19CE-5213-A00B-455B52EDFAFF"><a name="GUID-DE099071-8401-5DD0-B72A-672B307463A2__GUID-BF759BA2-19CE-5213-A00B-455B52EDFAFF"><!-- --></a><p>Each application replicates its directory structure under <span class="filepath">c:\shellpub</span> starting with <span class="filepath">&lt;SID&gt;</span> so that they do not overwrite private files of the same name belonging to other applications. </p>
+ </li>
+ <li id="GUID-DE099071-8401-5DD0-B72A-672B307463A2__GUID-958AA6F4-4DC7-5BB7-A111-2ECBBEEC8A29"><a name="GUID-DE099071-8401-5DD0-B72A-672B307463A2__GUID-958AA6F4-4DC7-5BB7-A111-2ECBBEEC8A29"><!-- --></a><p>To copy the files from <span class="filepath">\private\&lt;SID&gt;</span> to a public directory <span class="filepath">c:\shellpub\&lt;SID&gt;</span>, call the <samp class="codeph">CopyToPublicL()</samp> function while you exit the application. </p>
+ </li>
+ </ol>
+ <div class="section"><h2 class="sectiontitle">See also</h2> <p><a href="GUID-B5696711-C79B-5239-B587-33507BF2B3BE.html">Supported Zsh Features</a>  </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-0C0A85D1-BC15-502F-9DD1-A48C0A908CED.html">Text Shell (Zsh) and Telnet Daemon</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

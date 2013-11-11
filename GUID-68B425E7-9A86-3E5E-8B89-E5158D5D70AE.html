@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="RSqlBufFlat"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-68B425E7-9A86-3E5E-8B89-E5158D5D70AE"/>
+
+<title>RSqlBufFlat</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-68B425E7-9A86-3E5E-8B89-E5158D5D70AE"><a name="GUID-68B425E7-9A86-3E5E-8B89-E5158D5D70AE"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">RSqlBufFlat Class Reference</h1>
+	<table class="signature"><tr><td>class RSqlBufFlat</td></tr></table><div class="section"><div>
+			<p>
+				<a href="GUID-68B425E7-9A86-3E5E-8B89-E5158D5D70AE.html#GUID-68B425E7-9A86-3E5E-8B89-E5158D5D70AE">RSqlBufFlat</a> class manages a flat memory buffer with fixed elements count. Each element (or field) of the flat buffer has a type and variable length data and is accessible using an index. The data may be NULL. The <a href="GUID-68B425E7-9A86-3E5E-8B89-E5158D5D70AE.html#GUID-68B425E7-9A86-3E5E-8B89-E5158D5D70AE">RSqlBufFlat</a> objects are used for sending/receiving data between client dlls and servers, because once the buffer filled, a pointer to the flat buffer data can be used to send the whole buffer in a single IPC call, which is more effective than using a stream like transfer.</p>
+
+			<p>
+				<a href="GUID-68B425E7-9A86-3E5E-8B89-E5158D5D70AE.html#GUID-68B425E7-9A86-3E5E-8B89-E5158D5D70AE">RSqlBufFlat</a> public functions are not very convenient for storing/retrieving values based on the column type and there are two additional classes which may be used instead of working with the flat buffer directly: <a href="GUID-8273503E-C5ED-37FC-8828-752C067FDED7.html#GUID-8273503E-C5ED-37FC-8828-752C067FDED7">TSqlBufRIterator</a> and <a href="GUID-5871C602-2902-3690-8AE7-D79AB1165F75.html#GUID-5871C602-2902-3690-8AE7-D79AB1165F75">TSqlBufWIterator</a>.</p>
+
+			<div class="p">The physical structure of the flat buffer is: --------------------------- | SysData | Header | Data | ---------------------------<ul><li><p>"SysData" has fixed length and contains fields with about the buffer used size, elements count, header size;</p>
+</li>
+<li><p>"Header" has fixed length, which depends of the number of elements and contains cells, one per element. Each cell contains information about: element type, element data length, the start position of the element data in the flat buffer, "present"/"not present" flag. "Not present" means that no memory is reserved for the element data, but the buffer "knows" what is the element type and element data length; (In the current design there is no "Present"/"Not present flag". If the data position is 0, that indicates the element is "Not present"). See <a href="GUID-DF1DEE3E-FD3B-371B-9A50-8B6A21DAAEC8.html#GUID-DF1DEE3E-FD3B-371B-9A50-8B6A21DAAEC8">RSqlBufFlat::TCell</a> comments for details.</p>
+</li>
+<li><p>"Data" Is the dynamic part of the buffer which may grow during the operations with the flat buffer (setting element data);</p>
+</li>
+</ul>
+</div>
+
+			<p>"Present"/"Not present" attribute has a key role in the large data transfers between the client and the server. In order to optimize memory usage, usually the client specifies what can be the max field size. The server knows that and when it fills a particular flat buffer, which has to be sent to the client, it puts in the flat buffer only the pieces of data whose size is less than the specified "large data" size. Any data piece whose size is larger will be set as "Not present" in the flat buffer. The "Not present" field will have all the attributes, like type and size, but won't have any data or any allocated flat buffer memory. So the client, when it receives the flat buffer, will know the field type and size and if it wants to get the field data, will have to make an additional call to the server.</p>
+
+			<p>Note that the fields in the buffer are 8-byte aligned.</p>
+
+			<p>Typical examples how the buffer can be used:</p>
+
+			<p>Case 1 - a dll client wants to receive from the server a flat buffer data.</p>
+
+			<div class="p">
+				<pre class="codeblock">RSqlBufFlat bufFlat;
+bufFlat.SetCount(N);								//N is the field count
+....
+bufFlat.Reset();									//Clears the content of the buffer without shrinking it.
+ipcArgs.Set(0, bufFlat.MaxSize());					//Tell the server what is the flat buffer max size
+ipcArgs.Set(1, &amp;bufFlat.BufPtr());
+TInt rc = session.SendReceive(funcNum, ipcArgs);
+if(rc &gt; KSqlClientBufOverflowCode)
+	{												//the client buffer is not big enough and has to be resized
+	rc = bufFlat.ReAlloc(err - KSqlClientBufOverflowCode);
+	if(rc != KErrNone)
+		{
+		return rc;
+		}
+	ipcArgs.Set(0, bufFlat.MaxSize());
+	ipcArgs.Set(1, &amp;bufFlat.BufPtr());
+	rc = session.SendReceive(funcNum, ipcArgs);
+	}</pre>
+
+			</div>
+
+			<p>Case 2 - a dll client wants to send to the server a flat buffer data.</p>
+
+			<div class="p">
+				<pre class="codeblock">RSqlBufFlat bufFlat;
+bufFlat.SetCount(N);								//N is the field count
+....
+TPtrC8 ptr(bufFlat.BufDes());
+TInt err = session.SendReceive(funcNum, TIpcArgs(ptr.Length(), &amp;ptr));</pre>
+
+			</div>
+
+			<div class="p">Case 3 - the server wants to return to the client a flat buffer data. <pre class="codeblock">RSqlBufFlat bufFlat;
+bufFlat.SetCount(N);								//N is the field count
+....
+TInt maxCliBufSize = msg.Int0();					//The max size of the client buffer
+if(maxCliBufSize &lt; bufFlat.Size())
+	{
+	return bufFlat.Size() + KSqlClientBufOverflowCode;//Tell the client that its buffer is too small
+	}
+msg.WriteL(1, bufFlat.BufDes());</pre>
+</div>
+
+			<div class="p">Case 4 - the server wants to receive from the client a flat buffer data. <pre class="codeblock">RSqlBufFlat bufFlat;
+bufFlat.SetCount(N);								//N is the field count
+....
+TInt cliBufFlatLen = aMessage.Int0();
+TInt err = bufFlat.ReAlloc(cliBufFlatLen);			//Reallocate memory for the flat buffer
+if(err != KErrNone)
+	{
+	return err;
+	}
+msg.ReadL(1, bufFlat.BufPtr());</pre>
+</div>
+
+			<div class="p">Case 5 - the server (or the client) wants to fill the flat buffer with some data. <pre class="codeblock">RSqlBufFlat bufFlat;
+bufFlat.SetCount(N);								//N is the field count
+....
+TInt err = flatBuf.SetCount(M);						//If the field count has to be changed to M
+if(err != KErrNone)
+	{
+	return err;
+	}
+//use the TSqlBufWIterator iterator to fill the buffer</pre>
+</div>
+
+			<p>
+				<a href="GUID-8273503E-C5ED-37FC-8828-752C067FDED7.html#GUID-8273503E-C5ED-37FC-8828-752C067FDED7">TSqlBufRIterator</a> <a href="GUID-5871C602-2902-3690-8AE7-D79AB1165F75.html#GUID-5871C602-2902-3690-8AE7-D79AB1165F75">TSqlBufWIterator</a> <a href="GUID-DF1DEE3E-FD3B-371B-9A50-8B6A21DAAEC8.html#GUID-DF1DEE3E-FD3B-371B-9A50-8B6A21DAAEC8">RSqlBufFlat::TCell</a> <a href="GUID-2FB9F0A1-1393-3AEA-952C-48285A6D4EDB.html#GUID-2FB9F0A1-1393-3AEA-952C-48285A6D4EDB">RSqlBufFlat::TBufFlat</a></p>
+
+		</div></div>
+<div class="section nested"><h2 class="sectiontitle">Nested Classes and Structures</h2><ul><li><a href="GUID-2FB9F0A1-1393-3AEA-952C-48285A6D4EDB.html">RSqlBufFlat::TBufFlat</a></li><li><a href="GUID-DF1DEE3E-FD3B-371B-9A50-8B6A21DAAEC8.html">RSqlBufFlat::TCell</a></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-16B621D0-4915-36BE-909F-C874E55912AF">RSqlBufFlat</a>()</td></tr><tr class="bg"><td align="right" class="code">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td><a href="#GUID-90A46974-267E-3B7C-B44C-6FEBC5AECE9E">BufDes</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-C0D29B11-1535-3D11-B318-B18D30A6120B.html">TPtr8</a> &amp;</td><td><a href="#GUID-847D5237-851A-3F8E-B7BE-C8994632E8C9">BufPtr</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-EAEF3B65-C962-3D1B-9BA3-7A1E38625E2D">Close</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-C0B93A37-EC01-3DEB-8391-05E4F289BE9F">Count</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-8EEC8A8B-73CA-3428-BB5D-C2982A0F004B">MaxSize</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-CECF75CB-754E-31B8-80D6-C6976E518FCD">ReAlloc</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-53F4F01C-FF4F-3EEF-919C-1204B9F39F3C">Reset</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-51C4C490-6A78-368D-95CB-0B1E45128F5F">ResetAndMinimize</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-2C54C23D-D24F-3EAD-99B2-FD0A682D4683">SetCount</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-675BB0A9-42EF-3BE6-B31F-58BB8480DF87">SetField</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const void *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-49B321A5-642A-3FF0-8911-4B315556EBB5">Size</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-889E6EFE-2DE7-3C6F-8E17-5AA5D8996963">Available</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-CAABB4C5-BF84-3F1F-BAB2-67B0E8DC88BC">DoInit</a>()</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-54947433-27C7-37A7-B016-AE7410CAD1C1">DoReAlloc</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-ED52BE13-0C62-3109-BFB9-74811C04AD7A">DoSet</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>, const void *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">const <a href="GUID-DF1DEE3E-FD3B-371B-9A50-8B6A21DAAEC8.html">TCell</a> *</td><td><a href="#GUID-BCCBEA2D-B4FD-3254-9EAD-840D28812194">Header</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-DF1DEE3E-FD3B-371B-9A50-8B6A21DAAEC8.html">TCell</a> *</td><td><a href="#GUID-8537B349-B999-3BC2-8AE6-A6461EA3C971">Header</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-E588B0A1-1336-3EEB-814B-A06794999764">Invariant</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-0CFCC356-F7D9-32F8-8869-4B07BBF49EC7">Reserve</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-5861E577-D5C3-3A2C-9C39-9B1642E587AE">SysDataSize</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Enumerations</th></tr></thead><tbody><tr><td align="right" valign="top">enum</td><td><a href="#GUID-A7C1A31D-2AB3-334F-A2B0-5CD1158A4E39">anonymous</a> { <a href="#GUID-46ED99C7-EBFC-356D-8573-9FBDF2F2419F">EWidthType</a> = 3, <a href="#GUID-7FAD4F61-BD3F-3C8F-9AE8-53BD7D1E0940">EWidthLen</a> = 29 }</td></tr><tr class="bg"><td align="right" valign="top">enum</td><td><a href="#GUID-8DA2C3FA-21A5-3F91-A473-8C0D7A1B8605">anonymous</a> { <a href="#GUID-E6A69EF2-9F06-3684-8341-A092302F2995">EMaxType</a> = 1 &lt;&lt; EWidthType, <a href="#GUID-FB16D5FB-F7C4-3BAB-B68F-3C1C99943DF6">EMaxLength</a> = 1 &lt;&lt; EWidthLen }</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-2FB9F0A1-1393-3AEA-952C-48285A6D4EDB.html">TBufFlat</a> *</td><td><a href="#GUID-70E394EB-23E4-3B4E-9215-C9E33E13FA93">iBuf</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-C0D29B11-1535-3D11-B318-B18D30A6120B.html">TPtr8</a>
+				</td><td><a href="#GUID-0F04FABE-2138-3251-AC9B-CCC75F469C08">iBufPtr</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a>
+				</td><td><a href="#GUID-EBA4D7D1-AE31-3380-A384-DF1EFD9A102F">iBufPtrC</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-B4199B7E-6315-3A5F-8459-2AA4BE5B7FA2">iMaxSize</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-16B621D0-4915-36BE-909F-C874E55912AF"><a name="GUID-16B621D0-4915-36BE-909F-C874E55912AF"><!-- --></a>
+		<h2 class="topictitle2">RSqlBufFlat()</h2>
+		<table class="signature"><tr><td>RSqlBufFlat</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the flat buffer pointer to NULL </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-889E6EFE-2DE7-3C6F-8E17-5AA5D8996963"><a name="GUID-889E6EFE-2DE7-3C6F-8E17-5AA5D8996963"><!-- --></a>
+		<h2 class="topictitle2">Available()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>Available</td><td>(</td><td>)</td><td>const [private, inline]</td></tr></table><div class="section"><div>
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-90A46974-267E-3B7C-B44C-6FEBC5AECE9E"><a name="GUID-90A46974-267E-3B7C-B44C-6FEBC5AECE9E"><!-- --></a>
+		<h2 class="topictitle2">BufDes()</h2>
+		<table class="signature"><tr><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>BufDes</td><td>(</td><td>)</td><td>const [inline]</td></tr></table><div class="section"><div>
+				<p>This function returns a const reference to a descriptor object pointing to the internal buffer. <a href="GUID-68B425E7-9A86-3E5E-8B89-E5158D5D70AE.html#GUID-90A46974-267E-3B7C-B44C-6FEBC5AECE9E">BufDes()</a> guarantees to return a const descriptor, whose lifetime is the same as the flat buffer lifetime. (useful when making asynchronous IPC calls)</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-847D5237-851A-3F8E-B7BE-C8994632E8C9"><a name="GUID-847D5237-851A-3F8E-B7BE-C8994632E8C9"><!-- --></a>
+		<h2 class="topictitle2">BufPtr()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-C0D29B11-1535-3D11-B318-B18D30A6120B.html">TPtr8</a> &amp;</td><td>BufPtr</td><td>(</td><td>)</td><td>[inline]</td></tr></table><div class="section"><div>
+				<p>This function returns a modifiable reference to a descriptor object pointing to the internal buffer. <a href="GUID-68B425E7-9A86-3E5E-8B89-E5158D5D70AE.html#GUID-847D5237-851A-3F8E-B7BE-C8994632E8C9">BufPtr()</a> guarantees to return a modifiable descriptor, whose lifetime is the same as the flat buffer lifetime. (useful when making asynchronous IPC calls)</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-EAEF3B65-C962-3D1B-9BA3-7A1E38625E2D"><a name="GUID-EAEF3B65-C962-3D1B-9BA3-7A1E38625E2D"><!-- --></a>
+		<h2 class="topictitle2">Close()</h2>
+		<table class="signature"><tr><td>void</td><td>Close</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Closes the flat bufer and frees the allocated memory. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C0B93A37-EC01-3DEB-8391-05E4F289BE9F"><a name="GUID-C0B93A37-EC01-3DEB-8391-05E4F289BE9F"><!-- --></a>
+		<h2 class="topictitle2">Count()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>Count</td><td>(</td><td>)</td><td>const [inline]</td></tr></table><div class="section"><div>
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-CAABB4C5-BF84-3F1F-BAB2-67B0E8DC88BC"><a name="GUID-CAABB4C5-BF84-3F1F-BAB2-67B0E8DC88BC"><!-- --></a>
+		<h2 class="topictitle2">DoInit()</h2>
+		<table class="signature"><tr><td>void</td><td>DoInit</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<div class="p">Initialzies the flat buffer header. All field set:<ul><li><p>invalid type;</p>
+</li>
+<li><p>zero length;</p>
+</li>
+<li><p>"Not present"; </p>
+</li>
+</ul>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-54947433-27C7-37A7-B016-AE7410CAD1C1"><a name="GUID-54947433-27C7-37A7-B016-AE7410CAD1C1"><!-- --></a>
+		<h2 class="topictitle2">DoReAlloc(TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>DoReAlloc</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aSize</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Reallocates the amount of the occupied by the flat buffer memory (only in case the requested size is bigger than the buffer size or the buffer does not exist). The operation preserves the content of the flat buffer.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aSize</td><td>Desired flat buffer size in bytes. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-ED52BE13-0C62-3109-BFB9-74811C04AD7A"><a name="GUID-ED52BE13-0C62-3109-BFB9-74811C04AD7A"><!-- --></a>
+		<h2 class="topictitle2">DoSet(TInt, TInt, const void *, TInt)</h2>
+		<table class="signature"><tr><td>void</td><td>DoSet</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aType,</td></tr><tr><td colspan="3"> </td><td>const void *</td><td>aData,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aDataLength</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"><div>
+				<p>Initialzes a flat buffer field. A memory for the field data has to be allocated before the call.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>Field index  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aType</td><td>Field type  </td></tr><tr><td class="parameter">const void * aData</td><td>Field data, may be NULL  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aDataLength</td><td>Field data length, may be 0  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BCCBEA2D-B4FD-3254-9EAD-840D28812194"><a name="GUID-BCCBEA2D-B4FD-3254-9EAD-840D28812194"><!-- --></a>
+		<h2 class="topictitle2">Header()</h2>
+		<table class="signature"><tr><td>const <a href="GUID-DF1DEE3E-FD3B-371B-9A50-8B6A21DAAEC8.html">TCell</a> *</td><td>Header</td><td>(</td><td>)</td><td>const [private, inline]</td></tr></table><div class="section"><div>
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-8537B349-B999-3BC2-8AE6-A6461EA3C971"><a name="GUID-8537B349-B999-3BC2-8AE6-A6461EA3C971"><!-- --></a>
+		<h2 class="topictitle2">Header()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-DF1DEE3E-FD3B-371B-9A50-8B6A21DAAEC8.html">TCell</a> *</td><td>Header</td><td>(</td><td>)</td><td>[private, inline]</td></tr></table><div class="section"><div>
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-E588B0A1-1336-3EEB-814B-A06794999764"><a name="GUID-E588B0A1-1336-3EEB-814B-A06794999764"><!-- --></a>
+		<h2 class="topictitle2">Invariant()</h2>
+		<table class="signature"><tr><td>void</td><td>Invariant</td><td>(</td><td>)</td><td>const [private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-8EEC8A8B-73CA-3428-BB5D-C2982A0F004B"><a name="GUID-8EEC8A8B-73CA-3428-BB5D-C2982A0F004B"><!-- --></a>
+		<h2 class="topictitle2">MaxSize()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>MaxSize</td><td>(</td><td>)</td><td>const [inline]</td></tr></table><div class="section"><div>
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-CECF75CB-754E-31B8-80D6-C6976E518FCD"><a name="GUID-CECF75CB-754E-31B8-80D6-C6976E518FCD"><!-- --></a>
+		<h2 class="topictitle2">ReAlloc(TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>ReAlloc</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aSize</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Reallocates the amount of the occupied by the flat buffer memory. The operation preserves the content of the flat buffer. Note: if the new size is less or equal to the max size of the buffer, no memory will be allocated.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aSize</td><td>Desired flat buffer size in bytes </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0CFCC356-F7D9-32F8-8869-4B07BBF49EC7"><a name="GUID-0CFCC356-F7D9-32F8-8869-4B07BBF49EC7"><!-- --></a>
+		<h2 class="topictitle2">Reserve(TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>Reserve</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aLength</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>Makes sure that the flat buffer has enough free space for a block of data with "aLength" length. The function may reallocated the buffer if there is not enough space.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aLength</td><td>The requested free memory length. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-53F4F01C-FF4F-3EEF-919C-1204B9F39F3C"><a name="GUID-53F4F01C-FF4F-3EEF-919C-1204B9F39F3C"><!-- --></a>
+		<h2 class="topictitle2">Reset()</h2>
+		<table class="signature"><tr><td>void</td><td>Reset</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Cleans up the flat buffer content but does not free the occupied memory. The count of elements is preserved.</p>
+
+				<div class="p">All elements set to have:<ul><li><p>invalid type;</p>
+</li>
+<li><p>zero length;</p>
+</li>
+<li><p>zero data position;</p>
+</li>
+</ul>
+</div>
+
+				<p>The element count is preserved. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-51C4C490-6A78-368D-95CB-0B1E45128F5F"><a name="GUID-51C4C490-6A78-368D-95CB-0B1E45128F5F"><!-- --></a>
+		<h2 class="topictitle2">ResetAndMinimize()</h2>
+		<table class="signature"><tr><td>void</td><td>ResetAndMinimize</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Cleans up the flat buffer content and frees the occupied memory if the memory is above KBufLimit. The count of elements is preserved.</p>
+
+				<p>If the buffer size is bigger than KBufLimit, the buffer will be reallocated and the buffer content - not preserved.</p>
+
+				<p>If the buffer size is less or equal to KBufLimit, no memory will be reallocated and the buffer preserves its content.</p>
+
+				<p>It is guaranteed that the reallocated buffer will have the same address in the heap as the original one. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-2C54C23D-D24F-3EAD-99B2-FD0A682D4683"><a name="GUID-2C54C23D-D24F-3EAD-99B2-FD0A682D4683"><!-- --></a>
+		<h2 class="topictitle2">SetCount(TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SetCount</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aCount</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>"Resource acquisiton" method. Sets the elements count of a new or already existing flat buffer.</p>
+
+				<p>The occupied memory won't be freed (in case of buffer resizing). The buffer content is not preserved (in case of buffer resizing).</p>
+
+				<div class="p">All elements set to have:<ul><li><p>invalid type;</p>
+</li>
+<li><p>zero length;</p>
+</li>
+<li><p>zero data position;</p>
+</li>
+</ul>
+</div>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aCount</td><td>Desired flat buffer elements count </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-675BB0A9-42EF-3BE6-B31F-58BB8480DF87"><a name="GUID-675BB0A9-42EF-3BE6-B31F-58BB8480DF87"><!-- --></a>
+		<h2 class="topictitle2">SetField(TInt, TInt, const void *, TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SetField</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aType,</td></tr><tr><td colspan="3"> </td><td>const void *</td><td>aData,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aDataLength</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Sets the content of a field.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>Field index  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aType</td><td>Field type  </td></tr><tr><td class="parameter">const void * aData</td><td>Field data, may be NULL  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aDataLength</td><td>Field data length, may be 0 </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-49B321A5-642A-3FF0-8911-4B315556EBB5"><a name="GUID-49B321A5-642A-3FF0-8911-4B315556EBB5"><!-- --></a>
+		<h2 class="topictitle2">Size()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>Size</td><td>(</td><td>)</td><td>const [inline]</td></tr></table><div class="section"><div>
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-5861E577-D5C3-3A2C-9C39-9B1642E587AE"><a name="GUID-5861E577-D5C3-3A2C-9C39-9B1642E587AE"><!-- --></a>
+		<h2 class="topictitle2">SysDataSize()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>SysDataSize</td><td>(</td><td>)</td><td>const [private, inline]</td></tr></table><div class="section"><div>
+				<p/>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Enumerations Documentation</h1><div class="nested1" id="GUID-A7C1A31D-2AB3-334F-A2B0-5CD1158A4E39"><a name="GUID-A7C1A31D-2AB3-334F-A2B0-5CD1158A4E39"><!-- --></a>
+		<h2 class="topictitle2">Enum anonymous</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EWidthType = 3</td><td> </td></tr><tr class="bg"><td valign="top">EWidthLen = 29</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-8DA2C3FA-21A5-3F91-A473-8C0D7A1B8605"><a name="GUID-8DA2C3FA-21A5-3F91-A473-8C0D7A1B8605"><!-- --></a>
+		<h2 class="topictitle2">Enum anonymous</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EMaxType = 1 &lt;&lt; EWidthType</td><td> </td></tr><tr class="bg"><td valign="top">EMaxLength = 1 &lt;&lt; EWidthLen</td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-70E394EB-23E4-3B4E-9215-C9E33E13FA93"><a name="GUID-70E394EB-23E4-3B4E-9215-C9E33E13FA93"><!-- --></a>
+		<h2 class="topictitle2">
+					TBufFlat * iBuf</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2FB9F0A1-1393-3AEA-952C-48285A6D4EDB.html">TBufFlat</a> *</td><td>iBuf</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-0F04FABE-2138-3251-AC9B-CCC75F469C08"><a name="GUID-0F04FABE-2138-3251-AC9B-CCC75F469C08"><!-- --></a>
+		<h2 class="topictitle2">
+					TPtr8
+				 iBufPtr</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-C0D29B11-1535-3D11-B318-B18D30A6120B.html">TPtr8</a>
+				</td><td>iBufPtr</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-EBA4D7D1-AE31-3380-A384-DF1EFD9A102F"><a name="GUID-EBA4D7D1-AE31-3380-A384-DF1EFD9A102F"><!-- --></a>
+		<h2 class="topictitle2">
+					TPtrC8
+				 iBufPtrC</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a>
+				</td><td>iBufPtrC</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-B4199B7E-6315-3A5F-8459-2AA4BE5B7FA2"><a name="GUID-B4199B7E-6315-3A5F-8459-2AA4BE5B7FA2"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iMaxSize</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iMaxSize</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

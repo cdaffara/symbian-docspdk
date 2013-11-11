@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to implement universal time and home time"/>
+<meta name="abstract" content="Add universal time offset to display the home time."/>
+<meta name="description" content="Add universal time offset to display the home time."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C497F36F-BCA8-569D-826A-64EAD75C887C.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-29556884-7A9C-5E53-8756-A2C018D877DD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C497F36F-BCA8-569D-826A-64EAD75C887C.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-91E0E87B-FECA-5D19-AD48-9DEFD42B86B3"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to implement universal time and home time</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-91E0E87B-FECA-5D19-AD48-9DEFD42B86B3"><a name="GUID-91E0E87B-FECA-5D19-AD48-9DEFD42B86B3"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2402365 id2402379 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-29556884-7A9C-5E53-8756-A2C018D877DD.html" title="This document introduces you to the localisation package.">Localisation</a> &gt; <a href="GUID-C497F36F-BCA8-569D-826A-64EAD75C887C.html" title="Provides access to locale-sensitive information.">Locale Settings</a> &gt; </div>
+<h1 class="topictitle1">How
+to implement universal time and home time</h1>
+<div><p>Add universal time offset to display the home time.</p>
+
+<p>These code fragments demonstrate the various components which make up the
+time, including:</p>
+
+<ul>
+<li id="GUID-91E0E87B-FECA-5D19-AD48-9DEFD42B86B3__GUID-1224C41A-1736-528E-B782-16E8AF29B9D8"><a name="GUID-91E0E87B-FECA-5D19-AD48-9DEFD42B86B3__GUID-1224C41A-1736-528E-B782-16E8AF29B9D8"><!-- --></a><p>the <span class="keyword">universal
+time</span> </p>
+ </li>
+
+<li id="GUID-91E0E87B-FECA-5D19-AD48-9DEFD42B86B3__GUID-790CEB46-8B7E-5B98-A9AF-00CAF254BA38"><a name="GUID-91E0E87B-FECA-5D19-AD48-9DEFD42B86B3__GUID-790CEB46-8B7E-5B98-A9AF-00CAF254BA38"><!-- --></a><p>the <span class="keyword">universal
+time offset</span> </p>
+ </li>
+
+</ul>
+
+<div class="section" id="GUID-91E0E87B-FECA-5D19-AD48-9DEFD42B86B3__GUID-70976CCC-3A00-4BAE-B6D8-1DD1CC621D9D"><a name="GUID-91E0E87B-FECA-5D19-AD48-9DEFD42B86B3__GUID-70976CCC-3A00-4BAE-B6D8-1DD1CC621D9D"><!-- --></a><h2 class="sectiontitle">Home time</h2> <p>In the following example code fragment,
+the universal time offset is added to the universal time, giving the <span class="keyword">home
+time</span>. The <span class="keyword">universal time offset</span> is determined
+by the time zone, and by whether daylight savings is currently in effect.
+The offset is in seconds from <span class="keyword">universal time</span>; this is positive
+for time zones east of universal time, and negative for time zones west of
+universal time. Home time is the same time as a wall clock would show, and
+it is not necessary to consider daylight savings independently of the time
+zone.</p>
+ <pre class="codeblock" id="GUID-91E0E87B-FECA-5D19-AD48-9DEFD42B86B3__GUID-C9B60594-EA11-5297-8546-99D6E2E64219"><a name="GUID-91E0E87B-FECA-5D19-AD48-9DEFD42B86B3__GUID-C9B60594-EA11-5297-8546-99D6E2E64219"><!-- --></a>TTime time;
+
+    // Get Universal time
+time.UniversalTime();
+
+    // Get Universal time offset
+TTimeIntervalSeconds universalTimeOffset(User::UTCOffset());
+
+    // Add locale's universal time offset to universal time
+    // to get the home time
+time+=universalTimeOffset;</pre>
+ <p><samp class="codeph">time</samp> now contains
+the home time. This may be tested by calling <samp class="codeph">TTime::HomeTime()</samp>,
+which should give the same result.</p>
+ <pre class="codeblock" id="GUID-91E0E87B-FECA-5D19-AD48-9DEFD42B86B3__GUID-1E6576B5-CA22-5346-9076-B987741509C8"><a name="GUID-91E0E87B-FECA-5D19-AD48-9DEFD42B86B3__GUID-1E6576B5-CA22-5346-9076-B987741509C8"><!-- --></a>TTime homeTime;
+homeTime.HomeTime(); // homeTime==time</pre>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-C497F36F-BCA8-569D-826A-64EAD75C887C.html" title="Provides access to locale-sensitive information.">Locale Settings</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

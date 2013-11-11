@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CMMFCodec"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A"/>
+
+<title>CMMFCodec</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A"><a name="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2865498 id2548409 id2548414 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CMMFCodec Class Reference</h1>
+	<table class="signature"><tr><td>class CMMFCodec : public CBase</td></tr></table><div class="section"><div>
+			<p>ECom plugin class for a codec that processes source data in a certain fourCC coding type and converts it to a destination buffer of another fourCC coding type. The function is synchronous as it is expected that the codec will be operating in its own thread of execution - usually via a <a href="GUID-930A17D8-92C9-379A-A524-176AA68FE8E3.html#GUID-930A17D8-92C9-379A-A524-176AA68FE8E3">CMMFDataPath</a> or CMMFDataPathProxy</p>
+
+			<p>The codec can be instantiated in 3 different ways:</p>
+
+			<p>1. <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html#GUID-E822964A-24FE-3175-9E41-59E624607698">NewL(const TFourCC&amp; aSrcDatatype, const TFourCC&amp; aDstDataType)</a>.</p>
+
+			<p>This instantiate a codec that can convert the aSrcDatatype to a aDstDataType.</p>
+
+			<p>2. <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html#GUID-CCD639D5-157A-3493-BB28-65518F9A4E2A">NewL(const TFourCC&amp; aSrcDatatype, const TFourCC&amp; aDstDataType, const TDesC&amp; aPreferredSupplier)</a>.</p>
+
+			<p>This is similar to the above but is used where there may be multiple codecs that perform the same conversion - the idea is that a 3rd party deveoper may develop there own controller and codecs and can ensure the controller uses their codecs by setting the preferredSupplier to themselves.</p>
+
+			<p>3. <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html#GUID-EC61FC11-D226-3CFF-888B-77EB619E90FA">NewL(TUid aUid)</a>.</p>
+
+			<p>This is used to explicitly instantiated a codec where the uid is known. This might be used by controlers that only support one codec type.</p>
+
+			<div class="p">The processing of the data is handled by the codecs <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html#GUID-04F7E507-69F6-348F-BD66-17FDE1507088">ProcessL()</a> member. The intention is that the source buffer for conversion is converted to the appropriate coding type in the destination buffer. The buffers can be of any size. Since the buffers can be of any size there is no guarantee that all the source buffer can be processed to fill the destination buffer or that the all the source buffer may be processed before the destination is full. Therefore the ProcessL needs to return a <a href="GUID-B8832B01-B5F9-320F-AAA3-353568F21ACC.html#GUID-B8832B01-B5F9-320F-AAA3-353568F21ACC">TCodecProcessResult</a> returing the number of source bytes processed and the number of destination bytes processed along with a process result code defined thus:<ul><li><p>EProcessComplete: the codec processed all the source data into the sink buffer</p>
+</li>
+<li><p>EProcessIncomplete: the codec filled sink buffer before all the source buffer was processed</p>
+</li>
+<li><p>EDstNotFilled: the codec processed the source buffer but the sink buffer was not filled</p>
+</li>
+<li><p>EEndOfData: the codec detected the end data - all source data in processed but sink may not be full</p>
+</li>
+<li><p>EProcessError: the codec process error condition</p>
+</li>
+</ul>
+</div>
+
+			<p>The ProcessL should start processing the source buffer from the iPosition data member of the source data and start filling the destination buffer from its iPosition. </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CMMFCodec<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-EFC1AE89-5FD5-368B-88FF-C08E86CB0128">~CMMFCodec</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-C8691AD7-B37B-3785-BCFB-1F2E2BF26556">ConfigureL</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>, const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-9024780D-9C84-350D-B7F9-84CBBBA55A0C">ExtensionInterface</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *&amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html">CMMFCodec</a> *</td><td><a href="#GUID-E822964A-24FE-3175-9E41-59E624607698">NewL</a>(const <a href="GUID-691F7FFC-D026-30D5-B08D-A06915272C92.html">TFourCC</a> &amp;, const <a href="GUID-691F7FFC-D026-30D5-B08D-A06915272C92.html">TFourCC</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html">CMMFCodec</a> *</td><td><a href="#GUID-CCD639D5-157A-3493-BB28-65518F9A4E2A">NewL</a>(const <a href="GUID-691F7FFC-D026-30D5-B08D-A06915272C92.html">TFourCC</a> &amp;, const <a href="GUID-691F7FFC-D026-30D5-B08D-A06915272C92.html">TFourCC</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html">CMMFCodec</a> *</td><td><a href="#GUID-EC61FC11-D226-3CFF-888B-77EB619E90FA">NewL</a>(<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-B8832B01-B5F9-320F-AAA3-353568F21ACC.html">TCodecProcessResult</a>
+				</td><td><a href="#GUID-04F7E507-69F6-348F-BD66-17FDE1507088">ProcessL</a>(const <a href="GUID-9A7A83ED-592B-3A0C-BABB-3B90099BCF7C.html">CMMFBuffer</a> &amp;, <a href="GUID-9A7A83ED-592B-3A0C-BABB-3B90099BCF7C.html">CMMFBuffer</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-E732B056-AC92-353F-9E46-EBA276A35A1B">ResetL</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-98BE49E0-A0CA-3449-ACBD-B44100D36F4C">SelectByPreference</a>(<a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RImplInfoPtrArray</a> &amp;, const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>
+				</td><td><a href="#GUID-A8CF3662-8727-3315-B0A0-34302F230898">iDtor_ID_Key</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-EFC1AE89-5FD5-368B-88FF-C08E86CB0128"><a name="GUID-EFC1AE89-5FD5-368B-88FF-C08E86CB0128"><!-- --></a>
+		<h2 class="topictitle2">~CMMFCodec()</h2>
+		<table class="signature"><tr><td>~CMMFCodec</td><td>(</td><td>)</td><td>[inline, virtual]</td></tr></table><div class="section"><div>
+				<p>Destructor.</p>
+
+				<p>Destroys any variables then informs ECom that this specific instance of the interface has been destroyed. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-C8691AD7-B37B-3785-BCFB-1F2E2BF26556"><a name="GUID-C8691AD7-B37B-3785-BCFB-1F2E2BF26556"><!-- --></a>
+		<h2 class="topictitle2">ConfigureL(TUid, const TDesC8 &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ConfigureL</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aConfigType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aConfigData</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[inline, virtual]</td></tr></table><div class="section"><div>
+				<p>Sets codec configuration.</p>
+
+				<p>This is a virtual function which does not need to be implemented by a codec, but may be if required. This function provides additional configuration information for the codec. The configuration is passed in as a descriptor. The default version leaves with KErrNotSupported.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aConfigType</td><td>The UID of the configuration data.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aConfigData</td><td>The configuration information.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9024780D-9C84-350D-B7F9-84CBBBA55A0C"><a name="GUID-9024780D-9C84-350D-B7F9-84CBBBA55A0C"><!-- --></a>
+		<h2 class="topictitle2">ExtensionInterface(TUint, TAny *&amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>ExtensionInterface</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a></td><td>aExtensionId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *&amp;</td><td>aExtPtr</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Gets a pointer to the extension specified by an identifier. The extension can be either an interface or function. If the extension is not supported NULL value is given and returns KErrExtensionNotSupported.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint</a> aExtensionId</td><td>Extension identifier.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> *&amp; aExtPtr</td><td>Pointer to get the extension.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E822964A-24FE-3175-9E41-59E624607698"><a name="GUID-E822964A-24FE-3175-9E41-59E624607698"><!-- --></a>
+		<h2 class="topictitle2">NewL(const TFourCC &amp;, const TFourCC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html">CMMFCodec</a> *</td><td>NewL</td><td>(</td><td>const <a href="GUID-691F7FFC-D026-30D5-B08D-A06915272C92.html">TFourCC</a> &amp;</td><td>aSrcDatatype,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-691F7FFC-D026-30D5-B08D-A06915272C92.html">TFourCC</a> &amp;</td><td>aDstDataType</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Creates a <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html#GUID-18F4082A-D301-3007-88DD-0E13AB81C74A">CMMFCodec</a> object with known fourCC codes for source and destination. The first matching plug-in will be used.</p>
+
+				<p>The FourCC codes are the same codes as those specified in the resource file and are used to identify the datatype. ECom scans the registry to find a codec that is registered in its resource file as being able to convert between the source data type and the destination data type as specified by their FourCC codes. If a match is found then an instantiation of the appropriate <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html#GUID-18F4082A-D301-3007-88DD-0E13AB81C74A">CMMFCodec</a> is made. If a match is not found this function leaves with KErrNotFound. If more than one codec is present with the same fourCC match codes then the one that is instantiated is indeterminate. If there is likely to be any ambiguity due to more than one codec that performs the same conversion being present, then a preferred supplier should be specified.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-691F7FFC-D026-30D5-B08D-A06915272C92.html">TFourCC</a> &amp; aSrcDatatype</td><td>The source data type.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-691F7FFC-D026-30D5-B08D-A06915272C92.html">TFourCC</a> &amp; aDstDataType</td><td>The destination data type. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CCD639D5-157A-3493-BB28-65518F9A4E2A"><a name="GUID-CCD639D5-157A-3493-BB28-65518F9A4E2A"><!-- --></a>
+		<h2 class="topictitle2">NewL(const TFourCC &amp;, const TFourCC &amp;, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html">CMMFCodec</a> *</td><td>NewL</td><td>(</td><td>const <a href="GUID-691F7FFC-D026-30D5-B08D-A06915272C92.html">TFourCC</a> &amp;</td><td>aSrcDatatype,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-691F7FFC-D026-30D5-B08D-A06915272C92.html">TFourCC</a> &amp;</td><td>aDstDataType,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aPreferredSupplier</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Creates a <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html#GUID-18F4082A-D301-3007-88DD-0E13AB81C74A">CMMFCodec</a> object with match parameter in addition to the source and destination fourCC codes (for instance a manufacturer's name).</p>
+
+				<p>Will attempt match without extra match string if no match.</p>
+
+				<p>Will Leave if no match on 4CC codes (KErrNotFound).</p>
+
+				<p>Used where there may be multiple codecs that perform the same conversion to ensure the controller uses the codec specified by aPreferredSupplier.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-691F7FFC-D026-30D5-B08D-A06915272C92.html">TFourCC</a> &amp; aSrcDatatype</td><td>The source data type.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-691F7FFC-D026-30D5-B08D-A06915272C92.html">TFourCC</a> &amp; aDstDataType</td><td>The destination data type.  </td></tr><tr><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aPreferredSupplier</td><td>Additional resolution criteria when searching for plug in codec. If this is provided, the list of matching plugins will be further searched for the latest version of a plugin supplied by supplier named. Note that the display name field is parsed for a match. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EC61FC11-D226-3CFF-888B-77EB619E90FA"><a name="GUID-EC61FC11-D226-3CFF-888B-77EB619E90FA"><!-- --></a>
+		<h2 class="topictitle2">NewL(TUid)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html">CMMFCodec</a> *</td><td>NewL</td><td>(</td><td><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a></td><td>aUid</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Creates a <a href="GUID-18F4082A-D301-3007-88DD-0E13AB81C74A.html#GUID-18F4082A-D301-3007-88DD-0E13AB81C74A">CMMFCodec</a> object with a known UID.</p>
+
+				<p>Will Leave if the plug in is not found (KErrNotFound).</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> aUid</td><td>The UID of a plugin implementation. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-04F7E507-69F6-348F-BD66-17FDE1507088"><a name="GUID-04F7E507-69F6-348F-BD66-17FDE1507088"><!-- --></a>
+		<h2 class="topictitle2">ProcessL(const CMMFBuffer &amp;, CMMFBuffer &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-B8832B01-B5F9-320F-AAA3-353568F21ACC.html">TCodecProcessResult</a>
+				</td><td>ProcessL</td><td>(</td><td>const <a href="GUID-9A7A83ED-592B-3A0C-BABB-3B90099BCF7C.html">CMMFBuffer</a> &amp;</td><td>aSource,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-9A7A83ED-592B-3A0C-BABB-3B90099BCF7C.html">CMMFBuffer</a> &amp;</td><td>aDestination</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Processes the data in the specified source buffer and writes the processed data to the specified destination buffer.</p>
+
+				<p>This function is synchronous, when the function returns the data has been processed. The source buffer is converted to the appropriate coding type in the destination buffer. The buffers can be of any size, therefore there is no guarantee that all the source buffer can be processed to fill the destination buffer or that all the source buffer may be processed before the destination is full. This function therefore returns the number of source, and destination, bytes processed along with a process result code indicating completion status.</p>
+
+				<p>The aSource and aSink buffers passed in are derived from <a href="GUID-9A7A83ED-592B-3A0C-BABB-3B90099BCF7C.html#GUID-9A7A83ED-592B-3A0C-BABB-3B90099BCF7C">CMMFBuffer</a>. The buffer type (e.g. a <a href="GUID-AE26E6A4-C1AD-3B35-B5F7-CE0AB60169BB.html#GUID-AE26E6A4-C1AD-3B35-B5F7-CE0AB60169BB">CMMFDataBuffer</a>) passed in should be supported by the codec otherwise this function should leave with KErrNotSupported. The position of the source buffer should be checked by calling the source buffer's Position() member which indicates the current source read position in bytes. The codec should start processing from the current source buffer read position. The position of the destination buffer should be checked by calling the destination buffer's Position() method which indicates the current destination write position in bytes. The codec should start writing to the destination buffer at the current destination buffer write position.</p>
+
+				<p>This is a virtual function that each derived class must implement.</p>
+
+				<p>enum <a href="GUID-B8832B01-B5F9-320F-AAA3-353568F21ACC.html#GUID-B8832B01-B5F9-320F-AAA3-353568F21ACC">TCodecProcessResult</a></p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-9A7A83ED-592B-3A0C-BABB-3B90099BCF7C.html">CMMFBuffer</a> &amp; aSource</td><td>The source buffer containing data to encode or decode.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-9A7A83ED-592B-3A0C-BABB-3B90099BCF7C.html">CMMFBuffer</a> &amp; aDestination</td><td>The destination buffer to hold the data after encoding or decoding. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E732B056-AC92-353F-9E46-EBA276A35A1B"><a name="GUID-E732B056-AC92-353F-9E46-EBA276A35A1B"><!-- --></a>
+		<h2 class="topictitle2">ResetL()</h2>
+		<table class="signature"><tr><td>void</td><td>ResetL</td><td>(</td><td>)</td><td>[inline, virtual]</td></tr></table><div class="section"><div>
+				<p>Codec reset.</p>
+
+				<p>Used to flush out status information when a reposition occurs. This is a virtual function that is provided should the codec require resetting prior to use. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-98BE49E0-A0CA-3449-ACBD-B44100D36F4C"><a name="GUID-98BE49E0-A0CA-3449-ACBD-B44100D36F4C"><!-- --></a>
+		<h2 class="topictitle2">SelectByPreference(RImplInfoPtrArray &amp;, const TDesC &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>SelectByPreference</td><td>(</td><td><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RImplInfoPtrArray</a> &amp;</td><td>aPlugInArray,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp;</td><td>aPreferredSupplier</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[static]</td></tr></table><div class="section"><div>
+				<p>Selects a codec according to the specified preference.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RImplInfoPtrArray</a> &amp; aPlugInArray</td><td>On return, array of plugins.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-440FF2B4-353B-3097-A2BA-5887D10B8B23.html">TDesC</a> &amp; aPreferredSupplier</td><td>Search criteria, a supplier's name for example.  </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-A8CF3662-8727-3315-B0A0-34302F230898"><a name="GUID-A8CF3662-8727-3315-B0A0-34302F230898"><!-- --></a>
+		<h2 class="topictitle2">
+					TUid
+				 iDtor_ID_Key</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a>
+				</td><td>iDtor_ID_Key</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

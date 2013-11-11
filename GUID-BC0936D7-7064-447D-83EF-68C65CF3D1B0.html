@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="On-Target Debugging"/>
+<meta name="abstract" content="This document describes how to build a device driver to enable stop mode debugging."/>
+<meta name="description" content="This document describes how to build a device driver to enable stop mode debugging."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0F17BCDF-CF50-40D1-9048-793DC4442B50.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0F17BCDF-CF50-40D1-9048-793DC4442B50.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-BC0936D7-7064-447D-83EF-68C65CF3D1B0"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>On-Target Debugging</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-BC0936D7-7064-447D-83EF-68C65CF3D1B0"><a name="GUID-BC0936D7-7064-447D-83EF-68C65CF3D1B0"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 id2388046 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; <a href="GUID-0F17BCDF-CF50-40D1-9048-793DC4442B50.html" title="This set of documents describes the device driver development process and provides links to example material.">Introduction</a> &gt; </div>
+<h1 class="topictitle1"> On-Target
+Debugging</h1>
+<div><p>This document describes how to build a device driver to enable
+stop mode debugging.</p>
+
+<div class="section" id="GUID-BC0936D7-7064-447D-83EF-68C65CF3D1B0__GUID-664F0388-0A89-476F-B784-57E956C07779"><a name="GUID-BC0936D7-7064-447D-83EF-68C65CF3D1B0__GUID-664F0388-0A89-476F-B784-57E956C07779"><!-- --></a><h2 class="sectiontitle"> On-target
+debugging</h2>              <p>Device Driver debugging is similar to kernel-mode
+debugging, as drivers run as part of the Kernel. Debug versions of the drivers
+can be debugged using debug tools such as Lauterbach through a JTAG interface
+or an IDE. Other debug tools such as Metro TRK can also be used. </p>
+ <p>Most
+of the hardware platforms supported by Symbian platform are ICE-enabled. Kernel
+developers and those porting the operating system to new hardware often have
+access to development boards exposing the JTAG interface, which allows the
+use of CPU-level debuggers. Using a host PC debugger, such as Carbide.c++
+or CodeWarrior configured for remote debugging, a debug ROM image (including
+drivers) can be downloaded to the target and debugged over a JTAG interface. </p>
+ <p>For
+debugging, debug versions drivers are built, and the ROM image is built to
+include the kernel debug DLL, which enables kernel-side (stop mode) debugging.
+This is done by using the <samp class="codeph">STOP_MODE_DEBUGGING</samp> flag while
+building the ROM image. For example: </p>
+ <p><kbd class="userinput">rom –v=h4hrp –I=armv5
+–define=STOP_MODE_DEBUGGING</kbd> </p>
+ <p>This includes the kernel extension <span class="filepath">kdebug.dll</span> in
+the ROM image, which provides a stop mode debugger API. </p>
+ <p>When the ROM
+image is downloaded to the target, the system boots up and the Kernel or driver
+can be debugged using the host based IDE interface. Code can be stepped through
+and halted, and memory on the target can be viewed. </p>
+ <p>Symbian also provide
+a debug monitor (sometimes called the crash debugger) to provide information
+on Kernel crashes. See <a href="GUID-26714A57-B6B4-5E81-B512-FB520718482B.html" title="Describes how to get basic information about the system state when problems occur on hardware to help you debug your software.">Debug
+Monitor Tool</a> for more details. </p>
+     </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-0F17BCDF-CF50-40D1-9048-793DC4442B50.html" title="This set of documents describes the device driver development process and provides links to example material.">Introduction</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

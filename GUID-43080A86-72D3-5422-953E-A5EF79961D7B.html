@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Writing a UPS Policy Evaluator"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B2089965-546C-5FF2-8596-13A2221E02E6.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BA362536-C9C9-5BA4-BEE3-0E1AD7FA45F1.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5329AE68-39E0-55E7-9878-2D8FF9E29B21.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B2089965-546C-5FF2-8596-13A2221E02E6.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-43080A86-72D3-5422-953E-A5EF79961D7B"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Writing a UPS Policy Evaluator</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2858558 id2858601 id2858609 id2858646 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html">OS Security Guide</a> &gt; <a href="GUID-BA362536-C9C9-5BA4-BEE3-0E1AD7FA45F1.html">Authorisation</a> &gt; <a href="GUID-5329AE68-39E0-55E7-9878-2D8FF9E29B21.html">User Prompt Service</a> &gt; <a href="GUID-B2089965-546C-5FF2-8596-13A2221E02E6.html">Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Writing
+a UPS Policy Evaluator</h1>
+<div>
+<div class="section" id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-56EDF170-1A32-4275-8799-99D13C485E1E"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-56EDF170-1A32-4275-8799-99D13C485E1E"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p>Policy Evaluators are ECOM plug-ins.
+They allow security decisions to be specific to the data on which the service
+acts instead of simply granting full access to the service, for example "Allow
+application X to send SMS messages to 01234567". This is supported through
+the fingerprint functionality. They allow a security decision to be specific
+to an individual script executing within a scripting host. This is supported
+through the client entity field. And they allow a prompt to be displayed even
+if the user selected "Always" or "Never". This could be based on a usage threshold
+or simply as additional confirmation if the user selected "Never". This is
+supported through the force prompt functionality. </p>
+ <p> <strong>Note</strong>: when
+a user selects “Never” or “Always”, the UPS creates a record in a decision
+database. This record identifies the system server UID, service UID, client
+SID, client entity name (name of an entity running within a client process,
+for example, a script identifier) and a "fingerprint" for a given decision. </p>
+ <p>The
+purpose of a Policy Evaluator is to allow device creators to optionally customise
+the behaviour of the UPS at run-time. Policy Evaluators may: </p>
+ <ul>
+<li id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-1D5DD614-02E3-56AA-A0A6-A694E2311A0E"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-1D5DD614-02E3-56AA-A0A6-A694E2311A0E"><!-- --></a><p>Allow security decisions
+to be specific to the data on which the service acts instead of simply granting
+full access to the service, for example "Allow application X to send SMS messages
+to 01234567". This is supported via the fingerprint functionality. </p>
+ </li>
+
+<li id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-5B5E3EB4-5C93-5E4E-BB6E-39F889AD3610"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-5B5E3EB4-5C93-5E4E-BB6E-39F889AD3610"><!-- --></a><p>Allow a security decision
+to be specific to an individual script executing within a scripting host.
+This is supported via the client entity field. </p>
+ </li>
+
+<li id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-8B26DA57-A9DF-5D99-A259-2E6DF7C4DCCE"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-8B26DA57-A9DF-5D99-A259-2E6DF7C4DCCE"><!-- --></a><p>Allow a prompt to be
+displayed even if the user selected "Always" or "Never". This could be based
+on a usage threshold or simply as additional confirmation if the user selected
+"Never". This is supported via the force prompt functionality. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-CCBB139D-0F1C-4AD4-B2F2-062CF660A0DE"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-CCBB139D-0F1C-4AD4-B2F2-062CF660A0DE"><!-- --></a><h2 class="sectiontitle">Procedure</h2> <p>Writing policy evaluator includes the
+following: </p>
+ <a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-F50174F6-3619-545A-8844-D4DA64B1B339"><!-- --></a><ol id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-F50174F6-3619-545A-8844-D4DA64B1B339">
+<li id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-246EF2AB-23D9-5B1B-BC4C-8CCFB545C307"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-246EF2AB-23D9-5B1B-BC4C-8CCFB545C307"><!-- --></a><p>Generating fingerprints </p>
+ </li>
+
+<li id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-4427FF70-9461-566A-8567-FC6EEF879475"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-4427FF70-9461-566A-8567-FC6EEF879475"><!-- --></a><p>Forcing prompts </p>
+ </li>
+
+<li id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-703D9B83-78A0-5EA6-8D1C-685D2BC847EA"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-703D9B83-78A0-5EA6-8D1C-685D2BC847EA"><!-- --></a><p>Defining default policy
+evaluator </p>
+ </li>
+
+</ol>
+ <p>Policy evaluators implement the <samp class="codeph">CPolicyEvaluator</samp> interface. </p>
+ <p><strong>Generating
+fingerprints</strong> </p>
+ <p>The key task of the policy evaluator is to generate
+fingerprints. A fingerprint is a collection of data describing the service
+being requested. The fingerprint usually includes the <samp class="codeph">destination</samp> string,
+for example a telephone number, supplied by the service that is matched to
+the <samp class="codeph">destination</samp> string of a policy in the policy file. </p>
+ <p>The
+policy evaluator must implement the <samp class="codeph">GenerateFingerprints()</samp> function,
+which is a pure virtual function, declared in the <a href="GUID-FDE91CAC-1588-3EED-B509-08168F4B881B.html"><span class="apiname">CPolicyEvaluator</span></a> base
+class. The function is asynchronous to allow the implementation to call other
+server processes. </p>
+ <p>The following table describes the parameters for
+the <samp class="codeph">GenerateFingerprints()</samp> function: </p>
+ 
+<div class="tablenoborder"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-963D89B8-EB90-5668-8A08-588EF1E94C43"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-963D89B8-EB90-5668-8A08-588EF1E94C43" frame="border" border="1" rules="all">
+<thead align="left">
+<tr>
+<th class="cellrowborder" valign="top" id="d730489e119">Parameter</th>
+
+<th class="cellrowborder" valign="top" id="d730489e122">Description</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top" headers="d730489e119 "><p> <samp class="codeph">aRequest</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d730489e122 "><p>Data that the system server provides to the UPS, including the ClientSid,
+ServerSid and ServiceId. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d730489e119 "><p> <samp class="codeph">aPolicy</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d730489e122 "><p>Details of the policy for the service. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d730489e119 "><p> <samp class="codeph">aFingerprints</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d730489e122 "><p>Array of fingerprints. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d730489e119 "><p> <samp class="codeph">aClientEntity</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d730489e122 "><p>Details of client entity (will be null if the client process is
+not an execution host or the policy evaluator does not support client entities). </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d730489e119 "><p> <samp class="codeph">aDialogCreatorParams</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d730489e122 "><p>Opaque data, which can be any other information for use in the fingerprint
+or to be displayed in the dialog. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d730489e119 "><p> <samp class="codeph">aStatus</samp>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d730489e122 "><p>The request status used to contain completion information for the
+function. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p>The following code fragment is a sample implementation of the <samp class="codeph">GenerateFingerprints()</samp> function. </p>
+ <pre class="codeblock" id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-B8555FDF-8BDD-5D22-AA20-AA9A4B35148A"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-B8555FDF-8BDD-5D22-AA20-AA9A4B35148A"><!-- --></a>void CRefPolicyEvaluator::GenerateFingerprints(
+ const CPromptRequest&amp; aRequest, const CPolicy&amp; aPolicy, 
+    RPointerArray&lt;CFingerprint&gt;&amp; aFingerprints, const CClientEntity*&amp; aClientEntity, 
+    const TAny*&amp; aDialogCreatorParams, TRequestStatus&amp; aStatus)
+    {
+    iRequest = &amp;aRequest;
+    iPolicy = &amp;aPolicy;
+    iFingerprints = &amp;aFingerprints;        
+
+    // This OUT parameter *could* be set to point to data structure
+    // owned by this policy evaluator that is read by the dialog-creator.
+    aDialogCreatorParams = 0;
+    
+    // The client entity field only needs to be set if the policy evaluator
+    // is designed to identify scripts/non-native applications being executed
+    // by the client application.
+    aClientEntity = 0;                
+    
+    iClientStatus = &amp;aStatus;
+    aStatus = KRequestPending;
+    
+    // Kick off policy evaluator state machine
+    iStatus = KRequestPending;
+    TRequestStatus* status = &amp;iStatus;
+    SetActive();
+    User::RequestComplete(status, KErrNone);
+    }
+</pre>
+ <p> <samp class="codeph">RunL()</samp> is called when the request completes.
+The fingerprint is created and appended to the fingerprint array in <samp class="codeph">RunL()</samp>.
+The following example shows a hash of a destination being created for a fingerprint
+as well as an empty fingerprint for decisions that apply to all destinations. </p>
+ <pre class="codeblock" id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-EB57F6E0-C3B2-5CDC-B9FF-A570B73B4C74"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-EB57F6E0-C3B2-5CDC-B9FF-A570B73B4C74"><!-- --></a>void CRefPolicyEvaluator::RunL()
+    {    
+    // Create most specific hash first i.e. HASH(destination)
+    // Information from the opaque data supplied by the system server 
+    // may also be used.
+    // N.B. The UPS does not require the fingerprint to be a hash. However,
+    // the fingerprint is limited to 32 bytes.    
+    iDigest-&gt;Reset();
+    const TDesC&amp; d = iRequest-&gt;Destination();
+    TPtrC8 p(reinterpret_cast&lt;const TUint8*&gt;(d.Ptr()), d.Length() * 2);
+    TPtrC8 h(iDigest-&gt;Hash(p));
+    
+    CFingerprint* f = CFingerprint::NewLC(h, d);
+    iFingerprints-&gt;AppendL(f);
+    CleanupStack::Pop(f);
+
+    // An empty fingerprint may be used for decisions that apply to
+    // all destinations.
+    f = CFingerprint::NewLC(KNullDesC8, KNullDesC);
+    iFingerprints-&gt;AppendL(f);
+    CleanupStack::Pop(f);
+        
+    User::RequestComplete(iClientStatus, KErrNone);
+    }
+</pre>
+ <p><strong>Forcing prompts</strong> </p>
+ <p>You can implement the <samp class="codeph">ForcePromptL()</samp> function
+to force a prompt, even if the UPS has found a persistent decision for the
+request in the decision database. It may be desirable to force a prompt in
+some cases such as: </p>
+ <ul>
+<li id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-4C9DDFB3-C358-534F-8E65-42E1BC672D64"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-4C9DDFB3-C358-534F-8E65-42E1BC672D64"><!-- --></a><p>if a threshold has been
+reached, for example the number of MMS messages sent on a particular day </p>
+ </li>
+
+<li id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-5D5E02E5-DA19-5A30-8071-CD64631FBEAD"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-5D5E02E5-DA19-5A30-8071-CD64631FBEAD"><!-- --></a><p>if a phone user has
+selected "Never", because denying a request to a non-UPS-aware application
+may cause it to fail — the user may not realise that the previous selection
+of "Never" has caused the failure or may not know how to find the management
+application to revert the decision </p>
+ </li>
+
+</ul>
+ <p>The UPS invokes the <samp class="codeph">ForcePromptL()</samp> function after
+a matching record is found in the database. The <samp class="codeph">ForcePromptL()</samp> function
+is defined in the <samp class="codeph">CPolicyEvaluator</samp> base class. The implementation
+in the base class always returns <samp class="codeph">EFalse</samp>. To force a prompt,
+device creators need to override this function and return <samp class="codeph">ETrue</samp>.
+A sample implementation is as follows. The <samp class="codeph">aNewEvaluatorInfo</samp> field
+is a policy evaluator defined 32-bit field. It could be used to store usage
+thresholds or as a flag that indicates that the prompt has already been forced. </p>
+ <pre class="codeblock" id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-4E60DCA5-7F25-5FC7-B173-05E1A15FCEE6"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-4E60DCA5-7F25-5FC7-B173-05E1A15FCEE6"><!-- --></a>TBool CRefPolicyEvaluator::ForcePromptL(const CDecisionRecord&amp; aDecision, TUint&amp; aNewEvaluatorInfo)
+    {
+    // In this example, if the user selects Never, then they are prompted
+    // once more in-case they did not intend to select Never. 
+    // The "Evaluator Info" field is used to ensure the prompt is only forced once.
+    //
+    // The base class implementation (CPolicyEvaluator::ForcePromptL) 
+    // always returns EFalse.
+    aNewEvaluatorInfo = 1;
+    return (aDecision.iResult == 0 &amp;&amp; aDecision.iEvaluatorInfo == 0);
+    }
+</pre>
+ <p><strong>Defining default policy evaluator</strong> </p>
+ <p>If device
+creators do not define a policy evaluator, a default (internal) policy evaluator
+is returned. The default policy evaluator returns a single, null fingerprint.
+The default policy evaluator does not override the <samp class="codeph">ForcePromptL()</samp> API. </p>
+ </div>
+
+<div class="section" id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-987ECDA9-5728-4A7A-AB38-D58A7CC097AC"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-987ECDA9-5728-4A7A-AB38-D58A7CC097AC"><!-- --></a><h2 class="sectiontitle"> Upgrading policy evaluators </h2> <p>A policy evaluator
+can be overwritten or eclipsed without restarting the UPS, if it is delivered
+through an appropriately signed upgrade. </p>
+ <ul>
+<li id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-086FABB6-13C0-5D98-8B2A-1D38BD620EB5"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-086FABB6-13C0-5D98-8B2A-1D38BD620EB5"><!-- --></a><p>The ECOM plug-in will
+be reloaded only when there are no active <samp class="codeph">RUpsSubsession::Authorise()</samp> requests. </p>
+ </li>
+
+<li id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-CD95EB32-9438-5AA1-BA80-8C90DC304642"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-CD95EB32-9438-5AA1-BA80-8C90DC304642"><!-- --></a><p>The decision records
+are not deleted if the policy evaluator is changed. If the policy evaluator
+is not backwards compatible then new policy files with a new <samp class="codeph">majorversion</samp> number
+should be delivered. </p>
+ </li>
+
+<li id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-DC1804B8-A052-52AC-96DC-32C3BBADE2A8"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-DC1804B8-A052-52AC-96DC-32C3BBADE2A8"><!-- --></a><p>SWI Observer informs
+the UPS that the plug-ins may have changed whenever Software Install modifies <span class="filepath">sys\bin</span> on
+the system drive. There is no need to explicitly register changes to plug-ins. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-48624948-C1C9-4DEA-A6E1-6E4B9AC72E8E"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-48624948-C1C9-4DEA-A6E1-6E4B9AC72E8E"><!-- --></a><h2 class="sectiontitle"> Policy evaluator example</h2> <p>The following code shows
+an example of a full implementation of the policy evaluator file: </p>
+ <pre class="codeblock" id="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-D1615A8D-334C-5718-BFD6-EC3004A09F3A"><a name="GUID-43080A86-72D3-5422-953E-A5EF79961D7B__GUID-D1615A8D-334C-5718-BFD6-EC3004A09F3A"><!-- --></a>#include "refpolicyevaluator.h"
+#include &lt;ecom/implementationproxy.h&gt;
+#include &lt;ups/cliententity.h&gt;
+#include &lt;ups/fingerprint.h&gt;
+#include &lt;ups/upsdb.h&gt;
+
+using namespace UserPromptService;
+
+static const TUint KRefPolicyEvaluatorImplementationId = 0x10285814;
+
+CPolicyEvaluator* CRefPolicyEvaluator::CreatePolicyEvaluatorL()
+/**
+Factory method that instantiates a new policy evaluator ECOM plug-in.
+
+@return A pointer to the new reference policy evaluator object.
+*/
+    {
+    CRefPolicyEvaluator* self = new (ELeave)CRefPolicyEvaluator();
+    CleanupStack::PushL(self);
+    self-&gt;ConstructL();
+    CleanupStack::Pop(self);
+    return self;
+    }
+
+static const TImplementationProxy ImplementationTable[] = 
+    {
+    IMPLEMENTATION_PROXY_ENTRY(KRefPolicyEvaluatorImplementationId, CRefPolicyEvaluator::CreatePolicyEvaluatorL)
+    };
+
+EXPORT_C const TImplementationProxy* ImplementationGroupProxy(TInt&amp; aTableCount)
+/**
+Standard ECOM factory
+*/
+    {
+    aTableCount = sizeof(ImplementationTable) / sizeof(TImplementationProxy);
+    return ImplementationTable;
+    }    
+    
+
+CRefPolicyEvaluator::CRefPolicyEvaluator()
+/**
+Constructor
+*/
+    : CPolicyEvaluator()
+    {
+    CActiveScheduler::Add(this);
+    }
+    
+CRefPolicyEvaluator::~CRefPolicyEvaluator()
+/**
+Destructor
+*/
+    {
+    Deque();
+    delete iDigest;
+    }
+
+void CRefPolicyEvaluator::ConstructL()
+/**
+Second phase constructor, creates the message digest
+*/
+    {    
+    iDigest = CMessageDigestFactory::NewDigestL(CMessageDigest::EMD5);
+    }
+
+// From CActive
+void CRefPolicyEvaluator::DoCancel()
+    {    
+    // Logically should Cancel the internal outstanding requst, but
+    // currently GenerateFingerprints has already completed it.
+
+    // And need to complete the clients request
+    if (iClientStatus)
+        {
+        User::RequestComplete(iClientStatus, KErrCancel);
+        }
+    }
+    
+TInt CRefPolicyEvaluator::RunError(TInt aError)
+    {
+    if (iClientStatus)
+        {
+        User::RequestComplete(iClientStatus, aError);
+        }
+    return KErrNone;
+    }
+    
+void CRefPolicyEvaluator::RunL()
+    {    
+    // Create most specific hash first i.e. HASH(destination)
+    // Information from the opaque data supplied by the system server 
+    // may also be used.
+    // N.B. The UPS does not require the fingerprint to be a hash. However,
+    // the fingerprint is limited to 32 bytes.    
+    iDigest-&gt;Reset();
+    const TDesC&amp; d = iRequest-&gt;Destination();
+    TPtrC8 p(reinterpret_cast&lt;const TUint8*&gt;(d.Ptr()), d.Length() * 2);
+    TPtrC8 h(iDigest-&gt;Hash(p));
+    
+    CFingerprint* f = CFingerprint::NewLC(h, d);
+    iFingerprints-&gt;AppendL(f);
+    CleanupStack::Pop(f);
+
+    // An empty fingerprint may be used for decisions that apply to
+    // all destinations.
+    f = CFingerprint::NewLC(KNullDesC8, KNullDesC);
+    iFingerprints-&gt;AppendL(f);
+    CleanupStack::Pop(f);
+        
+    User::RequestComplete(iClientStatus, KErrNone);
+    }
+
+void CRefPolicyEvaluator::GenerateFingerprints(
+    const CPromptRequest&amp; aRequest, const CPolicy&amp; aPolicy, 
+    RPointerArray&lt;CFingerprint&gt;&amp; aFingerprints, const CClientEntity*&amp; aClientEntity, 
+    const TAny*&amp; aDialogCreatorParams, TRequestStatus&amp; aStatus)
+    {
+    iRequest = &amp;aRequest;
+    iPolicy = &amp;aPolicy;
+    iFingerprints = &amp;aFingerprints;        
+
+    // This OUT parameter *could* be set to point to data structure
+    // owned by this policy evaluator that is read by the dialog-creator.
+    aDialogCreatorParams = 0;
+    
+    // The client entity field only needs to be set if the policy evaluator
+    // is designed to identify scripts/non-native applications being executed
+    // by the client application.
+    aClientEntity = 0;                
+    
+    iClientStatus = &amp;aStatus;
+    aStatus = KRequestPending;
+    
+    // Kick off policy evaluator state machine
+    iStatus = KRequestPending;
+    TRequestStatus* status = &amp;iStatus;
+    SetActive();
+    User::RequestComplete(status, KErrNone);
+    }
+
+TBool CRefPolicyEvaluator::ForcePromptL(const CDecisionRecord&amp; aDecision, TUint&amp; aNewEvaluatorInfo)
+    {
+    // In this example, if the user selects Never, then they are prompted
+    // once more in-case they did not intend to select Never. 
+    // The "Evaluator Info" field is used to ensure the prompt is only forced once.
+    //
+    // The base class implementation (CPolicyEvaluator::ForcePromptL) 
+    // always returns EFalse.
+    aNewEvaluatorInfo = 1;
+    return (aDecision.iResult == 0 &amp;&amp; aDecision.iEvaluatorInfo == 0);
+    }
+</pre>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-B2089965-546C-5FF2-8596-13A2221E02E6.html">Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

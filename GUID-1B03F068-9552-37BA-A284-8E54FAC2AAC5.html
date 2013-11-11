@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="MHTTPDataSupplier"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5"/>
+
+<title>MHTTPDataSupplier</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5"><a name="GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0;
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">MHTTPDataSupplier Class Reference</h1>
+	<table class="signature"><tr><td>class MHTTPDataSupplier</td></tr></table><div class="section"><div>
+			<p>A data supplier - This class is used to deliver the response data to the client, and is also used by the client to supply request body data to <a href="GUID-7BB3CFA5-4697-305D-B4FD-D8747BB56E04.html#GUID-7BB3CFA5-4697-305D-B4FD-D8747BB56E04">HTTP</a> in POST transactions. Data is supplied in a number of parts. When a part is available it can be retreived with GetNextDataPart. The returned descriptor will remain valid until ReleaseData is called.</p>
+
+			<p>To use this class to supply POST data, you have a number of options. If the post data needs to be URL Form encoded, you should use <a href="GUID-604D8C43-93F7-3835-8810-BD1CC891D086.html#GUID-604D8C43-93F7-3835-8810-BD1CC891D086">CHTTPFormEncoder</a>, which will do the encoding and interface to the <a href="GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5.html#GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5">MHTTPDataSupplier</a> for you. If you have all the data available, return its length in OverallDataSize, and pass back all the data from GetNextDataPart, returning ETrue to indicate that this is the last part.</p>
+
+			<p>If you don't want to form all the data at once, but know how much you'll eventualy have, return the total length from OverallDataSize. When GetNextDataPart is first called, return the first part. If GetNextDataPart is called again before ReleaseData, you should still return the first part. Only when ReleaseData is called should you move to the second part. If you don't know the total size of the data, the procedure is the same but you should return KErrNotFound from OverallDataSize.</p>
+
+			<p>When the next part is available, clients should call <a href="GUID-2E673024-239B-3965-8880-C47B7CC24EF6.html#GUID-F2F56EF2-23F1-3F1D-8E0F-7E844CE64DD6">RHTTPTransaction::NotifyNewRequestBodyPartL</a> to inform <a href="GUID-7BB3CFA5-4697-305D-B4FD-D8747BB56E04.html#GUID-7BB3CFA5-4697-305D-B4FD-D8747BB56E04">HTTP</a> that the new data is available. They can do this from ReleaseData if more data is instantly available, or in some applications they may need to call it some time later when the next part has been assembled.</p>
+
+			<p>Filter writers should note that the <a href="GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5.html#GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5">MHTTPDataSupplier</a> interface is designed to be used by 1 client, as 1 component needs to know when to call <a href="GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5.html#GUID-133A2892-78F9-37C4-8CB1-9534131B29B7">ReleaseData()</a>. However, filters can be written to transform the data in some way. For instance, a filter could be written to automaticaly handle a particular content encoding. When this filter first receives a GotResponseBodyData, it should take a copy of the response's body and replace the body with a <a href="GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5.html#GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5">MHTTPDataSupplier</a> supplied by the filter. The filter should then receive the data from <a href="GUID-7BB3CFA5-4697-305D-B4FD-D8747BB56E04.html#GUID-7BB3CFA5-4697-305D-B4FD-D8747BB56E04">HTTP</a> via the saved data supplier and give it to the client via its own data supplier.   </p>
+
+		</div></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-9166515E-0143-39BE-8D70-D074E045C6CD">GetNextDataPart</a>(<a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-D4E82D9A-7C88-30B4-B50B-D3CAF39B22F2">OverallDataSize</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-133A2892-78F9-37C4-8CB1-9534131B29B7">ReleaseData</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-A95DECE8-596C-3876-9C01-17DE9B05BB0D">Reset</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">void</td><td><a href="#GUID-2691DDC6-6ABC-34D8-9367-F88A3E888954">MHDS_Reserved1</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-26DF7FB8-D284-33AC-9B8B-CE592C925FD8">MHDS_Reserved2</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-DA69C74A-C961-3611-AEB1-93DDDEFFC337">MHDS_Reserved3</a>()</td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-9166515E-0143-39BE-8D70-D074E045C6CD"><a name="GUID-9166515E-0143-39BE-8D70-D074E045C6CD"><!-- --></a>
+		<h2 class="topictitle2">GetNextDataPart(TPtrC8 &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>GetNextDataPart</td><td>(</td><td><a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp;</td><td>aDataPart</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Obtain a data part from the supplier. The data is guaranteed to survive until a call is made to <a href="GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5.html#GUID-133A2892-78F9-37C4-8CB1-9534131B29B7">ReleaseData()</a>. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp; aDataPart</td><td>- the data part  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-2691DDC6-6ABC-34D8-9367-F88A3E888954"><a name="GUID-2691DDC6-6ABC-34D8-9367-F88A3E888954"><!-- --></a>
+		<h2 class="topictitle2">MHDS_Reserved1()</h2>
+		<table class="signature"><tr><td>void</td><td>MHDS_Reserved1</td><td>(</td><td>)</td><td>[private, inline, virtual]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-26DF7FB8-D284-33AC-9B8B-CE592C925FD8"><a name="GUID-26DF7FB8-D284-33AC-9B8B-CE592C925FD8"><!-- --></a>
+		<h2 class="topictitle2">MHDS_Reserved2()</h2>
+		<table class="signature"><tr><td>void</td><td>MHDS_Reserved2</td><td>(</td><td>)</td><td>[private, inline, virtual]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-DA69C74A-C961-3611-AEB1-93DDDEFFC337"><a name="GUID-DA69C74A-C961-3611-AEB1-93DDDEFFC337"><!-- --></a>
+		<h2 class="topictitle2">MHDS_Reserved3()</h2>
+		<table class="signature"><tr><td>void</td><td>MHDS_Reserved3</td><td>(</td><td>)</td><td>[private, inline, virtual]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-D4E82D9A-7C88-30B4-B50B-D3CAF39B22F2"><a name="GUID-D4E82D9A-7C88-30B4-B50B-D3CAF39B22F2"><!-- --></a>
+		<h2 class="topictitle2">OverallDataSize()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>OverallDataSize</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Obtain the overall size of the data being supplied, if known to the supplier. Where a body of data is supplied in several parts this size will be the sum of all the part sizes. If the size is not known, KErrNotFound is returned; in this case the client must use the return code of GetNextDataPart to find out when the data is complete.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-133A2892-78F9-37C4-8CB1-9534131B29B7"><a name="GUID-133A2892-78F9-37C4-8CB1-9534131B29B7"><!-- --></a>
+		<h2 class="topictitle2">ReleaseData()</h2>
+		<table class="signature"><tr><td>void</td><td>ReleaseData</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Release the current data part being held at the data supplier. This call indicates to the supplier that the part is no longer needed, and another one can be supplied, if appropriate. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-A95DECE8-596C-3876-9C01-17DE9B05BB0D"><a name="GUID-A95DECE8-596C-3876-9C01-17DE9B05BB0D"><!-- --></a>
+		<h2 class="topictitle2">Reset()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>Reset</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Reset the data supplier. This indicates to the data supplier that it should return to the first part of the data. This could be used in a situation where the data consumer has encountered an error and needs the data to be supplied afresh. Even if the last part has been supplied (i.e. GetNextDataPart has returned ETrue), the data supplier should reset to the first part.</p>
+
+				<p>If the supplier cannot reset it should return an error code; otherwise it should return KErrNone, where the reset will be assumed to have succeeded </p>
+
+			</div></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

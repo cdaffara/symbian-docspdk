@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="Converting from UTC to local time in a non-system time zone"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DF4D7DFF-ECA9-40CF-9F3B-4BBC3F8162E4.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-58035B49-2EAE-5144-B226-28AF2EDD62E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-4FCF605D-52D9-5B2D-80CF-80C940F680CA.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F0C71D6E-CAF1-49CC-A697-FC1A810DF1D5.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DF4D7DFF-ECA9-40CF-9F3B-4BBC3F8162E4.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-237E0861-EC1B-41DA-BDB0-1DEB50620CC8"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Converting from UTC to local time in a non-system time zone</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-237E0861-EC1B-41DA-BDB0-1DEB50620CC8"><a name="GUID-237E0861-EC1B-41DA-BDB0-1DEB50620CC8"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2520040 id2380831 id2380852 id2380860 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-58035B49-2EAE-5144-B226-28AF2EDD62E7.html">Generic Application Support Guide</a> &gt; <a href="GUID-4FCF605D-52D9-5B2D-80CF-80C940F680CA.html">Time Zone Services</a> &gt; <a href="GUID-F0C71D6E-CAF1-49CC-A697-FC1A810DF1D5.html">Time Zone Services Tutorials</a> &gt; <a href="GUID-DF4D7DFF-ECA9-40CF-9F3B-4BBC3F8162E4.html">Converting between UTC and local time</a> &gt; </div>
+<h1 class="topictitle1">Converting
+from UTC to local time in a non-system time zone</h1>
+<div>
+<div class="p" id="GUID-237E0861-EC1B-41DA-BDB0-1DEB50620CC8__GUID-ABF16F17-59D3-4655-909E-B637E1D80971"><a name="GUID-237E0861-EC1B-41DA-BDB0-1DEB50620CC8__GUID-ABF16F17-59D3-4655-909E-B637E1D80971"><!-- --></a><span>The following code fragment converts a randomly chosen UTC time
+to local time for London:</span>
+ <div class="p"><pre class="codeblock">_LIT8( KEuropeLondon,"Europe/London" );
+// Create a pointer to the time zone id.
+// This is the time zone for the local time to which you wish to convert.
+CTzId* myZoneId = CTzId::NewL( KEuropeLondon );
+CleanupStack::PushL( myZoneId );</pre>
+<pre class="codeblock">// Create a client interface object to the time zone server
+RTz myTZoneServer; 
+// Connect to the time zone server, leaves if fails to connect
+User::LeaveIfError( myTZoneServer.Connect() ); 
+CleanupClosePushL( myTZoneServer );</pre>
+<pre class="codeblock">// Create a converter object.
+CTzConverter* myConverter = CTzConverter::NewL( myTZoneServer ); 
+CleanupStack::PushL( myConverter );</pre>
+<pre class="codeblock">_LIT8( KMyTime,"20050328:185600.00" ); // UTC time to convert (28 March 2005 18:56 hrs).
+TTime myTime( KMyTime ); // Create the time as a TTime object</pre>
+<pre class="codeblock">// Convert UTC to local time in Europe/London time zone.
+myConverter-&gt;ConvertToLocalTime( myTime, *myZoneId ); 
+// myTime is updated to hold the local time value.</pre>
+<pre class="codeblock">// Clean up
+CleanupStack::PopAndDestroy(3);// causes myTZoneServer.Close() to be called</pre>
+</div>
+
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-DF4D7DFF-ECA9-40CF-9F3B-4BBC3F8162E4.html">Converting between UTC and local time</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Forking without exec()"/>
+<meta name="abstract" content="A Unix-like system may create the child process using fork(), which then does not make a subsequent exec() call. The result of this is that the parent and child processes run the same executable. The child may communicate with the parent using pipes. One example of a system which does this is the email software program Exim (www.exim.org). In addition to forking without exec(), it can also re-exec() itself to regain dropped root privileges."/>
+<meta name="description" content="A Unix-like system may create the child process using fork(), which then does not make a subsequent exec() call. The result of this is that the parent and child processes run the same executable. The child may communicate with the parent using pipes. One example of a system which does this is the email software program Exim (www.exim.org). In addition to forking without exec(), it can also re-exec() itself to regain dropped root privileges."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AF07AD54-86F1-5DB7-80FF-633A559DA4BD.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-AF07AD54-86F1-5DB7-80FF-633A559DA4BD.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-545DA961-217E-49CA-A90E-7A41E2C03A99"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Forking without exec()</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-545DA961-217E-49CA-A90E-7A41E2C03A99"><a name="GUID-545DA961-217E-49CA-A90E-7A41E2C03A99"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2381103 id2381193 id2381201 id2381344 id2381410 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-5072BE46-B1B4-5C3A-BF55-BEA7443E7657.html">Generic OS Services Guide</a> &gt; <a href="GUID-E2DE2C6F-E071-5E88-96F1-D71DDED84609.html">Generic Open Libraries</a> &gt; <a href="GUID-D79380CF-22B5-5865-9366-44118E8ECA2E.html">Open Environment Core (P.I.P.S.)</a> &gt; <a href="GUID-C4C85189-BA6F-5F11-ABB3-727D8C1F5984.html">P.I.P.S. Porting Tutorials</a> &gt; <a href="GUID-AF07AD54-86F1-5DB7-80FF-633A559DA4BD.html">Creating Processes and Threads</a> &gt; </div>
+<h1 class="topictitle1">Forking
+without <samp class="codeph">exec()</samp></h1>
+<div><p>A Unix-like system may create the child process using <samp class="codeph">fork()</samp>,
+which then does not make a subsequent <samp class="codeph">exec()</samp> call. The result
+of this is that the parent and child processes run the same executable. The
+child may communicate with the parent using pipes. One example of a system
+which does this is the email software program Exim (www.exim.org). In addition
+to forking without <samp class="codeph">exec()</samp>, it can also <samp class="codeph">re-exec()</samp> itself
+to regain dropped root privileges.</p>
+
+<div class="p">The issues that such systems encounter when porting to P.I.P.S. fall into
+two categories: <ul>
+<li><p><strong>Little or no state data passed to child</strong></p>
+</li>
+
+<li><p><strong>A lot of data passed to child</strong></p>
+</li>
+
+</ul>
+</div>
+
+<div class="section"><h2 class="sectiontitle">Little or no state data passed to child</h2><p>The first
+issue is where there is a little/no data passed to the child process on the <samp class="codeph">fork()</samp> operation.
+Many examples of this exist in pre/post forking of listening sockets in TCP
+server applications, for example, in the MPM pre-fork module of the Apache
+server. More details are available at <a href="http://httpd.apache.org/docs/2.2/mod/prefork.html" target="_blank">http://httpd.apache.org/docs/2.2/mod/prefork.html</a>. </p>
+<p>This
+can be resolved by using the <a href="GUID-E7C4DE71-BC5B-34AE-ACB3-C34A0DB1FC16.html"><span class="apiname">posix_spawn()</span></a> operation, and
+passing any data using the <samp class="codeph">argv</samp> parameters or environment
+variables. For more information about the <samp class="codeph">posix_spawn()</samp> operation,
+see <a href="http://www.opengroup.org/" target="_blank">http://www.opengroup.org/</a>.
+Note that some <samp class="codeph">argv</samp> parameters must be used to distinguish
+the behaviour of the parent process from the subsequent behaviour of the child
+when the <samp class="codeph">main()</samp> function is called; the behaviour of the
+child cannot be identical to the parent.  </p>
+<div class="p">The subsequent sections provide
+the following information: <ul>
+<li><p><strong>Parent process forking example</strong></p>
+</li>
+
+<li><p><strong>P.I.P.S. equivalent</strong></p>
+</li>
+
+</ul>
+</div>
+</div>
+
+<div class="section"><h2 class="sectiontitle">Parent process forking example</h2><pre class="codeblock">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/wait.h&gt;
+#include &lt;unistd.h&gt;
+
+#define NUM_OF_PROCS 5
+
+int main(int argc, char *argv[])
+{
+  pid_t Processpid[NUM_OF_PROCS];
+     
+  int I;
+  
+  for(I=1;i&lt;NUM_OF_PROCS;i++)
+  {
+     Processpid[i] = fork();
+    
+     if(Processpid[i] == 0)
+     {
+        printf("\r\n Child Process Inst[%d] running ***\r\n",I);
+
+        //Terminate child process.5
+        exit(0);
+     }
+     else
+     {
+        //Wait for the child process to terminate before forking the next one.
+        waitpid(Processpid[i],NULL,0);
+     
+        printf("\r\n*** Child int[%d] process finished ***\r\n",I);
+     }
+  }
+   
+  return EXIT_SUCCESS;
+}
+</pre>
+<p/>
+</div>
+
+<div class="section"><h2 class="sectiontitle">P.I.P.S. equivalent</h2><pre class="codeblock">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;strings.h&gt;
+#include &lt;spawn.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/wait.h&gt;
+
+#define NUM_OF_PROCS 5
+
+int main(int argc, char *argv[])
+{
+   if(argc != 2)
+   {
+      printf("\r\n One parameter is needed.  \r\n");
+      
+      return EXIT_FAILURE;
+   }
+   else
+   {
+      int argvAsInt = atoi(argv[1]);
+      
+      if(argvAsInt &gt; NUM_OF_PROCS)
+      {
+         printf("\r\n parameter[%d] one is out of range  \r\n",argvAsInt);
+       
+         return EXIT_FAILURE;
+      }
+      else
+      {      
+         if(argvAsInt == 0)
+         {
+            //parent process.
+            pid_t Processpid[NUM_OF_PROCS];
+   
+            //executable points to the compiled version of this source.
+            char execFileName[] = "/root/PortDoc/Example3_c/Symbian/ParentProg";
+            int RetVal;
+            int I;
+            char iAsString[2];
+            char* spawnedArgs[3];
+            spawnedArgs[0] = argv[0];
+            spawnedArgs[2] = NULL;
+    
+            for(I=1; i&lt;NUM_OF_PROCS;i++)
+            {
+               //store I as a string.
+               bzero(iAsString,sizeof(iAsString));
+               iAsString[0] = 0x30+I;
+       
+               spawnedArgs[1] = iAsString;
+               
+               RetVal= posix_spawn(&amp;Processpid[i],execFileName,NULL,NULL,spawnedArgs,NULL);
+   
+               //wait for chid process to terminate before spawning the next.
+              (void)waitpid(Processpid[i],NULL,0);
+               printf("\r\n*** Child process finished ***\r\n");
+            }
+         }
+         else
+         {
+            //child process
+            printf("\r\n Child Process Inst[%d] running ***\r\n",argvAsInt);
+
+            //Terminate child process.
+            exit(0);
+         }
+      }
+   }
+   return EXIT_SUCCESS;
+}
+</pre>
+</div>
+
+<div class="section"><h2 class="sectiontitle">A lot of data passed to child</h2><p>The second issue is
+where there is too much data to be passed across to the child process using
+the <a href="GUID-E7C4DE71-BC5B-34AE-ACB3-C34A0DB1FC16.html"><span class="apiname">posix_spawn()</span></a> call. A common work-around used in systems
+where <samp class="codeph">fork()</samp> is not available is to use POSIX threads, or
+Pthreads. These Pthreads will execute in the same process and share their
+memory space, that is, they can share the same data objects. One critical
+difference between using Pthreads and <samp class="codeph">fork()</samp> is that <samp class="codeph">fork()</samp> creates
+copies of the parent's data objects in the child. The copied data objects
+can then be modified independently by both processes. However, when using
+Pthreads such data objects are shared and extra care, such as the use of mutexes
+and semaphores, is required when accessing them if their values can change. </p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-AF07AD54-86F1-5DB7-80FF-633A559DA4BD.html">Creating Processes and Threads</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

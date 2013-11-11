@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="A simple HTTP client session"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B4A54501-4AA4-5ACB-96D7-4427C7752639.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C0D38954-2FC5-4E8B-BC11-229464DCF16C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1E8904E3-43AC-5332-A2EF-F11F5728DBE8.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B4A54501-4AA4-5ACB-96D7-4427C7752639.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>A simple HTTP client session</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387372 id2387380 id2387389 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C0D38954-2FC5-4E8B-BC11-229464DCF16C.html">High Level Internet Protocols Guide</a> &gt; <a href="GUID-1E8904E3-43AC-5332-A2EF-F11F5728DBE8.html">Application Layer Protocols</a> &gt; <a href="GUID-B4A54501-4AA4-5ACB-96D7-4427C7752639.html">Using HTTP Client</a> &gt; </div>
+<h1 class="topictitle1">A simple HTTP client session</h1>
+<div><p>This page describes each of the stages needed to use HTTP for a single, simple transaction. The code fragments are taken from <span class="filepath">HTTPEXAMPLECLIENT</span>. </p>
+ <div class="section" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-01BCEE83-E671-4A92-B8FA-DC81A27C3CAA"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-01BCEE83-E671-4A92-B8FA-DC81A27C3CAA"><!-- --></a><h2 class="sectiontitle">Opening a session</h2> <p>A new HTTP Client session is started by declaring an <a href="GUID-651801A5-5473-3856-9647-46823598C5C1.html"><span class="apiname">RHTTPSession</span></a> object, which must remain in scope for the duration of the session, and invoking the <a href="GUID-651801A5-5473-3856-9647-46823598C5C1.html#GUID-651801A5-5473-3856-9647-46823598C5C1__GUID-77EA1EAA-F1E5-397D-BA5C-7BD3A5404B10"><span class="apiname">RHTTPSession::OpenL()</span></a> method. Usually, the <samp class="codeph">RHTTPSession</samp> handle is a data member of a client class: </p>
+ <p>From the example header file <span class="filepath">httpexampleclient.h</span>: </p>
+ <pre class="codeblock" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-062810B9-419F-5EF3-B11F-67E88A8812EB"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-062810B9-419F-5EF3-B11F-67E88A8812EB"><!-- --></a>class CHttpClient : public CBase, ...
+    {
+    ...
+private:
+    RHTTPSession iSess;
+    ...
+    };</pre>
+ <p>From the example implementation file <span class="filepath">httpexampleclient.cpp</span>: </p>
+ <pre class="codeblock" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-C94B7759-D61F-5079-94D3-544F1195B65E"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-C94B7759-D61F-5079-94D3-544F1195B65E"><!-- --></a>void CHttpClient::ConstructL()
+    {
+    ...
+    iSession.OpenL();
+    ...
+    }</pre>
+ </div>
+ <div class="section" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-63503283-9642-428C-B57E-8E3436D8BC87"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-63503283-9642-428C-B57E-8E3436D8BC87"><!-- --></a><h2 class="sectiontitle">Creating a transaction</h2> <p>To create a new transaction within the session, the client must specify a URI, an HTTP method, and a callback object that is used to receive events that arise during the transaction. The callback object must implement the <a href="GUID-F34F7481-00CF-3A1B-8D45-D053AD6769A8.html"><span class="apiname">MHTTPTransactionCallback</span></a> interface. </p>
+ <p>The <a href="GUID-2E673024-239B-3965-8880-C47B7CC24EF6.html"><span class="apiname">RHTTPTransaction</span></a> handle returned by the session uniquely identifies the new transaction. It may be stored in a class data member, but this is not mandatory. </p>
+ <pre class="codeblock" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-59E8A81E-EE08-5770-9F59-773EA7613B89"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-59E8A81E-EE08-5770-9F59-773EA7613B89"><!-- --></a>void CHttpClient::InvokeHttpMethodL(const TDesC8&amp; aUri, RStringF aMethod)
+    {
+    ...
+    TUriParser8 uri; 
+    uri.Parse(aUri);  
+    iTrans = iSess.OpenTransactionL(uri, *iTransObs, aMethod);
+    ...
+    };</pre>
+ <p>The second parameter to <a href="GUID-651801A5-5473-3856-9647-46823598C5C1.html#GUID-651801A5-5473-3856-9647-46823598C5C1__GUID-02249363-7FB0-39A5-8F43-7FC35E05E318"><span class="apiname">RHTTPSession::OpenTransactionL()</span></a> provides the transaction callback. The class which implements the callback is separate in <span class="filepath">HTTPEXAMPLECLIENT</span>. From the header file <span class="filepath">httpexampleclient.h</span>: </p>
+ <pre class="codeblock" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-2F967212-258B-5F06-A62C-2BB50BF4F564"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-2F967212-258B-5F06-A62C-2BB50BF4F564"><!-- --></a>class CHttpEventHandler : public CBase, public MHTTPTransactionCallback
+    {
+public:
+ ...
+    //
+    // methods from MHTTPTransactionCallback
+    //
+    virtual void MHFRunL(RHTTPTransaction aTransaction, const THTTPEvent&amp; aEvent);
+    virtual TInt MHFRunError(TInt aError, RHTTPTransaction aTransaction, const THTTPEvent&amp; aEvent);
+ ...
+ };</pre>
+ <p>The two callback methods are inherited from <a href="GUID-57216A14-97B8-324C-BB00-63CA880CC779.html"><span class="apiname">MHTTPFilterBase</span></a>: hence the MHF prefix to their names. This is an interesting feature of the HTTP Client design where the client code is treated as a filter. The use of these methods is described subsequently. </p>
+ </div>
+ <div class="section" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-B5AECC45-F560-40E7-B8E6-6E48CED6C8FE"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-B5AECC45-F560-40E7-B8E6-6E48CED6C8FE"><!-- --></a><h2 class="sectiontitle">Setting request headers</h2> <p>After opening the transaction, the client may set request headers, if required. Note that the use of request headers is optional for very simple transactions, as the few headers that RFC 2616 describes as mandatory for HTTP/1.1 are automatically generated. </p>
+ <p>To access the headers associated with a transaction's request or response, the <a href="GUID-54F9A87B-FE2F-3429-9793-0A24B83466B9.html"><span class="apiname">RHTTPHeaders</span></a> class is used. The handle is obtained from either the <a href="GUID-8D952FEE-0EA0-3DBC-AADB-6F4200B82687.html"><span class="apiname">RHTTPRequest</span></a> or <a href="GUID-BA9EA976-E4CF-37D7-9E73-420A6D50203F.html"><span class="apiname">RHTTPResponse</span></a> objects associated with the transaction. </p>
+ <p>From the implementation file <span class="filepath">httpexampleclient.cpp</span>: </p>
+ <pre class="codeblock" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-1C49573C-00B3-5563-B422-9E4A94F39BBD"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-1C49573C-00B3-5563-B422-9E4A94F39BBD"><!-- --></a>RHTTPHeaders hdr = iTrans.Request().GetHeaderCollection();
+    // Add headers appropriate to all methods
+    SetHeaderL(hdr, HTTP::EUserAgent, KUserAgent);
+    SetHeaderL(hdr, HTTP::EAccept, KAccept);
+...
+
+void CHttpClient::SetHeaderL(RHTTPHeaders aHeaders, TInt aHdrField, const TDesC8&amp; aHdrValue)
+    {
+    RStringF valStr = iSess.StringPool().OpenFStringL(aHdrValue);
+    CleanupClosePushL(valStr);
+    THTTPHdrVal val(valStr); 
+    aHeaders.SetFieldL(iSess.StringPool().StringF(aHdrField,RHTTPSession::GetTable()), val);
+    CleanupStack::PopAndDestroy(&amp;valStr);
+    }</pre>
+ <p>Note that the header field types are specified using enumerations from the <a href="GUID-7BB3CFA5-4697-305D-B4FD-D8747BB56E04.html"><span class="apiname">HTTP</span></a> namespace, e.g. <a href="GUID-7BB3CFA5-4697-305D-B4FD-D8747BB56E04.html#GUID-7BB3CFA5-4697-305D-B4FD-D8747BB56E04__GUID-600E343A-5081-3D42-95A2-B1957BE9719A"><span class="apiname">HTTP::EUserAgent</span></a>. The class used to hold the header field value, <a href="GUID-DEE8279A-3BEC-316F-97B8-6C49FEDBD5B3.html"><span class="apiname">THTTPHdrVal</span></a>, is like a C++ union, that is, it can hold different data types. In this example, it holds an <a href="GUID-B886F0AA-DB9C-356C-9B96-33252820F93E.html"><span class="apiname">RStringF</span></a> value which is initialized using the session's string-pool from the supplied descriptor. These must be 8-bit strings, as the RFC 2616 assumes a 7-bit encoding for all transmissions. </p>
+ </div>
+ <div class="section" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-435FE7DC-9BEA-4D70-B8D1-7189E546242D"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-435FE7DC-9BEA-4D70-B8D1-7189E546242D"><!-- --></a><h2 class="sectiontitle">Starting the transaction</h2> <p>When headers have been set, a simple transaction with no request body can be started immediately. This is the case for HTTP methods such as GET, HEAD, and TRACE. Some other HTTP methods include a body in the request, for example, POST. The data supplier that the client uses to supply request body data must be associated with the transaction before the transaction is started. </p>
+ <p>In <span class="filepath">HTTPEXAMPLECLIENT</span>, the <samp class="codeph">CHttpClient</samp> class also acts as its own data supplier when the POST method is chosen in the menu. See <a href="GUID-81253CA0-2B57-5A3E-9ACD-469D4B922047.html">Handling request body data</a> for examples of code that provides a request body. </p>
+ <p>When the transaction ready to start, the client calls <a href="GUID-2E673024-239B-3965-8880-C47B7CC24EF6.html#GUID-2E673024-239B-3965-8880-C47B7CC24EF6__GUID-F3A8B916-5618-319D-89D8-9B7B04A8A2FC"><span class="apiname">RHTTPTransaction::SubmitL()</span></a> to indicate that the request should be submitted. From the implementation file <span class="filepath">httpexampleclient.cpp</span>: </p>
+ <pre class="codeblock" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-A0564DB5-E381-5E08-A7A1-BA7568B06235"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-A0564DB5-E381-5E08-A7A1-BA7568B06235"><!-- --></a>...
+    // submit the transaction
+    iTrans.SubmitL();
+    // Start the scheduler, once the transaction completes or is cancelled on an error the scheduler will be
+    // stopped in the event handler
+    CActiveScheduler::Start();</pre>
+ <p>The <span class="filepath">HTTPEXAMPLECLIENT</span> application is implemented as a synchronous client, hence the local <samp class="codeph">CActiveScheduler</samp>. When <a href="GUID-B4C76104-EA1B-3FC3-A31E-86A976598171.html#GUID-B4C76104-EA1B-3FC3-A31E-86A976598171__GUID-B59D1017-1D81-3D5E-B0A2-73FC9C06194B"><span class="apiname">CActiveScheduler::Stop()</span></a> is called after completion of the transaction, execution continues from this point. More complex applications will have an active scheduler elsewhere that should already be running. </p>
+ </div>
+ <div class="section" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-B5520BFB-59D1-4800-80AB-901538216313"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-B5520BFB-59D1-4800-80AB-901538216313"><!-- --></a><h2 class="sectiontitle">Receiving transaction events</h2> <p>The transaction is now processed by HTTP. All processing by the internal HTTP core and protocol and transport handlers is done in the client's thread. As data is received from the HTTP server, events are generated internally and passed back to the client using the session filters. When an event reaches the client, HTTP invokes the transaction callback. </p>
+ <p>From the implementation file <span class="filepath">httpexampleclient.cpp</span>: </p>
+ <pre class="codeblock" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-D555D720-4AEB-5877-A8CC-315E84F5EA35"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-D555D720-4AEB-5877-A8CC-315E84F5EA35"><!-- --></a>void CHttpEventHandler::MHFRunL(RHTTPTransaction aTransaction, const THTTPEvent&amp; aEvent)
+    {
+    switch (aEvent.iStatus)
+        {
+        case THTTPEvent::EGotResponseHeaders:
+            {
+            ...
+            } 
+            break;
+        case THTTPEvent::EGotResponseBodyData:
+            {
+            ...
+            } 
+            break;
+        case THTTPEvent::EResponseComplete:
+            {
+            ...
+            } 
+            break;
+        case THTTPEvent::ESucceeded:
+            {
+            ...
+            } 
+            break;
+        case THTTPEvent::EFailed:
+            {
+            ...
+            } 
+            break;
+  case THTTPEvent::ERedirectedPermanently:
+            {
+            ...
+            } 
+            break;
+  case THTTPEvent::ERedirectedTemporarily:
+            {
+            ...
+            } 
+            break;
+        default:
+            {
+            ...
+            } 
+            break;
+        }
+    }</pre>
+ <p>Events are processed in turn by the client. They arrive in the order shown in the preceding example code. The following list describes the events: </p>
+ <ul><li id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-8C726FB1-8448-5C52-9235-FA3977270A8D"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-8C726FB1-8448-5C52-9235-FA3977270A8D"><!-- --></a><p> <a href="GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3.html#GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3__GUID-C2FB5091-13B7-305A-A14A-CA4BF23F0CF0"><span class="apiname">THTTPEvent::EGotResponseHeaders</span></a> indicates that the response status is known, and that the headers from the response are ready for access by the client. This event will always be the first received, unless an error condition has arisen. </p>
+ </li>
+ <li id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-4F5623D8-BE02-5EEF-8A9E-8B9BDC76C0B2"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-4F5623D8-BE02-5EEF-8A9E-8B9BDC76C0B2"><!-- --></a><p> <a href="GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3.html#GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3__GUID-FED66222-97A9-376C-B35D-488C24477FF9"><span class="apiname">THTTPEvent::EGotResponseBodyData</span></a> indicates that some body data is ready for processing. Response bodies are generally large enough to require splitting into smaller pieces (due to the use of fixed-size internal buffers), so the event will arrive as many times as there are pieces, until the whole body has been retrieved. </p>
+ </li>
+ <li id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-D0480035-1AA9-5046-828E-ABAF488E7D67"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-D0480035-1AA9-5046-828E-ABAF488E7D67"><!-- --></a><p> <a href="GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3.html#GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3__GUID-0056851B-2933-3701-BFE2-E28162F4EE5B"><span class="apiname">THTTPEvent::EResponseComplete</span></a> indicates that the transaction's response has been completely received. The client can now expect to be told whether the transaction was successful or not. </p>
+ </li>
+ <li id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-3E48FCA6-3571-540A-BBC8-11796B7E4450"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-3E48FCA6-3571-540A-BBC8-11796B7E4450"><!-- --></a><p> <a href="GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3.html#GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3__GUID-619AC671-5679-3036-82C9-DAAF5B892100"><span class="apiname">THTTPEvent::ESucceeded</span></a> is one of two possible final messages: it indicates success of the transaction. </p>
+ </li>
+ <li id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-D945439E-973D-58A6-BEA4-CDA568463336"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-D945439E-973D-58A6-BEA4-CDA568463336"><!-- --></a><p> <a href="GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3.html#GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3__GUID-6BC33448-9CB9-3488-87DD-EFB0C5435044"><span class="apiname">THTTPEvent::EFailed</span></a> is the second of the two possible final messages: it indicates failure of the transaction. </p>
+ </li>
+ <li id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-B3BC98DE-A314-51A2-8C0A-B1C61911D7B0"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-B3BC98DE-A314-51A2-8C0A-B1C61911D7B0"><!-- --></a><p> <a href="GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3.html#GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3__GUID-0A71A2A1-E5CC-33F2-A11A-94A998AA32C5"><span class="apiname">THTTPEvent::ERedirectedPermanently</span></a> indicates that the transaction has been redirected and the HTTP origin server indicated that it was a permanent redirection. The URI for the transaction is now the redirected location. </p>
+ </li>
+ <li id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-7FF792D8-7B84-5827-B499-C2FFC2FA9007"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-7FF792D8-7B84-5827-B499-C2FFC2FA9007"><!-- --></a><p> <a href="GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3.html#GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3__GUID-DEB91CA2-ECFA-3443-9489-AA9E2D50337B"><span class="apiname">THTTPEvent::ERedirectedTemporarily</span></a> indicates that the transaction has been redirected and the HTTP origin server indicated that it was a temporary redirection. </p>
+ </li>
+ <li id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-B5BFE6F9-96D3-5942-BA9F-E2C2B6A52D73"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-B5BFE6F9-96D3-5942-BA9F-E2C2B6A52D73"><!-- --></a><p> <samp class="codeph"> default</samp>: an unrecognised event. Negative values indicate an error propogated from filters or lower comms layers. If not understood by the client, error values may be safely ignored as a <a href="GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3.html#GUID-518CC5C3-1CE1-316E-9688-93DB12E58EB3__GUID-6BC33448-9CB9-3488-87DD-EFB0C5435044"><span class="apiname">THTTPEvent::EFailed</span></a> event is guaranteed to follow. Positive values are used for warning conditions. </p>
+ </li>
+ </ul>
+ </div>
+ <div class="section" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-2F0853C8-6764-40EC-A57C-E770A5D39859"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-2F0853C8-6764-40EC-A57C-E770A5D39859"><!-- --></a><h2 class="sectiontitle">Obtaining the response status</h2> <p>To obtain the response status code and text description, the transaction response is used: </p>
+ <pre class="codeblock" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-A5FB04A3-905A-5C0E-996E-B0CB0ED91BA8"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-A5FB04A3-905A-5C0E-996E-B0CB0ED91BA8"><!-- --></a>case THTTPEvent::EGotResponseHeaders:
+    {
+    RHTTPResponse resp = aTransaction.Response();
+    TInt status = resp.StatusCode();
+    RStringF statusStr = resp.StatusText();</pre>
+ </div>
+ <div class="section" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-225CEAAB-C9C1-4D80-A4E5-4267E5B123A5"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-225CEAAB-C9C1-4D80-A4E5-4267E5B123A5"><!-- --></a><h2 class="sectiontitle">Obtaining the response headers</h2> <p>The response headers can be iterated using the <a href="GUID-9C6B4D0A-8499-36D6-8F07-A3C3DB6615DC.html"><span class="apiname">THTTPHdrFieldIter</span></a> class. Individual header fields can be queried as shown in the following example: </p>
+ <pre class="codeblock" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-3643D54F-7430-56BE-B641-1C0F539DF8D9"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-3643D54F-7430-56BE-B641-1C0F539DF8D9"><!-- --></a>RHTTPResponse resp = aTrans.Response();
+    RStringPool strP = aTrans.Session().StringPool();
+    RHTTPHeaders hdr = resp.GetHeaderCollection();
+    THTTPHdrFieldIter it = hdr.Fields();
+
+    TBuf&lt;KMaxHeaderNameLen&gt;  fieldName16;
+    TBuf&lt;KMaxHeaderValueLen&gt; fieldVal16;
+
+    while (it.AtEnd() == EFalse)
+    {
+    // Get the name of the next header field
+    RStringTokenF fieldName = it();
+    RStringF fieldNameStr = strP.StringF(fieldName);
+
+    // Check it does indeed exist
+    THTTPHdrVal fieldVal;
+    if (hdr.GetField(fieldNameStr,0,fieldVal) == KErrNone)
+        {
+        ...
+        // Display realm for WWW-Authenticate header
+        RStringF wwwAuth = strP.StringF(HTTP::EWWWAuthenticate,RHTTPSession::GetTable());
+        if (fieldNameStr == wwwAuth)
+            {
+            // check the auth scheme is 'basic'
+            RStringF basic = strP.StringF(HTTP::EBasic,RHTTPSession::GetTable());
+            RStringF realm = strP.StringF(HTTP::ERealm,RHTTPSession::GetTable());
+            THTTPHdrVal realmVal;
+            if ((fieldVal.StrF() == basic) &amp;&amp; 
+            // check the header has a 'realm' parameter 
+            (!hdr.GetParam(wwwAuth, realm, realmVal)))
+                {
+                RStringF realmValStr = strP.StringF(realmVal.StrF());
+                fieldVal16.Copy(realmValStr.DesC());
+                iUtils.Test().Printf(_L("Realm is: %S\n"), &amp;fieldVal16);
+                realmValStr.Close();
+                }
+            }
+            basic.Close();
+            realm.Close();
+        }
+        // Advance the iterator
+        ++it;
+        // Close all RStrings
+        fieldName.Close();
+        fieldNameStr.Close();
+        wwwAuth.Close();
+    }
+    resp.Close();
+    strP.Close();
+    hdr.Close();</pre>
+ </div>
+ <div class="section" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-6FA09592-E909-4A24-81F0-A71F666B01C8"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-6FA09592-E909-4A24-81F0-A71F666B01C8"><!-- --></a><h2 class="sectiontitle">Obtaining the response body</h2> <p>To access the response body, the data supplier contained in the transaction response must be used. When the client has finished processing each piece of body data, the data must be released: </p>
+ <pre class="codeblock" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-60298F6A-BF73-5CB1-A31D-C34114F04E90"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-60298F6A-BF73-5CB1-A31D-C34114F04E90"><!-- --></a>case THTTPEvent::EGotResponseBodyData:
+    {
+    // Get the body data supplier
+    iRespBody = aTransaction.Response().Body();
+
+    // Some (more) body data has been received (in the HTTP response)
+    if (iVerbose)
+            DumpRespBody(aTransaction);
+    else
+            iUtils.Test().Printf(_L("*"));
+    // Append to the output file if we're saving responses
+    if (iSavingResponseBody)
+            {
+            TPtrC8 bodyData;
+            TBool lastChunk = iRespBody-&gt;GetNextDataPart(bodyData);
+            iRespBodyFile.Write(bodyData);
+            if (lastChunk)
+                iRespBodyFile.Close();
+            }
+ // Done with that bit of body data
+    iRespBody-&gt;ReleaseData();
+    } break;</pre>
+ <p>The <a href="GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5.html#GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5__GUID-D4E82D9A-7C88-30B4-B50B-D3CAF39B22F2"><span class="apiname">MHTTPDataSupplier::OverallDataSize()</span></a> method can be used to find out how large the entire body is before processing the body data. The value returned is based on the HTTP response Content-Length header. However, not all responses will include this header. For example, when the HTTP server is using the 'chunked' transfer encoding. In that case, the overall data size will be returned as <samp class="codeph">KErrNotFound</samp>. </p>
+ <p>Regardless of that, the final piece of body data will always cause <a href="GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5.html#GUID-1B03F068-9552-37BA-A284-8E54FAC2AAC5__GUID-F8D21ACA-E984-3686-9E45-44ECDEAA4B70"><span class="apiname">MHTTPDataSupplier::GetNextDataPart()</span></a> to return <samp class="codeph">ETrue</samp>. </p>
+ </div>
+ <div class="section" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-AFE19311-E6A2-425F-B51F-4CFC287FC7A9"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-AFE19311-E6A2-425F-B51F-4CFC287FC7A9"><!-- --></a><h2 class="sectiontitle">Completing the transaction</h2> <p>In <span class="filepath">HTTPEXAMPLECLIENT</span>, the final completion of the transaction (indicated with a success or failure message) stops the local active scheduler. The <samp class="codeph">EResponseComplete</samp> code is not used for anything here. Since each transaction is guaranteed to send either an <samp class="codeph">ESucceeded</samp> event or an <samp class="codeph">EFailed</samp> event, they can be used as a signal to finish. </p>
+ <pre class="codeblock" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-A212D790-98D1-527C-A269-B1722D1F053F"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-A212D790-98D1-527C-A269-B1722D1F053F"><!-- --></a>case THTTPEvent::EResponseComplete:
+            {
+            // The transaction's response is complete
+            iUtils.Test().Printf(_L("\nTransaction Complete\n"));
+            } break;
+        case THTTPEvent::ESucceeded:
+            {
+            iUtils.Test().Printf(_L("Transaction Successful\n"));
+            aTransaction.Close();
+            CActiveScheduler::Stop();
+            } break;
+        case THTTPEvent::EFailed:
+            {
+            iUtils.Test().Printf(_L("Transaction Failed\n"));
+            aTransaction.Close();
+            CActiveScheduler::Stop();
+            } break;
+        case THTTPEvent::ERedirectedPermanently:
+            {
+            iUtils.Test().Printf(_L("Permanent Redirection\n"));
+            } break;
+        case THTTPEvent::ERedirectedTemporarily:
+            {
+            iUtils.Test().Printf(_L("Temporary Redirection\n"));
+            } break;</pre>
+ <p>The transaction is closed using <a href="GUID-2E673024-239B-3965-8880-C47B7CC24EF6.html#GUID-2E673024-239B-3965-8880-C47B7CC24EF6__GUID-0ABF9404-EA7F-3CB3-B08B-D9154EF6F2D8"><span class="apiname">RHTTPTransaction::Close()</span></a>. This internally frees the resources associated with that transaction. The transaction should not be used again. </p>
+ </div>
+ <div class="section" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-8E708D45-31C2-4C6B-9BEF-260CBF94CDDF"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-8E708D45-31C2-4C6B-9BEF-260CBF94CDDF"><!-- --></a><h2 class="sectiontitle">Terminating the session</h2> <p>When the client is ready to terminate, the session is closed: </p>
+ <pre class="codeblock" id="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-DF6E28A1-A70A-52BF-B841-F85049F12D3A"><a name="GUID-1D32D093-1B7B-5CE8-B57D-5469C1E8E4B9__GUID-DF6E28A1-A70A-52BF-B841-F85049F12D3A"><!-- --></a>CHttpClient::~CHttpClient()
+    {
+    iSess.Close();
+    ...
+    }</pre>
+ <p>When the session is closed, all resources are returned to the system. Transactions that were not complete are immediately cancelled. </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-B4A54501-4AA4-5ACB-96D7-4427C7752639.html">Using HTTP Client</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

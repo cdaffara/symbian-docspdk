@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Descriptors"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Descriptors</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230"><a name="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id1198324 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a> &gt; </div>
+<h1 class="topictitle1">Descriptors</h1>
+<div><p>Descriptors are the classes that Symbian platform C++ uses to manage strings. They are fundamental to the Symbian platform, and an excellent example of the difference of approach between non-OO and OO designs. </p>
+ <div class="section"><h2 class="sectiontitle">Overview</h2> <p>In C, a string such as </p>
+ <pre class="codeblock" id="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230__GUID-D12A339F-7ADE-5BDE-A8B3-59AB67E2BD8B"><a name="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230__GUID-D12A339F-7ADE-5BDE-A8B3-59AB67E2BD8B"><!-- --></a>char* hello="hello";</pre>
+ <p>causes some memory to be set aside containing the six characters 'h', 'e', 'l', 'l', 'o', '\0'. A function such as <samp class="codeph">strlen()</samp> works by scanning the bytes starting from the beginning, and counting until it reaches the trailing null character. If you wish to extend the string, you need to know how much memory is allocated to it. </p>
+ <p>In Symbian platform C++ however, strings are managed using a family of classes called descriptors. The abstract descriptor classes define common interfaces for all descriptor classes. Buffer, pointer, and heap descriptor classes provide implementations of the abstract descriptor interfaces, and provide different methods of storing the data. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Abstract descriptors</h2> <p>We can represent the basic requirements for strings by two abstract classes: <samp class="codeph">TDesC</samp> and <samp class="codeph">TDes</samp>. </p>
+ <p> <samp class="codeph">TDesC</samp> is a constant, or non-modifiable, descriptor. It has an address and a length. Using a class like this, you can do any manipulations to a string, provided they do not alter the data. As a consequence, the <samp class="codeph">TDesC</samp> class has many non-modifying functions. </p>
+ <p> <samp class="codeph">TDes</samp> is a modifiable descriptor: it has, in addition, a maximum length. This allows the data to be manipulated, extended or contracted, provided it does not exceed the maximum length. As a consequence, <samp class="codeph">TDes</samp> has many modifying functions which allow string manipulation. </p>
+ <p>It is a fundamental aspect of descriptors that they do not allow modification to exceed the allocated length. Other classes are provided to allow this, for instance <samp class="codeph">CBufBase</samp> and derived classes. If a <samp class="codeph">TDes</samp> function causes overflow, a panic will occur. </p>
+ <p>Because <samp class="codeph">TDesC</samp> and <samp class="codeph">TDes</samp> define all the functions needed to access and manipulate string and memory data, many functions take a <samp class="codeph">const TDesC&amp;</samp> parameter if they need to access data, or a <samp class="codeph">TDes&amp;</samp> parameter if they need to modify it. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Pointer descriptor</h2> <p>The abstract descriptor classes have several implementations. The simplest are pointer descriptors. </p>
+ <p> <samp class="codeph">TPtrC</samp> just has length and address: its representation needs just two machine words. A <samp class="codeph">TPtrC</samp> may be set up to describe any existing data. A <samp class="codeph">TPtr</samp> adds a maximum length, and so may be used to describe a buffer which is perhaps only partially allocated. </p>
+ <div class="fignone" id="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230__GUID-07AAB2BD-6645-5E19-A69D-C7BDD770FBF6"><a name="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230__GUID-07AAB2BD-6645-5E19-A69D-C7BDD770FBF6"><!-- --></a><img src="GUID-0268102D-D238-5C5E-818F-6ACC4A85B022_d0e9084_href.png"/></div>
+ <p> <samp class="codeph">TPtrC</samp> and <samp class="codeph">TPtr</samp> are somewhat like C <samp class="codeph">char*</samp> pointers. But because the length is contained in the descriptor itself, there is no need to scan for trailing null characters, or to allocate room for them. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Buffer descriptors</h2> <p>Buffer descriptors, <samp class="codeph">TBufC</samp> and <samp class="codeph">TBuf</samp>, contain their data as part of themselves, like <samp class="codeph">char[]</samp> arrays in C. </p>
+ <div class="fignone" id="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230__GUID-2D00C669-3E47-5352-9730-73035D059B15"><a name="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230__GUID-2D00C669-3E47-5352-9730-73035D059B15"><!-- --></a><img src="GUID-356B54BB-E389-5562-A2D9-80A472EAC9A3_d0e9116_href.png"/></div>
+ <p>These descriptor classes exploit C++'s template mechanism, using an integer parameter to specify the length. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Heap descriptors</h2> <p>Heap descriptors contain their data in heap cell. These are used when you do not know the length required for a buffer at build time, but decide it at run-time. This is like <samp class="codeph">(char*) malloc(length+1)</samp> in C. </p>
+ <p>The non-modifiable heap descriptor type, <samp class="codeph">HBufC</samp>, is allocated on the heap. They are always referred to through an <samp class="codeph">HBufC*</samp>, rather than an <samp class="codeph">HBufC</samp> directly: </p>
+ <div class="fignone" id="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230__GUID-C2909A73-C585-5A0B-B0B8-15BBB05EBCAE"><a name="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230__GUID-C2909A73-C585-5A0B-B0B8-15BBB05EBCAE"><!-- --></a><img src="GUID-C8D5B104-3F34-513B-BA08-5F2FEE60265C_d0e9145_href.png"/></div>
+ <p>The modifiable heap descriptor type, <samp class="codeph">RBuf</samp>, can be created on the stack, but contains a pointer to data on the heap. This is similar to a <samp class="codeph">TPtr</samp> pointer descriptor, but an <samp class="codeph">RBuf</samp> owns the data that it points to, and is responsible for freeing the memory when it is closed. An <samp class="codeph">RBuf</samp> object can allocate its own buffer, take ownership of a pre-existing section of allocated memory, or take ownership of a pre-existing heap descriptor. </p>
+ <div class="fignone" id="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230__GUID-084AC324-8928-53FE-8CF5-75A544522AD8"><a name="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230__GUID-084AC324-8928-53FE-8CF5-75A544522AD8"><!-- --></a><img src="GUID-DC37C3A9-B03F-5699-9E05-8ADD62C2FF04_d0e9163_href.png"/></div>
+ <p> <samp class="codeph">RBuf</samp> is easier to use than <samp class="codeph">HBufC</samp>, so should generally be preferred. <samp class="codeph">RBuf</samp> was only introduced in version 8.0, however, so older code and APIs use <samp class="codeph">HBufC</samp>. </p>
+ </div>
+ <div class="section"><h2 class="sectiontitle">Descriptor classes</h2> <p>The complete descriptor class hierarchy is </p>
+ <div class="fignone" id="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230__GUID-9FA30B6B-12C7-58CB-92B6-684053EE9FCD"><a name="GUID-9C51D27D-BEDB-59D1-8F0E-8426B8FF2230__GUID-9FA30B6B-12C7-58CB-92B6-684053EE9FCD"><!-- --></a><img src="GUID-7E7BCC57-E14F-56A4-B948-B9FB9E7AB598_d0e9189_href.png"/></div>
+ <p>It represents an elegant use of OO. The <samp class="codeph">TBufCBase</samp> class is used as an implementation convenience, which is also a frequent OO idiom (though it should be used with caution). </p>
+ <p>Versions of the descriptors classes are available that store 16-bit or 8-bit wide items. When using descriptors for strings, you should always use classes such as <samp class="codeph">TDes</samp> etc. These classes are <samp class="codeph">typedef</samp> ed to use the 16-bit implementations, such as <samp class="codeph">TDes16</samp> etc. </p>
+ <p>Because descriptors may contain any data, including nulls, they may also be used to refer to byte data and general buffers. In these contexts, you should use the 8-bit implementations, such as <samp class="codeph">TDes8</samp>, directly. </p>
+ </div>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

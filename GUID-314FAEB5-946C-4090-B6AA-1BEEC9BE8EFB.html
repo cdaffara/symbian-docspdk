@@ -1,0 +1,691 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Common Error Patterns - Case Studies"/>
+<meta name="abstract" content="Describes a few common error patterns that were found while testing code designed for use in an SMP environment."/>
+<meta name="description" content="Describes a few common error patterns that were found while testing code designed for use in an SMP environment."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-629EAA30-ED77-4CA9-91ED-36C818D7B4F4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Common Error Patterns - Case Studies</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2561665 id2563724 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-629EAA30-ED77-4CA9-91ED-36C818D7B4F4.html" title="Provides summary of documents to make SMP-safe applications.">SMP</a> &gt; <a href="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html" title="This section describes how SMP works and provides you with information on how to troubleshoot some problems you may have. This includes problems with driver closure ordering and how memory is shared between threads in a process">SMP Developer Tips</a> &gt; </div>
+<h1 class="topictitle1">Common
+Error Patterns - Case Studies</h1>
+<div><p>Describes a few common error patterns that were found while testing
+code designed for use in an SMP environment.</p>
+
+<p>During development and testing, a number of areas of code have been identified
+that demonstrate some of the SMP common error patterns. These case studies
+are described below to illustrate how these errors can be identified and typical
+code fixes.</p>
+
+<div class="section" id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__C"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__C"><!-- --></a><h2 class="sectiontitle">Relying on linear execution</h2><p>The ETEL client
+API makes use of an unusual implementation class called <samp class="codeph">CPtrHolder</samp>.
+Each ETEL client sub-session (derived from <samp class="codeph">RTelSubSessionBase</samp>)
+owns a <samp class="codeph">CPtrHolder</samp>. This class stores a dynamic array of descriptors,
+each of which corresponds to the IPC data used for a specific subset of ETEL
+client/server messages. This allows the server to read/write data from/to
+valid client descriptors when there are multiple outstanding messages from
+a particular client sub-session. </p>
+ <p>A problem occurred when the same
+client sub-session sent two asynchronous messages of the same type (therefore
+using the same <samp class="codeph">CPtrHolder</samp> descriptor) to the ETEL server
+in a short space of time. The problem did not manifest itself in a single
+core environment because the ETEL server always ran at a higher priority than
+the ETEL client, and so the first message was always completed before the
+client sent the second message. However, in an SMP environment, the server
+runs on a different CPU to the client and had not started processing the first
+message by the time the client sent the second message. The <samp class="codeph">CPtrHolder</samp> descriptor
+was updated with data from the second message but the server was still expecting
+to read data from the first message. As a result, the first message was completed
+by the server with a <samp class="codeph">KErrCorrupt</samp> error code. </p>
+ <p>The
+solution was to identify which messages could suffer from this problem and
+send a synchronous <samp class="codeph">EEtelFlushInterfaceQueue</samp> message to the
+server immediately after the asynchronous request. This guaranteed that the
+server would have read the data from the first asynchronous message by the
+time the second asynchronous message was sent. </p>
+</div>
+
+<div class="section" id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__D"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__D"><!-- --></a><h2 class="sectiontitle">Relying on thread suspension when making asynchronous
+calls</h2><p>In a way, the "Non-synchronized IPC calls" category is a subset
+of this category. Whenever code makes assumptions about which order threads
+are executed based on thread priority, there is a potential problem. In most
+cases, it is best to think of thread priority as nothing more than a hint
+to the scheduler. In an environment where multiple processors are being activated
+and deactivated dynamically it is not safe to make any assumptions concerning
+which threads will run at a given time. </p>
+<p>Consider the case below where
+a mutex is acquired by two threads with different priorities: </p>
+<pre class="codeblock">// High priority thread (T1)    
+iMutex.Wait();
+DoFirstThing();         
+iMutex.Signal();         
+
+// Low priority thread (T2)
+iMutex.Wait();
+DoSecondThing();
+iMutex.Signal();</pre>
+<p>Even on a single processor system it is unwise
+to assume that T1 would acquire the lock before T2. For example, T1 could
+be suspended because of a page fault. While it is suspended, the scheduler
+could run T2, causing it to acquire the lock and execute <samp class="codeph">DoSecondThing()</samp>,
+which is not the desired behaviour. In an SMP context both threads could be
+running concurrently, making it even harder to predict which thread will acquire
+the lock first. While a mutex may be used to prevent concurrent access to
+a shared resource, it cannot be used to force two threads to perform actions
+in a certain sequence. The solution is to use an <a href="GUID-AED27A76-3645-3A04-B80D-10473D9C5A27.html"><span class="apiname">RSemaphore</span></a> initialised
+with a value of 0, allowing one thread to suspend until another thread signals
+that it is safe to proceed. We would use this in the above example as follows: </p>
+<pre class="codeblock">// T1 
+DoFirstThing();
+iSemaphore.Signal();
+
+// T2
+iSemaphore.Wait();
+DoSecondThing();
+</pre>
+<p>Now, T2 waits for explicit notification from T1. We are completely
+agnostic about the relative thread priorities. Should T2 execute first, the
+semaphore would be decremented and the thread blocked before executing <samp class="codeph">DoSecondThing()</samp>.
+It can only proceed once T1 has executed <samp class="codeph">DoFirstThing()</samp> and
+signalled the semaphore. </p>
+<p><strong>Case study: Thread <samp class="codeph">EwSrv.exe</samp> panics
+with <samp class="codeph">E32USER-CBase 46</samp> on H4. </strong></p>
+<p>This is another case
+of a bad assumption about thread priorities but with a different result. The
+problem manifested itself on an SMP environment when pressing keys a lot within
+an edit window. The edit window cursor is an animation that periodically generates
+redraw events within the window server. The scheduling of these redraw events
+was altered by the events generated by the key presses, which led to a stray
+event panic (<samp class="codeph">E32USER-CBase 46</samp>) in the window server main
+thread. As this is a critical thread, the kernel then faulted. Like many stray
+event panics, this problem was difficult to diagnose but easy to fix. </p>
+<p>The
+window server has a mechanism for redrawing animations involving a separate
+low-priority thread (called the kickback thread) encapsulated within an active
+object that controls that thread, called <samp class="codeph">CKickBack</samp>. Kickbacks
+from the window server main thread are executed through this function: </p>
+<pre class="codeblock">void CWindowServer::CDefaultAnimationScheduler::CKickBack::RequestKickBack()
+    {
+    if (!IsActive())
+        {
+        TRequestStatus * status = &amp;idleStatus;
+        iIdleThread.RequestComplete(status, KErrNone);
+        iStatus = KRequestPending;
+        SetActive();
+        }
+    }
+</pre>
+<p>The kickback thread is signalled using a handle to that thread
+(<samp class="codeph">iIdleThread</samp>) and the <samp class="codeph">iIdleStatus</samp> semaphore.
+The <samp class="codeph">CKickBack</samp> active object is then set active and waits
+for the kickback thread to signal back to the main thread using the <samp class="codeph">iStatus</samp> semaphore. </p>
+<p>After
+construction, the kickback thread spends its whole time in an endless loop,
+waiting for <samp class="codeph">iIdleStatus</samp> to be signalled from the window server
+main thread: </p>
+<pre class="codeblock">void CWindowServer::CDefaultAnimationScheduler::CKickBack::Loop()
+    {
+    FOREVER
+        {
+        User::WaitForRequest(iIdleStatus);
+        TRequestStatus * status = &amp;iStatus;
+        iWservThread.RequestComplete(status,KErrNone);
+        }
+    }
+</pre>
+<p>Once <samp class="codeph">iIdleStatus</samp> is completed, the kickback
+thread resumes execution, immediately signals completion of the <samp class="codeph">iStatus</samp> semaphore
+back to the window server main thread (via the <samp class="codeph">iWservThread RThread</samp> handle),
+then waits for the next kickback. </p>
+<p>Back in the window server thread,
+the <samp class="codeph">CKickBack</samp> active object is run, which simply calls back
+a function that was supplied at construction time: </p>
+<pre class="codeblock">void CWindowServer::CDefaultAnimationScheduler::CKickBack::RunL()
+       {
+       iCallBack.CallBack();
+       }
+</pre>
+<p>The time between the initial <samp class="codeph">RequestKickBack()</samp> and <samp class="codeph">CKickBack::RunL()</samp> should
+be very short but there is an opportunity for higher priority threads (or
+active objects in the window server) to get some CPU time in-between. </p>
+<p>The
+problem occurs after the call to <samp class="codeph">RequestComplete()</samp> in <samp class="codeph">RequestKickBack()</samp>.
+On a single core environment, the subsequent assignment <samp class="codeph">iStatus=KRequestPending</samp> will
+always happen before the kickback thread can resume execution (because the
+main thread has a higher priority than the kickback thread). On an SMP environment
+however, the kickback thread can resume execution in parallel with the main
+thread, on a different CPU. It's possible for the<samp class="codeph"> RequestComplete()</samp> on <samp class="codeph">iStatus</samp> in
+the <samp class="codeph">Loop()</samp> function of the kickback thread to occur before
+the<samp class="codeph"> iStatus=KRequestPending </samp>assigment in the main thread.
+If this happens then the <samp class="codeph">KErrNone</samp> value of <samp class="codeph">iStatus</samp> will
+be overwritten by <samp class="codeph">KRequestPending</samp>, and the <samp class="codeph">CKickBack</samp> active
+object will end up being active but with an <samp class="codeph">iStatus</samp> of <samp class="codeph">KRequestPending</samp>.
+The active scheduler will then receive the signal from the kickback thread
+and iterate through its active objects, looking for the one that is active
+but not pending. It will get to the end of the list without finding a valid
+active object, causing a stray event panic. </p>
+<p>The simple solution is
+to bring forward the assignment of <samp class="codeph">iStatus</samp> in <samp class="codeph">RequestKickBack()</samp> to
+before the call to <samp class="codeph">RequestComplete()</samp>. </p>
+<pre class="codeblock">void CWindowServer::CDefaultAnimationScheduler::CKickBack::RequestKickBack()
+    {
+    if (!IsActive())
+        {
+        iStatus = KRequestPending;
+        SetActive();
+        TRequestStatus * status = &amp;idleStatus;
+        iIdleThread.RequestComplete(status, KErrNone);
+        }
+    }
+</pre>
+<p>Stray event panics can be particularly difficult to track down
+because the call stack at the point it panics does not show the root cause
+of the problem. </p>
+</div>
+
+<div class="section" id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__GUID-A959F5DF-74C9-4F7B-B549-A971684E056E"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__GUID-A959F5DF-74C9-4F7B-B549-A971684E056E"><!-- --></a><h2 class="sectiontitle">Unsafe assumption
+of Publish and Subscribe message ordering</h2><p>The Publish and Subscribe
+mechanism is one of the standard IPC mechanisms available in Symbian platform.
+There are unique SMP error patterns associated with its use. </p>
+<p><strong>Case
+study: <samp class="codeph">t_InitialiseLocale</samp> fails on X86 SMP Hardware </strong></p>
+<p>The
+Generic OS Services utility, <span class="filepath">initialiselocale.exe</span> uses
+a Publish and Subscribe property to indicate to subscribers that locale initialisation
+is complete. It also uses the Rendezvous mechanism to synchronise with threads
+that are waiting for <span class="filepath">initialiselocale.exe</span> to start. The
+problem manifested itself in the test program <span class="filepath">t_initialiselocale.exe</span>,
+which first rendezvous with <span class="filepath">initialiseLocale.exe</span> and
+then checks whether it has initialised using the P&amp;S property. Here are
+the respective code fragments: </p>
+<p>From <span class="filepath">os/ossrv/lowlevellibsandfws/apputils/initlocale/src/initialiselocale.cpp</span>:</p>
+<pre class="codeblock">void CExtendedLocaleManager::ConstructL()
+    {
+    TUid LocalePropertyUid;
+    LocalePropertyUid.iUid = KUidLocalePersistProperties ;
+    ...
+    //now call RProcess::Rendezvous to indicate initialiseLocale is completed with no error
+    RProcess().Rendezvous(KErrNone);
+
+    // Set property to indicate initialisation complete
+    User::LeaveIfError(RProperty::Set(LocalePropertyUid, EInitialisationState, ELocaleInitialisationComplete));
+
+    // All ready to go! Start the active sheduler.
+    CActiveScheduler::Start();
+    }
+</pre>
+<p>From <span class="filepath">os/ossrv/lowlevellibsandfws/apputils/initlocale/test/t_initialiselocale.cpp</span>:</p>
+<pre class="codeblock">void TestLocaleChanges()
+    {
+    RProcess process;
+    ...
+    TInt r = process.Create(KInitialiseLocaleExeName, KNullDesC);
+    if(r == KErrNone)
+        {
+        TRequestStatus stat;
+        process.Rendezvous(stat);
+        process.Resume(); // Start the process going
+        //wait for the locale initialisation to complete first before testing
+        User::WaitForRequest(stat);
+        TEST2((stat.Int()==KErrNone)||(stat.Int()==KErrAlreadyExists),ETrue);
+        TInt flag;
+        TUid initLocaleUid=TUid::Uid(KUidLocalePersistProperties);
+        r=RProperty::Get(initLocaleUid,(TUint)EInitialisationState,flag);
+        TEST2(r,KErrNone);
+        //check for the P&amp;S flag that indicates localeinitialisation complete
+        TEST2(flag,ELocaleInitialisationComplete); //!!! Test failed !!!
+        ...
+</pre>
+<p>The problem manifested itself in an SMP environment because
+the <samp class="codeph">t_initialiselocale</samp> main thread reached the test marked
+"Test failed" before the setting of this property in the <samp class="codeph">InitialiseLocale</samp> main
+thread was published. Therefore, the test failed. The solution was to simply
+move the setting of the <samp class="codeph">KUidLocalePersistProperties</samp> property
+in <samp class="codeph">InitialiseLocale</samp> to before the call to <samp class="codeph">Rendezvous()</samp>.
+It could then be guaranteed that the property would be published by the time <samp class="codeph">t_initialiselocale</samp> had
+rendezvoused with <samp class="codeph">InitialiseLocale</samp>. </p>
+<pre class="codeblock">void CExtendedLocaleManager::ConstructL()
+    {
+    TUid LocalePropertyUid;
+    LocalePropertyUid.iUid = KUidLocalePersistProperties ;
+    ...
+    // Set property to indicate initialisation complete
+    User::LeaveIfError(RProperty::Set(LocalePropertyUid, EInitialisationState, ELocaleInitialisationComplete));
+    //now call RProcess::Rendezvous to indicate initialiseLocale is completed with no error
+    RProcess().Rendezvous(KErrNone);
+    // All ready to go! Start the active sheduler.
+    CActiveScheduler::Start();
+    }
+</pre>
+</div>
+
+<div class="section" id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__E"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__E"><!-- --></a><h2 class="sectiontitle">Relying on thread priority for execution order</h2><p><strong>Case
+study: Priority dependence in the file server in <samp class="codeph">T_CFSSIMPLE</samp> </strong></p>
+<p>The
+file server has a main thread, a thread for each drive and a disconnect thread
+(plus some other ones not relevant to this discussion). All requests are received
+by the main thread and each drive has a lock associated with it. </p>
+<p>When
+an <samp class="codeph">RFs</samp> session is closed, the main thread passes the request
+to the disconnect thread, and the disconnect thread eventually ends up running <samp class="codeph">TFsSessionDisconnect::DoRequestL()</samp>.
+Closing the session is asynchronous within the file server even though it
+appears to be synchronous to the client. There may be outstanding requests
+on any number of drives so every drive thread needs to be told to cancel any
+pending requests before the session can be entirely deleted by the file server. </p>
+<p>Before
+the fix,<samp class="codeph"> TFsSessionDisconnect::DoRequestL</samp>() looped over the
+drive array and did the following for each drive: </p>
+<ol>
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__F"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__F"><!-- --></a><p>Lock the drive.</p>
+</li>
+
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__G"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__G"><!-- --></a><p>Check whether the drive exists.</p>
+</li>
+
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__H"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__H"><!-- --></a><p>If it does exist, send a request to the drive thread to clean
+up any pending requests that are were going to be handled for the session
+being closed.</p>
+</li>
+
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__I"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__I"><!-- --></a><p>Unlock the drive.</p>
+</li>
+
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__J"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__J"><!-- --></a><p>Wait for the cleanup request to complete. </p>
+</li>
+
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__K"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__K"><!-- --></a><p>Check whether write caching is enabled on that drive.</p>
+</li>
+
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__L"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__L"><!-- --></a><p>If it is enabled, send a request to the drive thread to flush
+any dirty data.</p>
+</li>
+
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__M"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__M"><!-- --></a><p>Wait for the flush request to complete.</p>
+</li>
+
+</ol>
+<p>The problem occurred when the <samp class="codeph">T_CFSSIMPLE</samp> test application
+(after performing its tests) unmounted a drive just before closing its <samp class="codeph">RFs</samp> session.
+Unmounting a drive is also asynchronous from the file server's perspective
+- the main thread has to send a request to the drive thread so that it shuts
+itself down cleanly. While unmounting a drive, the drive is locked. </p>
+<p>The
+disconnect thread is normally the highest priority thread in the file server,
+even higher than the main thread, so usually nothing else gets to issue any
+new requests while this is happening. However, in an SMP environment (or when
+the crazy scheduler is being used), it's possible for an unmount request to
+happen at the same time as a session disconnect. </p>
+<p>If one of the drives
+is unmounted at the same time as the session disconnect, then the unmount
+sets the drive as not present and kills the associated thread. Step 3 above
+is safe because it acquires the lock on the drive before modifying it. The
+disconnect thread may get there first and send the cleanup request; then the
+drive thread unmounts itself (since the lock is released) and the cleanup
+request completes with <samp class="codeph">KErrNotReady</samp> (which is ignored by
+the code). Alternatively, the unmount request may get there first; then the
+disconnect thread never thinks the drive is there in the first place so does
+not issue the cleanup request. </p>
+<p>The problem was in step 7 - this part
+of the code didn't lock the drive or check whether it existed. It assumed
+that because the drive existed earlier in the loop it still continued to exist.
+Since step 4 unlocked the drive, this was not necessarily true - there was
+an opportunity for it to be unmounted and a flush request sent to a non-existent
+drive, resulting in a panic. </p>
+<p>The solution was to protect step 7 with
+a lock and a "check whether drive exists" operation like in step 3. Here is
+the actual code change: </p>
+<p>Before: </p>
+<p>From <span class="filepath">os/kernelhwsrv/userlibandfileserver/fileserver/sfile/sf_ses.cpp</span></p>
+<pre class="codeblock">if (TFileCacheSettings::Flags(i) &amp; (EFileCacheWriteEnabled | EFileCacheWriteOn))
+    {
+    // Flush dirty data pR-&gt;Set(FlushDirtyDataOp,aRequest-&gt;Session());
+    pR-&gt;SetDriveNumber(i);
+    pR-&gt;Status()=KRequestPending;
+    pR-&gt;Dispatch();
+    User::WaitForRequest(pR-&gt;Status()); // check request completed or cancelled (by file system dismount)
+    }
+__ASSERT_ALWAYS(pR-&gt;Status().Int()==KErrNone||pR-&gt;Status().Int()==KErrCancel,Fault(ESessionDisconnectThread2));
+__THRD_PRINT2(_L("Flush dirty data on drive %d r=%d"),i,pR-&gt;Status().Int());
+}
+</pre>
+<p>After: </p>
+<pre class="codeblock">if (TFileCacheSettings::Flags(i) &amp; (EFileCacheWriteEnabled | EFileCacheWriteOn))
+    {
+    FsThreadManager::LockDrive(i);
+    if(!FsThreadManager::IsDriveAvailable(i,EFalse)||FsThreadManager::IsDriveSync(i,EFalse))
+        {
+        FsThreadManager::UnlockDrive(i);
+        continue;
+        }
+    // Flush dirty data
+    pR-&gt;Set(FlushDirtyDataOp,aRequest-&gt;Session());
+    pR-&gt;SetDriveNumber(i);
+    pR-&gt;Status()=KRequestPending;
+    pR-&gt;Dispatch();
+    FsThreadManager::UnlockDrive(i);
+    User::WaitForRequest(pR-&gt;Status());
+    }
+// check request completed or cancelled (by file system dismount which completes requests with KErrNotReady)
+__ASSERT_ALWAYS(pR-&gt;Status().Int()==KErrNone||pR-&gt;Status().Int()==KErrNotReady,Fault(ESessionDisconnectThread2));
+__THRD_PRINT2(_L("Flush dirty data on drive %d r=%d"),i,pR-&gt;Status().Int());
+}
+</pre>
+<p><strong>Case study: Unexpected running of low priority active object</strong> </p>
+<p>There
+is a common pattern used in test code (and possibly also production code)
+where: </p>
+<ol>
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__N"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__N"><!-- --></a><p>A low priority active object is used and immediately set "ready
+to run". (Typically <a href="GUID-619AF4A9-4DAF-3FA4-A704-717DB30B5389.html"><span class="apiname">CAsyncOneShot</span></a> is used for the active
+object.)</p>
+</li>
+
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__O"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__O"><!-- --></a><p>The active scheduler is nested.</p>
+</li>
+
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__P"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__P"><!-- --></a><p>One or more high priority active objects are started (probably
+several times), which all make requests on a server. </p>
+</li>
+
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__Q-GENID-1-11-1-1-7-1-6-1-3-5-19-4"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__Q-GENID-1-11-1-1-7-1-6-1-3-5-19-4"><!-- --></a><p>The high priority active object(s) are serviced and immediately
+restarted. This continues until there is no more work for the high priority
+active object(s) to do.</p>
+</li>
+
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__Q-GENID-1-11-1-1-7-1-6-1-3-5-19-5"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__Q-GENID-1-11-1-1-7-1-6-1-3-5-19-5"><!-- --></a><p>The low priority active object runs and un-nests the active
+scheduler.</p>
+</li>
+
+</ol>
+<p>In a single core environment, the server always processes the client
+requests before the client can run any other code (because the server runs
+in a higher priority thread). When the client thread runs, the high priority
+active objects are already "ready to run" and get serviced before the low
+priority active object. </p>
+<p>This pattern breaks under SMP conditions because
+the client thread can continue to run on a different CPU at the same time
+that the server is processing the client requests. At this point, the only
+active object in the client thread that is "ready to run" is the low priority
+active object. This object gets serviced and the active scheduler is stopped
+earlier than expected. </p>
+<p>For example, the window server test code function <samp class="codeph">WaitForRedrawsToFinish()</samp> suffered
+from the problem described above: </p>
+<pre class="codeblock">EXPORT_C void WaitForRedrawsToFinish()
+    {
+    CStopTheScheduler* ps=new CStopTheScheduler(ETlibRedrawActivePriority-1);
+    if(ps)
+        {
+        ps-&gt;Call();
+        CActiveScheduler::Start();
+        delete ps;
+        }
+    }
+</pre>
+<p>This creates a low priority active object and then nests the
+active scheduler. The low priority active object used was defined like this: </p>
+<pre class="codeblock">class CStopTheScheduler : public CAsyncOneShot
+    {
+public:
+    CStopTheScheduler(TInt aPriority); //Pure virtual function from CActive void RunL();
+    };
+
+CStopTheScheduler::CStopTheScheduler(TInt aPriority) : CAsyncOneShot(aPriority)
+    {}
+
+void CStopTheScheduler::RunL()
+    {
+    CActiveScheduler::Stop();
+    }
+</pre>
+<p>This just un-nests the active scheduler when it runs. Before <samp class="codeph">WaitForRedrawsToFinish()</samp> is
+called, there is already an outstanding request on the window server for it
+to notify the test thread that there is a redraw event ready. If there is
+a redraw ready, then a high priority active object called <samp class="codeph">CTRedraw</samp> is
+serviced, which processes the redraw event and immediately requests notification
+of the next redraw from the server. </p>
+<pre class="codeblock">EXPORT_C void CTRedraw::RunL()
+    {
+    TWsRedrawEvent redraw;
+    iWs-&gt;GetRedraw(redraw);
+    if (redraw.Handle()!=0 &amp;&amp; redraw.Handle()!=ENullWsHandle)
+        ((CTWin*)redraw.Handle())-&gt;Redraw(redraw.Rect());
+    iWs-&gt;RedrawReady(&amp;iStatus);
+    SetActive();
+    }
+</pre>
+<p>This is a simplified version of the code.</p>
+<p>The intention
+was that <samp class="codeph">CTRedraw::RunL()</samp> would run many times, as long as
+there were outstanding redraw events, before <samp class="codeph">CStopTheScheduler::RunL()</samp> was
+able to run. When there were no more outstanding events, <samp class="codeph">CStopTheScheduler::RunL()</samp>would
+run, which then allowed the code after <samp class="codeph">WaitForRedrawsToFinish()</samp> to
+run. </p>
+<p>In an SMP environment though, every time <a href="GUID-62F4FF8B-5E02-3312-8DB8-F8B2D2E7FC47.html"><span class="apiname">WaitForRedrawsToFinish()</span></a> was
+called, only one window was redrawn, even though redraw events for several
+windows were waiting. <a href="GUID-869360A0-8C14-3AB3-8FC8-94E12E7F21D7.html#GUID-869360A0-8C14-3AB3-8FC8-94E12E7F21D7__GUID-7F533463-F972-3B53-9AAD-061EF10DCD20"><span class="apiname">CTRedraw::RunL()</span></a> only ran once before <a href="GUID-B394E21C-942B-3A5D-AA57-1CE892826911.html#GUID-B394E21C-942B-3A5D-AA57-1CE892826911__GUID-53EA2F9F-9730-3A8A-B206-96D1223D2FA6"><span class="apiname">CStopTheScheduler::RunL()</span></a> managed
+to run. </p>
+<p>There are at least two ways to fix this problem: </p>
+<ol>
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__S"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__S"><!-- --></a><p>After the call to <a href="GUID-E3F0CB70-58E4-32FD-9828-71DF2F9976D3.html"><span class="apiname">RedrawReady()</span></a>, add another
+synchronous call to the window server. This solution is undesirable as the
+additional IPC compromises the speed of the test code.</p>
+</li>
+
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__T"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__T"><!-- --></a><p>Modify the class <samp class="codeph">CStopTheScheduler</samp> so that
+in its<samp class="codeph"> RunL()</samp> it does: </p>
+<pre class="codeblock">void CStopTheScheduler::RunL()
+    {
+    //Here a synchronous call to WSERV is made to make sure the asynchronous call has finished being processed
+    if (iClient-&gt;RedrawHandler()-&gt;iStatus==KRequestPending)    //Check to see if the redraw active object is now ready to run
+        CActiveScheduler::Stop();    //If it is not ready to run un-nest the active scheduler
+    else
+        Call(); //If it is ready to run set this active object ready to run again
+    }
+</pre>
+<p>This was the solution that was chosen. </p>
+</li>
+
+</ol>
+</div>
+
+<div class="section" id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__W"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__W"><!-- --></a><h2 class="sectiontitle">Premature recreation of named objects</h2><p>This
+category of problems relates to the asynchronous cleanup of objects owned
+by the kernel. On the user-side this involves classes derived from <samp class="codeph">RHandleBase</samp>,
+corresponding to a <samp class="codeph">DObject</samp> in the kernel. These problems
+take the following form: </p>
+<ul>
+<li><p>1a. An <samp class="codeph">RHandleBase</samp> derived object is created user-side.</p>
+</li>
+
+<li><p>1b. A corresponding <samp class="codeph">DObject</samp> is created kernel-side.</p>
+</li>
+
+<li><p>2. Something is done with that object.</p>
+</li>
+
+<li><p>3a. All user-side handles to that object are destroyed.</p>
+</li>
+
+<li><p>3b. Deletion of the corresponding <samp class="codeph">DObject</samp> is initiated.</p>
+</li>
+
+<li><p>4a. A second <samp class="codeph">RHandleBase</samp> derived object with the same
+name is created user-side.</p>
+</li>
+
+<li><p>4b. A second corresponding <samp class="codeph">DObject</samp> with the same name
+is created kernel-side.</p>
+</li>
+
+</ul>
+<p>The problem is that all <samp class="codeph">DObject</samp> names must be unique
+and 3b is not guaranteed to complete before 4b starts, therefore 4b (and 4a) <em>may</em> fail
+with <samp class="codeph">KErrAlreadyExists</samp>. </p>
+<p>This most commonly manifests
+itself during thread cleanup and so this case warrants more detailed discussion.
+When a thread either exits or is killed externally, the thread itself runs
+an exit handler inside the kernel. This runs at a slightly higher priority
+than normal application threads and does part of the cleanup, including completing
+log-ons. The last thing the exit handler does is to queue a DFC which gets
+executed by the supervisor thread inside the kernel. This completes the cleanup,
+including freeing the thread stacks and closing the <samp class="codeph">DThread</samp> object
+itself. If no other threads or processes have open handles on the <samp class="codeph">DThread</samp>,
+it is completely deleted at this point. </p>
+<p>On a single processor system,
+the following code would always work provided that the thread running it has
+a lower priority than the supervisor thread and there are no undertakers in
+the system (which is true for a lot of test code): </p>
+<pre class="codeblock">RThread t;
+TInt r = t.Create(KName, ...);
+assert(r==KErrNone);
+TRequestStatus s;
+t.Logon(s);
+assert(s.Int()==KRequestPending);
+t.Resume();
+User::WaitForRequest(s);
+// read exit information for thread and do something with it
+t.Close(); // thread actually disappears here
+r = t.Create(KName,...); // recreate with same name
+assert(r==KErrNone); 
+</pre>
+<p>The exit handler and supervisor would both run ahead of the
+calling thread, so by the time the <samp class="codeph">t.Close()</samp> line is executed
+there would only be one handle remaining on the <samp class="codeph">DThread</samp>.
+If there are undertakers in the system, the supervisor thread exit handler
+would open a handle on the exiting thread for each undertaker. The thread
+would not then go away until all those handles were closed and the code above
+would potentially fail. </p>
+<p>On an SMP system the code above would clearly
+fail, since regardless of thread priorities or undertakers, the supervisor
+thread could run on a separate CPU from the thread calling <samp class="codeph">Close()</samp> and
+there is no guarantee that on return from <samp class="codeph">Close()</samp> the thread
+would have been destroyed. </p>
+<p>A similar issue exists where, instead of
+recreating the thread with the same name, a kernel heap check is performed
+to ensure all kernel memory has been cleaned up. </p>
+<p>There are three possibilities
+to fix this problem: </p>
+<ol>
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__X"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__X"><!-- --></a><p>Recreate the thread with a different name.</p>
+</li>
+
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__Y-GENID-1-11-1-1-7-1-6-1-3-6-12-2"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__Y-GENID-1-11-1-1-7-1-6-1-3-6-12-2"><!-- --></a><p>Wait a "little bit" before recreating the thread (or performing
+the heap check). </p>
+<p>This is almost always a bad idea as there is no way
+of knowing how long to wait and this may be different on any future system.</p>
+</li>
+
+<li id="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__Y-GENID-1-11-1-1-7-1-6-1-3-6-12-3"><a name="GUID-314FAEB5-946C-4090-B6AA-1BEEC9BE8EFB__Y-GENID-1-11-1-1-7-1-6-1-3-6-12-3"><!-- --></a><p>Wait for the object concerned to be completely destroyed.</p>
+</li>
+
+</ol>
+<p>In general, option 1 is preferred. For code that is likely to encounter
+the problem in practice, APIs should be provided to aid with creating objects
+with a unique name. For example, the <samp class="codeph">TDynamicDfcQue</samp> and <samp class="codeph">Kern::DynamicDfcQCreate</samp> APIs
+are provided to help with creating DFC threads with unique names. </p>
+<p>Using
+a different name is easy in the above code example but it's not possible when
+checking for kernel memory leaks (as in a lot of test code). In this case,
+solution 3 can be employed, with the aid of <samp class="codeph">RHandleBase::NotifyDestruction </samp>(in <span class="filepath">e32cmn.h</span>)
+and <samp class="codeph">CLOSE_AND_WAIT</samp> (in <span class="filepath">e32test.h</span>). This
+solution is acceptable in a closed system, where there is control over all
+handles to the object being recreated but in general there is no way of knowing
+whether some component has an open handle to a thread (or what component it
+might be). Any component can open a thread by name and hold the handle forever,
+jamming the system while it waits for the handle to be closed. Therefore,
+in practice you should always attempt to recreate it with a different name
+(option 1). </p>
+<p><strong>Case study: <samp class="codeph">t_NamedPlugins</samp> fails on
+X86 SMP Hardware</strong> </p>
+<p>This is a classic example of the thread recreation
+problem, with solution 3 employed as the fix.</p>
+<p>From <span class="filepath">os/ossrv/lowlevellibsandfws/apputils/tsrc/t_namedplugins.cpp</span>:</p>
+<pre class="codeblock">LOCAL_C void NamedPluginsPanicConditionsThread()
+    {
+    ...
+    _LIT(KName, "NamedPlugins_Panic_Thread");
+    RThread thread;
+    ...
+    // Test EBafPanicBadResourceFileFormat
+    TInt rc = thread.Create(KName,...);
+    TEST(rc==KErrNone);
+    ...
+    thread.Close();
+    // Test EBafPanicBadArrayPosition
+    rc = thread.Create(KName,...);
+    TEST(rc==KErrNone); //!!! Test failed !!!
+    ...
+</pre>
+<p>The simple solution was to change the <samp class="codeph">thread.Close()</samp> call
+to <samp class="codeph">CLOSE_AND_WAIT(thread)</samp> instead. This is acceptable for
+test code because it is known that there will be no other threads holding
+on to a handle to the <samp class="codeph">NamedPlugins</samp> thread. </p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html" title="This section describes how SMP works and provides you with information on how to troubleshoot some problems you may have. This includes problems with driver closure ordering and how memory is shared between threads in a process">SMP Developer Tips</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-E55F9286-F586-4665-93D8-86F1E7BE2C7C.html" title="This section describes how SMP works and provides you with information on how to troubleshoot some problems you may have. This includes problems with driver closure ordering and how memory is shared between threads in a process">SMP Developer
+Tips</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

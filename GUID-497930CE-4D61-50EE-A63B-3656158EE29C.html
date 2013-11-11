@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Thin Templates"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-497930CE-4D61-50EE-A63B-3656158EE29C"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Thin Templates</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-497930CE-4D61-50EE-A63B-3656158EE29C"><a name="GUID-497930CE-4D61-50EE-A63B-3656158EE29C"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id1198324 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a> &gt; </div>
+<h1 class="topictitle1">Thin Templates</h1>
+<div><p>Symbian platform C++ uses C++ templates in an efficient way called the thin template idiom. </p>
+ <p>Templates are particularly useful for collection classes, such as arrays. The class declaration: </p>
+ <pre class="codeblock" id="GUID-497930CE-4D61-50EE-A63B-3656158EE29C__GUID-ACAAAE20-4A81-5C4F-930B-31097FBAD432"><a name="GUID-497930CE-4D61-50EE-A63B-3656158EE29C__GUID-ACAAAE20-4A81-5C4F-930B-31097FBAD432"><!-- --></a>class CArrayFixFlat&lt;T&gt; ...</pre>
+ <p>specifies a family of array classes, which may contain any type. The template may be instantiated, for instance, as </p>
+ <pre class="codeblock" id="GUID-497930CE-4D61-50EE-A63B-3656158EE29C__GUID-D02E8C13-85FA-5DA2-8A5E-5F1C15F4038C"><a name="GUID-497930CE-4D61-50EE-A63B-3656158EE29C__GUID-D02E8C13-85FA-5DA2-8A5E-5F1C15F4038C"><!-- --></a>CArrayFixFlat&lt;CCoeControl*&gt;* iControls;</pre>
+ <p>which declares an array of <samp class="codeph">CCoeControl*</samp> pointers. Other collection classes use the same idea, for instance <samp class="codeph">TPckgBuf&lt;T&gt;</samp>, <samp class="codeph">TSglQue&lt;T&gt;</samp> etc. </p>
+ <p>Templates may also use other parameters, such as an integer: </p>
+ <pre class="codeblock" id="GUID-497930CE-4D61-50EE-A63B-3656158EE29C__GUID-209E8594-EFC2-5F55-AF45-51CE538C1336"><a name="GUID-497930CE-4D61-50EE-A63B-3656158EE29C__GUID-209E8594-EFC2-5F55-AF45-51CE538C1336"><!-- --></a>class TBufC&lt;TInt S&gt; ...;</pre>
+ <p>This type of template class may be instantiated also: </p>
+ <pre class="codeblock" id="GUID-497930CE-4D61-50EE-A63B-3656158EE29C__GUID-5ABEBD1D-1B0A-5C57-B35E-260180F31978"><a name="GUID-497930CE-4D61-50EE-A63B-3656158EE29C__GUID-5ABEBD1D-1B0A-5C57-B35E-260180F31978"><!-- --></a>TBufC&lt;20&gt; name; </pre>
+ <p>The functionality provided by templates is powerful, and highly desirable. Without templates, collection classes usually use <samp class="codeph">void*</samp> pointers: as a result, they are not typesafe. </p>
+ <p>Templates can be difficult to manage. A template really defines a whole family of classes. Each member of that family that is instantiated requires its own object code. Avoidance of object code duplication is a difficult issue in a C++ implementation. For the Symbian platform, object code duplication must be avoided at all costs. The solution used is the <em>thin template idiom</em>. </p>
+ <p>The thin template idiom begins with a base class, code in terms of <samp class="codeph">TAny*</samp> parameters: </p>
+ <pre class="codeblock" id="GUID-497930CE-4D61-50EE-A63B-3656158EE29C__GUID-C6ADB9B7-4290-5A6B-B1B4-7D9C88E90B1F"><a name="GUID-497930CE-4D61-50EE-A63B-3656158EE29C__GUID-C6ADB9B7-4290-5A6B-B1B4-7D9C88E90B1F"><!-- --></a>class CArrayFixBase ... {
+    IMPORT_C const TAny* At(TInt aIndex) const;</pre>
+ <p>This base class has the real code, just once. The code resides in a single DLL and is exported from that DLL. The base class may be fat: it may contain an arbitrary amount of code. </p>
+ <p>Then, a derived class is used as follows: </p>
+ <pre class="codeblock" id="GUID-497930CE-4D61-50EE-A63B-3656158EE29C__GUID-58361D84-0D13-5E9B-936F-1D4724A71282"><a name="GUID-497930CE-4D61-50EE-A63B-3656158EE29C__GUID-58361D84-0D13-5E9B-936F-1D4724A71282"><!-- --></a>class CArrayFix&lt;T&gt; : public CArrayFixBase {
+    inline const T&amp; At(TInt aIndex) const
+    {return(*((const T *)CArrayFixBase::At(anIndex)));}</pre>
+ <p>Because this class uses only inline functions, it generates no extra code. But because the casting is encapsulated in the inline function, the class is typesafe to its users. The templated class is thin: it generates no code at all. </p>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-35D7EEFC-B2E4-5444-8875-2A24790E08C2.html">Essential Idioms</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="Performance Guarantee Tutorial"/>
+<meta name="abstract" content="Describes how to maintain performance guarantees when writing a software package on a data paged platform."/>
+<meta name="description" content="Describes how to maintain performance guarantees when writing a software package on a data paged platform."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BA0AC9AA-A8E1-5650-9512-DEC06D77668F.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2B7D04D9-98DE-5284-836D-01DB4FA8949D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BA0AC9AA-A8E1-5650-9512-DEC06D77668F.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Performance Guarantee Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388574 id2388657 id2388771 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html">Demand Paging</a> &gt; <a href="GUID-2B7D04D9-98DE-5284-836D-01DB4FA8949D.html">Writable Data Paging</a> &gt; <a href="GUID-BA0AC9AA-A8E1-5650-9512-DEC06D77668F.html">Writable Data Paging Developer Tips</a> &gt; </div>
+<h1 class="topictitle1">Performance
+Guarantee Tutorial </h1>
+<div><p>Describes how to maintain performance guarantees when writing a
+software package on a data paged platform. </p>
+
+<div class="section" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-067EBD71-74FF-5C3C-BBFE-792895383980"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-067EBD71-74FF-5C3C-BBFE-792895383980"><!-- --></a><p>Data paging can
+affect performance guarantees. When writing software for a data paged platform,
+you need to perform an impact assessment on the components of your application.
+To do so, you perform the following analyses and implement the appropriate
+mitigation for the impacts you discover: </p>
+ <ul>
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-902266C8-BC97-5C0A-9C61-13F252CE3DC8"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-902266C8-BC97-5C0A-9C61-13F252CE3DC8"><!-- --></a><p>Static analysis, </p>
+ </li>
+
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-70E2A254-1799-5A1E-A440-6E7F30EC3337"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-70E2A254-1799-5A1E-A440-6E7F30EC3337"><!-- --></a><p>Use case analysis, and </p>
+ </li>
+
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-B5A5134E-CD51-59BA-9F05-0DFA2E200660"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-B5A5134E-CD51-59BA-9F05-0DFA2E200660"><!-- --></a><p>IPC analysis. </p>
+ </li>
+
+</ul>
+ </div>
+
+<a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-5AECEB9A-F5AC-5D72-A216-F31C8E024453"><!-- --></a><ul id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-5AECEB9A-F5AC-5D72-A216-F31C8E024453"><li class="stepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-B5C885F6-8703-5E43-8979-72A2D11007AB"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-B5C885F6-8703-5E43-8979-72A2D11007AB"><!-- --></a><span>Perform a static
+analysis of the impact of data paging on your code. </span>
+<a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-31FA74DF-5D4D-5DE5-96D4-A1978187E40D"><!-- --></a><ol id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-31FA74DF-5D4D-5DE5-96D4-A1978187E40D">
+<li class="substepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-C9722F09-D534-5CC3-AC25-238C0C101DC7"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-C9722F09-D534-5CC3-AC25-238C0C101DC7"><!-- --></a><span/><br/>
+ List all the executables in your package, indicating their size and
+pageability. 
+</li>
+
+<li class="substepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-6193E0A0-AFB1-5641-973F-0D27F721983F"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-6193E0A0-AFB1-5641-973F-0D27F721983F"><!-- --></a><span/><br/>
+ For each item in the list identify its static dependencies, indicating
+their size and pageability. 
+</li>
+
+<li class="substepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-509636D1-3B7C-546D-8EC4-A7AE515B904E"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-509636D1-3B7C-546D-8EC4-A7AE515B904E"><!-- --></a><span/><br/>
+ For each item in the list identify its dynamic dependencies, indicating
+their size and pageability. 
+ For instance, note whether the component is a plug-in to a framework
+or is itself a framework. 
+</li>
+
+</ol>
+
+ The purpose of collecting this information is to identify which
+executables are most likely to be impacted by data paging. 
+</li>
+<li class="stepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-469BB5C7-9BC7-5E3B-9717-B5558D2F6859"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-469BB5C7-9BC7-5E3B-9717-B5558D2F6859"><!-- --></a><span>Perform a use case
+analysis of the impact of data paging on your code. It is good practice to
+distinguish between use cases involving real time and performance critical
+performance guarantees. You do not need to cover use cases which do not involve
+guarantees of this kind. </span>
+<a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-CC4B31C6-85B3-53FA-AEB1-4713B0F7E51C"><!-- --></a><ol id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-CC4B31C6-85B3-53FA-AEB1-4713B0F7E51C">
+<li class="substepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-4251C5AC-9F23-5850-A9C3-E086B00E45D9"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-4251C5AC-9F23-5850-A9C3-E086B00E45D9"><!-- --></a><span>List all the
+use cases for the component which involve real time performance guarantees. </span>
+ Real time use cases are those having very strict response time guarantees
+and also those involving an acceptable user perception of behaviour. 
+ <ul>
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-F24C5888-773A-5F17-911F-1424D5381616"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-F24C5888-773A-5F17-911F-1424D5381616"><!-- --></a><p>Video playback, </p>
+ </li>
+
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-2C9B272C-265A-5A82-B9A0-A0CB5D2CC165"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-2C9B272C-265A-5A82-B9A0-A0CB5D2CC165"><!-- --></a><p>VoIP phone calls, and </p>
+ </li>
+
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-20D52A34-F21E-565E-9698-8E0A169B7E3F"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-20D52A34-F21E-565E-9698-8E0A169B7E3F"><!-- --></a><p>File download over USB. </p>
+ </li>
+
+</ul>
+ 
+ Examples of use cases involving acceptable user perception are: 
+</li>
+
+<li class="substepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-702A77F3-ACE4-5047-825E-267747AF4E70"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-702A77F3-ACE4-5047-825E-267747AF4E70"><!-- --></a><span>List all the
+use cases for the component which involve performance critical guarantees.
+This means the bench-marked use cases by which the performance of the operating
+system is measure. </span>
+ Examples of use cases having a strict response time are: 
+ <ul>
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-C2CAE80F-F20F-5464-9A5D-77858D26572C"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-C2CAE80F-F20F-5464-9A5D-77858D26572C"><!-- --></a><p>Standard boot time, </p>
+ </li>
+
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-379EF955-B1D2-5A4F-A9CA-295BCDA6D84C"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-379EF955-B1D2-5A4F-A9CA-295BCDA6D84C"><!-- --></a><p>Application start-up
+time, and </p>
+ </li>
+
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-5111E2E5-9411-5BD6-BC60-B1E64A3DBE57"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-5111E2E5-9411-5BD6-BC60-B1E64A3DBE57"><!-- --></a><p>Camera image capture
+time. </p>
+ </li>
+
+</ul>
+ 
+</li>
+
+<li class="substepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-C6089DA1-C2A8-5D57-8F1C-B5D94D01CD31"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-C6089DA1-C2A8-5D57-8F1C-B5D94D01CD31"><!-- --></a><span>Identify compound
+cases involving both real time and performance critical guarantees. </span>
+ An example of a compound case is receiving a text message while playing
+MP3 audio. 
+</li>
+
+</ol>
+
+</li>
+<li class="stepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-13DE4D82-D318-5C1B-A9A0-9C8D60C7A6B7"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-13DE4D82-D318-5C1B-A9A0-9C8D60C7A6B7"><!-- --></a><span>Perform an IPC analysis
+of the impact of data paging on your code. </span>
+<a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-C53DD02E-D670-5608-9293-663495544410"><!-- --></a><ol id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-C53DD02E-D670-5608-9293-663495544410">
+<li class="substepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-14395B5D-B0C1-5380-B6D4-A9A5D5FA5A16"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-14395B5D-B0C1-5380-B6D4-A9A5D5FA5A16"><!-- --></a><span>Identify all
+performance critical or real time servers which the component interacts with. </span>
+</li>
+
+<li class="substepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-B4429AD3-5B5F-5E10-A220-724BA9693D29"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-B4429AD3-5B5F-5E10-A220-724BA9693D29"><!-- --></a><span>List each case
+where these servers read paged data from a client's address space. In this
+case, paged data includes: </span>
+ <ul>
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-02F9AD09-BFEB-59D3-98C6-471A2D842F32"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-02F9AD09-BFEB-59D3-98C6-471A2D842F32"><!-- --></a><p>Paged heaps and stacks, </p>
+ </li>
+
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-BEA351B7-27C8-54F4-A2A9-F0314153D1F8"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-BEA351B7-27C8-54F4-A2A9-F0314153D1F8"><!-- --></a><p>RAM-loaded code, and </p>
+ </li>
+
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-AE1A2E25-C84A-5CCB-AC03-40017B1E5EEF"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-AE1A2E25-C84A-5CCB-AC03-40017B1E5EEF"><!-- --></a><p>Read only XIP data structures
+including </p>
+ <ul>
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-A61629A2-6782-52E6-A64B-41825F454B1B"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-A61629A2-6782-52E6-A64B-41825F454B1B"><!-- --></a><p>bitmaps, </p>
+ </li>
+
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-B5657762-F2E1-5521-AB33-E95547BA154B"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-B5657762-F2E1-5521-AB33-E95547BA154B"><!-- --></a><p>constant descriptors, </p>
+ </li>
+
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-0A667519-6532-52C4-BCCD-022A44F701D6"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-0A667519-6532-52C4-BCCD-022A44F701D6"><!-- --></a><p>constant data arrays
+in code, </p>
+ </li>
+
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-E8C94651-CAA0-5EFE-8E87-6B7A7B7A8785"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-E8C94651-CAA0-5EFE-8E87-6B7A7B7A8785"><!-- --></a><p>data files accessed
+through a pointer, and </p>
+ </li>
+
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-CD319825-B44F-5EF3-A9CC-2B3391F2D9A8"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-CD319825-B44F-5EF3-A9CC-2B3391F2D9A8"><!-- --></a><p>exported DLL data. </p>
+ </li>
+
+</ul>
+ </li>
+
+</ul>
+ 
+</li>
+
+<li class="substepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-CB118001-AC5E-5C39-81C1-EB9DEFA2F16E"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-CB118001-AC5E-5C39-81C1-EB9DEFA2F16E"><!-- --></a><span>Identify all
+cases of custom architectures where one thread reads from another thread's
+address space. </span>
+</li>
+
+</ol>
+
+</li>
+<li class="stepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-009892B8-88B2-5ACA-BB98-B88ECF49A983"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-009892B8-88B2-5ACA-BB98-B88ECF49A983"><!-- --></a><span>Take steps to mitigate
+the impacts of data paging which you have identified, as appropriate to each
+case. </span>
+
+<a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-63086536-F2DB-5F4A-926F-C0328FD8D854"><!-- --></a><ol id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-63086536-F2DB-5F4A-926F-C0328FD8D854">
+<li class="substepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-F2821854-2A7D-5FB4-8D75-63841CDD26F7"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-F2821854-2A7D-5FB4-8D75-63841CDD26F7"><!-- --></a><span>Protect the real
+time and performance critical code paths. These paths will have been identified
+in the static analysis of the component. There are two ways of protecting
+them. </span>
+ <ul>
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-5CA87396-D31D-5AC2-B524-0405129AEC23"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-5CA87396-D31D-5AC2-B524-0405129AEC23"><!-- --></a><p>For all use cases, ensure
+that the minimum paging cache size is large enough to accommodate both the
+protected code path and any other paged data required at the same time. </p>
+ <p>This
+method of protection may not always be practical, because compound use cases
+may involve unpredictable amounts of data which exceed the size of the paging
+cache. </p>
+ </li>
+
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-A702633C-A6DB-5DB2-9FA0-20F8FF4A285E"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-A702633C-A6DB-5DB2-9FA0-20F8FF4A285E"><!-- --></a><p>Make the protected code
+path unpaged. Mark the code itself as unpaged, and either mark whole regions
+of memory as unpaged or pin memory to ensure that it is unpaged. </p>
+ </li>
+
+</ul>
+ 
+</li>
+
+<li class="substepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-9486786D-191D-597F-9BCE-09CB3A74A165"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-9486786D-191D-597F-9BCE-09CB3A74A165"><!-- --></a><span>Redesign the
+component architecture to isolate areas where data paging impacts on performance.
+Examples of this are: </span>
+ <ul>
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-76E2623B-9B76-5424-9C40-3BC027C449A2"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-76E2623B-9B76-5424-9C40-3BC027C449A2"><!-- --></a><p>Separating the data
+plane and the control plane, and </p>
+ </li>
+
+<li id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-26906CC5-1D1B-5EED-A9F8-CBBE6F441369"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-26906CC5-1D1B-5EED-A9F8-CBBE6F441369"><!-- --></a><p>Splitting a monolithic
+library into paged and unpaged parts. </p>
+ </li>
+
+</ul>
+ 
+</li>
+
+<li class="substepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-438E7745-76B3-533D-891E-93B8EA53F342"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-438E7745-76B3-533D-891E-93B8EA53F342"><!-- --></a><span>Use code paging
+or XIP ROM paging to mitigate the impact of paging. </span>
+
+ For instance, a monolithic library with static dependences may only
+need to be partially loaded, and some dependencies may not need to be loaded
+at all. 
+</li>
+
+<li class="substepexpand" id="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-DD1D6948-8F9A-57D6-9156-C9C2E377D2FD"><a name="GUID-85C18DAF-DB76-51C6-B38D-A802E314F4D1__GUID-DD1D6948-8F9A-57D6-9156-C9C2E377D2FD"><!-- --></a><span/><br/>
+ Mitigate the impact of data paging on IPC using the techniques set out
+in the document <a href="GUID-E7C55048-5B7A-5BF2-B7F4-4D731659B88C.html" title="Explains techniques for writing device drivers on data paged systems and migrating device drivers to data paged systems.">Device
+Driver Writing Technology Tutorial</a>  
+</li>
+
+</ol>
+
+</li>
+</ul>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-BA0AC9AA-A8E1-5650-9512-DEC06D77668F.html">Writable Data Paging Developer Tips</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

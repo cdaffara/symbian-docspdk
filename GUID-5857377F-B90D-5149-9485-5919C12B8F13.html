@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to use a rule-based selector"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-268E2151-C758-46BF-86EB-F7D6EE44DBCF.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5B112A34-1CBA-5B28-A941-27847FC1D30A.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-268E2151-C758-46BF-86EB-F7D6EE44DBCF.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-5857377F-B90D-5149-9485-5919C12B8F13"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to use a rule-based selector</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-5857377F-B90D-5149-9485-5919C12B8F13"><a name="GUID-5857377F-B90D-5149-9485-5919C12B8F13"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2858558 id2859177 id2859238 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html">OS Security Guide</a> &gt; <a href="GUID-5B112A34-1CBA-5B28-A941-27847FC1D30A.html">Cryptography overview</a> &gt; <a href="GUID-268E2151-C758-46BF-86EB-F7D6EE44DBCF.html" title="This section provides detailed information on encrypting and decrypting data using Symmetric and Asymmetric algorithms supported by Symbian platform.">Encrypting and Decrypting Data</a> &gt; </div>
+<h1 class="topictitle1">How
+to use a rule-based selector</h1>
+<div>
+<p>The following example demonstrates the use of the rule selector and the
+inclusion of a selection rule to retrieve the characteristics of a symmetric
+cipher object. </p>
+
+<pre class="codeblock" id="GUID-5857377F-B90D-5149-9485-5919C12B8F13__GUID-827D423E-4E63-563F-8D00-C3C906A3E20C"><a name="GUID-5857377F-B90D-5149-9485-5919C12B8F13__GUID-827D423E-4E63-563F-8D00-C3C906A3E20C"><!-- --></a>#include &lt;ruleselector.h&gt;
+#include &lt;cryptosymmetriccipherapi.h&gt;
+#include &lt;cryptospistateapi.h&gt;
+#include &lt;cryptospidef.h&gt;
+#include &lt;keys.h&gt;
+
+using namespace CryptoSpi;
+
+// Create a CSelectionRules collection object which is used to store the rules
+// that influence the choice of plug-in implementation selected
+
+CSelectionRules* rules = CSelectionRules::NewL();
+CleanupStack::PushL(rules);
+
+// Add a selection rule selecting symmetric ciphers with a key length of 64 bytes
+    
+TInt ruleValue = 64;
+            
+// Create and initialise one or more crypto parameters 
+// to store the contents of the rule value 
+CCryptoParam* ruleValueParam = CCryptoIntParam::NewL(ruleValue,KMaximumKeyLengthTypeUid);
+
+// Create a selection rule for each crypto parameter (CSelectionRuleContent
+// takes ownership of the crypto parameter), by passing in the following parameters:
+// *InterfaceScope        The Interface scope of which the rule should be applied
+// *AlgorithmScope        The Algorithm scope of which the rule should be applied
+// *CharacteristicValue   The parameter type and value of the rule
+// *Operator              The operator of the rule
+// *IsOptional            Whether this rule is optional (ETrue) or mandatory (EFalse)        
+CSelectionRuleContent* rule = CSelectionRuleContent::NewL(KSymmetricCipherInterfaceUid,
+                                                          KNoneUid,
+                                                          ruleValueParam,
+                                                          EOpEqual,
+                                                          EFalse);
+
+// Add the newly created selection rule to the CSelectionRules collection by calling
+// the 'AddSelectionRuleL' method and passing in a pointer to the constructed rule.
+// AddSelectionRuleL() checks that the type of the crypto parameters is correct and 
+// leaves with KErrNotSupported if not. For instance, a creator name parameter must 
+// be stored using a CCryptoDesC16Param. 
+          
+rules-&gt;AddSelectionRuleL(rule);
+                                    
+// Create an instance of the rule selector, passing in the selection rules 
+// object previously instantiated
+CRuleSelector* ruleSelector = CRuleSelector::NewL(rules);
+    
+// Ownership of the rule collection object is passed to the rule selector, therefore
+// the CSelectionRules object needs to be popped off the cleanup stack before pushing on
+// the rule selector
+CleanupStack::Pop(rules);
+CleanupStack::PushL(ruleSelector);
+    
+// The legacy selector is set within the framework by default. In order to set the rule
+// selector, the 'SetSelector' method of CryptoSpiStateApi needs to be called, 
+//passing a pointer to the initialized rule selector    
+CCryptoSpiStateApi::SetSelector(ruleSelector);
+
+// Create a new CryptoParams object to encapsulate the secret key string for the 
+// Symmetric Cipher implementation 
+CCryptoParams* keyParams = CCryptoParams::NewLC();
+
+// Add the secret key to the CCryptoParams object by calling the AddL method, passing in 
+// the key string and appropriate key parameter UID
+keyParams-&gt;AddL(_L8("12345678"), KSymmetricKeyParameterUid);
+
+// Create a CKey object by passing in an instance of TKeyProperty and the previously
+// created CCryptoParams object containing the secret key
+TKeyProperty keyProperty;        
+CKey* key=CKey::NewL(keyProperty,*keyParams);
+CleanupStack::PushL(key);
+
+// Create and initialise a pointer for the Symmetric Cipher implementation object        
+CSymmetricCipher* symmetricCipherImpl = NULL;
+        
+// If successful, the 'CreateSymmetricCipherL' method returns KErrNone and the framework
+// creates an instance of the selected Symmetric Cipher implementation, as chosen by the
+// rule selector. The CSymmetricCipher pointer is passed by reference and set to point to
+// the new symmetric cipher object
+TRAPD(err,CSymmetricCipherFactory::CreateSymmetricCipherL(symmetricCipherImpl,
+                                                          KDesUid,
+                                                          *key,
+                                                          KCryptoModeEncryptUid,
+                                                          KOperationModeNoneUid,
+                                                          KPaddingModeNoneUid,
+                                                          NULL));
+
+// Having successfully constructed the symmetric cipher implementation object, it is
+// possible to retrieve the plug-in characteristics associated with it
+if (symmetricCipherImpl &amp;&amp; (err == KErrNone))
+ {
+ CleanupStack::PushL(symmetricCipherImpl);
+ // Use cipher
+ CleanupStack::PopAndDestroy(symmetricCipherImpl);
+ }
+
+CleanupStack::PopAndDestroy(2, keyParams);    //key, keyParams
+
+// Unselect rule selector before destruction. This causes CryptoSPI to use the 
+// legacy selector again. After calling SetSelector(), the caller 
+// keeps ownership of the selector, so after calling UnsetSelector(), the 
+// caller needs to delete the selector    
+CCryptoSpiStateApi::UnsetSelector();
+    
+// Pop and destroy the rule selector
+CleanupStack::PopAndDestroy(ruleSelector);
+</pre>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-268E2151-C758-46BF-86EB-F7D6EE44DBCF.html" title="This section provides detailed information on encrypting and decrypting data using Symmetric and Asymmetric algorithms supported by Symbian platform.">Encrypting and Decrypting Data</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

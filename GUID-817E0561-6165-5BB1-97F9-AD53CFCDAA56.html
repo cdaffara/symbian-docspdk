@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Impact of Data Paging on Kernel-side Code Guide"/>
+<meta name="abstract" content="Describes the kernel-side issues that must be considered when writing device drivers."/>
+<meta name="description" content="Describes the kernel-side issues that must be considered when writing device drivers."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6381BC82-3060-5023-8221-79B18CCB2CDB.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2B7D04D9-98DE-5284-836D-01DB4FA8949D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6381BC82-3060-5023-8221-79B18CCB2CDB.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E21E7992-607A-5A49-B022-189ECA9E76D1.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BDB847A2-557A-5902-AA6D-C1AE10D8E493.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B35A70D2-1BC8-51DE-95BF-F315DB394582.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Impact of Data Paging on Kernel-side Code Guide</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388574 id2388657 id2388671 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-F123D574-44DE-528A-806C-DB64229BCEA2.html">Demand Paging</a> &gt; <a href="GUID-2B7D04D9-98DE-5284-836D-01DB4FA8949D.html">Writable Data Paging</a> &gt; <a href="GUID-6381BC82-3060-5023-8221-79B18CCB2CDB.html" title="Contains guides that describe various aspects of writable data paging in more detail.">Writable Data Paging Guides</a> &gt; </div>
+<h1 class="topictitle1">Impact
+of Data Paging on Kernel-side Code Guide</h1>
+<div><p>Describes the kernel-side issues that must be considered when writing
+device drivers.</p>
+
+<div class="section" id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-C02ED166-914C-4397-9701-3DFA12BB035F"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-C02ED166-914C-4397-9701-3DFA12BB035F"><!-- --></a><h2 class="sectiontitle">Purpose</h2> <p>This document explains the impact of data
+paging on kernel side code. </p>
+ <p><strong>Intended
+Audience:</strong> </p>
+ <p>This document is intended for device driver writers. </p>
+ </div>
+
+<div class="section" id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-8B038641-159E-4029-AEA7-952B9F598616"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-8B038641-159E-4029-AEA7-952B9F598616"><!-- --></a><h2 class="sectiontitle">Access to user memory</h2> <p>New restrictions on access
+to user memory. </p>
+ </div>
+
+<div class="section" id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-EDAC178D-6B98-4BC2-B9F5-0EB0846702F5"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-EDAC178D-6B98-4BC2-B9F5-0EB0846702F5"><!-- --></a><h2 class="sectiontitle">Access to current thread's address space</h2> <p>Certain
+exported and internal APIs access the address space of the current thread
+and are subject to restrictions on their use enforced by assertions in the
+code. The restrictions are these: </p>
+ <ul>
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-BDB0D784-562F-5AE6-A291-A738682C2A53"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-BDB0D784-562F-5AE6-A291-A738682C2A53"><!-- --></a><p>The APIs may only be
+called from thread context. </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-37A31C92-C9C7-539F-86B5-066A09D2F53B"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-37A31C92-C9C7-539F-86B5-066A09D2F53B"><!-- --></a><p>They may not be called
+while any mutexes are held. There are two particularly important cases when
+mutexes are often held: </p>
+ <ul>
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-D8F89EF4-854C-5096-9E52-FA7989C423D3"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-D8F89EF4-854C-5096-9E52-FA7989C423D3"><!-- --></a><p>When publish and subscribe
+is writing large binary properties to user space, and </p>
+ <ul>
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-9E7C39C8-D1DF-53B4-9596-5E7E6CB1C906"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-9E7C39C8-D1DF-53B4-9596-5E7E6CB1C906"><!-- --></a><p>When the multiple memory
+model writes code segments' export directories to user space. </p>
+ </li>
+
+</ul>
+ </li>
+
+</ul>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-E900614E-D99F-5401-B570-A792300D0E6A"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-E900614E-D99F-5401-B570-A792300D0E6A"><!-- --></a><p>The APIs may not be
+called when the system lock is held. There are two particularly important
+cases when the system lock is often held: </p>
+ <ul>
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-41D35D8E-1ABC-54A4-9985-F551ACAD4F28"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-41D35D8E-1ABC-54A4-9985-F551ACAD4F28"><!-- --></a><p>When publish and subscribe
+is writing large binary properties to user space, and </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-06705F28-00F9-5BBE-A3EF-FC79E4849908"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-06705F28-00F9-5BBE-A3EF-FC79E4849908"><!-- --></a><p>When the multiple memory
+model uses <a href="GUID-38D1534C-AA01-33AF-9937-CDD818A85F97.html#GUID-38D1534C-AA01-33AF-9937-CDD818A85F97__GUID-99ECF4EB-8BCD-3968-BDED-E37E41753BEF"><span class="apiname">DThread::FastWrite</span></a> to write to user space. </p>
+ </li>
+
+</ul>
+ </li>
+
+</ul>
+ <p>The APIs concerned are these: </p>
+ <ul>
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-1C237BE6-900B-5F88-B081-140030E42894"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-1C237BE6-900B-5F88-B081-140030E42894"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-C154A151-0DF7-345D-9A10-E9B1CF3400D9"><span class="apiname">Kern::KUDesInfo</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-EC004C04-A5D0-5A52-90BA-56A0DE140A8A"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-EC004C04-A5D0-5A52-90BA-56A0DE140A8A"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-B79007D0-FF1F-30E7-986D-7CEBC5E45102"><span class="apiname">Kern::KUDesGet</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-D5D3D6C4-BB4B-55B1-99B9-000F716C2964"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-D5D3D6C4-BB4B-55B1-99B9-000F716C2964"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-CDEA7B22-9520-3DB1-AA04-1289C2287936"><span class="apiname">Kern::KUDesPut</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-1C330912-EAAC-5020-94F8-89AD09387E42"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-1C330912-EAAC-5020-94F8-89AD09387E42"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-94F2DF65-87A5-32C6-9695-9557E5832ACF"><span class="apiname">Kern::KUDesSetLength</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-C59D5CDD-06B4-5931-BE86-E3F5727B456D"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-C59D5CDD-06B4-5931-BE86-E3F5727B456D"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-FAFAA120-AA28-32FD-9202-1534C3148026"><span class="apiname">Kern::InfoCopy</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-A93205E5-2BBF-568A-84C1-FA95BA8A5EBC"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-A93205E5-2BBF-568A-84C1-FA95BA8A5EBC"><!-- --></a><p> <a href="GUID-F5136CAF-B66F-388D-A610-D0153CAF7E23.html"><span class="apiname">umemget()</span></a>, <a href="GUID-B56A34CD-E5B5-3E3E-A2EE-3BC9D248B210.html"><span class="apiname">kumemget()</span></a>, <a href="GUID-B55573FC-B21C-384A-8B1E-A6A4301310E9.html"><span class="apiname">umemget32()</span></a>, <a href="GUID-15B62FF1-5D59-3A84-9648-EB0DBFE17232.html"><span class="apiname">kumemget32()</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-C4FCA083-9C65-5F24-B65C-0C8B62A9E89E"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-C4FCA083-9C65-5F24-B65C-0C8B62A9E89E"><!-- --></a><p> <a href="GUID-371860F0-36BF-340D-BEF6-1763EF9874AE.html"><span class="apiname">umemput()</span></a>, <a href="GUID-C7AB0391-99D5-31A2-91D4-A7F195546FC3.html"><span class="apiname">kumemput()</span></a>, <a href="GUID-B2DF3520-01CE-3D2C-8137-746ADBCBAE80.html"><span class="apiname">umemput32()</span></a>, <a href="GUID-D141C3C4-F2F6-37DF-BDF6-63DDE9052FA0.html"><span class="apiname">kumemput32()</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-93854B1F-3593-56FA-992B-D9965958FC17"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-93854B1F-3593-56FA-992B-D9965958FC17"><!-- --></a><p> <a href="GUID-16048974-7407-3778-9BD3-B8417E3F795A.html"><span class="apiname">umemset()</span></a>, <a href="GUID-B51F91FF-E5CD-3D5F-8BB3-B18E58761B62.html"><span class="apiname">kumemset()</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-2099129C-21A4-504F-BD33-9B1F3C84ECCE"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-2099129C-21A4-504F-BD33-9B1F3C84ECCE"><!-- --></a><p> <a href="GUID-A9CDD270-DDEB-3E58-9A31-2567985958DB.html"><span class="apiname">SafeRead()</span></a>, <a href="GUID-FE09CB97-F853-3939-ADB1-2FBE4EDF50CE.html"><span class="apiname">KUSafeRead()</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-24C2001F-2759-566C-B7C1-7CA677123C6F"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-24C2001F-2759-566C-B7C1-7CA677123C6F"><!-- --></a><p> <a href="GUID-97393047-A896-3F93-90CE-9C30BF19AF10.html"><span class="apiname">SafeWrite()</span></a>, <a href="GUID-145B354F-1F60-3A1B-8FA3-E873C6D133A5.html"><span class="apiname">KUSafeWrite()</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-85EE234D-34BA-542B-B43F-E178DECA1CFD"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-85EE234D-34BA-542B-B43F-E178DECA1CFD"><!-- --></a><p> <a href="GUID-7463E352-F6CE-3749-902A-0F3D9C699ADF.html"><span class="apiname">KUSafeInc()</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-26D29EEE-7FC6-556B-BCC0-27F0011B926A"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-26D29EEE-7FC6-556B-BCC0-27F0011B926A"><!-- --></a><p> <a href="GUID-7C924E07-84AD-36AC-A6D0-09C47A170FFC.html"><span class="apiname">KUSafeDec()</span></a>  </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-6487F5DB-DB07-458C-A97D-9D26BBC35E0A"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-6487F5DB-DB07-458C-A97D-9D26BBC35E0A"><!-- --></a><h2 class="sectiontitle">Access to another thread's address space</h2> <p>Certain
+exported and internal APIs access the address space of another thread and
+are subject to restrictions on their use enforced by assertions in the code.
+The restrictions are these: </p>
+ <ul>
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-38E41386-9179-500D-92BB-043042E3C957"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-38E41386-9179-500D-92BB-043042E3C957"><!-- --></a><p>The APIs may not be
+called when any mutexes are held. One particularly important case of this
+is when undertakers are completed and handles written to user space. </p>
+ </li>
+
+</ul>
+ <p>The APIs concerned are these: </p>
+ <ul>
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-76DF8E52-6330-5549-A10F-810FFC1236BC"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-76DF8E52-6330-5549-A10F-810FFC1236BC"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-904A42A8-8077-3FC6-BEF2-29619F079842"><span class="apiname">Kern::ThreadRawRead()</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-DFD8AEC8-172E-582E-9AC2-742F3C538B16"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-DFD8AEC8-172E-582E-9AC2-742F3C538B16"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-182C88F4-326C-376E-9FBE-889E3CB9B68A"><span class="apiname">Kern::ThreadRawWrite()</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-A4826184-4CDD-5339-9971-AE1894B3678E"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-A4826184-4CDD-5339-9971-AE1894B3678E"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-C505206F-F54F-3760-BA7D-2DB52AB4E0B3"><span class="apiname">Kern::ThreadDesRead()</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-73B032E1-8733-5E59-8028-812179CE2A81"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-73B032E1-8733-5E59-8028-812179CE2A81"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-FA321582-6D75-37A1-8DAB-D50638F76593"><span class="apiname">Kern::ThreadDesWrite()</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-FD22484A-2418-5A1D-A68A-27090623085D"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-FD22484A-2418-5A1D-A68A-27090623085D"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-1DE210A5-B7A2-3F52-9003-439CA3DD4715"><span class="apiname">Kern::ThreadGetDesLength()</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-CA931109-D50C-580A-9A0B-770355FA24C0"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-CA931109-D50C-580A-9A0B-770355FA24C0"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-A5E20DB7-9DB4-350C-B636-95E2148DCC6F"><span class="apiname">Kern::ThreadGetDesMaxLength()</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-AE500BC7-A230-5EE5-BA7F-643A47DEEFB9"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-AE500BC7-A230-5EE5-BA7F-643A47DEEFB9"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-22DD7D90-B4B5-3450-82BF-C3CC3A43430A"><span class="apiname">Kern::ThreadGetDesInfo()</span></a>  </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-D2287795-C6BA-5746-87B5-E2260A1389AB"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-D2287795-C6BA-5746-87B5-E2260A1389AB"><!-- --></a><p> <a href="GUID-38D1534C-AA01-33AF-9937-CDD818A85F97.html#GUID-38D1534C-AA01-33AF-9937-CDD818A85F97__GUID-876D7459-E09E-33B7-A35D-48A96F9E78C8"><span class="apiname">DThread::FastWrite()</span></a>  </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-CF741107-AEC0-4CAD-9F59-BD4EC8C7BA26"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-CF741107-AEC0-4CAD-9F59-BD4EC8C7BA26"><!-- --></a><h2 class="sectiontitle">Client request completion</h2> <p>In non-paged code it
+is usual for a thread to have an asynchronous request outstanding and to complete
+it by calling <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-D720BB4C-5E31-3213-BB16-859AA325FE98"><span class="apiname">Kern::RequestComplete()</span></a>. This technique is
+not safe in data paged code as it involves writing a status value back into
+the thread's address space, but this memory might be paged out and violate
+the thread's performance guarantees or cause a mutex order violation. </p>
+ <p>Instead,
+you should use the <a href="GUID-4CB67E92-6092-316B-BBDC-B428F4242A76.html"><span class="apiname">TClientRequest</span></a> object to write the request
+status within the context of the client thread in the following way. </p>
+ <a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-2379DB5B-9E06-56D4-A561-C55E77A5A570"><!-- --></a><ol id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-2379DB5B-9E06-56D4-A561-C55E77A5A570">
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-A74F8DB4-154B-5CC3-980E-6A248819BB08"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-A74F8DB4-154B-5CC3-980E-6A248819BB08"><!-- --></a><p>Create a <a href="GUID-4CB67E92-6092-316B-BBDC-B428F4242A76.html"><span class="apiname">TClientRequest</span></a> object
+by calling <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-C526F279-6BCF-3373-A869-37DB22695809"><span class="apiname">Kern::CreateClientRequest()</span></a>. </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-1B09ED45-55C2-5A57-8921-FD8FFE10819F"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-1B09ED45-55C2-5A57-8921-FD8FFE10819F"><!-- --></a><p>Call the <a href="GUID-E0687C90-7742-3C5C-96EF-187415584E31.html"><span class="apiname">SetStatus()</span></a> function
+of the <a href="GUID-4CB67E92-6092-316B-BBDC-B428F4242A76.html"><span class="apiname">TClientRequest</span></a> object to set the client's request
+status. </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-5A047136-5848-5F43-A88A-E0BF9625BFEE"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-5A047136-5848-5F43-A88A-E0BF9625BFEE"><!-- --></a><p>Call <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-DE0CF5BD-B166-3C5B-9E27-F95710322F21"><span class="apiname">Kern::QueueRequestComplete()</span></a> to
+signal the client thread that the request has been queued for completion. </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-F481D0FF-6A8F-5462-97C9-DCA9EABB1E25"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-F481D0FF-6A8F-5462-97C9-DCA9EABB1E25"><!-- --></a><p>When the client thread
+next runs, the <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html"><span class="apiname">TRequestStatus</span></a> value is written back to
+it. </p>
+ </li>
+
+<li id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-A37194A0-599A-584E-BD38-333B0E5DFD70"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-A37194A0-599A-584E-BD38-333B0E5DFD70"><!-- --></a><p>The <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html"><span class="apiname">TRequestStatus</span></a> can
+now be reused, or destroyed by a call to <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-A67030E5-B84C-3CFF-B0B9-68F2F0E488A6"><span class="apiname">Kern::DestroyRequest()</span></a>. </p>
+ </li>
+
+</ol>
+ </div>
+
+<div class="section" id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-4E440670-4ED5-4BA8-81A2-3A260EDDDFD1"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-4E440670-4ED5-4BA8-81A2-3A260EDDDFD1"><!-- --></a><h2 class="sectiontitle">IPC message delivery</h2> <p>In non-paged code it is common
+for a client thread to send a message to a server and write it into the address
+space of the server. When data paging is enabled, this creates the same risk
+of page faults as the completion of asynchronous requests and can be mitigated
+by the same techniques as above. In addition, descriptor information (type,
+length and maximum length) is read by temporarily switching to the client's
+address space, creating additional risk of page faults. </p>
+ <p>When data
+paging is enabled, messages to servers must be pre-parsed and their type,
+length and maximum length stored in the message structure. This involves change
+to the kernel code but does not impact on user-side code. </p>
+ </div>
+
+<div class="section" id="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-2727EA5C-0820-4DA4-BEC8-E6E830919A63"><a name="GUID-817E0561-6165-5BB1-97F9-AD53CFCDAA56__GUID-2727EA5C-0820-4DA4-BEC8-E6E830919A63"><!-- --></a><h2 class="sectiontitle">Kernel event queue</h2> <p>The kernel maintains a queue
+of user-input events which is read by the window server. The introduction
+of data paging involved a change to the kernel code which responds to the
+user-side API <a href="GUID-8BB2609C-5F76-3B47-AA9E-1453F8F2AD55.html#GUID-8BB2609C-5F76-3B47-AA9E-1453F8F2AD55__GUID-D3526836-5EB4-3EBC-87FF-B0DD2E74CAF3"><span class="apiname">UserSver::RequestEvent()</span></a>. No change to user-side
+code is involved. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-6381BC82-3060-5023-8221-79B18CCB2CDB.html" title="Contains guides that describe various aspects of writable data paging in more detail.">Writable Data Paging Guides</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-E21E7992-607A-5A49-B022-189ECA9E76D1.html" title="Overview of demand paging when applied to code paging.">Code Paging
+Overview</a></div>
+<div><a href="GUID-BDB847A2-557A-5902-AA6D-C1AE10D8E493.html" title="Code paging is the application of demand paging to executable code.">Code Paging
+Guide</a></div>
+<div><a href="GUID-B35A70D2-1BC8-51DE-95BF-F315DB394582.html" title="Demand paging is a technique where content appears to be present in RAM, but may in fact be stored on some external media and is transparently loaded when needed.">Demand Paging
+Overview</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

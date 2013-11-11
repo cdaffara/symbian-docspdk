@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="File Server Plugin implementation tutorial"/>
+<meta name="abstract" content="This document contains guidelines for writing a file server plugin for Symbian platform."/>
+<meta name="description" content="This document contains guidelines for writing a file server plugin for Symbian platform."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E23CC708-1DD1-5DFC-992A-997AA107A616.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BB9760B4-4F3F-5326-81FB-B644C82F0E65.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E23CC708-1DD1-5DFC-992A-997AA107A616.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-00764271-AD6B-5F41-AF72-843107EBF95F"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>File Server Plugin implementation tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2399034 id2399352 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-BB9760B4-4F3F-5326-81FB-B644C82F0E65.html" title="Symbian platform manages the basic permanent storage of data through file systems. Drives and file systems are common resources used by many programs, and access to them is managed by the File Server. The File Server is flexible, and can use many different file system formats and physical storage media. Applications and services access files, directories, and drives through the File Server client side API.">File Server</a> &gt; <a href="GUID-E23CC708-1DD1-5DFC-992A-997AA107A616.html" title="The File Server Plug-in Framework provides a way for developers to extend the functionality of the Symbian platform File Server. Developers can produce plug-ins that intercept file and directory IO. The interception and processing of requests by plug-ins is transparent to the application making the request.">File Server Plug-ins</a> &gt; </div>
+<h1 class="topictitle1"> File
+Server Plugin implementation tutorial</h1>
+<div><p>This document contains guidelines for writing a file server plugin
+for Symbian platform. </p>
+
+<p>This document is split into three sections: </p>
+
+<ul>
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-56E1538B-5EA5-542B-873B-A620D26DC183"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-56E1538B-5EA5-542B-873B-A620D26DC183"><!-- --></a><p> <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-CE12FAD4-531B-5AAB-B37B-9C61AF61205E">Writing a plug-in</a>, </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-1CBFE144-BF63-5184-9677-5730A1CFBC1C"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-1CBFE144-BF63-5184-9677-5730A1CFBC1C"><!-- --></a><p> <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-7AFFCF4E-B247-59FB-BA0C-4A548DF6D7CB">Loading and mounting a plug-in</a>, </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-77348F5C-D42E-572F-A878-19153729C8E4"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-77348F5C-D42E-572F-A878-19153729C8E4"><!-- --></a><p> <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-5E29C798-17A7-568F-B35C-1D8D10A03B80">Communicating with plug-ins</a>. </p>
+ </li>
+
+</ul>
+
+<div class="section" id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-CE12FAD4-531B-5AAB-B37B-9C61AF61205E"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-CE12FAD4-531B-5AAB-B37B-9C61AF61205E"><!-- --></a><h2 class="sectiontitle">Writing a plug-in</h2> <p>A
+file server plug-in is made up of at least two classes: </p>
+ <ul>
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-C6DF4F62-C13B-5CDC-972D-C46A88C0D612"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-C6DF4F62-C13B-5CDC-972D-C46A88C0D612"><!-- --></a><p>a factory class derived
+from the <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-89CF85BE-784F-5237-9F78-69D603B650C4">CFspluginFactory</a> base
+class, </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-B9E3CC8E-B7E1-5964-976D-ADD67BCBDD6C"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-B9E3CC8E-B7E1-5964-976D-ADD67BCBDD6C"><!-- --></a><p>a plug-in class derived
+from the <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-0994B2F1-23FE-524B-939E-1F83C766924B">CFsplugin</a> base
+class. </p>
+ </li>
+
+</ul>
+ <p>Each plug-in must <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-06B294FF-4F84-5181-AB30-71C3292B9107">register
+to intercept messages</a>. To <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-248CA470-6939-55C3-8D93-B41ECD7D5D28">make
+internal requests</a> call the functions RFilePlugin, RDirPlugin or RFsPlugin. </p>
+ <p>Each
+plug-in DLL must export a plug-in entry point function with the prototype: </p>
+ <pre class="codeblock" id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-73D95801-F3C7-5EB2-9767-25F0634DFE63"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-73D95801-F3C7-5EB2-9767-25F0634DFE63"><!-- --></a>CFsPluginFactory* CreateFileSystem();</pre>
+ <p>The
+loader calls this function when a client wishes to install a file server plug-in
+and creates an instance of the factory class. For example: </p>
+ <pre class="codeblock" id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-99E3309A-52CA-58AF-B46C-D4DCA43B865E"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-99E3309A-52CA-58AF-B46C-D4DCA43B865E"><!-- --></a>extern "C" {
+
+EXPORT_C CFsPluginFactory* CreateFileSystem()
+    {
+    return(new CMyPluginFactory());
+    }
+} </pre>
+ <p id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-89CF85BE-784F-5237-9F78-69D603B650C4"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-89CF85BE-784F-5237-9F78-69D603B650C4"><!-- --></a><strong>CFsPluginFactory</strong> </p>
+ <p>The <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">CFsPluginFactory</span></a> base class follows
+the standard factory pattern as used in other file server DLLs. <samp class="codeph">CFsPluginFactory</samp> creates <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">CFsPlugin</span></a> derived objects. </p>
+ <p>plug-in
+authors must provide implementations of the pure virtual functions: </p>
+ <ul>
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-A1BC45F3-96F1-5261-B4AE-9D7D9AC7871E"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-A1BC45F3-96F1-5261-B4AE-9D7D9AC7871E"><!-- --></a><p> <samp class="codeph">Install()</samp>  </p>
+ <p>This
+function is called by the file server in response to a call to <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RFs::AddPlugin()</span></a> and
+installs the plug-in factory. </p>
+ <p>This function must set the name of the
+plug-in factory with a call to <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">CObject::SetName()</span></a>.
+The plug-in name is used when mounting, dismounting and unloading plug-ins.
+Optionally, <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RFs::AddPlugin()</span></a> can
+perform other plugin specific initialization, for example setting <samp class="codeph">iSupportedDrives</samp> to
+indicate which drives the plugin will operate on, as required by the plugin
+factory. See <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-DB21C0FD-46F8-5E4F-9288-69AE8609482B">drive
+selection</a>. </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-75D6526F-30EA-51DC-89D3-C4A30B431751"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-75D6526F-30EA-51DC-89D3-C4A30B431751"><!-- --></a><p> <samp class="codeph">NewPluginL()</samp>  </p>
+ <p>This
+is called by the file server in response to a call to <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RFs::MountPlugin()</span></a>,
+this function creates a new <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">CFsPlugin</span></a> derived
+object and returns a pointer to it. </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-961B38B5-C459-539F-9918-DB4F83F40424"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-961B38B5-C459-539F-9918-DB4F83F40424"><!-- --></a><p> <samp class="codeph">UniquePosition()</samp>  </p>
+ <p>This
+function returns the unique ID of the plugin. This is used to identify the
+plugin and to specify the location of the plugin in the chain. See <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-90FC1AD9-D709-5105-A445-0AA3D7BA85B7">unique position</a>. </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-D7457283-699D-54BA-B375-F16443792D2D"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-D7457283-699D-54BA-B375-F16443792D2D"><!-- --></a><p> <samp class="codeph">Remove()</samp> (overriding
+this virtual function is optional as it is not a pure virtual function) </p>
+ <p>This
+is called just before the plugin factory object is destroyed and allows any
+clean up to be carried out. </p>
+ <p>The default implementation just returns <samp class="codeph">KErrNone</samp>.
+Implementations should return an error code on error detection. </p>
+ </li>
+
+</ul>
+ <p>The <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">CFsPluginfactory</span></a> base
+class also has the following member variables: </p>
+ <ul>
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-388D1206-5AE5-52FF-A1CF-3CB66D5ADB4A"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-388D1206-5AE5-52FF-A1CF-3CB66D5ADB4A"><!-- --></a><p>iSupportedDrives </p>
+ <p>This
+member holds a bit mask that indicates which drives the plugin created by
+this factory supports being mounted on. Bits 0 to 25 correspond to 26 drive
+letters lettered from A to Z. </p>
+ <p>Plugin authors should use the the <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">SetSupportedDrives()</span></a> API in order
+to correctly set up which drives their plugin should be mounted on. Set the
+drive number to <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">KPluginSupportAllDrives</span></a> to
+indicate that the plugin needs to be mounted on all drives. </p>
+ <p>If you
+are using Symbian platform prior to version 9.5, <samp class="codeph">iSupportedDrives</samp> is
+assigned to by plugin writers directly. However, this is now discouraged in
+favour of using SetSupportedDrives. </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-72C4595A-9E95-5082-935D-40D2818A9055"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-72C4595A-9E95-5082-935D-40D2818A9055"><!-- --></a><p>iUniquePos </p>
+ <p>This
+member stores the unique position identifier. If this member is used then
+plugin authors should implement the <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">UniquePosition()</span></a> function
+to return the variable. </p>
+ </li>
+
+</ul>
+ <p>An example skeleton implementation of a <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">CFsPluginFactory</span></a> derived
+class is as follows: </p>
+ <pre class="codeblock" id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-06314778-EB27-573E-A1B5-E10C64CBF1D1"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-06314778-EB27-573E-A1B5-E10C64CBF1D1"><!-- --></a>class CMyPluginFactory : public CFsPluginFactory
+    {
+public:
+    CMyPluginFactory();
+    virtual TInt Install();            
+    virtual CFsPlugin* NewPluginL();
+    virtual TInt UniquePosition();
+    virtual TInt Remove();
+    };
+
+CMyPluginFactory::CMyPluginFactory()
+    {
+    // Constructor for the plugin factory
+    }
+
+TInt CMyPluginFactory::Install()
+    {
+    // Install function for the plugin factory
+    iUniquePos = 0x2000001;
+    // Mount on all drives
+    SetSupportedDrives(KPluginSupportAllDrives);
+    return SetName(_L("MyPluginName"));
+    }
+
+CFsPlugin* CMyPluginFactory::NewPluginL()
+    {
+    // plugin factory function, creates the plugin
+    return CMyPlugin::NewL();
+    }
+
+TInt CMyPluginFactory::UniquePosition()
+    {
+    // Return’s the unique position identifier for plugins created by this factory class.
+    return iUniquePos;
+    }
+
+TInt CMyPluginFactory::Remove()
+    {
+    // Clean up function for the plugin factory
+    return KErrNone;
+    }</pre>
+  <p id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-0994B2F1-23FE-524B-939E-1F83C766924B"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-0994B2F1-23FE-524B-939E-1F83C766924B"><!-- --></a><strong>CFsPlugin</strong> </p>
+ <p>This
+is the base class for the file server plugin and is defined in <span class="filepath">f32plugin.h</span>. </p>
+ <p>Plugins
+must register to intercept particular types of file server requests. See <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-06B294FF-4F84-5181-AB30-71C3292B9107">Registering
+a plugin to intercept messages</a>. </p>
+ <p>Plugin authors need to provide
+an implementation of the pure virtual method <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">DoRequestL()</span></a> and
+can optionally override the virtual functions: </p>
+ <ul>
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-C9814092-F5CB-5FE6-A233-5ED43269CE8F"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-C9814092-F5CB-5FE6-A233-5ED43269CE8F"><!-- --></a><p> <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-64373962-7AB0-597B-BF2E-0D336AFBB545">SessionDisconnect()</a> - virtual, </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-8DDC108F-A379-58D6-98E8-20983B0B64FB"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-8DDC108F-A379-58D6-98E8-20983B0B64FB"><!-- --></a><p> <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-5371EF5C-F02E-556D-8BC4-6E0D8D9B35D2">InitialiseL()</a> - virtual, </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-1B536E1D-974A-584F-B2C6-36DEDFA6B55B"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-1B536E1D-974A-584F-B2C6-36DEDFA6B55B"><!-- --></a><p> <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-97427151-C6E4-5FE4-8197-0D7C58EDB29F">Deliver()</a> - virtual, </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-49E41C16-6653-5719-93B9-43C639D0444F"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-49E41C16-6653-5719-93B9-43C639D0444F"><!-- --></a><p> <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-CE67C69C-1E85-59FC-8E2B-1802F65D94F3">NewPluginConnL()</a> - virtual, </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-DB7354C0-9587-5D6E-BF6C-6C0DBF3C7582"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-DB7354C0-9587-5D6E-BF6C-6C0DBF3C7582"><!-- --></a><p> <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-8E1D4416-DE65-516F-92CD-D18C2166B279">DoRequestL()</a> - pure virtual, </p>
+ </li>
+
+</ul>
+ <p id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-64373962-7AB0-597B-BF2E-0D336AFBB545"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-64373962-7AB0-597B-BF2E-0D336AFBB545"><!-- --></a><strong>SessionDisconnect()</strong> </p>
+ <p> <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">SessionDisconnect()</span></a> is called
+by the file server when a file server session is disconnected. </p>
+ <p>The
+default implementation just returns <samp class="codeph">KErrNone</samp>. Overriding
+this function allows plugins to free up any resources prior to the outstanding
+operations being cancelled. </p>
+ <p id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-5371EF5C-F02E-556D-8BC4-6E0D8D9B35D2"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-5371EF5C-F02E-556D-8BC4-6E0D8D9B35D2"><!-- --></a><strong>InitialiseL()</strong> </p>
+ <p>The
+default implementation of <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">InitialiseL()</span></a> does
+nothing. Override this implementation to perform a plugin specific initialisation,
+for example <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-06B294FF-4F84-5181-AB30-71C3292B9107">registering
+intercepts</a>. If the plugin cannot be initialised this function must
+leave with a suitable error code. </p>
+ <p id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-97427151-C6E4-5FE4-8197-0D7C58EDB29F"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-97427151-C6E4-5FE4-8197-0D7C58EDB29F"><!-- --></a><strong>Deliver()</strong> </p>
+ <p> <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">Deliver()</span></a> is called in the context
+of the previous thread that originated or processed the request (either the
+file server main thread or another plugin thread) before the request is dispatched
+to the plugin’s thread. </p>
+ <p>The default implementation delivers the request
+to the end of the plugin thread's request queue. Requests that require priority
+handling (usually those sent using an <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RPlugin</span></a> session)
+are delivered to the front of the queue. See <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-5E29C798-17A7-568F-B35C-1D8D10A03B80">Communicating
+with plugins</a>. </p>
+ <p>Overriding this function allows plugins to perform
+operations within the context of the original thread (like validation of request
+parameters or filtering requests) before the request is sent to the plugin’s
+main thread or passed to the next plugin or drive thread. </p>
+ <p> <samp class="codeph">Deliver()</samp> is
+called from outside the context of the plugin’s main thread so care must be
+taken as the plugin main thread may still be processing the previous request. </p>
+ <ul>
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-DAA3DBC2-4C31-51B9-B071-E36F44A7BFDE"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-DAA3DBC2-4C31-51B9-B071-E36F44A7BFDE"><!-- --></a><p>If <samp class="codeph">KErrNone</samp> is
+returned then the base class implementation of this function must be called
+to ensure that the request is dispatched to the plugin’s thread for further
+processing in <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">DoRequestL()</span></a>. </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-9A2229A2-D17D-5BE4-A8C1-66FCBD4447F6"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-9A2229A2-D17D-5BE4-A8C1-66FCBD4447F6"><!-- --></a><p> <samp class="codeph">KPluginMessageForward</samp> indicates
+that the request has been processed synchronously and should be passed down
+to the next plugin in the stack (bypassing the current plugin’s <samp class="codeph">DoRequestL()</samp> function).
+This is used for pre-intercepts. </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-D10FB123-B30D-5CE0-B3EB-CDBA78CF2A8D"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-D10FB123-B30D-5CE0-B3EB-CDBA78CF2A8D"><!-- --></a><p> <samp class="codeph">KPluginMessageComplete</samp> indicates
+that the request has been processed synchronously and should be passed up
+to the previous plugin in the stack (bypassing the current plugin’s <samp class="codeph">DoRequestL()</samp> function).
+This is used for post-intercepts. </p>
+ </li>
+
+</ul>
+ <p id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-CE67C69C-1E85-59FC-8E2B-1802F65D94F3"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-CE67C69C-1E85-59FC-8E2B-1802F65D94F3"><!-- --></a><strong>NewPluginConnL()</strong> </p>
+ <p>The
+function <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">NewPluginConnL()</span></a> is
+the default implementation and it returns <samp class="codeph">KErrNotSupported</samp>.
+Override this implementation to create a <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">CFsPluginConn</span></a> derived
+object to enable direct communication between a client application and a plugin
+using <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RPlugin</span></a>. See <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-5E29C798-17A7-568F-B35C-1D8D10A03B80">Communicating
+with plugins</a>. </p>
+ <p id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-8E1D4416-DE65-516F-92CD-D18C2166B279"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-8E1D4416-DE65-516F-92CD-D18C2166B279"><!-- --></a><strong>DoRequestL()</strong> </p>
+ <p> <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">DoRequestL()</span></a> is the main entry
+point for messages intercepted by a plugin. Individual plugins are usually
+single-threaded and must process requests in the order that they arrive. However,
+the plugin framework is not single-threaded. While a plugin is handling a
+request all other plugins are also able to handle requests. The drive thread
+is also able to handle requests forwarded to it by plugins. <samp class="codeph">DoRequestL()</samp> is
+called in the context of the plugin’s main thread and must be implemented
+to intercept file server requests in this context. </p>
+ <p>The current request
+must have finished all processing before <samp class="codeph">DoRequestL()</samp> has
+completed. If a plugin has multiple threads and the request is handled in
+a thread other than the main thread then the <samp class="codeph">DoRequestL()</samp> function
+must be blocked until the request has been processed. This is because when <samp class="codeph">DoRequestL()</samp> exits,
+the plugin framework forwards the message to the next plugin in the chain.
+Unpredictable behaviour may occur if the plugin has not finished processing
+a request before it is passed to the next plugin/file system. </p>
+ <p>Errors
+returned by this function are propagated back to the client. If this function
+leaves then the client thread panics. <strong>Note</strong>: Do not return from this
+function until the request has been fully processed. This is because after
+returning from this function the request is passed onto the next plugin in
+the chain. This means that you cannot pass the request to a separate thread
+and return immediately in order to implement a multi-threaded plugin. </p>
+ <p> <samp class="codeph">KErrCompletion</samp> indicates
+that all processing for this request has been completed by this plugin. Post-intercept
+is then enabled and the flow of execution is up the plugin stack towards the
+client, starting at the previous plugin. </p>
+ <p>When a plugin intercepts
+a file read or file write request and does an early completion (i.e. returns <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">KErrCompletion</span></a> in pre-intercept)
+then the plugin author should call <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TFsPluginRequest::SetSharePos()</span></a> to
+allow share position to be updated after early read/write completion. </p>
+ <p id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-14773530-7C15-52E2-A542-72A0B2163461"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-14773530-7C15-52E2-A542-72A0B2163461"><!-- --></a><strong>TFsPluginRequest</strong> </p>
+ <p>The <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TFsPluginRequest</span></a> class encapsulates
+the intercepted file server request and is passed as a reference to the plugin's <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">DoRequestL()</span></a> function. <samp class="codeph">TFsPluginRequest</samp> provides
+APIs that extract request specific information such as: </p>
+ <ul>
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-D5FE21A2-F05A-5509-8A4B-21D95B79B4AE"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-D5FE21A2-F05A-5509-8A4B-21D95B79B4AE"><!-- --></a><p> <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">DriveNumber()</span></a> -
+returns the target drive number. The drive number is in the range of zero
+to 25, which corresponds to drive letters A to Z, </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-9EDB9144-38EC-5117-A029-268658BE6877"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-9EDB9144-38EC-5117-A029-268658BE6877"><!-- --></a><p> <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">Function()</span></a> -
+the type of request as defined in <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TFsMessage</span></a>, </p>
+ </li>
+
+<li id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-96068F44-2CC3-5361-8814-2CDBD13C30C7"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-96068F44-2CC3-5361-8814-2CDBD13C30C7"><!-- --></a><p> <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">IsPostOperation()</span></a> -
+returns <samp class="codeph">ETrue</samp> or <samp class="codeph">EFalse</samp> to indicate if the
+request being intercepted is in post-intercept mode (<samp class="codeph">ETrue</samp>)
+or pre-intercept. </p>
+ </li>
+
+</ul>
+ <p> <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TFsPluginRequest</span></a> acts
+as a utility class for plugins. This class has two main functions <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TFsPluginRequest::Read()</span></a> and <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TFsPluginRequest::Write()</span></a>, which
+allow a plugin to read from and write to the message arguments of a request. </p>
+ <p> <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TFsPluginRequest::Read()</span></a> has
+various overloads for <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TInt</span></a>, <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TUint</span></a>, <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">Tint64</span></a> and
+descriptor data types, all of which take as their first argument a <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TF32ArgType</span></a> object. </p>
+ <p>The <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TF32ArgType</span></a> is an enumeration
+which defines the type of data that is requested. For example, <samp class="codeph">EPosition</samp>, <samp class="codeph">ELength</samp>, <samp class="codeph">EData</samp> for
+getting the position, length and data arguments from the request. <samp class="codeph">TF32ArgType</samp> is
+defined as follows: </p>
+ <pre class="codeblock" id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-E8DCEB67-BFA0-52AD-A554-C8C76645E3CC"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-E8DCEB67-BFA0-52AD-A554-C8C76645E3CC"><!-- --></a>enum TF32ArgType
+    {
+    EPosition,
+    ELength,
+    EData,
+    ESize,
+    EName,
+    ENewName,
+    EEntry,
+    ETime,
+    ESetAtt,
+    EClearAtt,
+    EMode,
+    EAtt,
+    EAttMask,
+    EUid,
+    EEntryArray,
+    ENewPosition,
+    };</pre>
+ <p> <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TFsPluginRequest::Write()</span></a> only
+has two overloads, both of these take descriptor types and the argument <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TF32ArgType</span></a>. Many functions do
+not use descriptor types, it will be necessary to package data for these inside
+a descriptor. </p>
+ <p>The following provides an example of how to do this
+for <samp class="codeph">Entry</samp>: </p>
+ <pre class="codeblock" id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-ECF1B967-6588-5D4C-95A1-FA108E3D0417"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-ECF1B967-6588-5D4C-95A1-FA108E3D0417"><!-- --></a>    TPckgC&lt;TEntry&gt; entryPckg(entry);
+    err = aRequest.Write(EEntry, entryPckg);</pre>
+ <p id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-248CA470-6939-55C3-8D93-B41ECD7D5D28"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-248CA470-6939-55C3-8D93-B41ECD7D5D28"><!-- --></a><strong>Sending internal requests
+to the file server</strong> </p>
+ <p>The classes <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RFilePlugin</span></a>, <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RDirPlugin</span></a> and <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RFsPlugin</span></a>,
+defined in <span class="filepath">F32Plugin.h</span>, are the classes that plugin authors
+should use to send internal requests to the file server. The APIs for these
+classes are mostly identical from their client side (<a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RFile</span></a>, <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RDir</span></a> and <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RFs</span></a>)
+counter-parts. </p>
+ <p>Before a plugin can perform any requests on a file
+it must first either perform an <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">Open()</span></a> or <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">AdoptFromClient()</span></a>. When an <samp class="codeph">AdoptFromClient()</samp> is
+performed the <samp class="codeph">RFilePlugin</samp> instance opens the file associated
+with the client request. <samp class="codeph">Open()</samp> can be used to open the same
+file (potentially with different parameters than those supplied by the client)
+and it can be used to open an entirely different file. </p>
+ <p> <samp class="codeph">RFilePlugin</samp> has
+the following public functions: </p>
+ <pre class="codeblock" id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-FC3DCDA2-964C-50F9-A0C9-97A3F00E3DDC"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-FC3DCDA2-964C-50F9-A0C9-97A3F00E3DDC"><!-- --></a>class RFilePlugin : private RFile
+    {
+public:
+    IMPORT_C RFilePlugin(TFsPluginRequest&amp; aRequest, TBool aDirectToDrive = EFalse);
+
+    // open a NEW file using same session as passed request
+    IMPORT_C TInt Open(const TDesC&amp; aName,TUint aMode);
+    IMPORT_C TInt Create(const TDesC&amp; aName,TUint aFileMode);
+    IMPORT_C TInt Replace(const TDesC&amp; aName,TUint aFileMode);
+    IMPORT_C TInt Temp(const TDesC&amp; aPath,TFileName&amp; aName,TUint aFileMode);
+
+    // re-open SAME file as client's request
+    IMPORT_C TInt AdoptFromClient();
+    // Transfer the plugin's open file to the client
+    IMPORT_C TInt TransferToClient();
+
+    IMPORT_C void Close();
+
+    // RFile overloads
+    IMPORT_C TInt Read(TInt64 aPos,TDes8&amp; aDes) const;
+    IMPORT_C TInt Read(TInt64 aPos,TDes8&amp; aDes,TInt aLength) const;
+    IMPORT_C TInt Write(TInt64 aPos,const TDesC8&amp; aDes);
+    IMPORT_C TInt Write(TInt64 aPos,const TDesC8&amp; aDes,TInt aLength);
+    IMPORT_C TInt Lock(TInt64 aPos,TInt64 aLength) const;
+    IMPORT_C TInt UnLock(TInt64 aPos,TInt64 aLength) const;
+    IMPORT_C TInt Seek(TSeek aMode,TInt64&amp; aPos) const;
+    IMPORT_C TInt Flush();
+    IMPORT_C TInt Size(TInt64&amp; aSize) const;
+    IMPORT_C TInt SetSize(TInt64 aSize);
+    IMPORT_C TInt Att(TUint&amp; aAttValue) const;
+    IMPORT_C TInt SetAtt(TUint aSetAttMask,TUint aClearAttMask);
+    IMPORT_C TInt Modified(TTime&amp; aTime) const;
+    IMPORT_C TInt SetModified(const TTime&amp; aTime);
+    IMPORT_C TInt Set(const TTime&amp; aTime,TUint aSetAttMask,TUint aClearAttMask);
+    IMPORT_C TInt ChangeMode(TFileMode aNewMode);
+    IMPORT_C TInt Rename(const TDesC&amp; aNewName);
+    ...</pre>
+ <p id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-06B294FF-4F84-5181-AB30-71C3292B9107"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-06B294FF-4F84-5181-AB30-71C3292B9107"><!-- --></a><strong>Registering a plugin to
+intercept messages</strong> </p>
+ <p>The base class <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">CFsPlugin</span></a>,
+has functions that allow a plugin to register to intercept specific types
+of file server request. This is explained in more detail under <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-50F7CD3A-A051-5498-8886-B4501523FD1D">Interception of file server requests</a>. </p>
+ <p><strong>RegisterIntercept()</strong> </p>
+ <p>The function <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RegisterIntercept()</span></a> registers
+a plugin to intercept a specified <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TFsMessage</span></a>.
+The second parameter of <samp class="codeph">RegisterIntercept()</samp> allows plugin
+authors to specify whether the intercept is processed before, after or both
+before and after the request is processed by the drive thread. See <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TInterceptAtts</span></a>. </p>
+ <p><strong>UnregisterIntercept()</strong> </p>
+ <p>Un-register an intercept with <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">UnregisterIntercept()</span></a>. <samp class="codeph">UnregisterIntercept()</samp> takes <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TFsMessage</span></a>, which is the ID of
+the message and <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">TInterceptAtts</span></a>,
+which is the type of intercept that you no longer wish to intercept. </p>
+ </div>
+
+<div class="section" id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-7AFFCF4E-B247-59FB-BA0C-4A548DF6D7CB"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-7AFFCF4E-B247-59FB-BA0C-4A548DF6D7CB"><!-- --></a><h2 class="sectiontitle">Loading and
+mounting a plugin</h2> <p>A plugin must be loaded and mounted before it
+can intercept requests. </p>
+ <p id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-84812368-5915-5E30-A29C-FBC05C51E8F0"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-84812368-5915-5E30-A29C-FBC05C51E8F0"><!-- --></a><strong>Loading and unloading a
+plugin</strong> </p>
+ <p>Before a plugin can be used by the file server the library
+(<span class="filepath">.PXT</span>) that contains the plugin needs to be loaded into
+the file server process by the loader. Do this using the <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RFs::AddPlugin()</span></a> function
+defined in <span class="filepath">f32file.h</span>. </p>
+ <p> <samp class="codeph">AddPlugin()</samp> can
+be called by any user side application with the relevant <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-0B7B373D-41ED-5C91-ACC4-393A8669815A">platform security capabilities</a>. </p>
+ <p>Unload a plugin using the <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RFs::RemovePlugin()</span></a> function
+also defined in <span class="filepath">f32file.h</span>. </p>
+ <p> <strong>Note</strong>: Refer
+to the device manufacturer if you want to load plugins automatically at system
+startup time. </p>
+ <p id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-BED54BD9-2F3F-588E-854B-C28745C8F30A"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-BED54BD9-2F3F-588E-854B-C28745C8F30A"><!-- --></a><strong>Mounting and unmounting
+a plugin</strong> </p>
+ <p>File Server plugins are mounted using the <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RFs::MountPlugin()</span></a> function
+defined in <span class="filepath">f32file.h</span>. The plug in must have already been
+loaded using <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RFs::AddPlugin()</span></a>. </p>
+ <p>There
+are various overloads of the <samp class="codeph">MountPlugin()</samp> function. Those
+functions which do not take a drive parameter are mounted using <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">KPluginAutoAttach</span></a>. </p>
+ <p>Call <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RFs::DismountPlugin()</span></a> to dismount
+the file server plugin. Dismount the plugin when you no longer need it to
+intercept file server requests. </p>
+ <p>Before a plugin can be dismounted
+all resources owned by the plugin must be closed. A plugin can intercept the
+request to dismount it and use this to free resources and close down cleanly.
+If the plugin owns resources on behalf of a client (for example, a client
+has a file open that is using the decompression plugin) then the plugin can
+reject the request to dismount by returning one of the system wide error codes. </p>
+ </div>
+
+<div class="section" id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-5E29C798-17A7-568F-B35C-1D8D10A03B80"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-5E29C798-17A7-568F-B35C-1D8D10A03B80"><!-- --></a><h2 class="sectiontitle">Communicating
+with plugins</h2> <p>The file server provides a standard logical channel
+based mechanism that enables a trusted application to communicate with a file
+server plugin. For example, a virus scanning plugin can present a user interface
+for the device user. <strong>Note</strong>: <samp class="codeph">DiskAdmin</samp> capabilities
+are required in order to load a plugin. See <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-0B7B373D-41ED-5C91-ACC4-393A8669815A">platform
+security capabilities</a>. </p>
+ <p><strong>Data transfer </strong> </p>
+ <p>The class <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">CFsPluginConnRequest</span></a> is
+an information container for asynchronous requests that the client application
+wants performed. <samp class="codeph">CFsPluginConnRequest</samp> also provides functions
+that enable data to be transferred between the plugin and the application.
+The following examples show how to use <samp class="codeph">CFsPluginConnRequest</samp>. </p>
+ <p id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-D0B1C6A0-4952-51C3-9DCF-7B8344D60333"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-D0B1C6A0-4952-51C3-9DCF-7B8344D60333"><!-- --></a><strong>User-side application</strong></p>
+<p>A
+user-side application uses a class derived from <a href="GUID-118CCC9E-C58B-3AA0-86A8-219914E7E7BC.html"><span class="apiname">RPlugin</span></a> to
+access the plugin. See <a href="GUID-00764271-AD6B-5F41-AF72-843107EBF95F.html#GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-285326AB-9D14-5DE2-BDD5-C418B755F57B">plugin
+side</a>. The <a href="GUID-118CCC9E-C58B-3AA0-86A8-219914E7E7BC.html"><span class="apiname">RPlugin</span></a> class (defined in <span class="filepath">f32file.h</span>)
+provides various functions that must be overridden. The  functions <a href="GUID-06C73075-6095-3D8F-AFC9-FD832958A49C.html"><span class="apiname">DoControl()</span></a>,<a href="GUID-9D910016-5611-30DD-A139-EE46705A4912.html"><span class="apiname"> DoRequest()</span></a> and <a href="GUID-675860FB-AA37-3467-AF52-7D1B17FEE0A6.html"><span class="apiname">DoCancel()</span></a> are protected. Plugin authors must provide a public interface of their own
+design in the derived class that communicates with the plugin using these
+protected functions. </p>
+<p> An <samp class="codeph">RPlugin</samp> session is opened
+by passing in the <a href="GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6.html#GUID-DEF3B8B3-5BD7-505B-93F9-A20CE00FFAE6__GUID-90FC1AD9-D709-5105-A445-0AA3D7BA85B7">unique
+position</a> identifier of the plugin it wishes to communicate with. When
+the file server receives the request it validates the capabilities of the
+application before calling the plugin's <a href="GUID-3A78342A-1CA1-372F-B003-B0B3461BA836.html"><span class="apiname">NewPluginConnL()</span></a> function.
+The plugin must certify that it is expecting the client application before
+creating the server side connection object.</p>
+<p>  Below is a basic example
+of an <samp class="codeph">RPlugin</samp> derived class: </p>
+<pre class="codeblock">class RMyPlugin : public RPlugin
+{
+public:
+    inline TInt Enable();
+    inline TInt Disable();
+    };
+
+inline TInt RMyPlugin::Enable()
+    { 
+    return DoControl(EEnable); 
+    }
+
+inline TInt RMyPlugin::Disable()
+    { 
+    return DoControl(EDisable); 
+    }
+
+void MyRPlugin::DoRequest(TInt aReqNo,TRequestStatus&amp; aStatus) const
+    {
+    RPlugin::DoRequest(aReqNo,aStatus);
+    }
+
+void MyRPlugin::DoRequest(TInt aReqNo,TRequestStatus&amp; aStatus,TDes8&amp; a1) const
+    {
+    RPlugin::DoRequest(aReqNo,aStatus,a1);
+    }
+
+void MyRPlugin::DoRequest(TInt aReqNo,TRequestStatus&amp; aStatus,TDes8&amp; a1,TDes8&amp; a2) const
+    {
+    RPlugin::DoRequest(aReqNo,aStatus,a1,a2);
+    }
+
+TInt MyRPlugin::DoControl(TInt aFunction) const
+    {
+    return RPlugin::DoControl(aFunction);
+    }
+
+</pre>
+<p>This is used in the following way:</p>
+<pre class="codeblock">Tint r = KErrNone
+r = TheFs.AddPlugin(_L("MyPlugin"));
+r = TheFs.MountPlugin(_L("MyPlugin"),KPluginSupportAllDrives);
+User::LeaveIfError(r);
+
+RMyPlugin thePlugin;
+r = thePlugin.Open(TheFs, KMyPluginUniquePos);
+User::LeaveIfError(r);
+r = thePlugin.Enable();
+User::LeaveIfError(r);
+...
+//Perform communication with plugin here
+...
+r = thePlugin.Disable();
+User::LeaveIfError(r);
+thePlugin.Close();</pre>
+ <pre class="codeblock">class RMyPlugin : public RPlugin
+    {
+public:
+    inline TInt Enable();
+    inline TInt Disable();
+    };
+
+inline TInt RMyPlugin::Enable()
+    { 
+    return DoControl(EEnable); 
+    }
+
+inline TInt RMyPlugin::Disable()
+    { 
+    return DoControl(EDisable); 
+    }
+
+void MyRPlugin::DoRequest(TInt aReqNo,TRequestStatus&amp; aStatus) const
+    {
+    RPlugin::DoRequest(aReqNo,aStatus);
+    }
+
+void MyRPlugin::DoRequest(TInt aReqNo,TRequestStatus&amp; aStatus,TDes8&amp; a1) const
+    {
+    RPlugin::DoRequest(aReqNo,aStatus,a1);
+    }
+
+void MyRPlugin::DoRequest(TInt aReqNo,TRequestStatus&amp; aStatus,TDes8&amp; a1,TDes8&amp; a2) const
+    {
+    RPlugin::DoRequest(aReqNo,aStatus,a1,a2);
+    }
+
+TInt MyRPlugin::DoControl(TInt aFunction) const
+    {
+    return RPlugin::DoControl(aFunction);
+    }
+
+etc.. 
+}
+</pre>
+<p>This is used in the following way:</p>
+<pre class="codeblock">Tint r = KErrNone
+r = TheFs.AddPlugin(_L("MyPlugin"));
+r = TheFs.MountPlugin(_L("MyPlugin"),KPluginSupportAllDrives);
+User::LeaveIfError(r);
+
+RMyPlugin thePlugin;
+r = thePlugin.Open(TheFs, KMyPluginUniquePos);
+User::LeaveIfError(r);
+r = thePlugin.Enable();
+User::LeaveIfError(r);
+...
+//Perform communication with plugin here
+...
+r = thePlugin.Disable();
+User::LeaveIfError(r);
+thePlugin.Close();</pre>
+ <p id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-285326AB-9D14-5DE2-BDD5-C418B755F57B"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-285326AB-9D14-5DE2-BDD5-C418B755F57B"><!-- --></a><strong>Plugin side</strong> </p>
+ <p>This
+is the plugin side of the communication. This must be implemented in order
+to communicate with the application side class <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RPlugin</span></a> above.
+The plugin side is a class derived from the <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">CFsPluginConn</span></a> class.
+The plugin’s <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">NewPluginConnL()</span></a> function
+is called from the file server when <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RPlugin::Open()</span></a> is
+called by the client. </p>
+ <p>Synchronous (<a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">DoControl()</span></a>)
+and asynchronous (<a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">DoRequest()</span></a>)
+requests sent from the <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">RPlugin</span></a> class
+are routed directly to the associated plugin's <a href="GUID-DA6C5564-96A4-3A06-A1A0-59A29F797570.html"><span class="apiname">CFsPluginConn</span></a> derived
+class. The following code shows a basic implementation: </p>
+ <pre class="codeblock" id="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-4B07F646-AEC0-5923-9647-E827D111E587"><a name="GUID-00764271-AD6B-5F41-AF72-843107EBF95F__GUID-4B07F646-AEC0-5923-9647-E827D111E587"><!-- --></a>class CMyPluginConn : public CFsPluginConn
+    {
+    virtual TInt DoControl(CFsPluginConnRequest&amp; aRequest);
+    virtual void DoRequest(CFsPluginConnRequest&amp; aRequest);
+    virtual void DoCancel(TInt aReqMask);
+    };
+
+// From the CFsPlugin derived class
+CFsPluginConn* CMyPlugin::NewPluginConnL()
+    {
+    CMyPluginConn* thePluginConn = new(ELeave) CMyPluginConn();
+    return thePluginConn;
+    }
+
+TInt CMyPluginConn::DoControl(CFsPluginConnRequest&amp; aRequest)
+    {
+    TInt r = KErrNotSupported;
+    CMyPlugin&amp; myPlugin = *(CMyPlugin*)Plugin();
+    switch(aRequest.Function())
+       {
+       case RMyPlugin::EEnable:
+          r = myPlugin.Enable();
+          break;
+       case RLoggerConn::EDisable:
+          r = myPlugin.Disable();
+          break;
+       default:
+          break;      
+       }
+    return r;
+    }
+
+void CMyPluginConn::DoRequest(CFsPluginConnRequest&amp; aRequest)
+    {
+    return KErrNotSupported;
+    }
+
+void DoCancel(TInt aReqMask)
+    {
+    // Not required as no asynchronous request support
+    }</pre>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E23CC708-1DD1-5DFC-992A-997AA107A616.html" title="The File Server Plug-in Framework provides a way for developers to extend the functionality of the Symbian platform File Server. Developers can produce plug-ins that intercept file and directory IO. The interception and processing of requests by plug-ins is transparent to the application making the request.">File Server Plug-ins</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

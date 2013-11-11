@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="SQLite Technology Guide"/>
+<meta name="abstract" content="This document provides background information on the internal workings of SQLite, the database engine used by Symbian SQL."/>
+<meta name="description" content="This document provides background information on the internal workings of SQLite, the database engine used by Symbian SQL."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-02C9C31A-6563-59E4-BF46-129F4ED95087.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-FBCBF8A0-7922-5881-A1C5-5DB41630E75A.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F8824165-4B33-50D1-9706-BD2438B5A2EE.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-02C9C31A-6563-59E4-BF46-129F4ED95087.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-22844C28-AB5B-5A6F-8863-7269464684B4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1F12E3F5-45B2-55EC-B021-00338277C608.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-78773BCA-ADF6-53E6-AC80-5CB2AE1F8BCC.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F8824165-4B33-50D1-9706-BD2438B5A2EE.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>SQLite Technology Guide</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797"><a name="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2859821 id2860178 id2534707 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-FBCBF8A0-7922-5881-A1C5-5DB41630E75A.html" title="Provides services to enable and support persistence.">Persistent Data Services Guide</a> &gt; <a href="GUID-F8824165-4B33-50D1-9706-BD2438B5A2EE.html" title="The persistent storage collection.">Persistent Storage</a> &gt; <a href="GUID-02C9C31A-6563-59E4-BF46-129F4ED95087.html" title="Topics related to SQLite 3 component.">SQLite 3</a> &gt; </div>
+<h1 class="topictitle1">SQLite
+Technology Guide</h1>
+<div><p>This document provides background information on the internal workings
+of SQLite, the database engine used by Symbian SQL.</p>
+
+<div class="section" id="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-54B0C26F-873B-4FDD-9CB6-163B65789ABF"><a name="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-54B0C26F-873B-4FDD-9CB6-163B65789ABF"><!-- --></a><h2 class="sectiontitle">Purpose</h2> <p>SQLite is a fast efficient database engine
+freely available to anyone to use in any way the want. The information in
+this document provides important background information that you will need
+to know in order to make the most of Symbian SQL and SQLite on Symbian platform. </p>
+ </div>
+
+<div class="section" id="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-ECAB0622-BF6B-43F8-ACC9-0E64E95A164E"><a name="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-ECAB0622-BF6B-43F8-ACC9-0E64E95A164E"><!-- --></a><h2 class="sectiontitle">Intended audience:</h2> <p>This document is intended to
+be used by Symbian platform developrs and third party application developers. </p>
+ </div>
+
+<div class="section" id="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-612B113B-C89E-5870-A586-F163D333A19B"><a name="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-612B113B-C89E-5870-A586-F163D333A19B"><!-- --></a><h2 class="sectiontitle">The architecture
+and operation of SQLite</h2> <p>The figure below shows the major modules
+within SQLite. SQL statements that are to be processed are sent to the SQL
+Compiler module which does a syntactic and semantic analysis of the SQL statements
+and generates bytecode for carrying out the work of each statement. The generated
+bytecode is then handed over to a Virtual Machine for evaluation. </p>
+ <div class="fignone" id="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-370A849E-D1CC-5510-9211-D732C2D1DF6B"><a name="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-370A849E-D1CC-5510-9211-D732C2D1DF6B"><!-- --></a><span class="figcap">Figure 1.               Simplified SQLite Architecture            </span>
+
+<img src="GUID-D3881E09-4519-5E3F-9978-C9FEFD123B85_d0e631075_href.png"/>
+</div>
+ <p>The Virtual Machine considers the database to be a set of B-Trees,
+one B-Tree for each table and one B-Tree for each index. The logic for creating,
+reading, writing, updating, balancing and destroying B-Trees is contained
+in the B-Tree module. </p>
+ <p>The B-Tree module uses the Pager module to access
+individual pages of the database file. The Pager module abstracts the database
+file into zero or more fixed-sized pages with atomic commit and rollback semantics. </p>
+ <p>All
+interaction with the underlying file system and operating system occurs through
+the OS Adaptation Layer. </p>
+ <p id="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-9AEF6B71-B6B6-5A83-9ED2-547BB60A6752"><a name="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-9AEF6B71-B6B6-5A83-9ED2-547BB60A6752"><!-- --></a><strong>SQL Statements as Computer
+Programs</strong> </p>
+ <p>A key to understanding the operation of SQLite, or any
+other SQL relational database engine, is to recognize that each statement
+of SQL is really a small computer program. </p>
+ <p>Users of SQL database engines
+sometimes fail to grasp this simple truth because SQL is a peculiar programming
+language. In most other computer languages the programmer must specify exactly <em>how</em> a
+computation is to take place. But in SQL the programmer specifies <em>what</em> results
+are needed and lets the SQL Compiler worry about how to achieve them. </p>
+ <p>All
+SQL database engines contain a SQL Compiler of some kind. The job of this
+compiler is to convert SQL statements into procedural programs for obtaining
+the desired result. Most SQL database engines translate SQL statements into
+tree structures. The Virtual Machine modules of these databases then walk
+these tree structures to evaluate the SQL statements. A few SQL database engines
+translate SQL statements into native machine code. </p>
+ <p>SQLite takes an
+intermediate approach and translates SQL statements into small programs written
+in a bytecode language. The SQLite bytecode is similar in concept to Java
+bytecode, the parrot bytecode of Perl, or to the p-code of the UCSD Pascal
+implementation. SQLite bytecode consists of operators that work with values
+contained in registers or on a stack. Typical bytecode operators do things
+like: </p>
+ <ul>
+<li id="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-75B81AB2-56C8-5D76-AA4C-D2E1CBF3B868"><a name="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-75B81AB2-56C8-5D76-AA4C-D2E1CBF3B868"><!-- --></a><p>Push a literal value
+onto the stack </p>
+ </li>
+
+<li id="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-4E4C868D-18BD-5B2C-9188-8303EEA062B7"><a name="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-4E4C868D-18BD-5B2C-9188-8303EEA062B7"><!-- --></a><p>Pop two numbers off
+of the stack, add them together and push the result back onto the stack </p>
+ </li>
+
+<li id="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-1B17CC17-D06C-5883-AC1C-768E87E60BF0"><a name="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-1B17CC17-D06C-5883-AC1C-768E87E60BF0"><!-- --></a><p>Move the top element
+of the stack into a specific memory register </p>
+ </li>
+
+<li id="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-B475E9E0-FE03-5C1F-9C2E-F35C866D53B3"><a name="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-B475E9E0-FE03-5C1F-9C2E-F35C866D53B3"><!-- --></a><p>Jump to a specific instruction
+if the top element of the stack is zero </p>
+ </li>
+
+</ul>
+ <p>The SQLite bytecode supports about 125 different opcodes. There is
+a remarkable resemblance between SQLite bytecode and assembly language. The
+major difference is that SQLite bytecode contains a few specialized opcodes
+designed to facilitate database operations that commonly occur in SQL. </p>
+ <p>Just
+as you do not need to understand the details of x86 or ARM7 assembly language
+in order to make effective use of C++, so also you do not need to know any
+of the details of SQLite bytecode in order to make the best use of SQLite.
+The reader need only recognize that the bytecode is there and is being used
+behind the scenes. </p>
+ <p>Those who are interested can peruse the definitions
+of the bytecodes in the SQLite documentation. But the details of the various
+bytecodes are not important to making optimal use of SQLite and so no further
+details on the bytecodes will be provided in this document. </p>
+ <p id="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-AFB97D35-56B8-5B12-8B6A-0AC6A4DC9088"><a name="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-AFB97D35-56B8-5B12-8B6A-0AC6A4DC9088"><!-- --></a><strong>The B-Tree Module</strong> </p>
+ <p>A
+SQLite database file consists of one or more b-trees. Each table and each
+index is a separate b-tree. </p>
+ <p>A b-tree is a data structure discovered
+in 1970 by Rudolf Bayer and Edward McCreight and is widely used in the implementation
+of databases. B-trees provide an efficient means of organizing data stored
+on an external storage device with fixed-sized blocks, such as a disk drive
+or a flash memory card. Each entry in a b-tree has a unique key and arbitrary
+data. The entries are ordered by their key which permits efficient lookup
+using a binary search. The b-tree algorithm guarantees worst-case insert,
+update, and access times of O(log N) where N is the number of entries. </p>
+ <p>In
+SQLite, each table is a separate b-tree and each row of the table is a separate
+entry. The b-tree key is the RowID or INTEGER PRIMARY KEY for the row and
+other columns in the row are stored in the data for the b-tree entry. Tables
+use a variant of the b-tree algorithm call <em>b+trees</em> in which all data
+is stored on the leaves of the tree. </p>
+ <p>Indexes are also stored as b-trees
+with one entry in the b-tree for each row of the table being indexed. The
+b-tree key is composed of the values for the columns being indexed followed
+by the RowID of the corresponding row in the table. Indexes do not use the
+data part of the b-tree entry. Indexes use the original Bayer and McCreight
+b-tree algorithm, not b+trees as tables do. </p>
+ <p>The number of pages in
+a b-tree can grow and shrink as information is inserted and removed. When
+new information is inserted and the b-tree needs to grow, the B-Tree Module
+may reuse pages in the database that have fallen into disuse or it may ask
+the Pager module to allocate new pages at the end of the database file to
+accommodate this growth. When a b-tree shrinks and pages are no longer needed,
+the surplus pages are added to a <em>free-list</em> to be reused by future page
+requests. The B-Tree module takes care of managing this free-list of unused
+pages. </p>
+ <p id="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-640FDE57-C615-55AF-9579-79B0D718A78E"><a name="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-640FDE57-C615-55AF-9579-79B0D718A78E"><!-- --></a><strong>The Pager Module</strong> </p>
+ <p>The
+Pager module (also called simply “the pager”) manages the reading and writing
+of raw data from the database file such that reads are always consistent and
+isolated and so that writes are atomic. </p>
+ <p>The pager treats the database
+file as a sequence of zero or more fixed-size pages. A typical page size might
+be 1024 bytes. Within a single database all pages are the same size. The first
+page of a database file is called page 1. The second is page 2. There is no
+page 0. SQLite uses a page number of 0 internally to mean “no such page”. </p>
+ <p>When
+the B-Tree module needs a page of data from the database file, it asks for
+the page by number from the pager. The pager then returns a pointer to the
+requested data. The pager keeps a cache of recently accessed database pages
+so in many cases no disk I/O has to occur to fulfil a page request. </p>
+ <p>The
+B-Tree module notifies the pager before making any changes to a page and the
+pager then saves a copy of the original page content in a rollback journal
+file. The rollback journal is used to restore the database to its original
+state if a ROLLBACK occurs. </p>
+ <p>After making changes to one or more pages,
+the B-Tree Module may ask the pager to commit those changes. The pager then
+goes through a carefully designed sequence of steps that ensure that changes
+to the database are atomic. If the update process is interrupted by a program
+crash, a system crash, or even a power failure, the next time the database
+is accessed it will appear that either all the changes were made or else none
+of them. </p>
+ <p id="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-3C970D41-7611-5AF6-B5B4-C486B5DA3875"><a name="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-3C970D41-7611-5AF6-B5B4-C486B5DA3875"><!-- --></a><strong>Database File Format Summary</strong> </p>
+ <p>A
+SQLite database file consists of one or more fixed-sized pages. The first
+page contains a 100-byte header that identifies the file as a SQLite database
+and which contains operating parameters such as the page size, a file format
+version number, the first page of the free-list, flags indicating whether
+or not autovacuum is enabled, and so forth. </p>
+ <p>The content of the database
+is stored in one or more b-trees. Each b-tree has <em>root </em> page which
+never moves. If the table or index is small enough to fit entirely on the
+root page, then that one page contains everything there is to know about the
+table or index. But most tables and indexes require more space and additional
+pages must be allocated. </p>
+ <p>The root page contains pointers (actually
+page numbers) to the other pages in the b-tree. So given the root page of
+a b-tree that implements a table or index, the B-Tree module is able to follow
+pointers to locate any entry in the b-tree and thus any row in the corresponding
+table or index. </p>
+ <div class="p"><div class="note"><span class="notetitle">Note:</span>  Auxiliary pages of a b-tree can be allocated
+from anywhere within the database file and so the pages numbers of auxiliary
+pages will change as information is added and removed from the b-tree. But
+the root page never moves. When a new table or index is created, its root
+page is assigned and remains unchanged for the lifetime of the table or index.</div>
+ </div>
+ <p>Every
+SQLite database contains a master table which stores the database schema.
+Each row of the master table holds information about a single table, index,
+view or trigger, including the original <samp class="codeph">CREATE</samp> statement
+that created that table, index, view or trigger. Rows that define tables and
+indexes also record the root page number for the b-tree that stores the table
+or index. The root page of the master table is always page 1 of the database
+file, so SQLite always knows how to locate it. And from the master table it
+can learn the root page of every other table and index in the database and
+thus locate any information in the database. </p>
+ <p id="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-72EACB86-5E22-5DF1-A7E6-1233DC647867"><a name="GUID-2C60C1C3-82B5-5ED3-98DF-E787193E8797__GUID-72EACB86-5E22-5DF1-A7E6-1233DC647867"><!-- --></a><strong>An Example of SQLite in
+Operation</strong> </p>
+ <p>This is what happens inside SQLite during a typical
+usage scenario: When the SQL server instructs SQLite to open a database, the
+SQLite library allocates a data structure to hold everything it will ever
+need to know about that database connection. It also asks the pager to open
+the database file, but does not immediately try to read anything or even verify
+that the file is a valid database. </p>
+ <p>The first time you actually try
+to access the database, SQLite will look at the 100-byte header of the database
+file to verify that the file is a SQLite database and to extract operating
+parameters such as the database page size. </p>
+ <p>After checking the header
+SQLite opens and reads the entire master table. Recall that the master table
+contains entries for every table, index, view and trigger in the database
+and that each entry includes the complete text of the <samp class="codeph">CREATE</samp> statement
+that originally created the table, index, view or trigger. </p>
+ <p>SQLite
+parses these <samp class="codeph">CREATE</samp> statements in order to rebuild an internal
+symbol table holding the names and properties of all tables, indexes, triggers
+and views in the database schema. </p>
+ <p>Among the values stored in the header
+of the database is a 32-bit <em>schema cookie</em>. The schema cookie is changed
+whenever the database schema is modified by creating or dropping a table,
+index, trigger, or view. </p>
+ <p>When SQLite parses the database schema into
+its internal symbol table, it remembers the schema cookie. Thereafter, whenever
+SQLite goes to access the database file, it first compares the schema cookie
+that it read when it parsed the schema to the current schema cookie value. </p>
+ <p>If
+they match, everything continues normally, but if the schema cookie has changed
+that means that some other thread or process may have modified the database
+schema. When that happens, SQLite has to throw out its internal symbol table
+and reread and re-parse the entire database schema in order to figure out
+what might have changed. </p>
+ <p> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html"><span class="apiname"> RSqlStatement</span></a> ’s <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A__GUID-DF9C2258-9BAA-38F0-9B11-21CD00316912"><span class="apiname">RSqlStatement::Prepare()</span></a> API
+is used to interface with SQLite’s SQL Compiler. The <samp class="codeph">Prepare()</samp> API
+triggers tokenizing, parsing, and compilation of a SQL statement into the
+internal bytecode representation that is used by the Virtual Machine. The
+generated bytecode is stored in an object returned by SQLite often referred
+to as a <em>prepared statement</em>. </p>
+ <p>After compiling a SQL statement
+into a prepared statement you can pass it to the Virtual Machine to be run.
+This is the job of <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html"><span class="apiname">RSqlStatement</span></a> ’s <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A__GUID-C8BBAAA8-0468-3330-B601-391443C1C410"><span class="apiname">RSqlStatement::Next()</span></a> and <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A__GUID-52E3CE72-D495-388F-8829-952E32F0F37D"><span class="apiname">RSqlStatement::Exec()</span></a> APIs.
+These interfaces cause the bytecode contained in the prepared statement to
+be run until it either completes or until it hits a breakpoint. </p>
+ <p>A
+breakpoint is hit whenever a <samp class="codeph">SELECT</samp> statement generates a
+row of result that needs to be returned. When a breakpoint is hit SQLite returns
+control to the caller. </p>
+ <p>The bytecode in a prepared statement object
+is such that whenever a breakpoint occurs, a single row of the result of a
+SELECT statement is contained on the stack of the Virtual Machine. At this
+point column accessor functions can be used to retrieve individual column
+values. </p>
+ <p> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A__GUID-F4D9F7EC-6FB5-3786-9C37-26ADEC1A6867"><span class="apiname">RSqlStatement::Reset()</span></a> can be called on
+a prepared statement at any time. This rewinds the program counter of the
+Virtual Machine back to the beginning and clears the stack, thus leaving the
+prepared statement in a state where it is ready to start over again from the
+beginning. </p>
+ <p> <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html"><span class="apiname"> RSqlStatement</span></a> ’s <a href="GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A.html#GUID-0176BF07-DF94-3259-8F90-DE030E35CE9A__GUID-916A5F7B-9B00-31D9-A945-075353D3915E"><span class="apiname">RSqlStatement::Close()</span></a> API
+is merely a destructor for the prepared statement object. It calls <samp class="codeph">Reset()</samp> to
+clear the virtual machine stack if necessary, deallocates the generated bytecode,
+and frees the container object. </p>
+ <p>Similarly, <a href="GUID-F3D1D883-6212-3276-9C1F-131A61F2B425.html"><span class="apiname">RSqlDatabase’</span></a> s <samp class="codeph">Close()</samp> API
+is just a destructor for a server-side object created by SQLite when the database
+was opened. SQLite asks the pager module to close the database file, clears
+the symbol table, and de-allocates all associated memory. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-02C9C31A-6563-59E4-BF46-129F4ED95087.html" title="Topics related to SQLite 3 component.">SQLite 3</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-22844C28-AB5B-5A6F-8863-7269464684B4.html" title="This document introduces you to the Symbian platform implementation of the Structured Query Language(SQL).">SQL Overview</a></div>
+<div><a href="GUID-1F12E3F5-45B2-55EC-B021-00338277C608.html" title="Used to access and query relational databases using the SQL query language.">SQL DB Overview</a></div>
+<div><a href="GUID-78773BCA-ADF6-53E6-AC80-5CB2AE1F8BCC.html" title="This topic introduces you to the SQL server.">SQL Server
+Guide</a></div>
+<div><a href="GUID-F8824165-4B33-50D1-9706-BD2438B5A2EE.html" title="The persistent storage collection.">Persistent
+Storage</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

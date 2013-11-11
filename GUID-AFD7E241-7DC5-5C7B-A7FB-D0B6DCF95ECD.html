@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="Rendering Video to a Graphics Surface Tutorial"/>
+<meta name="abstract" content="This tutorial shows you how to use the Video Renderer utility class to create a new surface for rendering and render a video buffer onto the display."/>
+<meta name="description" content="This tutorial shows you how to use the Video Renderer utility class to create a new surface for rendering and render a video buffer onto the display."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-7636F898-8390-5C32-964D-66CEA62A60F4.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1DE5CDAD-8D71-5384-9E98-5665D5A4C792.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3291A4CF-3CCD-53BD-BBB5-4F2389765B08.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-98FBEA7E-78BA-5A64-90D6-4641418003B4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-7636F898-8390-5C32-964D-66CEA62A60F4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D38456FB-BAA2-5473-B669-F44D5627155B.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Rendering Video to a Graphics Surface Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2405098 id2397074 id2397082 id2397119 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-1DE5CDAD-8D71-5384-9E98-5665D5A4C792.html">Multimedia Guide</a> &gt; <a href="GUID-3291A4CF-3CCD-53BD-BBB5-4F2389765B08.html" title="The Multimedia Software Adaptation Collection contains one component, the Video Renderer, which enables video rendering to a graphics surface.">Multimedia Software Adaptation Collection</a> &gt; <a href="GUID-98FBEA7E-78BA-5A64-90D6-4641418003B4.html" title="This section describes the Video Renderer component.">Video Renderer Component</a> &gt; <a href="GUID-7636F898-8390-5C32-964D-66CEA62A60F4.html" title="This section describes how to use the Video Renderer.">Video Renderer Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Rendering
+Video to a Graphics Surface Tutorial</h1>
+<div><p>This tutorial shows you how to use the Video Renderer utility class
+to create a new surface for rendering and render a video buffer onto the display. </p>
+
+<div class="p" id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-438441C2-6B59-566F-91CD-8082A75A831B"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-438441C2-6B59-566F-91CD-8082A75A831B"><!-- --></a><p>Before you start,
+you must: </p>
+ <ul>
+<li id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-834E7619-14ED-5C02-B9C7-B71D4FAA8EE3"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-834E7619-14ED-5C02-B9C7-B71D4FAA8EE3"><!-- --></a><p>Understand the <a href="GUID-D1F29744-EB92-5811-A735-B0BC1B352ED5.html" title="This topic describes the Video Renderer component and is aimed at video controller and video adaptation developers who want to take advantage of rendering to graphics surfaces.">Video Renderer</a>. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-C2896E81-541E-57A2-92F7-4693975F28C1"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-C2896E81-541E-57A2-92F7-4693975F28C1"><!-- --></a><p>You use the <a href="GUID-AFEC8287-41C9-36BB-B0F7-ECC034D34DC6.html"><span class="apiname">CVideoRenderer</span></a> utility
+class to render video to a graphics surface. <samp class="codeph">CVideoRenderer</samp> has
+two modes: </p>
+ <ul>
+<li id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-BAC03F4E-200E-5959-8EE7-40459CC3B302"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-BAC03F4E-200E-5959-8EE7-40459CC3B302"><!-- --></a><p> <strong>Timed</strong>  </p>
+ <p>In
+timed mode, a frame is rendered at a specific time called its presentation
+time. A frame's presentation time is the system clock time when that frame
+must be visible on the display. <samp class="codeph">CVideoRenderer</samp> launches its
+own high-priority thread to handle timed rendering. </p>
+ </li>
+
+<li id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-39DD6061-2847-53F8-A066-9720913F576C"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-39DD6061-2847-53F8-A066-9720913F576C"><!-- --></a><p> <strong>Non-timed</strong>  </p>
+ <p>In
+non-timed mode, a frame is rendered as soon as possible. Non-timed mode requires
+a <a href="GUID-B4C76104-EA1B-3FC3-A31E-86A976598171.html"><span class="apiname">CActiveScheduler</span></a> to be present in the calling thread. </p>
+ </li>
+
+</ul>
+ <p> <samp class="codeph">CVideoRenderer</samp> uses the <a href="GUID-6BB74A8C-B243-368C-8114-E9D4C4D511D0.html"><span class="apiname">MVideoRendererObserver</span></a> interface
+to provide notifications about the status of video buffers. <samp class="codeph">MVideoRendererObserver</samp> provides
+the following notifications: </p>
+ 
+<div class="tablenoborder"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-F871259A-07DE-5C4E-8441-7AAF5988E935"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-F871259A-07DE-5C4E-8441-7AAF5988E935" frame="border" border="1" rules="all">
+<thead align="left">
+<tr>
+<th class="cellrowborder" valign="top" id="d1603266e102"> Callback </th>
+
+<th class="cellrowborder" valign="top" id="d1603266e105">Description</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top" headers="d1603266e102 "><p> <a href="GUID-6BB74A8C-B243-368C-8114-E9D4C4D511D0.html#GUID-6BB74A8C-B243-368C-8114-E9D4C4D511D0__GUID-BCFD3522-F252-3347-AF99-38B1CC7C8722"><span class="apiname">MVideoRendererObserver::MvroBufferDisplayed(TInt,const
+                  TTime &amp;)</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d1603266e105 "><p>A buffer has been rendered onto the display. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d1603266e102 "><p> <a href="GUID-6BB74A8C-B243-368C-8114-E9D4C4D511D0.html#GUID-6BB74A8C-B243-368C-8114-E9D4C4D511D0__GUID-561CE3AE-B3B3-37DF-8836-8636B53E3D76"><span class="apiname">MVideoRendererObserver::MvroBufferSkipped(TInt)</span></a> </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d1603266e105 "><p>A buffer was skipped in the rendering process. This could be because
+it missed its presentation time or an error occurred. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top" headers="d1603266e102 "><p> <a href="GUID-6BB74A8C-B243-368C-8114-E9D4C4D511D0.html#GUID-6BB74A8C-B243-368C-8114-E9D4C4D511D0__GUID-8C80E5DC-9BCD-3A4E-BC3E-191213BC966A"><span class="apiname">MVideoRendererObserver::MvroVideoBufferAvailable()</span></a> </p>
+ </td>
+
+<td class="cellrowborder" valign="top" headers="d1603266e105 "><p>A new buffer is available which can be used to store a video frame
+for rendering. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p> <strong>Note</strong>: You must implement <samp class="codeph">MVideoRendererObserver</samp> to
+receive these notifications. </p>
+ </div>
+
+<a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-6C9FF04E-B88A-57EA-BE76-37D0E08A496F"><!-- --></a><ol id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-6C9FF04E-B88A-57EA-BE76-37D0E08A496F"><li class="stepexpand" id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-BB5997B5-8A52-590E-8DE3-73061508883B"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-BB5997B5-8A52-590E-8DE3-73061508883B"><!-- --></a><span>Create a new Video
+Renderer instance by calling <a href="GUID-AFEC8287-41C9-36BB-B0F7-ECC034D34DC6.html#GUID-AFEC8287-41C9-36BB-B0F7-ECC034D34DC6__GUID-2B582029-8A47-316B-A85F-03EEA0B9BB9C"><span class="apiname">CVideoRenderer::NewL(MVideoRendererObserver&amp;,
+TBool)</span></a>. </span>
+ Set the <samp class="codeph">aTimed</samp> parameter to <samp class="codeph">ETrue</samp> for
+timed mode or <samp class="codeph">EFalse</samp> for non-timed mode. 
+ <pre class="codeblock" id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-8F673E2F-35B0-50BA-9D01-D65DD496A222"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-8F673E2F-35B0-50BA-9D01-D65DD496A222"><!-- --></a>//Create new timed Video Renderer
+CVideoRenderer* renderer = CVideoRenderer::NewL(observer, ETrue);</pre>
+ 
+ If in timed mode, <samp class="codeph">CVideoRenderer</samp> launches its
+own high-priority thread. 
+</li>
+<li class="stepexpand" id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-655E965E-0EC8-522E-84E1-1BE770D40CD4"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-655E965E-0EC8-522E-84E1-1BE770D40CD4"><!-- --></a><span>Get the list of
+supported surface formats by calling <a href="GUID-AFEC8287-41C9-36BB-B0F7-ECC034D34DC6.html#GUID-AFEC8287-41C9-36BB-B0F7-ECC034D34DC6__GUID-14039C33-2A8E-3573-B8E8-0F872A9990D6"><span class="apiname">CVideoRenderer::GetSupportedFormatsL(RArray&lt;TUncompressedVideoFormat&gt;&amp;)</span></a>. </span>
+ The Video Renderer maintains a list of supported formats in an RSS file.
+For more information, see <a href="GUID-6021BE18-3416-55DF-A628-0071024D7586.html" title="The Video Renderer resource file (videorenderer.rss) provides a list of supported pixel formats and timed mode values for the Video Renderer. Videorenderer.rss is located in mmf/videorenderer/src.">Video
+Renderer Resource File</a>. 
+ <pre class="codeblock" id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-DD5B2FC8-F437-5980-A3FC-8066ED6E624D"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-DD5B2FC8-F437-5980-A3FC-8066ED6E624D"><!-- --></a>//Get an array of supported formats
+renderer-&gt;GetSupportedFormatsL(array);</pre>
+ 
+  <samp class="codeph">GetSupportedFormatsL()</samp> returns an array of supported
+formats. Use the supported format you require as an input parameter when creating
+your surface. 
+</li>
+<li class="stepexpand" id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-5DF2626B-59D1-505E-9C27-7E88C3D9F5C6"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-5DF2626B-59D1-505E-9C27-7E88C3D9F5C6"><!-- --></a><span>Create a new surface
+for rendering by calling <a href="GUID-AFEC8287-41C9-36BB-B0F7-ECC034D34DC6.html#GUID-AFEC8287-41C9-36BB-B0F7-ECC034D34DC6__GUID-2E3C8649-B979-3D0C-9580-09EA30BDB883"><span class="apiname">CVideoRenderer::CreateSurfaceL(const
+TSize&amp;, TInt, const                 TUncompressedVideoFormat&amp;, TSurfaceId&amp;)</span></a> </span>
+ <pre class="codeblock" id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-D8CBC1CB-3ED4-5252-9E8E-B475F62891CA"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-D8CBC1CB-3ED4-5252-9E8E-B475F62891CA"><!-- --></a>TSurfaceId surfaceId;
+renderer-&gt;CreateSurfaceL(size, buffers, format, surfaceId);</pre>
+ 
+  <samp class="codeph">CVideoRenderer::CreateSurfaceL()</samp> returns a Surface
+ID for the new surface. You use the Surface ID whenever you need to refer
+to the surface, for example, when you need to destroy it. 
+</li>
+<li class="stepexpand" id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-37C2073C-D6C5-5499-A069-2B74152147AC"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-37C2073C-D6C5-5499-A069-2B74152147AC"><!-- --></a><span>Retrieve the next
+free buffer from the Video Renderer by calling <a href="GUID-AFEC8287-41C9-36BB-B0F7-ECC034D34DC6.html#GUID-AFEC8287-41C9-36BB-B0F7-ECC034D34DC6__GUID-8A620888-269F-3ED8-A71C-C4CED54CFE5D"><span class="apiname">CVideoRenderer::NextBuffer()</span></a>. </span>
+ <pre class="codeblock" id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-FF65F277-7D82-5ACB-8A10-31AE27831A51"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-FF65F277-7D82-5ACB-8A10-31AE27831A51"><!-- --></a>TVideoFrameBuffer* buffer = renderer-&gt;NextBuffer();
+// use buffer</pre>
+ 
+ <p>Note you should only perform this step after your observer's <samp class="codeph">MvroVideoBufferAvailable()</samp> routine
+has been called.</p>
+
+  <samp class="codeph">CVideoRenderer::NextBuffer()</samp> returns the next
+available buffer. 
+</li>
+<li class="stepexpand" id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-49DD97C3-9989-59F8-B07C-5EDF9302DBFD"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-49DD97C3-9989-59F8-B07C-5EDF9302DBFD"><!-- --></a><span>Render the buffer
+onto the display by calling <a href="GUID-AFEC8287-41C9-36BB-B0F7-ECC034D34DC6.html#GUID-AFEC8287-41C9-36BB-B0F7-ECC034D34DC6__GUID-01F200BC-C024-396D-BC61-8305938117C9"><span class="apiname">CVideoRenderer::UpdateBuffer(TVideoFrameBuffer
+*,const TTime                 &amp;)</span></a>. </span>
+ If you created your Video Renderer in timed mode, set <samp class="codeph">aPresentationTime</samp> to
+be the required presentation time for the buffer. If you created your Video
+Renderer in non-timed mode, then <samp class="codeph">aPresentationTime</samp> is ignored
+and the buffer is displayed as soon as possible. 
+ <pre class="codeblock" id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-53911688-D44F-5A54-B42E-46CA0F0CE4C8"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-53911688-D44F-5A54-B42E-46CA0F0CE4C8"><!-- --></a>FillWithData(buffer-&gt;Buffer()); // Fills buffer with data
+renderer-&gt;UpdateBuffer(buffer, presentationTime);</pre>
+ 
+ When the buffer has been displayed, you are notified via the <a href="GUID-6BB74A8C-B243-368C-8114-E9D4C4D511D0.html#GUID-6BB74A8C-B243-368C-8114-E9D4C4D511D0__GUID-BCFD3522-F252-3347-AF99-38B1CC7C8722"><span class="apiname">MVideoRendererObserver::MvroBufferDisplayed(TInt,const TTime   
+             &amp;)</span></a> callback. 
+</li>
+</ol>
+
+<div class="section" id="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-D23C8609-FEDE-55C9-9B61-B680D062F7AF"><a name="GUID-AFD7E241-7DC5-5C7B-A7FB-D0B6DCF95ECD__GUID-D23C8609-FEDE-55C9-9B61-B680D062F7AF"><!-- --></a><p>You have now created
+a surface and rendered a video buffer onto the display. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-7636F898-8390-5C32-964D-66CEA62A60F4.html" title="This section describes how to use the Video Renderer.">Video Renderer Tutorials</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-D38456FB-BAA2-5473-B669-F44D5627155B.html">Video Player
+2 Tutorial</a></div>
+<div><a href="GUID-528BDE53-327A-5D34-B4BF-CB2421BE43C8.html">Writing a
+Controller Plug-in</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

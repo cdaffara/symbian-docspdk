@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="TimeoutLinkage"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-330C7689-DE38-3D7D-8930-5C86E3013DEF"/>
+
+<title>TimeoutLinkage</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-330C7689-DE38-3D7D-8930-5C86E3013DEF"><a name="GUID-330C7689-DE38-3D7D-8930-5C86E3013DEF"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2472810 id2408823 id2408865 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">TimeoutLinkage Class Reference</h1>
+	<table class="signature"><tr><td>class TimeoutLinkage</td></tr></table><div class="section"><div>
+			<p>Access "parent" class based on the <a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html#GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24">RTimeout</a> member offset.</p>
+
+			<p>This is a base template class to convert the link reference into "parent" class refeference. This is just a convenience template and other solutions for defining the the "expired" callback for <a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html#GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24">RTimeout</a> can also be used.</p>
+
+			<div class="p">A simple use example: <pre class="codeblock">	class CSome
+		{
+		
+		CSome(aCallback) : iTimeout(aCallback) {};
+		~CSome() { iTimeout.Cancel(); }
+		Timeout();			// A method to handle the timeout of CSome
+	public:
+		RTimeout iTimeout;
+		};
+
+	class SomeLinkage : public TimeoutLinkage&lt;CSome, _FOFF(CSome, iTimeout)&gt;
+		{
+	public:
+		static void Expired(RTimeout &amp;aLink, const TTime &amp; aNow, TAny *aPtr)
+			{
+			Object(aLink)-&gt;Timeout();
+			}
+		};</pre>
+ All of the above can be in the CSome header file, and instances of CSome can now just be created as <pre class="codeblock">	MTimeoutManager *tMgr = TimeoutFactory::NewL(1); // unit = 1s
+	...
+	CSome x = new CSome(SomeLinkage:Expired);
+	...
+	x-&gt;iTimeout.Set(tMgr, 10); // request timeout after 10s.
+	...
+	// when not needed, just delete
+	delete x;
+	delete tMgr;</pre>
+ and the CSome Timeout() method will be called after 10s, unless cancelled.</div>
+
+			<div class="p">Instead of using the Timeout in the objects directly, the aPtr parameter of Expired could be an address of a manager type instance, which handles objects of this type. The object itself might not have any use of the Expired call and it should be passed to the manager. This can be realised by defining the linkage Expired as follows (for example) <pre class="codeblock">	static void Expired(RTimeoutLink &amp;aLink, const TTime &amp;aNow, TAny *aPtr)
+		{
+		((CSomeManager *)aPtr)-&gt;Timeout(Object(aLink), aNow);
+		}</pre>
+   </div>
+
+		</div></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">T *</td><td><a href="#GUID-4952572B-4707-385D-A632-4762113E3612">Object</a>(<a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html">RTimeout</a> &amp;)</td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-4952572B-4707-385D-A632-4762113E3612"><a name="GUID-4952572B-4707-385D-A632-4762113E3612"><!-- --></a>
+		<h2 class="topictitle2">Object(RTimeout &amp;)</h2>
+		<table class="signature"><tr><td>T *</td><td>Object</td><td>(</td><td><a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html">RTimeout</a> &amp;</td><td>aLink</td><td>)</td><td>[protected, static, inline]</td></tr></table><div class="section"><div>
+				<p>Gets the "parent object" of <a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html#GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24">RTimeout</a> member.</p>
+
+				<p>Based on the offset of the <a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html#GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24">RTimeout</a> member, typecast the adjusted pointer to the "parent type", and return the pointer.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7EB1B1F2-5BD0-3DA3-B15E-E39DAE247A24.html">RTimeout</a> &amp; aLink</td><td>The timeout handle.  </td></tr></table></div>
+
+	</div>
+
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

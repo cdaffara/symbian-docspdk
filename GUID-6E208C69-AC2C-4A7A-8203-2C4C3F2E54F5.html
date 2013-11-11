@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Binding and Unbinding"/>
+<meta name="abstract" content="This document describes how device drivers bind and unbind interrupts."/>
+<meta name="description" content="This document describes how device drivers bind and unbind interrupts."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-6E208C69-AC2C-4A7A-8203-2C4C3F2E54F5"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Binding and Unbinding</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-6E208C69-AC2C-4A7A-8203-2C4C3F2E54F5"><a name="GUID-6E208C69-AC2C-4A7A-8203-2C4C3F2E54F5"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 id2388365 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; <a href="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442.html" title="This document describes how device drivers use interrupts.">Interrupts</a> &gt; </div>
+<h1 class="topictitle1">Binding
+and Unbinding</h1>
+<div><p>This document describes how device drivers bind and unbind interrupts.</p>
+
+<p>To handle events, the interrupt source and the ISR have to be registered
+with the OS: this is called binding the interrupt. An interrupt
+has to be unbound when its use is complete.</p>
+
+<div class="section" id="GUID-6E208C69-AC2C-4A7A-8203-2C4C3F2E54F5__GUID-36710685-0B8C-4D78-A453-B8772F1D6492"><a name="GUID-6E208C69-AC2C-4A7A-8203-2C4C3F2E54F5__GUID-36710685-0B8C-4D78-A453-B8772F1D6492"><!-- --></a><h2 class="sectiontitle">Binding</h2> <p> An
+interrupt source ID is bound with the driver's interrupt service routine.
+This is done using the function <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-4E3CB472-3525-32F8-9BC4-8ECFEE931E7B"><span class="apiname">Interrupt::Bind()</span></a> in the <em>second
+stage constructor</em> of the physical channel. Interrupt binding can fail
+if the source has been already used or bound. </p>
+ <pre class="codeblock" id="GUID-6E208C69-AC2C-4A7A-8203-2C4C3F2E54F5__GUID-0743023B-86D7-5F76-B58F-A1A2159EFAE4"><a name="GUID-6E208C69-AC2C-4A7A-8203-2C4C3F2E54F5__GUID-0743023B-86D7-5F76-B58F-A1A2159EFAE4"><!-- --></a>TInt DExUartPhysicalChannelH4::DoCreate(TInt aUnit, const TDesC8* aInfo, const TVersion&amp; aVer)
+    {
+    ...
+    // Bind the interrupt service routine (ISR) to a specific 
+    // interrupt ID. When the ISR is called, the value aPtr,
+    // (here this object) is passed as the argument. The ISR 
+    // must be a static void function, taking a single TAny* 
+    // parameter: void Isr(TAny* aParam). Interrupt::Enable() 
+    // must be called to start receiving interrupts. Bind() 
+    // returns KErrInUse if the ISR is already bound.
+    //
+    TInt r = Interrupt::Bind(iIrqId,UartIsr,this);
+    if (r!=KErrNone)
+        {
+        KDBG(Kern::Printf("DExUartPhysicalChannel::Interrupt Binding 
+                for UART failed"));
+        return r;
+        }
+
+    return KErrNone;
+    }</pre>
+</div>
+
+<div class="section" id="GUID-6E208C69-AC2C-4A7A-8203-2C4C3F2E54F5__GUID-B68C33DD-AC9D-4211-8ADF-0A2D5F02B721"><a name="GUID-6E208C69-AC2C-4A7A-8203-2C4C3F2E54F5__GUID-B68C33DD-AC9D-4211-8ADF-0A2D5F02B721"><!-- --></a><h2 class="sectiontitle">Unbinding</h2> <p> An
+interrupt is unbound by calling <a href="GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3.html#GUID-E7A7083C-97B9-39B9-A147-4A6E314EE3A3__GUID-DF98A40B-453C-3BC0-B538-D9A6943732E0"><span class="apiname">Interrupt::UnBind()</span></a>, which
+de-registers the interrupt source and routine. This must be done before or
+during physical channel destruction. Unbinding an interrupt does not disable
+its source. Interrupts have to be disabled explicitly before unbinding to
+avoid spurious interrupts. </p>
+ <pre class="codeblock" id="GUID-6E208C69-AC2C-4A7A-8203-2C4C3F2E54F5__GUID-7F959F0F-E295-5310-8296-7BBF36D408FB"><a name="GUID-6E208C69-AC2C-4A7A-8203-2C4C3F2E54F5__GUID-7F959F0F-E295-5310-8296-7BBF36D408FB"><!-- --></a>/**
+ Physical channel destructor. Delete and free any objects created and
+ allocated by the physical channel. This is called by the    
+ framework while unloading the driver (PDD).
+ */
+DExUartPhysicalChannelH4::~DExUartPhysicalChannelH4()
+    {
+    // Unbind the UART interrupt. Interrupt::Unbind() frees the  
+    // interrupt service routine (ISR) function from the specified
+    // interrupt ID.
+    // 
+    Interrupt::Unbind (iIrqId);
+    }</pre>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-660A8E4C-F930-415C-8CCC-CB1DCCAA2442.html" title="This document describes how device drivers use interrupts.">Interrupts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

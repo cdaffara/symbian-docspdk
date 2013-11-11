@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="How to implement a simple server interface"/>
+<meta name="abstract" content="Provides code snippets to help you to implement a simple server interface."/>
+<meta name="description" content="Provides code snippets to help you to implement a simple server interface."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6047DB3F-DC92-51DF-9EEB-00E79E890B54.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-3786D8E6-17A9-52E4-A8DF-CFCDC3039854.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-6047DB3F-DC92-51DF-9EEB-00E79E890B54.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-51621C76-17B5-5829-B4EC-86B453442CDC"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>How to implement a simple server interface</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2393224 id2393504 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-3786D8E6-17A9-52E4-A8DF-CFCDC3039854.html">Inter Process Communication</a> &gt; <a href="GUID-6047DB3F-DC92-51DF-9EEB-00E79E890B54.html">Using Client-Server</a> &gt; </div>
+<h1 class="topictitle1">How
+to implement a simple server interface</h1>
+<div><p>Provides code snippets to help you to implement a simple server
+interface.</p>
+
+<div class="section" id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-2720017E-2EDF-4DB5-81E9-2A75E434BDE3"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-2720017E-2EDF-4DB5-81E9-2A75E434BDE3"><!-- --></a><h2 class="sectiontitle">Handling asynchronous requests</h2> <p>The implementation
+of a server requires a class derived from <samp class="codeph">CServer2</samp>. This
+is the <em>active object</em> base class responsible for handling the asynchronous
+requests from the client program. </p>
+ <p><strong>Construction and initialisation</strong> </p>
+ <p>An
+instance of the <samp class="codeph">CServer2</samp> derived class is, typically, created
+by the server's thread function. As an active object, it needs a priority
+and this is passed as a parameter to the constructor. The choice of priority
+value depends on the server's design. If the server can, ultimately, have
+more than one active object, then it may be important for the <samp class="codeph">CServer2</samp> active
+object to have the highest priority. </p>
+ <p>The server can now be started.
+This is a code fragment taken from the example that can be found at <span class="filepath">...\examples\Base\IPC\ClientServer\complex</span>. </p>
+ <pre class="codeblock" id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-6D887396-920C-5B5B-B58E-6700371DB31C"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-6D887396-920C-5B5B-B58E-6700371DB31C"><!-- --></a>CCountServServer *pS=new CCountServServer(EPriorityStandard);
+__ASSERT_ALWAYS(pS!=NULL,CCountServServer::PanicServer(ESvrCreateServer));
+...
+      
+    // Start the server
+TInt err = pS-&gt;Start(KCountServerName);
+if (err != KErrNone)
+    {
+    CCountServServer::PanicServer(ESvrStartServer);
+    }</pre>
+ <p>The function <samp class="codeph">CServer2::Start()</samp> adds
+the <samp class="codeph">CServer2</samp> active object to the active scheduler and issues
+the first request for messages. The server is now waiting for messages. </p>
+ <p>As
+with all active objects, the completion of requests for messages is handled
+by the <samp class="codeph">CServer2::RunL()</samp> protected member function. </p>
+ <p><strong>Handling requests</strong> </p>
+ <p>A request for a connection by a client thread
+results in the creation of a new session. The request for a connection results
+in a call by the client/server framework to the <a href="GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C.html#GUID-8E316AC4-4676-301A-9A23-659E83AA1D1C__GUID-3260F745-3597-349A-9754-303DC020EF18"><span class="apiname">CServer2::NewSessionL()</span></a> function.
+A derived class must provide an implementation - creating and initialising
+an instance of a <a href="GUID-D5A30C75-E22C-34E8-913B-7D2CA6AD5C51.html"><span class="apiname">CSession2</span></a> derived class. The framework
+takes this newly created session object to the server's queue. </p>
+ <p>For
+a non sharable session, requests for disconnection by a client thread cause
+the relevant <samp class="codeph">CSession2</samp> object to be deleted. The <samp class="codeph">CSession2</samp> destructor
+should perform appropriate cleanup. </p>
+ <p>Any other message is passed to <samp class="codeph">CSession2::ServiceL()</samp>.
+This function must be implemented by a derived class. </p>
+ </div>
+
+<div class="section" id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-2E5EB078-59D7-49B3-A32A-17AF0FBD3492"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-2E5EB078-59D7-49B3-A32A-17AF0FBD3492"><!-- --></a><h2 class="sectiontitle">Server side session representation</h2> <p>The base class <samp class="codeph">CSession2</samp> represents
+a client's session on the server side. This class provides the standard session
+behaviour. A class derived from <samp class="codeph">CSession2</samp> must be defined
+and implemented. The following class definition, taken from the example that
+can be found at: <span class="filepath">...\examples\Base\IPC\ClientServer\simple</span>,
+is typical: </p>
+ <pre class="codeblock" id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-8DCCB062-2630-5C2E-A590-89208928E902"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-8DCCB062-2630-5C2E-A590-89208928E902"><!-- --></a>class CCountServSession : public CSession2
+    {
+public:
+    CCountServSession();
+
+      //service request
+    void ServiceL(const RMessage2&amp; aMessage);
+    void DispatchMessageL(const RMessage2&amp; aMessage);
+
+      // services available to initialize/increase/decrease/reset and
+      // return the counter value.
+    void SetFromStringL(const RMessage2&amp; aMessage);
+    void Increase();
+    void Decrease();
+    void IncreaseBy(const RMessage2&amp; aMessage);
+    void DecreaseBy(const RMessage2&amp; aMessage);
+    void CounterValue(const RMessage2&amp; aMessage);
+    void Reset();
+
+protected:
+        // panic the client
+   void PanicClient(const RMessage2&amp; aMessage,TInt aPanic) const;
+        
+private:
+    TInt iCount;
+    };</pre>
+ <p>Note the following: </p>
+ <ul>
+<li id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-D3EE4EBA-47F3-5EC4-8487-A4DBD809D2B3"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-D3EE4EBA-47F3-5EC4-8487-A4DBD809D2B3"><!-- --></a><p>The function <samp class="codeph">ServiceL()</samp> is
+called by the client/server framework to handle all messages except requests
+to connect and disconnect. </p>
+ </li>
+
+<li id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-C4980BE1-D852-5AAE-8782-8C98D95BA102"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-C4980BE1-D852-5AAE-8782-8C98D95BA102"><!-- --></a><p> <samp class="codeph">ServiceL()</samp> calls <samp class="codeph">DispatchMessageL()</samp> under
+a trap harness. </p>
+ </li>
+
+<li id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-19A78104-9C7C-53C7-8328-F34E2CBCF857"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-19A78104-9C7C-53C7-8328-F34E2CBCF857"><!-- --></a><p> <samp class="codeph">DispatchMessageL()</samp> determines
+the appropriate message service function to call by examining the operation
+code of the current message. This is simply a mechanism to delegate the handling
+of different request types. </p>
+ </li>
+
+<li id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-9A3F4396-8561-540D-BE0B-C674A14704AE"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-9A3F4396-8561-540D-BE0B-C674A14704AE"><!-- --></a><p>The class provides message
+service functions: <samp class="codeph">Increase()</samp>, <samp class="codeph">IncreaseBy()</samp> etc.
+to service specific messages from clients. </p>
+ </li>
+
+<li id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-023BAF14-7588-5F25-B75C-8F1126D7749F"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-023BAF14-7588-5F25-B75C-8F1126D7749F"><!-- --></a><p>The function <samp class="codeph">SetFromStringL()</samp> needs
+a string specified by the client and therefore needs to read data from the
+client address space. </p>
+ </li>
+
+</ul>
+ <p><strong>ServiceL()</strong> </p>
+ <p>This
+is implemented as follows: </p>
+ <pre class="codeblock" id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-293D2833-3C1C-5B6E-AACF-B8EC20E0F7F9"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-293D2833-3C1C-5B6E-AACF-B8EC20E0F7F9"><!-- --></a>void CCountServSession::ServiceL(const RMessage2&amp; aMessage)
+    {
+    TRAPD(err,DispatchMessageL(aMessage));
+    aMessage.Complete(err);
+    }</pre>
+ <p>After calling the appropriate service function via <samp class="codeph">DispatchMessageL()</samp>,
+the asynchronous request is completed with <samp class="codeph">aMessage.Complete()</samp> which
+passes the completion code back to the client. </p>
+ <p><strong>DispatchMessageL()</strong> </p>
+ <p>This is implemented as follows: </p>
+ <pre class="codeblock" id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-14C3190C-921F-5C69-B0D0-7932C71B5ACF"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-14C3190C-921F-5C69-B0D0-7932C71B5ACF"><!-- --></a>void CCountServSession::DispatchMessageL(const RMessage2&amp; aMessage)
+    {
+    switch (aMessage.Function())
+        {
+    case ECountServSetFromString:
+        SetFromStringL(aMessage);
+        return;
+    case ECountServIncrease:
+        Increase();
+        return;
+    case ECountServIncreaseBy:
+        IncreaseBy(aMessage);
+        return;
+        ...
+    case ECountServValue:
+        CounterValue(aMessage);
+        return;
+    ...
+    default:
+        PanicClient(aMessage,EBadRequest);
+        return;
+        }
+    }</pre>
+ <p><strong>IncreaseBy()</strong> </p>
+ <p>This message service function is implemented as follows: </p>
+ <pre class="codeblock" id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-4516B089-F1D8-56BD-82CB-B7A1B0E98F0D"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-4516B089-F1D8-56BD-82CB-B7A1B0E98F0D"><!-- --></a>void CCountServSession::IncreaseBy(const RMessage2&amp; aMessage)
+    {
+    iCount = iCount + aMessage.Int0(); 
+    }</pre>
+ <p>Note that we need to pass the message object to the function.
+The <samp class="codeph">Int0()</samp> function is used to get the integer specified
+in the client call - the '0' on the end of the function name indicates that
+the integer is the first parameter in the set passed across from the client. </p>
+ <p><strong>SetFromStringL()</strong> </p>
+ <p>This message service function is implemented
+as follows: </p>
+ <pre class="codeblock" id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-2BC55BC9-6AE1-5462-A6EE-6767F8EE19C7"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-2BC55BC9-6AE1-5462-A6EE-6767F8EE19C7"><!-- --></a>void CCountServSession::SetFromStringL(const RMessage2&amp; aMessage)
+    {
+         // length of passed descriptor (1st parameter passed from client)
+    TInt deslen = aMessage.GetDesLength(0);
+    
+      // Passed data will be saved in this descriptor.
+    RBuf buffer;
+      
+      // Max length set to the value of "deslen", but current length is zero
+    buffer.CreateL(deslen);
+      
+      // Do the right cleanup if anything subsequently goes wrong
+    buffer.CleanupClosePushL();
+    
+      // Copy the client's descriptor data into our buffer.
+    aMessage.ReadL(0,buffer,0);
+    
+      // Now do a validation to make sure that the string only has digits
+    if (buffer.Length() == 0)
+        {
+        User::Leave(ENonNumericString);
+        }
+    ...
+      // Do rest of work to convert from 
+      // string to integer, and assign.</pre>
+ <p> <samp class="codeph">RMessage::ReadL()</samp> reads
+the descriptor from the client address space as specified by the first argument
+in the message, and copies the data into the descriptor specified as its second
+argument. A basic test is done to make sure there data is supplied. </p>
+ <p><strong>CounterValue()</strong> </p>
+ <p>This is implemented as follows: </p>
+ <pre class="codeblock" id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-9EE6666F-A4A7-5437-8AF1-CB0F8E2D6F0F"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-9EE6666F-A4A7-5437-8AF1-CB0F8E2D6F0F"><!-- --></a>void CCountServSession::CounterValue(const RMessage2&amp; aMessage)
+    {
+    TPckgBuf&lt;TInt&gt; p(iCount);
+    aMessage.WriteL(0,p);
+    }</pre>
+ <p>It writes data back to a descriptor in the client address
+space. The corresponding client request is: </p>
+ <pre class="codeblock" id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-A772B781-18E8-5109-BB6F-8871F829A8B5"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-A772B781-18E8-5109-BB6F-8871F829A8B5"><!-- --></a>TInt RCountServSession::CounterValue()
+    {
+    TInt res=0;
+    TckgBuf&lt;TInt&gt; pckg;
+    
+      // Note that TPckgBuf is of type TDes8
+    TIpcArgs args(&amp;pckg);
+    SendReceive(ECountServValue, args);
+    
+      // Extract the value returned from the server. 
+    res = pckg();
+    return res;
+    }</pre>
+ <p><strong>Notes</strong> </p>
+ <ul>
+<li id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-EC003B28-3695-5B19-8074-54DB06B720B8"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-EC003B28-3695-5B19-8074-54DB06B720B8"><!-- --></a><p>The <samp class="codeph">TInt</samp> is
+packaged into a descriptor before being passed to the server. The packaging
+mechanism is known as package buffer. </p>
+ </li>
+
+<li id="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-BB34EFC9-D238-509C-98C1-66BC64AA6EE2"><a name="GUID-51621C76-17B5-5829-B4EC-86B453442CDC__GUID-BB34EFC9-D238-509C-98C1-66BC64AA6EE2"><!-- --></a><p>The write operation
+copies the descriptor, i.e. the package buffer containing the integer value,
+back to the descriptor in the client address space. Note that the zero specified
+in <samp class="codeph">aMessage.WriteL(0,p);</samp> means that the argument referred
+to is the first in the list passed across from the client side via the <samp class="codeph">TIpcArgs</samp> object. </p>
+ </li>
+
+</ul>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-6047DB3F-DC92-51DF-9EEB-00E79E890B54.html">Using Client-Server</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

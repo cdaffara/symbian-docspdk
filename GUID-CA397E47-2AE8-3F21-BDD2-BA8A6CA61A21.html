@@ -1,0 +1,853 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CAlfControl"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21"/>
+
+<title>CAlfControl</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21"><a name="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2366708 id2414975 id2414979 id2537184 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CAlfControl Class Reference</h1>
+	<table class="signature"><tr><td>class CAlfControl : public CAlfPropertyOwner</td></tr></table><div class="section"><div>
+			<p>
+				<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21">CAlfControl</a> provides a base class for gathering logical functionality in the UI.</p>
+
+			<p>For example a list control could gather and control all visuals that form a listbox UI element. A thumbnail view control could be used to control visuals that form a thumbnail view in an image gallery application.</p>
+
+			<p>Their main use is to handle interaction with the user by catching events through overloaded <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-7398A9F7-A7E9-331D-B001-C608902971D1">OfferEventL()</a> - method.</p>
+
+			<p>Developers should derive their controls from this base class to implement the UI logic of their application. Developers should remember to pass a reference to the CAlfEnv - object to the <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21">CAlfControl</a> - base class when derived class is constructed through the <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-1CEFF721-4AB7-32DC-8C10-A3F627C68DD7">CAlfControl::ConstructL()</a> - method. Failure to do this will result in KERN-EXEC 3 panic when <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21">CAlfControl</a> - derived object is added to a CAlfControlGroup. Usually you would do this when <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-1CEFF721-4AB7-32DC-8C10-A3F627C68DD7">ConstructL()</a> - method of the derived class is called, like this:</p>
+
+			<div class="p">Usage: <pre class="codeblock"> class CMyControl : public CAlfControl
+    {
+  public:
+     CMyControl( CAlfEnv&amp; aEnv );
+    ~CMyControl();
+ 
+    //Handle interaction with the user by catching events
+    virtual TBool OfferEventL(const TAlfEvent&amp; aEvent);
+    
+    //Few other notofication methods, overloaded by this custom
+    //control, to perform required action
+    void NotifyControlVisibility( TBool aIsVisible, CAlfDisplay&amp; aDisplay );
+    void VisualLayoutUpdated( CAlfVisual&amp; aVisual );
+    void FocusChanged( CAlfDisplay&amp; aDisplay, TBool aFocused );
+    void HostChanging( CAlfControl* aNewHost );
+    TBool Focusing()const;
+   };
+ 
+  void CMyControl::ConstructL(CAlfEnv&amp; aEnv)
+ 	{
+     CAlfControl::ConstructL(aEnv);
+ 	}
+ 
+  //To show the control on display
+  //Create a new control group
+  CAlfControlGroup&amp; group = iEnv-&gt;NewControlGroupL( KControlGroupIdDefault );
+ 
+  //Create control instance and append it to group
+  CMyControl* control = CMyControl::ConstructL(&amp;iEnv);
+  group.AppendL( control );
+ 
+  //Show control group on display
+  iDisplay-&gt;Roster().ShowL( group );</pre>
+ Controls are not visible by themselves, but controls create and manipulate visuals (<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html#GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3">CAlfVisual</a> - derived objects). Controls set the target values for visual properties and/or schedule animation commands.</div>
+
+			<p>Controls are collected in groups represented by CAlfControlGroup - objects (e.g., one group per view). Even though controls are contained within control groups they do not have a hierarchical organization. Controls can be, however, connected to each other for collaboration. This can be done using <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-F58AB8C6-9624-321A-BEAE-023391AED18A">AddConnectionL()</a> - method. </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CAlfControl<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner</a><ul class="derivation"><li class="derivation-depth-2 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></li></ul></div>
+<div class="section nested"><h2 class="sectiontitle">Nested Classes and Structures</h2><ul><li><a href="GUID-AB513E66-E462-3A9A-8399-70C98BD54642.html">CAlfControl::TPrivateData</a></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-BC26F9A5-D375-3681-8012-5F161FCD324F">CAlfControl</a>()</td></tr><tr class="bg"><td align="right" class="code"/><td><a href="#GUID-6D080029-3723-366A-A439-9CDC38A4B3B9">~CAlfControl</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-5F0C7FC5-A0F6-3416-9618-5B5C24543835">AcceptInput</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-FFF76772-7C36-3B80-9FDF-CB54745DFB15">AcquireFocus</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F58AB8C6-9624-321A-BEAE-023391AED18A">AddConnectionL</a>(<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-69C8AAF5-B63E-3C31-BDA0-CBD6F0FFF044">Append</a>(<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *, <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> *</td><td><a href="#GUID-34080DC0-2EF3-338A-A65A-9DFEB208353E">AppendLayoutL</a>(<a href="GUID-CF80B90A-193E-3A76-A42D-A2D768DCE7CC.html">TAlfLayoutType</a>, <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *</td><td><a href="#GUID-C21118AE-DA73-3216-931B-E5DB16661FF4">AppendVisualL</a>(<a href="GUID-CF80B90A-193E-3A76-A42D-A2D768DCE7CC.html">TAlfVisualType</a>, <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-4BAAF63F-093B-35C5-8978-A408E0BAE145">BindDisplay</a>(CAlfDisplay &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a></td><td><a href="#GUID-1E47007F-9D49-3B4D-892F-421DA8A61A33">Bounds</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-CBE52398-A2E2-3A05-8A3A-A5A9F546341A">CancelAllCommands</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-0B09FE18-3F92-3013-8CCC-39E92BD13519">ClearChanged</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> &amp;</td><td><a href="#GUID-D75E099C-3308-33ED-8954-016784A22AB7">Connection</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> &amp;</td><td><a href="#GUID-B7E49E76-8E5D-3F66-A112-AD6FAA8D692A">ConnectionByOrdinal</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-EF1A464B-F119-3642-B1DF-63682EAA0514">ConnectionCount</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-463FB364-D90E-352D-B787-3CEC86FE8255">ConnectionOrdinal</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-E00BFA77-11FE-3496-9005-FDE18BC2F664">ConnectionRole</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-1CEFF721-4AB7-32DC-8C10-A3F627C68DD7">ConstructL</a>(CAlfEnv &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> *</td><td><a href="#GUID-15B37B4D-57B7-33C3-9534-989BEDC48862">ContainerLayout</a>(const <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C CAlfControlGroup *</td><td><a href="#GUID-71D3FF99-DFF9-3085-A82D-3056C8E4115A">ControlGroup</a>()</td></tr><tr><td align="right" class="code">IMPORT_C CAlfDisplay *</td><td><a href="#GUID-EF17B8D2-2723-3C97-A322-A663DFCE5DB9">Display</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a></td><td><a href="#GUID-A1C11C15-B725-3F49-9ECC-B7C7653C7714">DisplayArea</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-357B0605-5A66-3A29-A1FF-CD7FF5D71F5A.html">TAlfRealPoint</a></td><td><a href="#GUID-C6DD5EE6-70E6-3DC7-A591-F5C0B51E5D8D">DisplayCenter</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a></td><td><a href="#GUID-C3C78DC2-D358-3E99-BAB5-70A46D6D2F60">DisplayToHost</a>(const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C CAlfEnv &amp;</td><td><a href="#GUID-206832A7-7619-3477-965B-224BA16A8A46">Env</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-EF028A8A-479E-3404-A0D6-F2EFAFE488A2">FindConnection</a>(const <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *</td><td><a href="#GUID-60F15D23-0E05-3EED-90CC-572593207E73">FindTag</a>(const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-4D1BBE11-1004-3D8C-A962-CAB1A4F6CBF4">Focus</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-55F847A9-B5BB-3895-A8F5-39FE467BAF65">FocusChainChanged</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-38C8DAB3-C09E-3133-888D-56677337B203">FocusChanged</a>(CAlfDisplay &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *</td><td><a href="#GUID-ACF22FB0-2679-3D0F-BB62-86366999D1BB">FocusedConnection</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-88827EA7-8197-3E4D-9AD9-43C85A336AA3">Hide</a>(CAlfDisplay &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-FF879DFD-8686-3014-B70B-80DE4391990A">HitTest</a>(const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *</td><td><a href="#GUID-C3398924-A85A-3C94-A1C1-F1E4C028A9D7">Host</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-52D782EE-6933-3E51-ABA2-B8C370DC3595">HostId</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a></td><td><a href="#GUID-7B149921-1B89-3C52-B15B-8BABBA114082">HostToDisplay</a>(const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-105DAFA9-8776-3E2D-824F-33AFAB858751">Id</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-D3132502-76D0-3DA1-8284-3195308226AD">Identifier</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-FE5416A4-CF7C-3B1C-AA4B-74AC3FD83D84">IsFocusing</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td><a href="#GUID-7398A9F7-A7E9-331D-B001-C608902971D1">OfferEventL</a>(const TAlfEvent &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-86B943DD-805A-30F1-B2ED-73D39945A792">RelinquishFocus</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-9D276F0F-31BE-3802-B38E-91E7BF8C1BDF">Remove</a>(<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-E5E25B84-812C-3C3A-B802-35A1D7622168">RemoveConnection</a>(<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-5F6C1AB0-219E-3AA8-9187-9280EC77C8AC">Role</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-2FEE2B9D-3C5E-31D3-8379-FF890AB17C02">SetControlGroup</a>(CAlfControlGroup &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-A33FA497-7B67-31D0-8E90-5453BAD774B0">SetFocus</a>(CAlfDisplay &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-31DED1C6-1659-3267-8161-B7B3FE516F04">SetFocusing</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-C8245680-02A2-340B-86FD-F38226A8E190">SetHost</a>(<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-3AC91FA1-327E-35F9-8AC4-F9E6345D7C42">SetHostId</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-05FFD065-18E6-33DA-A63B-190868799CD2">SetId</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-6DF9D69E-C924-3CC9-8486-C8494FE345C2">SetRole</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-193AFCB4-93CB-3F5B-8629-B67F82A84BBF">ShowL</a>(CAlfDisplay &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;</td><td><a href="#GUID-79776780-CC68-3B86-980E-6DE135D1BB3B">Visual</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-1BB77D1C-F125-33A8-8410-9D3049625975">VisualCount</a>()</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-AC01719A-CBAD-3E6E-96DB-76EBADD466FC">VisualDestroyed</a>(<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-1628481D-EE86-3FE8-AF7A-F7F89754F9F2">VisualLayoutUpdated</a>(<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-36993368-1B06-34B5-BBC6-3A3A5A40B48D">VisualPrepareDrawFailed</a>(<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-717BA09C-B642-3154-A230-3C369A26815F">ConnectionAddedL</a>(<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-A5A0E7CF-4E33-3B3F-90BC-886CDE8A6F82">ConnectionRemoved</a>(<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-56777A29-0ADB-3F1A-89A1-62B0E8185584">HostChangingL</a>(<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-3973653E-755B-329E-84E6-B08876BFB3C8">NotifyControlVisibility</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>, CAlfDisplay &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-B0628FD6-5444-3D96-83FD-13D92893BF17">PropertyOwnerExtension</a>(const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> **)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-B826858F-86CA-32ED-A7A5-C26D1BACD5E1">RemoveVisualsFromHostControl</a>(<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-A32AD817-A066-396E-AC28-9B75628E923D">VisualAddedL</a>(<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-E055BCBA-0D26-385C-9EB4-45A054FB5451">VisualRemoved</a>(<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::CAlfPropertyOwner()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::CopyProperty(const CAlfPropertyOwner &amp;,const TDesC8 &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::PropertyClear()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::PropertyFindInteger(const TDesC8 &amp;,TInt *)const</a></td></tr><tr><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::PropertyFindString(const TDesC8 &amp;,TDesC **)const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::PropertyRemove(const TDesC8 &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::PropertySetIntegerL(const TDesC8 &amp;,TInt,TInt,TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::PropertySetStringL(const TDesC8 &amp;,const TDesC &amp;)</a></td></tr><tr><td> </td><td><a href="GUID-D706D56C-E2D4-36C4-A0A8-A5943697648C.html">CAlfPropertyOwner::~CAlfPropertyOwner()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">TPrivateData *</td><td><a href="#GUID-38A7C7BA-5491-3136-9680-A5E872E17D6C">iData</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-BC26F9A5-D375-3681-8012-5F161FCD324F"><a name="GUID-BC26F9A5-D375-3681-8012-5F161FCD324F"><!-- --></a>
+		<h2 class="topictitle2">CAlfControl()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>CAlfControl</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Constructor. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-6D080029-3723-366A-A439-9CDC38A4B3B9"><a name="GUID-6D080029-3723-366A-A439-9CDC38A4B3B9"><!-- --></a>
+		<h2 class="topictitle2">~CAlfControl()</h2>
+		<table class="signature"><tr><td>IMPORT_C</td><td>~CAlfControl</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Destructor. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-5F0C7FC5-A0F6-3416-9618-5B5C24543835"><a name="GUID-5F0C7FC5-A0F6-3416-9618-5B5C24543835"><!-- --></a>
+		<h2 class="topictitle2">AcceptInput()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>AcceptInput</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Determines whether the control accepts input events. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-FFF76772-7C36-3B80-9FDF-CB54745DFB15"><a name="GUID-FFF76772-7C36-3B80-9FDF-CB54745DFB15"><!-- --></a>
+		<h2 class="topictitle2">AcquireFocus()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AcquireFocus</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Attempt to acquire focus for this control.</p>
+
+				<p>Actively attempt to acquire focus on all displays that contain visuals owned by this control. This will set the focused control in the rosters of these displays, and then, in most situations, call <tt>SetFocus</tt> with a value of <tt>ETrue</tt> on this control. The callback in <tt><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-38C8DAB3-C09E-3133-888D-56677337B203">CAlfControl::FocusChanged</a></tt> or its virtual override is then called. It is there that the control should perform whatever visual or functional changes that it performs upon change of focus.</p>
+
+				<p>If a display for this control is not currently focused (for example if another application is showing a popup or an element from another UI library, for instance an Avkon menu is displayed ) then calling this method will only set a latent focus in that display's roster. That is, the focused control will be changed in the roster, but not in the control itself. The control will not receive a <tt>FocusChanged</tt> callback. The call to this method "fails" only in the sense that there is no immediate setting of focus to the control by the environment.</p>
+
+				<p>When focus is restored to the display, then the latent focus held in the roster will then be used to set focus again to the control. Alf controls will thus experience loss and gain of focus when displays lose and gain focus, with the record of which control has the latent focus held in the roster. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-F58AB8C6-9624-321A-BEAE-023391AED18A"><a name="GUID-F58AB8C6-9624-321A-BEAE-023391AED18A"><!-- --></a>
+		<h2 class="topictitle2">AddConnectionL(CAlfControl *, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AddConnectionL</td><td>(</td><td><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *</td><td>aConnectedControl,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aRole</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>Establishes a manual connection between this host control and another control.</p>
+
+				<p>If setting manually the connection, do not use the <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-3AC91FA1-327E-35F9-8AC4-F9E6345D7C42">SetHostId()</a> function from the child control!</p>
+
+				<p>Calls ConnectionAddedL when a connection has been created between the two controls</p>
+
+				<p>
+					<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-717BA09C-B642-3154-A230-3C369A26815F">ConnectionAddedL</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> * aConnectedControl</td><td>Control to connect.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aRole</td><td>Role of the control. Interpretation depends on the host. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-69C8AAF5-B63E-3C31-BDA0-CBD6F0FFF044"><a name="GUID-69C8AAF5-B63E-3C31-BDA0-CBD6F0FFF044"><!-- --></a>
+		<h2 class="topictitle2">Append(CAlfVisual *, CAlfLayout *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Append</td><td>(</td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *</td><td>aVisual,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> *</td><td>aParentLayout = NULL</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Appends a new visual to the list of visuals owned by the control.</p>
+
+				<p>
+					<a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html#GUID-73FF36F0-07A6-3754-B517-0637D6454044">CAlfVisual::Owner()</a>
+				</p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> * aVisual</td><td>Visual to be appended.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> * aParentLayout = NULL</td><td>Parent layout visual to which the visual will be appended to.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-34080DC0-2EF3-338A-A65A-9DFEB208353E"><a name="GUID-34080DC0-2EF3-338A-A65A-9DFEB208353E"><!-- --></a>
+		<h2 class="topictitle2">AppendLayoutL(TAlfLayoutType, CAlfLayout *, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> *</td><td>AppendLayoutL</td><td>(</td><td><a href="GUID-CF80B90A-193E-3A76-A42D-A2D768DCE7CC.html">TAlfLayoutType</a></td><td>aLayoutType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> *</td><td>aParentLayout = NULL,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aImplementationUid = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Creates a new layout using the visual factory and appends it.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-CF80B90A-193E-3A76-A42D-A2D768DCE7CC.html">TAlfLayoutType</a> aLayoutType</td><td>Type of the layout to create. </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> * aParentLayout = NULL</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aImplementationUid = 0</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C21118AE-DA73-3216-931B-E5DB16661FF4"><a name="GUID-C21118AE-DA73-3216-931B-E5DB16661FF4"><!-- --></a>
+		<h2 class="topictitle2">AppendVisualL(TAlfVisualType, CAlfLayout *, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *</td><td>AppendVisualL</td><td>(</td><td><a href="GUID-CF80B90A-193E-3A76-A42D-A2D768DCE7CC.html">TAlfVisualType</a></td><td>aVisualType,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> *</td><td>aParentLayout = 0,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aImplementationUid = 0</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Creates a new visual using the visual factory and appends it.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-CF80B90A-193E-3A76-A42D-A2D768DCE7CC.html">TAlfVisualType</a> aVisualType</td><td>Type of the visual to create. </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> * aParentLayout = 0</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aImplementationUid = 0</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4BAAF63F-093B-35C5-8978-A408E0BAE145"><a name="GUID-4BAAF63F-093B-35C5-8978-A408E0BAE145"><!-- --></a>
+		<h2 class="topictitle2">BindDisplay(CAlfDisplay &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>BindDisplay</td><td>(</td><td>CAlfDisplay &amp;</td><td>aDisplay</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Binds the control to a display. Called automatically by <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-193AFCB4-93CB-3F5B-8629-B67F82A84BBF">CAlfControl::ShowL()</a>. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CAlfDisplay &amp; aDisplay</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1E47007F-9D49-3B4D-892F-421DA8A61A33"><a name="GUID-1E47007F-9D49-3B4D-892F-421DA8A61A33"><!-- --></a>
+		<h2 class="topictitle2">Bounds()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a></td><td>Bounds</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Calculates the region of the screen where the control's visuals are.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-CBE52398-A2E2-3A05-8A3A-A5A9F546341A"><a name="GUID-CBE52398-A2E2-3A05-8A3A-A5A9F546341A"><!-- --></a>
+		<h2 class="topictitle2">CancelAllCommands()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>CancelAllCommands</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Cancel all scheduled commands related to this control and the control's visuals. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-0B09FE18-3F92-3013-8CCC-39E92BD13519"><a name="GUID-0B09FE18-3F92-3013-8CCC-39E92BD13519"><!-- --></a>
+		<h2 class="topictitle2">ClearChanged()</h2>
+		<table class="signature"><tr><td>void</td><td>ClearChanged</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Clears the change flags of the control. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-D75E099C-3308-33ED-8954-016784A22AB7"><a name="GUID-D75E099C-3308-33ED-8954-016784A22AB7"><!-- --></a>
+		<h2 class="topictitle2">Connection(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> &amp;</td><td>Connection</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns a client control.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>Index of the client. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-717BA09C-B642-3154-A230-3C369A26815F"><a name="GUID-717BA09C-B642-3154-A230-3C369A26815F"><!-- --></a>
+		<h2 class="topictitle2">ConnectionAddedL(CAlfControl *, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ConnectionAddedL</td><td>(</td><td><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *</td><td>aConnectedControl,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aRole</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>Called when a client control is added to the control.</p>
+
+				<p>Override this function to get the notification.</p>
+
+				<p>
+					<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-F58AB8C6-9624-321A-BEAE-023391AED18A">AddConnectionL</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> * aConnectedControl</td><td>Connected child control  aRole Role of the child control. </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aRole</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B7E49E76-8E5D-3F66-A112-AD6FAA8D692A"><a name="GUID-B7E49E76-8E5D-3F66-A112-AD6FAA8D692A"><!-- --></a>
+		<h2 class="topictitle2">ConnectionByOrdinal(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> &amp;</td><td>ConnectionByOrdinal</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aOrdinal</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p/>
+
+				<p>Returns a client control.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aOrdinal</td><td>Role or index.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-EF1A464B-F119-3642-B1DF-63682EAA0514"><a name="GUID-EF1A464B-F119-3642-B1DF-63682EAA0514"><!-- --></a>
+		<h2 class="topictitle2">ConnectionCount()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ConnectionCount</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the number of clients.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-463FB364-D90E-352D-B787-3CEC86FE8255"><a name="GUID-463FB364-D90E-352D-B787-3CEC86FE8255"><!-- --></a>
+		<h2 class="topictitle2">ConnectionOrdinal(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ConnectionOrdinal</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p/>
+
+				<p>Ordinal is the effective index. Role overrides index. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A5A0E7CF-4E33-3B3F-90BC-886CDE8A6F82"><a name="GUID-A5A0E7CF-4E33-3B3F-90BC-886CDE8A6F82"><!-- --></a>
+		<h2 class="topictitle2">ConnectionRemoved(CAlfControl *, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ConnectionRemoved</td><td>(</td><td><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *</td><td>aConnectedControl,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aRole</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>Called when a client control is removed from the control.</p>
+
+				<p>Override this function to get the notification.</p>
+
+				<p>
+					<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-E5E25B84-812C-3C3A-B802-35A1D7622168">RemoveConnection</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> * aConnectedControl</td><td>Removed child control  aRole Role of the child control. </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aRole</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E00BFA77-11FE-3496-9005-FDE18BC2F664"><a name="GUID-E00BFA77-11FE-3496-9005-FDE18BC2F664"><!-- --></a>
+		<h2 class="topictitle2">ConnectionRole(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ConnectionRole</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the role of a client control.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>Index of the client. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1CEFF721-4AB7-32DC-8C10-A3F627C68DD7"><a name="GUID-1CEFF721-4AB7-32DC-8C10-A3F627C68DD7"><!-- --></a>
+		<h2 class="topictitle2">ConstructL(CAlfEnv &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ConstructL</td><td>(</td><td>CAlfEnv &amp;</td><td>aEnv</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Second-phase constructor. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CAlfEnv &amp; aEnv</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-15B37B4D-57B7-33C3-9534-989BEDC48862"><a name="GUID-15B37B4D-57B7-33C3-9534-989BEDC48862"><!-- --></a>
+		<h2 class="topictitle2">ContainerLayout(const CAlfControl *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-E6DD76AC-2009-3278-A373-ED16581402F6.html">CAlfLayout</a> *</td><td>ContainerLayout</td><td>(</td><td>const <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *</td><td>aConnected</td><td>)</td><td>const [virtual]</td></tr></table><div class="section"><div>
+				<p>Returns a container layout for the specified child control.</p>
+
+				<p>By default this function returns NULL. Override this function in your own control to select the container layout.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> * aConnected</td><td>Child control, which is querying the layout. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-71D3FF99-DFF9-3085-A82D-3056C8E4115A"><a name="GUID-71D3FF99-DFF9-3085-A82D-3056C8E4115A"><!-- --></a>
+		<h2 class="topictitle2">ControlGroup()</h2>
+		<table class="signature"><tr><td>IMPORT_C CAlfControlGroup *</td><td>ControlGroup</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the control group of the visual's owner control.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-EF17B8D2-2723-3C97-A322-A663DFCE5DB9"><a name="GUID-EF17B8D2-2723-3C97-A322-A663DFCE5DB9"><!-- --></a>
+		<h2 class="topictitle2">Display()</h2>
+		<table class="signature"><tr><td>IMPORT_C CAlfDisplay *</td><td>Display</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the display this control is bound to, or <tt>NULL</tt>. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-A1C11C15-B725-3F49-9ECC-B7C7653C7714"><a name="GUID-A1C11C15-B725-3F49-9ECC-B7C7653C7714"><!-- --></a>
+		<h2 class="topictitle2">DisplayArea()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-101762DC-E498-3325-88AB-B0FF17DC62B6.html">TRect</a></td><td>DisplayArea</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Determines the display area.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C6DD5EE6-70E6-3DC7-A591-F5C0B51E5D8D"><a name="GUID-C6DD5EE6-70E6-3DC7-A591-F5C0B51E5D8D"><!-- --></a>
+		<h2 class="topictitle2">DisplayCenter()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-357B0605-5A66-3A29-A1FF-CD7FF5D71F5A.html">TAlfRealPoint</a></td><td>DisplayCenter</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Determines the coordinates of the center of the display.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-C3C78DC2-D358-3E99-BAB5-70A46D6D2F60"><a name="GUID-C3C78DC2-D358-3E99-BAB5-70A46D6D2F60"><!-- --></a>
+		<h2 class="topictitle2">DisplayToHost(const TPoint &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a></td><td>DisplayToHost</td><td>(</td><td>const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aPoint</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Coordinate conversion. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aPoint</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-206832A7-7619-3477-965B-224BA16A8A46"><a name="GUID-206832A7-7619-3477-965B-224BA16A8A46"><!-- --></a>
+		<h2 class="topictitle2">Env()</h2>
+		<table class="signature"><tr><td>IMPORT_C CAlfEnv &amp;</td><td>Env</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the environment of the visual. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-EF028A8A-479E-3404-A0D6-F2EFAFE488A2"><a name="GUID-EF028A8A-479E-3404-A0D6-F2EFAFE488A2"><!-- --></a>
+		<h2 class="topictitle2">FindConnection(const CAlfControl *)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>FindConnection</td><td>(</td><td>const <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *</td><td>aConnected</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Find a client's index number.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> * aConnected</td><td>Connected control to find. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-60F15D23-0E05-3EED-90CC-572593207E73"><a name="GUID-60F15D23-0E05-3EED-90CC-572593207E73"><!-- --></a>
+		<h2 class="topictitle2">FindTag(const TDesC8 &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *</td><td>FindTag</td><td>(</td><td>const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp;</td><td>aTag</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Finds the visual that matches a tag. Only the visuals owned by this control are searched.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-FB97E0A3-352A-316F-97C6-69E4741A8120.html">TDesC8</a> &amp; aTag</td><td>Tag descriptor to match against. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-4D1BBE11-1004-3D8C-A962-CAB1A4F6CBF4"><a name="GUID-4D1BBE11-1004-3D8C-A962-CAB1A4F6CBF4"><!-- --></a>
+		<h2 class="topictitle2">Focus()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>Focus</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Determines whether the control has input focus. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-55F847A9-B5BB-3895-A8F5-39FE467BAF65"><a name="GUID-55F847A9-B5BB-3895-A8F5-39FE467BAF65"><!-- --></a>
+		<h2 class="topictitle2">FocusChainChanged(TBool)</h2>
+		<table class="signature"><tr><td>void</td><td>FocusChainChanged</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aInFocusChain</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Called when this control is included/excluded from the focus chain.</p>
+
+				<p>Example: There are controls c1, c2 and c3. The c3 is a child connection of the c2 (i.e. c2 is a host of c3). When the c1 is focused, the c2 is not part of the focus chain. Now, when c3 receives focus, the c2 becomes part of the focus chain and this function will be called for c2. When the c3 loses focus (with <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-86B943DD-805A-30F1-B2ED-73D39945A792">RelinquishFocus()</a> or back to c1), this function we be called again for c2 object.</p>
+
+				<p>This function calls <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-B0628FD6-5444-3D96-83FD-13D92893BF17">PropertyOwnerExtension()</a> with parameters: aExtensionUid KUidAlfPropOwnerExtControlFocusChainChanged aExtensionParams TBool** True if focus chain is gained. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aInFocusChain</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-38C8DAB3-C09E-3133-888D-56677337B203"><a name="GUID-38C8DAB3-C09E-3133-888D-56677337B203"><!-- --></a>
+		<h2 class="topictitle2">FocusChanged(CAlfDisplay &amp;, TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>FocusChanged</td><td>(</td><td>CAlfDisplay &amp;</td><td>aDisplay,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aFocused</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>Called when the control's focus state changes. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CAlfDisplay &amp; aDisplay</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aFocused</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-ACF22FB0-2679-3D0F-BB62-86366999D1BB"><a name="GUID-ACF22FB0-2679-3D0F-BB62-86366999D1BB"><!-- --></a>
+		<h2 class="topictitle2">FocusedConnection()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *</td><td>FocusedConnection</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Finds a child connection with focus or recursively one of its child connections have focus. Use <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-4D1BBE11-1004-3D8C-A962-CAB1A4F6CBF4">Focus()</a> to find out if the returned control instance has focus.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-88827EA7-8197-3E4D-9AD9-43C85A336AA3"><a name="GUID-88827EA7-8197-3E4D-9AD9-43C85A336AA3"><!-- --></a>
+		<h2 class="topictitle2">Hide(CAlfDisplay &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>Hide</td><td>(</td><td>CAlfDisplay &amp;</td><td>aDisplay</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Hides those visuals that are displayed on the specified display. Other visuals are not affected.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CAlfDisplay &amp; aDisplay</td><td>Display to remove visuals from.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-FF879DFD-8686-3014-B70B-80DE4391990A"><a name="GUID-FF879DFD-8686-3014-B70B-80DE4391990A"><!-- --></a>
+		<h2 class="topictitle2">HitTest(const TPoint &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>HitTest</td><td>(</td><td>const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aPoint</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Tests whether a point is inside the control.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aPoint</td><td>Point in display coordinates. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C3398924-A85A-3C94-A1C1-F1E4C028A9D7"><a name="GUID-C3398924-A85A-3C94-A1C1-F1E4C028A9D7"><!-- --></a>
+		<h2 class="topictitle2">Host()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *</td><td>Host</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the visual host control.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-56777A29-0ADB-3F1A-89A1-62B0E8185584"><a name="GUID-56777A29-0ADB-3F1A-89A1-62B0E8185584"><!-- --></a>
+		<h2 class="topictitle2">HostChangingL(CAlfControl *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>HostChangingL</td><td>(</td><td><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *</td><td>aNewHost</td><td>)</td><td>[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>The host control is about to be changed. The control needs to add its visuals to the container layout provided by the new host.</p>
+
+				<p>Override this function to get the notification. Base call is mandatory. If this function leaves, the connection will not be created.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> * aNewHost</td><td>New host control. If NULL, the host is removed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-52D782EE-6933-3E51-ABA2-B8C370DC3595"><a name="GUID-52D782EE-6933-3E51-ABA2-B8C370DC3595"><!-- --></a>
+		<h2 class="topictitle2">HostId()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>HostId</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the automatic visual host identification.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-7B149921-1B89-3C52-B15B-8BABBA114082"><a name="GUID-7B149921-1B89-3C52-B15B-8BABBA114082"><!-- --></a>
+		<h2 class="topictitle2">HostToDisplay(const TPoint &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a></td><td>HostToDisplay</td><td>(</td><td>const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp;</td><td>aPoint</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Coordinate conversion. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-339EC4C5-89DC-3972-9579-6DD38D418317.html">TPoint</a> &amp; aPoint</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-105DAFA9-8776-3E2D-824F-33AFAB858751"><a name="GUID-105DAFA9-8776-3E2D-824F-33AFAB858751"><!-- --></a>
+		<h2 class="topictitle2">Id()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Id</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the id of this control. Zero (0) id the control has no id. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-D3132502-76D0-3DA1-8284-3195308226AD"><a name="GUID-D3132502-76D0-3DA1-8284-3195308226AD"><!-- --></a>
+		<h2 class="topictitle2">Identifier()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Identifier</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-FE5416A4-CF7C-3B1C-AA4B-74AC3FD83D84"><a name="GUID-FE5416A4-CF7C-3B1C-AA4B-74AC3FD83D84"><!-- --></a>
+		<h2 class="topictitle2">IsFocusing()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>IsFocusing</td><td>(</td><td>)</td><td>const [virtual]</td></tr></table><div class="section"><div>
+				<p>Determines whether the control wants to receive focus. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-3973653E-755B-329E-84E6-B08876BFB3C8"><a name="GUID-3973653E-755B-329E-84E6-B08876BFB3C8"><!-- --></a>
+		<h2 class="topictitle2">NotifyControlVisibility(TBool, CAlfDisplay &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>NotifyControlVisibility</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aIsVisible,</td></tr><tr><td colspan="3"> </td><td>CAlfDisplay &amp;</td><td>aDisplay</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>Notifies the control that its visible has been changed on a display. This is the earliest time when the control knows the dimensions of the display it is being shown on.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aIsVisible</td><td>ETrue, if the control is now visible on the display. EFalse, if the control is about to the hidden on the display.  </td></tr><tr class="bg"><td class="parameter">CAlfDisplay &amp; aDisplay</td><td>The display on which the control's visibility is changing.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7398A9F7-A7E9-331D-B001-C608902971D1"><a name="GUID-7398A9F7-A7E9-331D-B001-C608902971D1"><!-- --></a>
+		<h2 class="topictitle2">OfferEventL(const TAlfEvent &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>OfferEventL</td><td>(</td><td>const TAlfEvent &amp;</td><td>aEvent</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Called when an input event is being offered to the control.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const TAlfEvent &amp; aEvent</td><td>Event to be handled. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B0628FD6-5444-3D96-83FD-13D92893BF17"><a name="GUID-B0628FD6-5444-3D96-83FD-13D92893BF17"><!-- --></a>
+		<h2 class="topictitle2">PropertyOwnerExtension(const TUid &amp;, TAny **)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>PropertyOwnerExtension</td><td>(</td><td>const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp;</td><td>aExtensionUid,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> **</td><td>aExtensionParams</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>! future proofing </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-530281E6-29FC-33F2-BC9B-610FBA389444.html">TUid</a> &amp; aExtensionUid</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TAny</a> ** aExtensionParams</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-86B943DD-805A-30F1-B2ED-73D39945A792"><a name="GUID-86B943DD-805A-30F1-B2ED-73D39945A792"><!-- --></a>
+		<h2 class="topictitle2">RelinquishFocus()</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RelinquishFocus</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Attempt to give up focus.</p>
+
+				<div class="p">Actively give up focus on all displays containing visuals for this control. Whether the focus is actually changed in the associated roster(s) depends upon the focus state of the related displays. <a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-FFF76772-7C36-3B80-9FDF-CB54745DFB15">CAlfControl::AcquireFocus</a><div class="note"><span class="notetitle">Note:</span> <p>If this control has latent focus in a roster then it is still cleared (i.e. is no longer even latent). </p>
+<p>If this control is not the currently focused control in a roster (either active or latent) then calling this method has no effect on the focus state of that roster. </p>
+</div>
+</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-9D276F0F-31BE-3802-B38E-91E7BF8C1BDF"><a name="GUID-9D276F0F-31BE-3802-B38E-91E7BF8C1BDF"><!-- --></a>
+		<h2 class="topictitle2">Remove(CAlfVisual *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>Remove</td><td>(</td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *</td><td>aVisual</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Removes a visual from the control. The caller also receives ownership of the visual.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> * aVisual</td><td>Visual to remove. Caller gets ownership.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E5E25B84-812C-3C3A-B802-35A1D7622168"><a name="GUID-E5E25B84-812C-3C3A-B802-35A1D7622168"><!-- --></a>
+		<h2 class="topictitle2">RemoveConnection(CAlfControl *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RemoveConnection</td><td>(</td><td><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *</td><td>aConnectedControl</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Removes a client.</p>
+
+				<p>Calls ConnectionRemoved when a connection has been broken between the two controls</p>
+
+				<p>
+					<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-A5A0E7CF-4E33-3B3F-90BC-886CDE8A6F82">ConnectionRemoved</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> * aConnectedControl</td><td>Connected control to remove. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-B826858F-86CA-32ED-A7A5-C26D1BACD5E1"><a name="GUID-B826858F-86CA-32ED-A7A5-C26D1BACD5E1"><!-- --></a>
+		<h2 class="topictitle2">RemoveVisualsFromHostControl(CAlfControl &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>RemoveVisualsFromHostControl</td><td>(</td><td><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> &amp;</td><td>aHostControl</td><td>)</td><td>[protected]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> &amp; aHostControl</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5F6C1AB0-219E-3AA8-9187-9280EC77C8AC"><a name="GUID-5F6C1AB0-219E-3AA8-9187-9280EC77C8AC"><!-- --></a>
+		<h2 class="topictitle2">Role()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>Role</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns the controls role.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-2FEE2B9D-3C5E-31D3-8379-FF890AB17C02"><a name="GUID-2FEE2B9D-3C5E-31D3-8379-FF890AB17C02"><!-- --></a>
+		<h2 class="topictitle2">SetControlGroup(CAlfControlGroup &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>SetControlGroup</td><td>(</td><td>CAlfControlGroup &amp;</td><td>aOwnerGroup</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the group that owns the control. Called by the control group when the control is added to the group.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CAlfControlGroup &amp; aOwnerGroup</td><td>Owner group.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A33FA497-7B67-31D0-8E90-5453BAD774B0"><a name="GUID-A33FA497-7B67-31D0-8E90-5453BAD774B0"><!-- --></a>
+		<h2 class="topictitle2">SetFocus(CAlfDisplay &amp;, TBool)</h2>
+		<table class="signature"><tr><td>void</td><td>SetFocus</td><td>(</td><td>CAlfDisplay &amp;</td><td>aDisplay,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aHasFocus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Changes the control's focus state. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CAlfDisplay &amp; aDisplay</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aHasFocus</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-31DED1C6-1659-3267-8161-B7B3FE516F04"><a name="GUID-31DED1C6-1659-3267-8161-B7B3FE516F04"><!-- --></a>
+		<h2 class="topictitle2">SetFocusing(TBool)</h2>
+		<table class="signature"><tr><td>void</td><td>SetFocusing</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aFocusing</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the flag that tells whether the control wants to receive focus. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aFocusing</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C8245680-02A2-340B-86FD-F38226A8E190"><a name="GUID-C8245680-02A2-340B-86FD-F38226A8E190"><!-- --></a>
+		<h2 class="topictitle2">SetHost(CAlfControl *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetHost</td><td>(</td><td><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> *</td><td>aHost</td><td>)</td><td/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html">CAlfControl</a> * aHost</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3AC91FA1-327E-35F9-8AC4-F9E6345D7C42"><a name="GUID-3AC91FA1-327E-35F9-8AC4-F9E6345D7C42"><!-- --></a>
+		<h2 class="topictitle2">SetHostId(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetHostId</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aHostId</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the automatic visual host identification. When the control is shown, the connection is created automatically betweem this control and the host determined by the paramter.</p>
+
+				<p>If the automatic ID is set, do not use the manual AddConnectionL function!</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aHostId</td><td>Identifier of the host control. Zero if not set,  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-05FFD065-18E6-33DA-A63B-190868799CD2"><a name="GUID-05FFD065-18E6-33DA-A63B-190868799CD2"><!-- --></a>
+		<h2 class="topictitle2">SetId(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetId</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aId</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Set an id value for this control. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aId</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6DF9D69E-C924-3CC9-8486-C8494FE345C2"><a name="GUID-6DF9D69E-C924-3CC9-8486-C8494FE345C2"><!-- --></a>
+		<h2 class="topictitle2">SetRole(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>SetRole</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aRole</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Sets the controls role.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aRole</td><td>New role.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-193AFCB4-93CB-3F5B-8629-B67F82A84BBF"><a name="GUID-193AFCB4-93CB-3F5B-8629-B67F82A84BBF"><!-- --></a>
+		<h2 class="topictitle2">ShowL(CAlfDisplay &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ShowL</td><td>(</td><td>CAlfDisplay &amp;</td><td>aDisplay</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Shows all the unshown visuals of the control on the specified display. Visuals that are currently shown on another display are not affected.</p>
+
+				<p>
+					<a href="GUID-CA397E47-2AE8-3F21-BDD2-BA8A6CA61A21.html#GUID-4BAAF63F-093B-35C5-8978-A408E0BAE145">CAlfControl::BindDisplay()</a> </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">CAlfDisplay &amp; aDisplay</td><td>Display to add visuals to. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-79776780-CC68-3B86-980E-6DE135D1BB3B"><a name="GUID-79776780-CC68-3B86-980E-6DE135D1BB3B"><!-- --></a>
+		<h2 class="topictitle2">Visual(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;</td><td>Visual</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aIndex</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Returns one of the visuals owned by the control.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aIndex</td><td>Index number of the visual to return. </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A32AD817-A066-396E-AC28-9B75628E923D"><a name="GUID-A32AD817-A066-396E-AC28-9B75628E923D"><!-- --></a>
+		<h2 class="topictitle2">VisualAddedL(CAlfVisual *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>VisualAddedL</td><td>(</td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *</td><td>aVisual</td><td>)</td><td>[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>Called when a visual has been added to the control.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> * aVisual</td><td>Visual that was added.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1BB77D1C-F125-33A8-8410-9D3049625975"><a name="GUID-1BB77D1C-F125-33A8-8410-9D3049625975"><!-- --></a>
+		<h2 class="topictitle2">VisualCount()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>VisualCount</td><td>(</td><td>)</td><td>const </td></tr></table><div class="section"><div>
+				<p>Determines the number of visuals owned by the control.</p>
+
+				<p>Note that in visual hierarchies, child visuals are not owned by their parent visuals, but a control. This means that a control that owns a tree of visuals will return the total number of visuals in the tree, and not just the number of root visuals.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-AC01719A-CBAD-3E6E-96DB-76EBADD466FC"><a name="GUID-AC01719A-CBAD-3E6E-96DB-76EBADD466FC"><!-- --></a>
+		<h2 class="topictitle2">VisualDestroyed(CAlfVisual &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>VisualDestroyed</td><td>(</td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;</td><td>aVisual</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Called when a visual owned by the control is being destroyed. Visual is removed from the control.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp; aVisual</td><td>Visual about to the destroyed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-1628481D-EE86-3FE8-AF7A-F7F89754F9F2"><a name="GUID-1628481D-EE86-3FE8-AF7A-F7F89754F9F2"><!-- --></a>
+		<h2 class="topictitle2">VisualLayoutUpdated(CAlfVisual &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>VisualLayoutUpdated</td><td>(</td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;</td><td>aVisual</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Notifies the owner that the layout of a visual has been recalculated. Called only when the EAlfVisualFlagLayoutUpdateNotification flag has been set for the visual.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp; aVisual</td><td>Visual that has been laid out.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-36993368-1B06-34B5-BBC6-3A3A5A40B48D"><a name="GUID-36993368-1B06-34B5-BBC6-3A3A5A40B48D"><!-- --></a>
+		<h2 class="topictitle2">VisualPrepareDrawFailed(CAlfVisual &amp;, TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>VisualPrepareDrawFailed</td><td>(</td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp;</td><td>aVisual,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aErrorCode</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[virtual]</td></tr></table><div class="section"><div>
+				<p>Notifies the visual owner if there was an error (a leave happened) when preparing the visual for drawing. Typically the resource alloc errors such as out of memory is escalated through this callback.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> &amp; aVisual</td><td>Visual that caused the error.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aErrorCode</td><td>Symbian KErr error code for the failure.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E055BCBA-0D26-385C-9EB4-45A054FB5451"><a name="GUID-E055BCBA-0D26-385C-9EB4-45A054FB5451"><!-- --></a>
+		<h2 class="topictitle2">VisualRemoved(CAlfVisual *)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>VisualRemoved</td><td>(</td><td><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> *</td><td>aVisual</td><td>)</td><td>[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>Called when a visual has been removed from the control.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-7A367343-BF4D-34F3-BD13-A1A222D38EC3.html">CAlfVisual</a> * aVisual</td><td>Visual that was removed.  </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-38A7C7BA-5491-3136-9680-A5E872E17D6C"><a name="GUID-38A7C7BA-5491-3136-9680-A5E872E17D6C"><!-- --></a>
+		<h2 class="topictitle2">TPrivateData * iData</h2>
+		<table class="signature"><tr><td>TPrivateData *</td><td>iData</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

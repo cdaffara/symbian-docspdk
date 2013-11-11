@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Storing a Picture Tutorial"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-520AC2F0-009E-51F3-A661-3B6E949F1423.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E89F034F-C807-5FF9-B06B-F7CCD2441041.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-1E68A78A-52E5-5DF7-B540-85C7194E4617.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-520AC2F0-009E-51F3-A661-3B6E949F1423.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-520AC2F0-009E-51F3-A661-3B6E949F1423.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5CEE36FC-C5A9-5C4E-9DBC-9C7B5B44EA2F.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Storing a Picture Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55"><a name="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2384330 id2385294 id2385411 id2385479 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html">Graphics Guide</a> &gt; <a href="GUID-E89F034F-C807-5FF9-B06B-F7CCD2441041.html" title="The Graphics Device Interface (GDI) collection provides important functionality within the Graphics subsystem. The functionality includes graphics device abstraction, linear digital differential analysis, font description and information, printer devices abstraction, line breaking and text rendering.">Graphics Device Interface (GDI) Collection</a> &gt; <a href="GUID-1E68A78A-52E5-5DF7-B540-85C7194E4617.html" title="This section provides examples of working with the GDI API to perform various drawing operations, to store and restore pictures and to zoom.">Graphics Device Interface Tutorials</a> &gt; <a href="GUID-520AC2F0-009E-51F3-A661-3B6E949F1423.html" title="This section provides examples of working with pictures. In this context a picture is an object that can be drawn to a graphics context and can be stored and restored.">Picture Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Storing a Picture Tutorial</h1>
+<div><p>This topic provides an example of storing a picture in a direct file store (including the creation of a picture header). </p>
+ <pre class="codeblock" id="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55__GUID-82106C5C-1044-56C4-8E1F-7D4E9DA2A0C6"><a name="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55__GUID-82106C5C-1044-56C4-8E1F-7D4E9DA2A0C6"><!-- --></a>_LIT(KFileName,"C:\\grpict.dat");
+    
+// Create (replace, if it exists) the direct file store
+CDirectFileStore* store = CDirectFileStore::ReplaceLC(fsSession,KFileName,EFileWrite);
+// Must say what kind of file store.
+iStore-&gt;SetTypeL(KDirectFileStoreLayoutUid);
+    
+// Create picture header
+TPictureHeader header;
+header.iPicture = iPicture;
+header.iSize = TSize(iPicture-&gt;SpecToFactor()*40,iPicture-&gt;SpecToFactor()*40);
+header.iPictureType = KUidExampleSmileyPicture;
+    
+// Store picture header and picture
+CStoreMap* map=CStoreMap::NewLC(*store);
+TStreamId id = iPicture-&gt;StoreL(*store);
+map-&gt;BindL(iPicture,id);
+    
+RStoreWriteStream stream(*map);
+TStreamId headerId = stream.CreateLC(*store);
+header.ExternalizeL(stream);
+stream.CommitL();
+map-&gt;Reset();
+CleanupStack::PopAndDestroy(2); // stream, map
+    
+// Make header stream the root stream
+store-&gt;SetRootL(headerId);
+    
+// Close store
+CleanupStack::PopAndDestroy();</pre>
+ <a name="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55__GUID-34C146E1-BFBD-531E-86DD-D0C87746FD91"><!-- --></a><ol id="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55__GUID-34C146E1-BFBD-531E-86DD-D0C87746FD91"><li id="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55__GUID-1F00BB7A-C59D-5504-A531-C8081FC67714"><a name="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55__GUID-1F00BB7A-C59D-5504-A531-C8081FC67714"><!-- --></a><p>Create a direct file store into which to store the picture. </p>
+ </li>
+ <li id="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55__GUID-81F80023-10A8-542C-9613-ED1FACF642CE"><a name="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55__GUID-81F80023-10A8-542C-9613-ED1FACF642CE"><!-- --></a><p>Create a picture header object and set its attributes: <samp class="codeph">iPicture</samp> is assumed to be picture object, derived from <samp class="codeph">CPicture</samp>. </p>
+ </li>
+ <li id="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55__GUID-AF878051-FF1D-52CD-AE28-28F8CCEE9366"><a name="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55__GUID-AF878051-FF1D-52CD-AE28-28F8CCEE9366"><!-- --></a><p>Store the picture header and picture in the file store. </p>
+ </li>
+ <li id="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55__GUID-E5DDE3A1-E26F-5D63-BAF9-2C0D3F6B05DD"><a name="GUID-9E6822BE-BDF0-5710-9E60-A8DB14622C55__GUID-E5DDE3A1-E26F-5D63-BAF9-2C0D3F6B05DD"><!-- --></a><p>Store the picture data and picture header using a store map as a temporary repository for the stream ID of the picture data stream. Store the stream ID as an element of the picture header's externalized stream to link the picture header’s stream and the picture data’s stream. </p>
+ </li>
+ </ol>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-520AC2F0-009E-51F3-A661-3B6E949F1423.html" title="This section provides examples of working with pictures. In this context a picture is an object that can be drawn to a graphics context and can be stored and restored.">Picture Tutorials</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-520AC2F0-009E-51F3-A661-3B6E949F1423.html" title="This section provides examples of working with pictures. In this context a picture is an object that can be drawn to a graphics context and can be stored and restored.">Picture Tutorials</a></div>
+<div><a href="GUID-5CEE36FC-C5A9-5C4E-9DBC-9C7B5B44EA2F.html" title="This section introduces pictures. In this context a picture is an object that can be drawn to a graphics context and can be stored and restored.">Picture Concepts</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

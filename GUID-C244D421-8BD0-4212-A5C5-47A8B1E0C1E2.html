@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Kernel Extension"/>
+<meta name="abstract" content="This document describes how to implement a device driver as a kernel extension."/>
+<meta name="description" content="This document describes how to implement a device driver as a kernel extension."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0346036B-A470-4C18-B276-3A3485F6A069.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0346036B-A470-4C18-B276-3A3485F6A069.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-C244D421-8BD0-4212-A5C5-47A8B1E0C1E2"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Kernel Extension</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-C244D421-8BD0-4212-A5C5-47A8B1E0C1E2"><a name="GUID-C244D421-8BD0-4212-A5C5-47A8B1E0C1E2"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 id2388140 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; <a href="GUID-0346036B-A470-4C18-B276-3A3485F6A069.html" title="These documents describe high-level implementation choices for a device driver.">Design Options</a> &gt; </div>
+<h1 class="topictitle1">Kernel
+Extension</h1>
+<div><p>This document describes how to implement a device driver as a kernel
+extension.</p>
+
+<div class="section" id="GUID-C244D421-8BD0-4212-A5C5-47A8B1E0C1E2__GUID-D3EEB917-368E-45A3-866E-C63490994C59"><a name="GUID-C244D421-8BD0-4212-A5C5-47A8B1E0C1E2__GUID-D3EEB917-368E-45A3-866E-C63490994C59"><!-- --></a>             <p>Device
+drivers can also be kernel extensions, which means that they are loaded by
+the Kernel when it boots. They are used for extending the Kernel, as the name
+suggests. Generally, kernel extensions provide early initialisation of devices
+that must be permanently available, such as LCD, DMA, and I2C and other peripheral
+bus controllers. Because kernel extensions are loaded by the Kernel, they
+are never unloaded and so their destructors are never called. </p>
+ <p>The <samp class="codeph">DECLARE_STANDARD_EXTENSION</samp> macro
+is used to provide an entry point for a kernel extension (see <a href="GUID-B94FFCA4-1EB3-46A7-9FF9-54C55D67FFE8.html" title="This document describes the entry points for each type of device driver.">Entry
+Points</a>). </p>
+ <p>Extensions are built into the ROM image, by specifying
+the <samp class="codeph">extension</samp> keyword in the <span class="filepath">.iby</span> file.
+This enables the ROM build tool to build the ROM header. The extensions are
+loaded in the order specified in the <span class="filepath">kernel.iby</span> file. </p>
+ <pre class="codeblock" id="GUID-C244D421-8BD0-4212-A5C5-47A8B1E0C1E2__GUID-1AABD1B3-BF5A-50FC-9B1F-86E657F9890D"><a name="GUID-C244D421-8BD0-4212-A5C5-47A8B1E0C1E2__GUID-1AABD1B3-BF5A-50FC-9B1F-86E657F9890D"><!-- --></a>extension[VARID]=\Epoc32\Release\&lt;assp&gt;\urel\KDEBUG.DLL \System\Bin\kdebug.dll</pre>
+ <p>A
+kernel extension's interface to other Kernel side components is usually exported
+using a static interface. Clients can access this interface by using the global
+instance of the object created and initialised in the <samp class="codeph">DECLARE_STANDARD_EXTENSION</samp> entry
+point. They then use this object to call the exported API. </p>
+ <p>Kernel
+extensions can also be implemented that let user code open channels on them
+to use the interface. This model is used for devices where initialisation
+has to be done at system boot up, but which can then be used by the clients,
+for example, the media driver <span class="filepath">elocd.ldd</span>. </p>
+ <p>To do
+this, drivers have to declare <a href="GUID-38771B51-195D-3148-A462-277DA3696117.html"><span class="apiname">DECLARE_EXTENSION_LDD</span></a> in
+addition to the <a href="GUID-8B6DF6D7-4995-3564-9303-272500D7E747.html"><span class="apiname">DECLARE_STANDARD_EXTENSION</span></a> macro. In this
+model, extensions generally call <a href="GUID-671F731F-428F-379D-8260-D9F18CAC25CF.html#GUID-671F731F-428F-379D-8260-D9F18CAC25CF__GUID-ADB60188-13D4-3245-96D0-4D44CB983551"><span class="apiname">Kernel::InstallLogicalDevice()</span></a> /<a href="GUID-671F731F-428F-379D-8260-D9F18CAC25CF.html#GUID-671F731F-428F-379D-8260-D9F18CAC25CF__GUID-703E2FAD-A71C-377B-86F0-D19643D4CDA9"><span class="apiname">Kernel::InstallPhysicalDevice()</span></a> to
+install the logical device. Later clients can open channels on this driver
+and use the interface in the same way as a standard driver. </p>
+ <pre class="codeblock" id="GUID-C244D421-8BD0-4212-A5C5-47A8B1E0C1E2__GUID-29B10898-2CCA-5D03-B14A-CAD3C56EB73F"><a name="GUID-C244D421-8BD0-4212-A5C5-47A8B1E0C1E2__GUID-29B10898-2CCA-5D03-B14A-CAD3C56EB73F"><!-- --></a>DECLARE_STANDARD_EXTENSION()
+    {
+    ...
+    // Create factory object
+    DExDriverLogicalDevice* device = new DExDriverLogicalDevice;
+    if (device==NULL)
+        r=KErrNoMemory;
+    else
+        {
+        // Installs the logical device by calling the second
+        // phase constructor
+        r=Kern::InstallLogicalDevice(device);
+        }
+    return r;
+    }
+
+DECLARE_EXTENSION_LDD()
+    {
+    return new DExDriverLogicalDevice;
+    }</pre>
+     </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-0346036B-A470-4C18-B276-3A3485F6A069.html" title="These documents describe high-level implementation choices for a device driver.">Design Options</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

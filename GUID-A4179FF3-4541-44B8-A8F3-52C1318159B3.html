@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Platform Security"/>
+<meta name="abstract" content="This document discusses how device drivers should implement platform security."/>
+<meta name="description" content="This document discusses how device drivers should implement platform security."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CB3A8650-751C-4DAA-9408-7AEB3C7FD41A.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-CB3A8650-751C-4DAA-9408-7AEB3C7FD41A.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-EA20E614-C911-4EE9-92B5-C8F9B657D59E.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Platform Security</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3"><a name="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 id2388099 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; <a href="GUID-CB3A8650-751C-4DAA-9408-7AEB3C7FD41A.html" title="This section explains how to make a valid Symbian Platform driver.">Minimal Driver Requirements</a> &gt; </div>
+<h1 class="topictitle1">Platform
+Security</h1>
+<div><p>This document discusses how device drivers should implement platform
+security.</p>
+
+<p>Device drivers must follow the Symbian platform security guidelines. As
+a part of platform security, drivers must be given the necessary platform
+security capabilities. A driver can also check the capabilities of a process
+opening a channel on the device, in order to restrict access to the device. </p>
+
+<div class="section" id="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-74BFFE9A-2904-4EFC-952A-581844A9095B"><a name="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-74BFFE9A-2904-4EFC-952A-581844A9095B"><!-- --></a><p><strong>Driver-side
+definition</strong> </p>
+ <p>Because drivers are loaded by the Kernel, both LDDs
+and PDDs must have the same level of trust and capability as the Kernel. This
+means that platform security capabilities must be set to <samp class="codeph">ALL</samp> in
+the LDD and PDD <span class="filepath">.mmp</span> files. </p>
+ <pre class="codeblock" id="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-91D17A93-4DFE-58DB-A071-F82399B7D9CE"><a name="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-91D17A93-4DFE-58DB-A071-F82399B7D9CE"><!-- --></a>// LDD: mmp file
+...
+CAPABILITY     ALL</pre>
+ <pre class="codeblock" id="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-68471C34-7E9A-5CE7-BED3-1F3C6AEB08BF"><a name="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-68471C34-7E9A-5CE7-BED3-1F3C6AEB08BF"><!-- --></a>// PDD: mmp file
+...
+CAPABILITY     ALL</pre>
+ <p>The user program must have the necessary
+capability set in its <span class="filepath">.mmp</span> file to open and access the
+driver API. The reference documentation for the API should say what capabilities
+are required. Usually, they are the same as the minimum capability that is
+required to load the drivers. </p>
+ <pre class="codeblock" id="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-18BF036F-1A2E-59AA-BF8E-05D80B7916B5"><a name="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-18BF036F-1A2E-59AA-BF8E-05D80B7916B5"><!-- --></a>// Test application: mmp file
+...
+CAPABILITY    CommDD ReadDeviceData PowerMgmt</pre>
+</div>
+
+<div class="section" id="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-7177D7FD-088C-432F-BABC-4E5DAA0E07D4"><a name="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-7177D7FD-088C-432F-BABC-4E5DAA0E07D4"><!-- --></a><p><strong>User-side verification</strong> </p>
+ <p>A
+device driver must check the capability of the process that is accessing it.
+This is typically done during channel creation and, if required, for specific
+requests to the LDD. The Kernel provides the <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-E34E27F2-921A-3F78-9DE3-C5B16F37CF8B"><span class="apiname">Kern::CurrentThreadHasCapability()</span></a> API
+to check the capability of the calling process. It can check for more than
+one capability. </p>
+ <p>The following shows how the example driver checks
+during channel creation that the user has the <a href="GUID-460F2258-02FB-316E-8044-4649E4488486.html"><span class="apiname">ECapabilityCommD</span></a> capability: </p>
+ <pre class="codeblock" id="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-79B4EB40-14C8-5BDA-9FC9-A82DF87C83A7"><a name="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-79B4EB40-14C8-5BDA-9FC9-A82DF87C83A7"><!-- --></a>TInt DExDriverLogicalChannel::DoCreate(TInt /*aUnit*/, const TDesC8* 
+/*anInfo*/, const TVersion&amp; aVer)
+    {
+    // Capability check - CommDD
+    if (!Kern::CurrentThreadHasCapability (ECapabilityCommDD,
+    __PLATSEC_DIAGNOSTIC_STRING("Checked by Tutorial Driver")))
+        return KErrPermissionDenied;    
+    ...
+    }</pre>
+</div>
+
+<div class="section" id="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-7B302793-1A00-40D6-8E9A-BA694541D0D4"><a name="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-7B302793-1A00-40D6-8E9A-BA694541D0D4"><!-- --></a><p><strong>Data caging </strong> </p>
+ <p>Symbian
+platform security requires that all DLLs and EXEs are placed in the folder <span class="filepath">/sys/bin</span>.
+Drivers and test application binaries must be placed in the <span class="filepath">/sys/bin</span> folder
+by their ROM <span class="filepath">.iby</span> file. </p>
+ <pre class="codeblock" id="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-42FE3528-37BB-5DD2-B565-4DB527EBC596"><a name="GUID-A4179FF3-4541-44B8-A8F3-52C1318159B3__GUID-42FE3528-37BB-5DD2-B565-4DB527EBC596"><!-- --></a>// iby file
+device[VARID]=KERNEL_DIR\DEBUG_DIR\exdriver_ldd.ldd     \Sys\Bin\exdriver_ldd.ldd
+device[VARID]=KERNEL_DIR\DEBUG_DIR\exdriver_pdd.pdd     \Sys\Bin\exdriver_pdd.pdd
+file=ABI_DIR\BUILD_DIR\exdriver_test.exe                \Sys\Bin\exdriver_test.exe
+</pre>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-CB3A8650-751C-4DAA-9408-7AEB3C7FD41A.html" title="This section explains how to make a valid Symbian Platform driver.">Minimal Driver Requirements</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-EA20E614-C911-4EE9-92B5-C8F9B657D59E.html">Platform
+security architecture</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

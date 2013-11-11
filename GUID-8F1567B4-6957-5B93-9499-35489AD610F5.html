@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Chunks"/>
+<meta name="abstract" content="Chunks map RAM or memory-mapped I/O devices into contiguous virtual addresses."/>
+<meta name="description" content="Chunks map RAM or memory-mapped I/O devices into contiguous virtual addresses."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BFEBCD57-3C83-56D7-B7A3-B8A361725645.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-9636A30F-39EB-54E6-8125-4487D4002FE0.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BFEBCD57-3C83-56D7-B7A3-B8A361725645.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-8F1567B4-6957-5B93-9499-35489AD610F5"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Chunks</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2393700 id2393726 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-9636A30F-39EB-54E6-8125-4487D4002FE0.html" title="Memory is allocated to programs in chunks, the documentation in this set explains how to allocate, manage and release that memory.">Memory Management</a> &gt; <a href="GUID-BFEBCD57-3C83-56D7-B7A3-B8A361725645.html" title="Provides an introduction to memory management, especially chunks and heaps.">Memory Management Concepts</a> &gt; </div>
+<h1 class="topictitle1">Chunks</h1>
+<div><p>Chunks map RAM or memory-mapped I/O devices into contiguous virtual
+addresses.</p>
+
+<p> A chunk consists of a <em>reserved</em> region and a <em>committed</em> region.
+The reserved region is the contiguous set of virtual addresses accessible
+to running code. The committed region is the region in which RAM (or memory-mapped
+I/O) is actually mapped. The size of a chunk is dynamically alterable, allowing
+the committed region to vary in size from zero up to the reserved region size,
+in integer multiples of the processor page size. This allows processes to
+obtain more memory on demand. Generally the committed region starts at the
+bottom of the reserved region. </p>
+
+<p>A chunk also has a maximum size, which is defined when the chunk is created.
+The reserved region can be smaller than this maximum size, but it can also
+be made bigger by reallocating it. The reserved region cannot be made bigger
+than the maximum size. </p>
+
+<p>The size of the reserved region of a chunk is always an integer multiple
+of the virtual address range of a single entry in the processor page directory
+(PDE size). This means that the reserved region of a chunk is mapped by a
+number of consecutive page directory entries (PDEs). Any given PDE maps part
+of the reserved region of at most one chunk. </p>
+
+<p>Symbian platform has a number of chunk types, but for user side code, the
+chunks of interest are <em>User chunks</em> and <em>Shared chunks</em>. </p>
+
+<p>A chunk is a kernel side entity, and like all other kernel side entities,
+it is accessed from the user side using a handle, an instance of the <a href="GUID-326A2F4D-0E99-31C0-A35D-E8BF45913F07.html"><span class="apiname">RChunk</span></a> class.
+The concept of <em>local</em> and <em>global</em> also applies to chunks. </p>
+
+<ul>
+<li id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-8F4C6D46-8A0D-582F-9CA3-B6E256A32A04"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-8F4C6D46-8A0D-582F-9CA3-B6E256A32A04"><!-- --></a><p> <a href="GUID-8F1567B4-6957-5B93-9499-35489AD610F5.html#GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-F16E4C51-975B-58D6-808B-A865389AEF08">User chunks</a>  </p>
+ </li>
+
+<li id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-FF713424-EAAA-576A-8559-5DC69FCE92DB"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-FF713424-EAAA-576A-8559-5DC69FCE92DB"><!-- --></a><p> <a href="GUID-8F1567B4-6957-5B93-9499-35489AD610F5.html#GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-FD985769-32EB-5A8C-97E8-A3D2D89BBC33">Shared chunks</a>  </p>
+ </li>
+
+<li id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-DE72ABC0-787D-5CB9-90B8-E5B9CA230105"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-DE72ABC0-787D-5CB9-90B8-E5B9CA230105"><!-- --></a><p> <a href="GUID-8F1567B4-6957-5B93-9499-35489AD610F5.html#GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-8E371955-C475-5980-A04F-B33EAADE1B1B">Local and global chunks</a>  </p>
+ </li>
+
+</ul>
+
+<div class="section" id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-F16E4C51-975B-58D6-808B-A865389AEF08"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-F16E4C51-975B-58D6-808B-A865389AEF08"><!-- --></a><h2 class="sectiontitle">User chunks</h2> <p>On
+systems with an MMU, Symbian platform provides three types of user chunks.
+Each type is characterised by having a different subset of the reserved address
+range containing committed memory: </p>
+ <ul>
+<li id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-7466E379-0AEE-5302-B553-D2983612B0E7"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-7466E379-0AEE-5302-B553-D2983612B0E7"><!-- --></a><p> <a href="GUID-8F1567B4-6957-5B93-9499-35489AD610F5.html#GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-F0DB5A9F-EB24-5D2B-B2A8-90EEE2A2C33F">Normal chunks</a>  </p>
+ </li>
+
+<li id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-12C654CE-8608-55AB-A8F9-D261E5286521"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-12C654CE-8608-55AB-A8F9-D261E5286521"><!-- --></a><p> <a href="GUID-8F1567B4-6957-5B93-9499-35489AD610F5.html#GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-0FB877CD-C4E1-5253-AFBC-563E3C715A44">Double-ended chunks</a> </p>
+ </li>
+
+<li id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-26A7095A-36D4-508A-A2EB-6525540B5C3F"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-26A7095A-36D4-508A-A2EB-6525540B5C3F"><!-- --></a><p> <a href="GUID-8F1567B4-6957-5B93-9499-35489AD610F5.html#GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-230B66B1-7FD8-5944-9284-354C7564156B">Disconnected chunks</a>  </p>
+ </li>
+
+</ul>
+ <p id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-F0DB5A9F-EB24-5D2B-B2A8-90EEE2A2C33F"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-F0DB5A9F-EB24-5D2B-B2A8-90EEE2A2C33F"><!-- --></a><strong>Normal chunks</strong> </p>
+ <p>These
+chunks have a committed region consisting of a single contiguous range starting
+at the chunk's base address and a size that is a multiple of the MMU page
+size. The following diagram is an example of this kind of chunk: </p>
+ <div class="fignone" id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-BD64E013-2750-5298-8C5A-8DAC9AB30E14"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-BD64E013-2750-5298-8C5A-8DAC9AB30E14"><!-- --></a><span class="figcap">Figure 1. Normal chunks</span>
+
+<img src="GUID-07F65EEA-5969-5E56-9570-245712FB3EE3_d0e345575_href.png"/>
+</div>
+ <p id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-0FB877CD-C4E1-5253-AFBC-563E3C715A44"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-0FB877CD-C4E1-5253-AFBC-563E3C715A44"><!-- --></a><strong>Double-ended chunks</strong> </p>
+ <p>These
+chunks have a committed region consisting of a single contiguous range starting
+at arbitrary lower and upper endpoints within the reserved region. The only
+condition is that the lower and upper endpoints must be a multiple of the
+MMU page size. Both the bottom and top of the committed region can be altered
+dynamically. The following diagram shows an example of this kind of chunk: </p>
+ <div class="fignone" id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-62D7BB5C-3BF1-5AA1-88A2-45D09D8684C9"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-62D7BB5C-3BF1-5AA1-88A2-45D09D8684C9"><!-- --></a><span class="figcap">Figure 2. Double-ended chunks</span>
+
+<img src="GUID-99C2E42F-1029-5E32-8446-CAAF29D733BA_d0e345591_href.png"/>
+</div>
+ <p id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-230B66B1-7FD8-5944-9284-354C7564156B"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-230B66B1-7FD8-5944-9284-354C7564156B"><!-- --></a><strong>Disconnected chunks</strong> </p>
+ <p>These
+chunks have a committed region consisting of an arbitrary set of MMU pages
+within the reserved region. Each page-sized address range within the reserved
+region starting on a page boundary can be committed independently. The following
+diagram shows an example of this kind of chunk: </p>
+ <div class="fignone" id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-13C9EED8-9C28-5289-A558-378DE49A0DAF"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-13C9EED8-9C28-5289-A558-378DE49A0DAF"><!-- --></a><span class="figcap">Figure 3. Disconnected chunks</span>
+
+<img src="GUID-59C143F6-3A0C-5C37-9351-A72FE45AFFC9_d0e345607_href.png"/>
+</div>
+ </div>
+
+<div class="section" id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-FD985769-32EB-5A8C-97E8-A3D2D89BBC33"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-FD985769-32EB-5A8C-97E8-A3D2D89BBC33"><!-- --></a><h2 class="sectiontitle">Shared chunks</h2> <p>A
+shared chunk is a mechanism that allows kernel-side code to share memory buffers
+safely with user-side code. By kernel-side code, we usually mean device driver
+code. </p>
+ <p>The main points to note about shared chunks are: </p>
+ <ul>
+<li id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-256C4B04-4B8E-5FDF-AF3B-703936BB2674"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-256C4B04-4B8E-5FDF-AF3B-703936BB2674"><!-- --></a><p>They can only be created
+and destroyed by device drivers. It is typical behaviour for user-side code,
+which in this context we refer to as the client of the device driver, to pass
+a request to the device driver to open a handle to a shared chunk. This causes
+the device driver to open a handle to the chunk and return the handle <em>value</em> to
+the client. Successful handle creation also causes the chunk's memory to be
+mapped into the address space of the process to which the client's thread
+belongs. Note, however, that it is the driver that dictates exactly when the
+chunk itself is created, and when memory is committed. The precise protocol
+depends on the design of the driver; you need to refer to that driver's documentation
+for programming guidance. </p>
+ </li>
+
+<li id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-8FACA759-AE5C-5723-A01C-4E39B50B55C0"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-8FACA759-AE5C-5723-A01C-4E39B50B55C0"><!-- --></a><p>Like all kernel side
+objects, a shared chunk is reference counted. This means that it remains in
+existence for as long as the reference count is greater than zero. Once all
+opened references to the shared chunk have been <em>closed</em>, regardless
+of whether the references are user-side, or kernel-side, then it is destroyed. </p>
+ </li>
+
+<li id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-FD61FB5B-E0E8-52B2-8DE0-1E9425B28C2F"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-FD61FB5B-E0E8-52B2-8DE0-1E9425B28C2F"><!-- --></a><p>User-side code that
+has gained access to a shared chunk from one device driver can pass this to
+a second device driver. The second device driver must <em>open</em> the chunk
+before it can be used. </p>
+ </li>
+
+<li id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-989692D2-60C2-5B71-879F-6C4A9C7F348B"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-989692D2-60C2-5B71-879F-6C4A9C7F348B"><!-- --></a><p>More than one user side
+application can access the data in a shared chunk. A handle to a shared chunk
+can be passed from one process to another process using standard handle passing
+mechanisms. In practice, handles would be passed in a client-server context,
+either from client to server or from server to client using inter-process
+communication (IPC). </p>
+ </li>
+
+<li id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-20FF4363-CC7D-5CFB-863C-420A16362B21"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-20FF4363-CC7D-5CFB-863C-420A16362B21"><!-- --></a><p>Processes that share
+data inside a chunk should communicate the location of that data as an offset
+from the start of the chunk, and <em>not</em> as an absolute address. The shared
+chunk may appear at different addresses within the address spaces of different
+user processes. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-8E371955-C475-5980-A04F-B33EAADE1B1B"><a name="GUID-8F1567B4-6957-5B93-9499-35489AD610F5__GUID-8E371955-C475-5980-A04F-B33EAADE1B1B"><!-- --></a><h2 class="sectiontitle">Local and global
+chunks</h2> <p><strong>Local chunks </strong> </p>
+ <p>A chunk is local when it is private to the process
+creating it and is not intended for access by other user processes. </p>
+ <p>A
+local chunk cannot be mapped into any other process and is, therefore, used
+for memory that does not need to be shared. </p>
+ <p>A local chunk does not
+have a name. </p>
+ <p><strong>Global chunks </strong> </p>
+ <p>A chunk is global if it is intended to be accessed
+by other processes. </p>
+ <p>Global chunks have names that can be used to identify
+the chunk to another process wishing to access it. A process can open a global
+chunk by name; this maps the chunk into that process's address space, allowing
+direct access and enabling the sharing of data between processes. </p>
+ <p>If
+the name of the global chunk to be opened is known, use <a href="GUID-326A2F4D-0E99-31C0-A35D-E8BF45913F07.html#GUID-326A2F4D-0E99-31C0-A35D-E8BF45913F07__GUID-A6557BEE-D545-362E-AD00-A23DC64D5CEE"><span class="apiname">RChunk::OpenGlobal()</span></a>.
+If a part of the name is known, use the <a href="GUID-326A2F4D-0E99-31C0-A35D-E8BF45913F07.html#GUID-326A2F4D-0E99-31C0-A35D-E8BF45913F07__GUID-BE5915FF-4C43-30D8-A6E3-45C33973CD9D"><span class="apiname">RChunk::Open()</span></a> variant
+that takes a <a href="GUID-DA41F070-0E54-3F8A-B301-39A0C6AFAB38.html"><span class="apiname">TFindChunk</span></a>. </p>
+ <p>A process can only access
+an unnamed global chunk if it is passed a handle to that chunk from another
+process. See <a href="GUID-326A2F4D-0E99-31C0-A35D-E8BF45913F07.html#GUID-326A2F4D-0E99-31C0-A35D-E8BF45913F07__GUID-BE5915FF-4C43-30D8-A6E3-45C33973CD9D"><span class="apiname">RChunk::Open()</span></a>. </p>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-BFEBCD57-3C83-56D7-B7A3-B8A361725645.html" title="Provides an introduction to memory management, especially chunks and heaps.">Memory Management Concepts</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

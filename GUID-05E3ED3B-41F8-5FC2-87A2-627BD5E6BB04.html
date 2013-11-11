@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Attaching to an existing RConnection connection: Tutorial"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2139B04C-6ED6-599B-A018-D92451B8353E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-61E0CD76-A2E3-5066-84A8-146EECA8ADCD.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-05E3ED3B-41F8-5FC2-87A2-627BD5E6BB04"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Attaching to an existing RConnection connection: Tutorial</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-05E3ED3B-41F8-5FC2-87A2-627BD5E6BB04"><a name="GUID-05E3ED3B-41F8-5FC2-87A2-627BD5E6BB04"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2682451 id2518388 id2518454 id2518515 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-8F2D6AC8-8357-55C7-970B-CD2684BA9B04.html" title="The Communications Framework is the base for all communications, network and telephony services that Symbian platform provides. The Communications Framework manages the communications threads and the flow of information between those threads. The Framework also manages and stores the communications related settings.">Communications Framework Guide</a> &gt; <a href="GUID-2139B04C-6ED6-599B-A018-D92451B8353E.html">Data Communications Server</a> &gt; <a href="GUID-61E0CD76-A2E3-5066-84A8-146EECA8ADCD.html">Socket Server</a> &gt; <a href="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html">Socket Server Tutorials</a> &gt; </div>
+<h1 class="topictitle1"> Attaching to an existing RConnection connection: Tutorial</h1>
+<div><p>The following example shows how an application can attach to an existing connection in order to gather information on the connection. </p>
+ <p>Note that error checking is included in this example. </p>
+ <pre class="codeblock" id="GUID-05E3ED3B-41F8-5FC2-87A2-627BD5E6BB04__GUID-32123F0F-45CC-5966-AD0B-E0895D316D3F"><a name="GUID-05E3ED3B-41F8-5FC2-87A2-627BD5E6BB04__GUID-32123F0F-45CC-5966-AD0B-E0895D316D3F"><!-- --></a>
+//Open a session with the socket server
+RSocketServ socketServer;
+TInt err(KErrNone);
+err = socketServer.Connect();
+if(err != KErrNone) return err;
+
+//Open a subsession with the socket server for the RConnection
+RConnection myConnection;
+err = myConnection.Open(socketServer);
+if(err != KErrNone) return err;
+
+//Start or attach the RConnection to an interface on the server
+TUint connectionCount;
+//Enumerate currently active connections across all socket servers
+err = myConnection.EnumerateConnections(connectionCount);
+if(err != KErrNone) return err;
+if(connectionCount == 0) // if no connections are started
+{
+            err = myConnection.Start();
+}
+else
+{
+            TPckgBuf&lt;TConnectionInfoV2&gt; connectionInfo;
+            err = myConnection.GetConnectionInfo(1, connectionInfo); // 1 = first active connection
+            if(err!=KErrNone) return err;
+            err = myConnection.Attach(connectionInfo, RConnection::EAttachTypeMonitor);
+}</pre>
+ <p>At this point <samp class="codeph">myConnection</samp> points to a specific connection. Obviously the code snippet above could be expanded in several ways such as getting connection information for all connections and selecting a connection based on the information rather than simply selecting the first connection, as in this case. </p>
+ <p>Note for this and the next section that the number of connections and subconnections are not constant and can be expected to change during execution. </p>
+ <pre class="codeblock" id="GUID-05E3ED3B-41F8-5FC2-87A2-627BD5E6BB04__GUID-F9F6D0DB-BA01-5610-BFDD-B15A61DF0757"><a name="GUID-05E3ED3B-41F8-5FC2-87A2-627BD5E6BB04__GUID-F9F6D0DB-BA01-5610-BFDD-B15A61DF0757"><!-- --></a>
+//Store subconnection information
+
+TUint subConnectionCount(0);
+err = myConnection.EnumerateSubConnections(subConnectionCount);
+if(err != KErrNone) return err;
+
+//TSubConnectionInfoGprsUmts is a superclass of TSubConnectionInfo, so we will use it
+//to hold either GPRS/UMTS or CSD connection information as required. (CSD connection 
+//information is held in a plain TSubConnectionInfo object).
+TPckgBuf&lt;TSubConnectionInfoGprsUmts&gt; subConnectionInfo[subConnectionCount];
+//note that for a CSD connection the subConnectionCount will be 1
+
+for (TUint i=0; i&lt;subConnectionCount; i++)
+{
+            err = myConnection.GetSubConnectionInfo(i, subConnectionInfo[i]);
+            if(err != KErrNone) return err;
+}</pre>
+ <p>Once the connection has been attached it is possible to start querying individual subconnections. </p>
+ <p>From this point the client has access to <samp class="codeph">subConnectionInfo().iSubConnectionUniqueId</samp>, which is the unique identifier for the subconnection that has been queried. Now that this value is available the client can make any further calls to subconnection specific functionality within the <samp class="codeph">RConnection</samp>, for example querying the amount of data currently transferred by the specified subconnection. </p>
+ <pre class="codeblock" id="GUID-05E3ED3B-41F8-5FC2-87A2-627BD5E6BB04__GUID-436EFBF5-3338-55C1-B864-1A32B115EAD0"><a name="GUID-05E3ED3B-41F8-5FC2-87A2-627BD5E6BB04__GUID-436EFBF5-3338-55C1-B864-1A32B115EAD0"><!-- --></a>
+TUint connectionuplinkVolume(0);
+TUint connectiondownlinkVolume(0);
+TUint subconnectionuplinkVolume(0);
+TUint subconnectiondownlinkVolume(0);
+TPckg&lt;TUint&gt; connectionUplinkVolume(connectionuplinkVolume);
+TPckg&lt;TUint&gt; connectionDownlinkVolume(connectiondownlinkVolume);
+TPckg&lt;TUint&gt; subConnectionUplinkVolume(subconnectionuplinkVolume);
+TPckg&lt;TUint&gt; subConnectionDownlinkVolume(subconnectiondownlinkVolume);
+TRequestStatus status;
+
+//Query data transfer over the connection
+myConnection.DataTransferredRequest(connectionUplinkVolume, connectionDownlinkVolume, status);
+
+//Query data transfer over a specified subconnection
+myConnection.DataTransferredRequest(subConnectionInfo[0]().iSubConnectionUniqueId, connectionUplinkVolume, connectionDownlinkVolume, status);
+</pre>
+ </div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E9E2783E-44A0-5BA6-BBF3-D13C8D67B53E.html">Socket Server Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Data Transfer across Memory Boundaries"/>
+<meta name="abstract" content="This document describes how to read from and write to user-side memory from a kernel thread context or a user thread."/>
+<meta name="description" content="This document describes how to read from and write to user-side memory from a kernel thread context or a user thread."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E90DBF35-0A05-4751-904D-4F06987FFF48.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E90DBF35-0A05-4751-904D-4F06987FFF48.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-53649311-4465-48B5-8D07-A65515950040"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Data Transfer across Memory Boundaries</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-53649311-4465-48B5-8D07-A65515950040"><a name="GUID-53649311-4465-48B5-8D07-A65515950040"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2387995 id2388032 id2388215 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-F78B7BF9-5FDD-4EF8-A921-71CCBB830A99.html" title="The device driver framework and how to implement a device driver.">Device Driver Guide</a> &gt; <a href="GUID-C22974D8-CFB9-4A83-BE58-CCC97EA8DF13.html" title="This set of documents explains how to write a device driver.">Device Driver Writing Guide</a> &gt; <a href="GUID-E90DBF35-0A05-4751-904D-4F06987FFF48.html" title="These documents describe how device drivers handle memory buffers and transfer data.">Memory Management</a> &gt; </div>
+<h1 class="topictitle1">Data
+Transfer across Memory Boundaries</h1>
+<div><p>This document describes how to read from and write to user-side
+memory from a kernel thread context or a user thread.</p>
+
+<p>When a driver reads or writes data from or to a user-side program, the
+data must be copied between user address space and Kernel address space. The
+Kernel provides a number of APIs that allow this to be done safely. The API
+to use depends on whether the request is serviced in a user thread context,
+or in a Kernel thread context. </p>
+
+<div class="section" id="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-646C4340-6AC9-4152-9447-806B0AF53E32"><a name="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-646C4340-6AC9-4152-9447-806B0AF53E32"><!-- --></a><h2 class="sectiontitle">From
+kernel space</h2>              <p>To read and write data to the user space from
+a kernel thread context, use Kernel APIs such as <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-C505206F-F54F-3760-BA7D-2DB52AB4E0B3"><span class="apiname">Kern::ThreadDesRead()</span></a>, <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-904A42A8-8077-3FC6-BEF2-29619F079842"><span class="apiname">Kern::ThreadRawRead()</span></a>, <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-FA321582-6D75-37A1-8DAB-D50638F76593"><span class="apiname">Kern::ThreadDesWrite()</span></a>, and <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-182C88F4-326C-376E-9FBE-889E3CB9B68A"><span class="apiname">Kern::ThreadRawWrite()</span></a>. The data can be handled
+as descriptors or as raw memory. </p>
+ <p>The Kernel also provides other APIs
+to safely read the information about a descriptor in another thread's address
+space. <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-22DD7D90-B4B5-3450-82BF-C3CC3A43430A"><span class="apiname">Kern::ThreadGetDesInfo()</span></a> returns the length, maximum
+length, and a pointer to the descriptor's buffer. The length and maximum length
+can also be obtained specifically by using <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-1DE210A5-B7A2-3F52-9003-439CA3DD4715"><span class="apiname">Kern::ThreadGetDesLength()</span></a> and <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-A5E20DB7-9DB4-350C-B636-95E2148DCC6F"><span class="apiname">Kern::ThreadGetDesMaxLength()</span></a>. </p>
+ <pre class="codeblock" id="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-640AEF03-EEC7-5E87-B4E2-C0AF09B08255"><a name="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-640AEF03-EEC7-5E87-B4E2-C0AF09B08255"><!-- --></a>TInt DExDriverLogicalChannel::DoControl(TInt aFunction, TAny* a1, TAny* /*a2*/)
+    {
+    ...
+    // To read the buffer descriptors from user space
+    r=Kern::ThreadDesRead(iClient,a1,iTxBuffer,0,0);
+    ...
+    // To write the buffer descriptors to user space
+    r=Kern::ThreadDesWrite(iClient,(TDes8*)a1,iRxBuffer,0);
+    ...
+    }</pre>
+ <pre class="codeblock" id="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-50FAEB14-8660-5AC8-9DD9-B33F77E1E529"><a name="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-50FAEB14-8660-5AC8-9DD9-B33F77E1E529"><!-- --></a>// Read the descriptor maximum length from the user thread (iClient)  
+// using the kernel API Kern::ThreadGetDesMaxLength(). This API 
+// gets the maximum length of a descriptor in another thread's 
+// address space. Kern::ThreadGetDesInfo() can also be used to 
+// get length, maximum length and pointer to the descriptor's 
+// buffer.
+//
+iCount=Kern::ThreadGetDesMaxLength(iClient,aData);</pre>
+     </div>
+
+<div class="section" id="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-7D3C7D57-0F76-4686-8AE6-C254CCC4A778"><a name="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-7D3C7D57-0F76-4686-8AE6-C254CCC4A778"><!-- --></a><p><strong>From user space</strong> </p>
+ <p>When
+executing a read or write operation in the context of a user thread, use the
+following APIs: </p>
+ <ul>
+<li id="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-69D74013-8670-58C2-A92D-68E0227EE266"><a name="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-69D74013-8670-58C2-A92D-68E0227EE266"><!-- --></a><p> <a href="GUID-B56A34CD-E5B5-3E3E-A2EE-3BC9D248B210.html"><span class="apiname">kumemget()</span></a>  </p>
+ </li>
+
+<li id="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-F686EE32-C1C4-5229-A7DD-D1F19430DF92"><a name="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-F686EE32-C1C4-5229-A7DD-D1F19430DF92"><!-- --></a><p> <a href="GUID-C7AB0391-99D5-31A2-91D4-A7F195546FC3.html"><span class="apiname"> kumemput()</span></a>  </p>
+ </li>
+
+<li id="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-97147CB8-CEE1-5919-8491-D0E06B2BDC40"><a name="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-97147CB8-CEE1-5919-8491-D0E06B2BDC40"><!-- --></a><p> <a href="GUID-F5136CAF-B66F-388D-A610-D0153CAF7E23.html"><span class="apiname"> umemget()</span></a>  </p>
+ </li>
+
+<li id="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-DD8A639B-161D-524F-BFD5-7C46A3D39900"><a name="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-DD8A639B-161D-524F-BFD5-7C46A3D39900"><!-- --></a><p> <a href="GUID-371860F0-36BF-340D-BEF6-1763EF9874AE.html"><span class="apiname"> umemput()</span></a>  </p>
+ </li>
+
+</ul>
+ <p>Kernel APIs are also available to do copy operations using descriptors: </p>
+ <ul>
+<li id="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-1958BA33-0D05-5757-9331-19AF2C3DF294"><a name="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-1958BA33-0D05-5757-9331-19AF2C3DF294"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-D7CE1BF2-F1B8-30E9-9D34-7BDDA39C1B0C"><span class="apiname">Kern::KUDesGet()</span></a>  </p>
+ </li>
+
+<li id="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-AA5A7A0F-5053-5ED5-8BEA-C88822D1BB66"><a name="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-AA5A7A0F-5053-5ED5-8BEA-C88822D1BB66"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-8B62DE20-357F-3499-9F2E-FAD4B18C34D6"><span class="apiname">Kern::KUDesPut()</span></a>  </p>
+ </li>
+
+<li id="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-4E139680-6D2A-5A1F-A312-44473C90A356"><a name="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-4E139680-6D2A-5A1F-A312-44473C90A356"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-F9B70C06-0611-3EA8-9C9C-553B77347D36"><span class="apiname">Kern::KUDesInfo()</span></a>  </p>
+ </li>
+
+<li id="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-D1004AD8-FA86-50C5-A3B0-7861A5939D89"><a name="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-D1004AD8-FA86-50C5-A3B0-7861A5939D89"><!-- --></a><p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-CE3887C0-9DBD-3A36-AF53-FE4192352500"><span class="apiname">Kern::KUdesSetLength()</span></a>  </p>
+ </li>
+
+</ul>
+ <p> <a href="GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D.html#GUID-C6946ECB-775F-3EC2-A56F-78F25B9FBE3D__GUID-15287E72-897C-3F34-9C0A-E9C555456FDF"><span class="apiname">Kern::InfoCopy()</span></a> can be used to copy a descriptor
+safely in a way that enables forward and backward compatibility. It is typically
+used for copying capability packages. </p>
+ <pre class="codeblock" id="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-C2936EA7-98C1-5328-833D-F418298EFA09"><a name="GUID-53649311-4465-48B5-8D07-A65515950040__GUID-C2936EA7-98C1-5328-833D-F418298EFA09"><!-- --></a>void DExDriverLogicalDevice::GetCaps(TDes8&amp; aCaps) const
+    {
+    // device capabilities are packaged to a buffer
+    TPckgBuf&lt;RExDriver::TUartCaps&gt; caps;
+    caps().iVersion=iVersion;
+    // Copy the device capabilities to the user thread using the 
+    // Kernel API
+    Kern::InfoCopy(aCaps,caps);
+    }</pre>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-E90DBF35-0A05-4751-904D-4F06987FFF48.html" title="These documents describe how device drivers handle memory buffers and transfer data.">Memory Management</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Window Surface Implementation"/>
+<meta name="abstract" content="This topic provides an introduction to implementing EGL window surfaces on the Symbian platform. These are used for onscreen rendering into windows that are provided by the Symbian platform (rather than EGL). The details of how to implement window surfaces depend on whether the ScreenPlay variant is in use."/>
+<meta name="description" content="This topic provides an introduction to implementing EGL window surfaces on the Symbian platform. These are used for onscreen rendering into windows that are provided by the Symbian platform (rather than EGL). The details of how to implement window surfaces depend on whether the ScreenPlay variant is in use."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F094A9FA-D253-5D33-B625-A2AA0B1CE447.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8C6D4350-A38D-57A1-8C8D-C777EA7E8A3E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-D252E75C-C8CA-5C51-8DA3-95B937A1295C.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-F094A9FA-D253-5D33-B625-A2AA0B1CE447.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-DC3A8785-3ED3-5696-A5ED-AB66588A5C14.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DC3E5AA-1706-5255-ACD6-E7AB732E1095.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Window Surface Implementation</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E"><a name="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2384330 id2386999 id2387013 id2387068 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-975CBC70-81E6-5FA2-80CE-88DD2ABE9595.html">Graphics Guide</a> &gt; <a href="GUID-8C6D4350-A38D-57A1-8C8D-C777EA7E8A3E.html" title="The components within the EGL collection provide access to EGL on the Symbian platform. EGL, an open standard developed by the Khronos Group, provides an interface between rendering APIs such as OpenGL ES or OpenVG and an underlying native platform window system.">EGL Collection</a> &gt; <a href="GUID-D252E75C-C8CA-5C51-8DA3-95B937A1295C.html" title="The EGL Interface component provides a consistent interface to EGL on the Symbian platform, enabling cross-device compatibility. The component includes the Khronos-released header files (which incorporate some minor changes, such as to the in-source comments). It also provides some Symbian-specific header files and some other files (such as LIB, DEF and MMP files) and UIDs. It does not provide any implementations of the APIs.">EGL Interface Component</a> &gt; <a href="GUID-F094A9FA-D253-5D33-B625-A2AA0B1CE447.html" title="This section provides information for EGL implementers working with the Symbian platform.">EGL Implementer's Guide</a> &gt; </div>
+<h1 class="topictitle1">Window Surface Implementation</h1>
+<div><p>This topic provides an introduction to implementing EGL
+window surfaces on the Symbian platform. These are used for onscreen
+rendering into windows that are provided by the Symbian platform (rather
+than EGL). The details of how to implement window surfaces depend
+on whether the ScreenPlay variant is in use. </p>
+
+<p> <strong>Target audience</strong>: Device creators. </p>
+
+<div class="section" id="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-C4343FE3-9351-4E5D-A398-FDD9292BB507"><a name="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-C4343FE3-9351-4E5D-A398-FDD9292BB507"><!-- --></a><h2 class="sectiontitle">Symbian windows</h2> <p>Window surfaces are created
+by the <samp class="codeph">eglCreateWindowSurface()</samp> function, to which
+is passed a handle to a window provided by the Symbian <a href="GUID-2C443E6F-BC3D-5252-8098-9F850AA88A35.html" title="The Window Server manages the use of the screen and input devices by applications and controls and co-ordinates access.">Window Server</a>. Key Window Server classes include the following: </p>
+ <ul>
+<li id="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-CE332026-A8BC-57D8-B845-F0C41CCBA4C2"><a name="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-CE332026-A8BC-57D8-B845-F0C41CCBA4C2"><!-- --></a> <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a>, which is a handle to a standard window. </li>
+
+<li id="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-DFC36F32-71B2-5502-B4A9-B95C6548751D"><a name="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-DFC36F32-71B2-5502-B4A9-B95C6548751D"><!-- --></a><a href="GUID-643DDA78-C7A7-386D-AB3F-8710141DDDA9.html"><span class="apiname">RWsSession</span></a>, which is the Window Server session class. This is required to create
+Window Server objects.  </li>
+
+<li id="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-B17680DB-00AD-5B8C-8199-5E03B9CB71E8"><a name="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-B17680DB-00AD-5B8C-8199-5E03B9CB71E8"><!-- --></a> <a href="GUID-30479BE3-296E-3B4D-914D-B080ABD733E4.html"><span class="apiname">CWsScreenDevice</span></a>, which is a Window Server client-side object representing the screen. </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-B7888880-E7AE-427F-9E69-0FD1B9AD5862"><a name="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-B7888880-E7AE-427F-9E69-0FD1B9AD5862"><!-- --></a><h2 class="sectiontitle"> Non-ScreenPlay </h2> <p>In the non-ScreenPlay
+variant there is no composition engine and both Symbian API drawing
+(for example, through <a href="GUID-0AEE5955-C530-35F1-A904-69183331B294.html"><span class="apiname">CWindowGc</span></a>) and EGL client
+API drawing are rendered to a single display. The EGL implementation
+can achieve this in a number of ways, including: </p>
+ <ul>
+<li id="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-332CAE78-9EBD-5DAF-A640-FEE2CBC48B73"><a name="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-332CAE78-9EBD-5DAF-A640-FEE2CBC48B73"><!-- --></a><p>Using Direct
+Screen Access (DSA) to render the EGL client API drawing directly
+to the screen. This is done in cooperation with the Window Server,
+which provides clipping instructions. This approach is particularly
+suitable when graphics acceleration hardware is available. </p>
+ </li>
+
+<li id="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-646EE6E5-6194-5862-8225-9D756EA55ACC"><a name="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-646EE6E5-6194-5862-8225-9D756EA55ACC"><!-- --></a><p>Rendering the
+EGL client API drawing to an offscreen <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html"><span class="apiname">CFbsBitmap</span></a> and then calling a Window Server API to blit the <a href="GUID-683A1D42-2764-3EB7-BD19-9E12559199AB.html"><span class="apiname">CFbsBitmap</span></a> onto the screen, with any necessary clipping. </p>
+ </li>
+
+</ul>
+ </div>
+
+<div class="section" id="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-02B86EC6-A3C1-4A9D-889F-BDE460F3346A"><a name="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-02B86EC6-A3C1-4A9D-889F-BDE460F3346A"><!-- --></a><h2 class="sectiontitle">ScreenPlay</h2> <p>ScreenPlay has introduced the <a href="GUID-0DC3E5AA-1706-5255-ACD6-E7AB732E1095.html" title="This topic provides an introduction to the Graphics Composition collection.">Graphics Composition
+Collection</a>, which enables a number of <strong>surfaces</strong> to be
+arranged in layers and to be composed together to produce the final
+output on the display. In this section, these surfaces are called <strong>composition surfaces</strong> in order to distinguish them from EGL surfaces.
+Each composition surface is mapped to memory, which can be specialized
+graphics memory for faster performance. </p>
+ <p>All Window Server
+drawing (such as the application UI) is rendered to a composition
+surface called the <strong>UI surface</strong>, which is usually the topmost
+layer and can be semi-transparent. </p>
+<p>When the EGL implementation
+creates an EGL window surface for a Symbian window (represented by <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a>), the EGL implementation must do the following: </p>
+<ul>
+<li id="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-ECAF9CD5-0770-5D51-827B-9E30A1A14478"><a name="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-ECAF9CD5-0770-5D51-827B-9E30A1A14478"><!-- --></a><p>Create a new
+composition surface with the same width and height as the <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a>. </p>
+ </li>
+
+<li id="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-69D40D06-D691-5DC4-8AB8-7C93F74EDAE4"><a name="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-69D40D06-D691-5DC4-8AB8-7C93F74EDAE4"><!-- --></a><p>Position the
+composition surface in a layer below the UI layer, directly below
+the <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a>. </p>
+ </li>
+
+<li id="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-19391759-8C65-5D17-96C7-A9155303442E"><a name="GUID-0B2421FD-8431-5DDA-9FE3-046734AE495E__GUID-19391759-8C65-5D17-96C7-A9155303442E"><!-- --></a><p>Make the <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a> transparent in order for the composition surface
+to show through. </p>
+ </li>
+
+</ul>
+<p/>
+<p>All of the EGL client API drawing to the EGL window
+surface is then rendered to the composition surface and the application's
+UI appears as a semi-transparent layer above it. </p>
+<p>When a window
+is resized, a new composition surface needs to be created with the
+new width and height, and positioned as a layer below the <a href="GUID-683603DD-F3D3-3193-BEB3-8236C7DE7F79.html"><span class="apiname">RWindow</span></a> in place of the previous composition surface. </p>
+<p>A composition surface can have more than one pixel buffer associated
+with it (each buffer has the same dimensions). For an EGL window surface,
+the composition surface should have two (or more) buffers for double-buffered
+drawing. This means, for example, that OpenVG commands can draw to
+the <strong>back buffer</strong>, while the <strong>front buffer</strong> is being composed to the screen. </p>
+ </div>
+
+</div>
+<div>
+<ul class="ullinks">
+<li class="ulchildlink"><strong><a href="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF.html">Implementing eglCreateWindowSurface</a></strong><br/>
+This topic explains how to implement <samp class="codeph">eglCreateWindowSurface()</samp> on the Symbian platform.</li>
+<li class="ulchildlink"><strong><a href="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0.html">Implementing eglSwapBuffers</a></strong><br/>
+This topic explains how to implement eglSwapBuffers() on the Symbian platform. It provides information about how to handle a window resize and the preserve buffer option.</li>
+</ul>
+
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-F094A9FA-D253-5D33-B625-A2AA0B1CE447.html" title="This section provides information for EGL implementers working with the Symbian platform.">EGL Implementer's Guide</a></div>
+</div>
+<div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a href="GUID-DC3A8785-3ED3-5696-A5ED-AB66588A5C14.html" title="This is a guide for implementers of EGL working with the Symbian platform.">EGL
+Porting Guide</a></div>
+<div><a href="GUID-0DC3E5AA-1706-5255-ACD6-E7AB732E1095.html" title="This topic provides an introduction to the Graphics Composition collection.">Graphics
+Composition Collection Overview</a></div>
+<div><a href="GUID-599C9890-3AC8-46D3-A8C3-34CAAB5A61CF.html" title="This topic explains how to implement eglCreateWindowSurface() on the Symbian platform.">Implementing
+eglCreateWindowSurface</a></div>
+<div><a href="GUID-42984078-3DEB-41C7-AC76-C769F7CDB4D0.html" title="This topic explains how to implement eglSwapBuffers() on the Symbian platform. It provides information about how to handle a window resize and the preserve buffer option.">Implementing
+eglSwapBuffers</a></div>
+</div>
+</div>   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

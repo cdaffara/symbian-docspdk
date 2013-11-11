@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Integrating a System Server with UPS"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B2089965-546C-5FF2-8596-13A2221E02E6.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-BA362536-C9C9-5BA4-BEE3-0E1AD7FA45F1.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-5329AE68-39E0-55E7-9878-2D8FF9E29B21.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-B2089965-546C-5FF2-8596-13A2221E02E6.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Integrating a System Server with UPS</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2858558 id2858601 id2858609 id2858646 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-315452C2-A1E2-5888-A694-6D2DE73A3F5E.html">OS Security Guide</a> &gt; <a href="GUID-BA362536-C9C9-5BA4-BEE3-0E1AD7FA45F1.html">Authorisation</a> &gt; <a href="GUID-5329AE68-39E0-55E7-9878-2D8FF9E29B21.html">User Prompt Service</a> &gt; <a href="GUID-B2089965-546C-5FF2-8596-13A2221E02E6.html">Tutorials</a> &gt; </div>
+<h1 class="topictitle1">Integrating
+a System Server with UPS</h1>
+<div>
+<div class="section" id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-78B46051-E035-4798-9A4D-B274D4783164"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-78B46051-E035-4798-9A4D-B274D4783164"><!-- --></a><h2 class="sectiontitle">Introduction</h2> <p>User Prompt Service (UPS) functionality
+is provided by the server process <span class="filepath">upsserver.exe</span>. The
+process starts on demand when system servers make calls to the UPS client
+library. Only applications with a capability of <samp class="codeph">ProtServ</samp> or
+higher can access <span class="filepath">upsserver.exe</span>. </p>
+ <p>A system server
+should only invoke the UPS for security decisions that a typical phone user
+will understand (For example, it is inappropriate to ask the user for permission
+to change a low level network setting.) . </p>
+ <p>Device creators can write
+a system server that invokes the UPS, if a compatible dialog creator is available
+and the policies are delivered in an appropriately signed SIS file. They can
+also write a policy evaluator, but a default policy evaluator is provided
+by the Symbian platform. </p>
+ <p>If the device creators do not
+specify any policy file, the UPS uses the platform security check results
+to decide whether to access requested services. Thus not supplying policy
+files effectively turns UPS off. </p>
+ </div>
+
+<div class="section" id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-718CF580-05FE-4F75-A7D8-4487C35675B6"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-718CF580-05FE-4F75-A7D8-4487C35675B6"><!-- --></a><h2 class="sectiontitle">Required background</h2><p id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-9C6EBADD-175A-5122-90C4-CED8A9855BAB"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-9C6EBADD-175A-5122-90C4-CED8A9855BAB"><!-- --></a><strong>Configuring
+the system server</strong> </p>
+ <p>For each system server that accesses the UPS,
+you need to do the following: </p>
+ <a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-D14BDAE1-BD62-530E-B3C4-2FA380BDBDC5"><!-- --></a><ol id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-D14BDAE1-BD62-530E-B3C4-2FA380BDBDC5">
+<li id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-090CE65B-44BF-54CF-8961-69059655C5F5"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-090CE65B-44BF-54CF-8961-69059655C5F5"><!-- --></a><p>Create one <samp class="codeph">RUpsSession</samp> per
+server. </p>
+ <p>Typically, an <samp class="codeph">RUpsSubession</samp> object is created
+for each connection by a client to the system server and can only have one
+outstanding call to <a href="GUID-1C63BE5E-6F66-38CB-931E-B2C51309CB74.html#GUID-1C63BE5E-6F66-38CB-931E-B2C51309CB74__GUID-82C3C51A-F785-3DBA-910A-47CAF47B39F6"><span class="apiname">RUpsSubsession::Authorise()</span></a>. </p>
+ </li>
+
+<li id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-61E4A569-F5C3-593C-9954-2803E822F0BF"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-61E4A569-F5C3-593C-9954-2803E822F0BF"><!-- --></a><p> <a href="GUID-1C63BE5E-6F66-38CB-931E-B2C51309CB74.html#GUID-1C63BE5E-6F66-38CB-931E-B2C51309CB74__GUID-82C3C51A-F785-3DBA-910A-47CAF47B39F6"><span class="apiname">RUpsSubsession::Authorise()</span></a> completes
+immediately and uses the result of its <samp class="codeph">aServerCheckOk</samp> parameter
+to set its <samp class="codeph">aDecision</samp> parameter, if a policy file is not defined
+for a service. Therefore, the default behaviour of an unconfigured UPS is
+compatible with the existing platform security implementation. </p>
+ </li>
+
+<li id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-035F2AEE-95B8-5085-9079-A4B8A6EC9B6A"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-035F2AEE-95B8-5085-9079-A4B8A6EC9B6A"><!-- --></a><p>Close each <a href="GUID-1C63BE5E-6F66-38CB-931E-B2C51309CB74.html"><span class="apiname">RUpsSubsession</span></a>. </p>
+ </li>
+
+</ol>
+<p id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-75BD33B9-28AC-55CD-BF3E-7F62A8D039EB"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-75BD33B9-28AC-55CD-BF3E-7F62A8D039EB"><!-- --></a><strong>Considerations</strong> </p>
+ <p>Consider
+the following points before integrating the UPS to a system server </p>
+ <ul>
+<li id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-11A0A48F-47A3-5A89-9925-8FBAB3F5D8DE"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-11A0A48F-47A3-5A89-9925-8FBAB3F5D8DE"><!-- --></a><p>Even though the APIs
+for the UPS are relatively small, the integration is slightly more complicated
+than might be expected. This is because existing synchronous security checks
+must become asynchronous since interaction with the device user is inherently
+an asynchronous operation. For example, it would be undesirable to block the
+entire comms server while waiting for the user to respond to a dialog. </p>
+ </li>
+
+<li id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-747A3037-13E6-5895-895E-F700368A81B6"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-747A3037-13E6-5895-895E-F700368A81B6"><!-- --></a><p>Provide an informed
+security decision the user may need to know about the request they are authorizing.
+Consequently, it may be necessary to extract the parameters from the client
+application at the security check stage. </p>
+ </li>
+
+<li id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-27A11CBD-BBB5-5D32-8207-D01D207FEC9E"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-27A11CBD-BBB5-5D32-8207-D01D207FEC9E"><!-- --></a><p>Finally, depending on
+the service and the security requirements of the manufacturer, an operator
+user prompts may be in addition to the platform security (e.g. capabilities)
+checks. Alternatively, user prompts could be used to allow applications without
+capabilities limited access to a protected service. Because most implementations
+of the <samp class="codeph">CPolicyServer</samp> fail the client immediately if the platsec
+check fails these checks may have to be modified. </p>
+ </li>
+
+</ul>
+<p> <strong>Note</strong>: For an example of how to include the above, see the
+example code later in this document. </p>
+</div>
+
+<div class="section" id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-3C0A43C1-1CEF-4C0F-83A6-64B3EF73E955"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-3C0A43C1-1CEF-4C0F-83A6-64B3EF73E955"><!-- --></a><h2 class="sectiontitle">Integration of UPS</h2> <p>If the system server uses the <samp class="codeph">CPolicyServer</samp> framework,
+there are three candidates for the main integration point. </p>
+ 
+<div class="tablenoborder"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-BBE389D8-77A0-52BA-910D-368BAC25DCC3"><!-- --></a><table cellpadding="4" cellspacing="0" summary="" id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-BBE389D8-77A0-52BA-910D-368BAC25DCC3" frame="border" border="1" rules="all">
+<tbody>
+<tr>
+<td class="cellrowborder" valign="top"><p>Function </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>Description </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2__GUID-49DDDDAC-B256-3B43-B059-EE369EAEA2BB"><span class="apiname">CPolicyServer::CustomSecurityCheckL()</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>This allows an arbitrary and even asynchronous check to be made
+instead of using static security policies. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2.html#GUID-5BDFF5B1-DC1F-393A-879B-9D8DE080B4E2__GUID-93C9B0EE-8B94-3A95-BBA7-5B1C8BED6E28"><span class="apiname"> CPolicyServer::CustomFailureActionL()</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>This virtual method is invoked if the client fails the static security
+checks. The failure may be overridden or deferred. Asynchronous operations
+are possible. </p>
+ </td>
+
+</tr>
+
+<tr>
+<td class="cellrowborder" valign="top"><p> <a href="GUID-D5A30C75-E22C-34E8-913B-7D2CA6AD5C51.html#GUID-D5A30C75-E22C-34E8-913B-7D2CA6AD5C51__GUID-B37413F7-D8FD-35AD-A037-99023D7CE986"><span class="apiname"> CSession2::ServiceL()</span></a>  </p>
+ </td>
+
+<td class="cellrowborder" valign="top"><p>The static policy checks could be deferred until the session is
+created provided that the server connection API is not guarded by user prompts. </p>
+ </td>
+
+</tr>
+
+</tbody>
+
+</table>
+</div>
+ <p>Use one or a combination of above functions as required to implement
+UPS APIs </p>
+<p><strong>Procedure</strong> </p>
+ <p>This demonstrates how user permission
+prompt support (UPS) may be added to a system server. </p>
+ <a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-BC8CDF54-101F-563E-BA74-7DE871A93782"><!-- --></a><ol id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-BC8CDF54-101F-563E-BA74-7DE871A93782">
+<li id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-55A1C176-857B-539F-81F1-66FCDEDEF299"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-55A1C176-857B-539F-81F1-66FCDEDEF299"><!-- --></a><p>An <samp class="codeph">RUpsSession</samp> object
+has been added to the <samp class="codeph">CMsgServer</samp> class. This is initialized
+at startup. </p>
+ </li>
+
+<li id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-8DD68273-846D-568A-A7BE-330523722503"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-8DD68273-846D-568A-A7BE-330523722503"><!-- --></a><p> <a href="GUID-AB9191BA-9E9B-3ED8-9968-4E43C1803C0D.html#GUID-AB9191BA-9E9B-3ED8-9968-4E43C1803C0D__GUID-6A3E9888-EA11-3352-A634-946C66A3946C"><span class="apiname">CMsgServer::iPolicyElements</span></a> was
+changed to cause <samp class="codeph">CustomFailureActionL</samp> to be invoked if the
+static security policy check fails instead of failing the client. </p>
+ </li>
+
+<li id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-C2AF0E9B-C46A-59E4-ADB7-21D2018582DD"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-C2AF0E9B-C46A-59E4-ADB7-21D2018582DD"><!-- --></a><p> <a href="GUID-AB9191BA-9E9B-3ED8-9968-4E43C1803C0D.html#GUID-AB9191BA-9E9B-3ED8-9968-4E43C1803C0D__GUID-3498AEBD-A092-3D0B-98EB-50A1B9DC65B5"><span class="apiname">CMsgServer::CustomFailureActionL()</span></a> notifies
+the session object that the platsec check failed. This is important because <a href="GUID-1C63BE5E-6F66-38CB-931E-B2C51309CB74.html#GUID-1C63BE5E-6F66-38CB-931E-B2C51309CB74__GUID-82C3C51A-F785-3DBA-910A-47CAF47B39F6"><span class="apiname">RUpsSubsession::Authorise()</span></a> requires
+this information to allow unconfigured systems to be compatible with platsec.
+It also increases the flexibility of the UPS policy definitions. </p>
+ </li>
+
+<li id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-63A4E019-BDFF-5B37-993B-3ED8233EC781"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-63A4E019-BDFF-5B37-993B-3ED8233EC781"><!-- --></a><p>An <samp class="codeph">RUpsSubsession</samp> instance
+is created for each <samp class="codeph">CSession2</samp> object, i.e. requests from
+different clients are authorized independently. This could be modified so
+that there is one UPS sub-session for each client process instead of each
+connection from a client process. </p>
+ </li>
+
+<li id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-82211891-BA54-501F-9E81-D6D78C4476E7"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-82211891-BA54-501F-9E81-D6D78C4476E7"><!-- --></a><p>An extra state (<samp class="codeph">iAuthorising</samp>)
+is added at the start of the CMsgProcessor state machine. </p>
+ </li>
+
+<li id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-EC85BB4D-83B9-5AF0-9A19-818B6AD4CE6C"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-EC85BB4D-83B9-5AF0-9A19-818B6AD4CE6C"><!-- --></a><p>The <samp class="codeph">RMessage2</samp> parameters
+from the client API are now extracted in the authorization stage to enable
+the information to be passed to the UPS. </p>
+ </li>
+
+<li id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-91D30A49-B703-5E01-BAC9-F9205DB9BAA2"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-91D30A49-B703-5E01-BAC9-F9205DB9BAA2"><!-- --></a><p> <a href="GUID-C4092739-2792-3411-90CC-174398AE4A4C.html#GUID-C4092739-2792-3411-90CC-174398AE4A4C__GUID-9DE31D77-70B7-3072-A602-75D995749DB3"><span class="apiname">CMsgProcessor::DoCancel</span></a> is
+updated to cancel the call to <a href="GUID-1C63BE5E-6F66-38CB-931E-B2C51309CB74.html#GUID-1C63BE5E-6F66-38CB-931E-B2C51309CB74__GUID-06BF925F-53C1-33D4-97F3-46ECB10CC27F"><span class="apiname">RUpsSubsession::Authorise</span></a>,
+if the client cancels the sending of the message or disconnects. </p>
+ </li>
+
+<li id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-684BEA9C-B6F7-5369-A243-9D0689BBD421"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-684BEA9C-B6F7-5369-A243-9D0689BBD421"><!-- --></a><p> <a href="GUID-C4092739-2792-3411-90CC-174398AE4A4C.html#GUID-C4092739-2792-3411-90CC-174398AE4A4C__GUID-013B385A-2A30-36D6-990A-873CF329F9E7"><span class="apiname">CMsgProcessor::RunL</span></a> now
+checks whether the request was authorized before changing from the authorization
+to the sending state. </p>
+ </li>
+
+</ol>
+ <p>The following code snippet explains how the UPS APIs can be called. </p>
+ <pre class="codeblock" id="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-1B2C7094-BFA3-5C49-ABDB-4721BC71D8CE"><a name="GUID-85D9878E-4FEF-5E45-9F87-53634CD171E0__GUID-1B2C7094-BFA3-5C49-ABDB-4721BC71D8CE"><!-- --></a>
+
+using namespace UserPromptService;
+
+TUpsDecision AuthoriseL(RThread &amp;aClientThread, TDesC aDestination)
+    {
+ // Create and connect the session.
+ // In a real server this should be done once at server startup as it is a relatively
+ // expensive operation.
+ RUpsSession session;
+ User::LeaveIfError(session.Connect());
+ CleanupClosePushL(session);
+
+ // Initialise the subsession
+ // One of these is required per a concurrent Authorise request.
+ // Note that it only connects to the UPS if it has to.
+    RUpsSubsession subsession;
+ subsession.Initialise(session, aClientThread);
+ CleanupClosePushL(subsession);
+
+ TServiceId serviceId = {43};
+ // Out "service id", typically a constant
+ // Variable for the result, typically a member variable because it must exist until
+ // the Authorise request completes.
+ TUpsDecision decision = EUpsDecYes;
+
+ // Issue the Authorise request
+ TRequestStatus rs;
+ subsession.Authorise(EFalse, // Did out platsec checks pass?
+                         serviceId, 
+                         aDestination, 
+                         decision, 
+                         rs); // Would typically be the iStatus of a CActive object
+
+    // Wait for the request to complete
+ User::WaitForRequest(rs);
+
+ CleanupStack::PopAndDestroy(&amp;subsession);
+ CleanupStack::PopAndDestroy(&amp;session);
+ return decision;
+ }
+
+
+TInt E32Main()
+ {
+ __UHEAP_MARK;
+
+ // allocating a cleanup stack also installs it
+ CTrapCleanup* tc = CTrapCleanup::New();
+ if (tc == 0)
+  return KErrNoMemory;
+
+ RThread thd;
+ TRAPD(err, AuthoriseL(thd, _L("destination")));
+ if(err != KErrNone)
+  {
+  User::Panic(_L("example failed: "), err);
+  }
+ delete tc;
+
+ __UHEAP_MARKEND;
+ return KErrNone;
+ }
+</pre>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-B2089965-546C-5FF2-8596-13A2221E02E6.html">Tutorials</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

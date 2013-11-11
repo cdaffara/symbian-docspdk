@@ -1,0 +1,645 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CMmsCodecClient"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF"/>
+
+<title>CMmsCodecClient</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF"><a name="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2437142 id2415693 id2416646 id2416689 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CMmsCodecClient Class Reference</h1>
+	<table class="signature"><tr><td>class CMmsCodecClient : public CActive</td></tr></table><div class="section"><div>
+			<p>This is a class declaration of <a href="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF.html#GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF">CMmsCodecClient</a>. It is a part of MMS Engine and it used for adding, fetching and sending multimedia messages from and into the message store in binary format. Also move, replace and some flag modifications provided.</p>
+
+			<p>The exported functions may be called in any order EXCEPT <a href="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF.html#GUID-CE035A93-57F8-3A59-91E5-B98FE888B3A1">CreateNewMessageEntryL()</a> MUST be called BEFORE <a href="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF.html#GUID-048DD7A4-8240-35D0-A880-720684591237">AddMML()</a>. If this rule is violated the operation may not be continued. The chunked transfer also must be done in order as described below. One message must be complete before another one is transferred.</p>
+
+			<p>Chunked transfer added to version 3.2. To support synchronizing large messages without the need of large linear buffer, chunked mode of data transfer has been added to the API</p>
+
+			<p>Chunked transfer from phone to PC:</p>
+
+			<p>1) Initialize retrieve (InitializeChunkedRetrievingL) 2) get a data chunk (GetNextDataPart) 3) release data chunk (ReleaseData) repeat steps 2 and 3 until all data has been processed</p>
+
+			<p>Chunked transfer from PC to phone: The same procedure can be used both for creating new entries or replacing existing entries.</p>
+
+			<p>1) Create an entry or specify an entry to be replaced (InitializeChunkedAddingL or InitializeChunkedReplacingL) 2) Give next data chunk until last one has been reached (NextDataPart)</p>
+
+			<p>If a chunked transfer to either direction is not totally completed before a new operation starts, the new operation will reset the state of the previous operation and delete possible incomplete entry. The next operation will proceed normally.</p>
+
+			<p>Setting the flags: Some information is not transferred inside the binary data in message headers. That's why some data is transferred in flags. The flag info is moved to the codec client in AddMML, ReplaceMML and SetFlags functions. To the caller the info is transferred in RetrieveMML function. The unread flag is starightforward, it is just a boolean which tells if the message has been read or not. The other flags (TUint32) is just like <a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html#GUID-083962F6-4FBA-3CAE-B2C6-278C3A38DDB0">TMsvEntry.iMtmData1</a> (See mmsconst.h). but only the following bits are used, others are zero: EMmsDrmCorruptedAttachment , if the corrupted DRM attachments has been removed KMmsMessageMobileTerminated , modbile terminated message KMmsMessageEditorOriented , mobile originated message The last two must be set exclusive e.g the may not be set at the same time</p>
+
+			<p>Folders: <a href="GUID-C197C9A7-EA05-3F24-9854-542E984C612D.html#GUID-C197C9A7-EA05-3F24-9854-542E984C612D">User</a> of this class may only access messages in the standard folders: KMsvGlobalInBoxIndexEntryId = 0x1002 KMsvGlobalOutBoxIndexEntryId=0x1003 KMsvDraftEntryId= 0x1004 KMsvSentEntryId=0x1005</p>
+
+			<p>mmscodecclient.lib </p>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CMmsCodecClient<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive</a><ul class="derivation"><li class="derivation-depth-2 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-08710BE1-B9C5-3CEA-B5C5-B2F1CCC974A4">~CMmsCodecClient</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-048DD7A4-8240-35D0-A880-720684591237">AddMML</a>(<a href="GUID-F915EF7D-7C06-3902-AB84-C8E89ABE7F18.html">CBufFlat</a> &amp;, <a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>, <a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp;, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-CE035A93-57F8-3A59-91E5-B98FE888B3A1">CreateNewMessageEntryL</a>(<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>, <a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-0D0FE3A9-5379-32A8-8581-C91333E0E8D8">DeleteMM</a>(<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-585C1C33-712D-3B11-A6BA-446B6E64653C">DiskSpaceBelowCriticalLevelL</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-10B839BB-F474-3680-AE87-2C0A1E7A4F44">GetNextDataPart</a>(<a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-C6D20BBE-1ACE-3B2F-A3C9-BB058BC54D9E">InitializeChunkedAddingL</a>(<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>, <a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-E56C1B56-8783-3A7D-B012-9DDE0034227F">InitializeChunkedReplacingL</a>(<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-A4EA0D33-E230-389B-AE4A-28B1C20E62B6">InitializeChunkedRetrievingL</a>(<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>, <a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-233233BC-7D20-3934-853F-77C496660A1F">MoveMML</a>(<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>, <a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF.html">CMmsCodecClient</a> *</td><td><a href="#GUID-15F99E6C-3443-30EE-84E4-2AEFFF75D601">NewL</a>(<a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-16CB860E-E94E-30A2-A338-28323A1F6FAE">NextDataPart</a>(<a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-0B25B6D1-026D-363A-B872-012636170661">ReleaseData</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-6335F65F-F166-3CEE-830D-8949F7ABB47D">ReplaceMML</a>(<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp;, <a href="GUID-F915EF7D-7C06-3902-AB84-C8E89ABE7F18.html">CBufFlat</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C void</td><td><a href="#GUID-F45238B0-C9EB-3C8D-A6C1-307A96B0DBDC">RetrieveMML</a>(<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>, <a href="GUID-F915EF7D-7C06-3902-AB84-C8E89ABE7F18.html">CBufFlat</a> &amp;, <a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp;, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html">CMsvOperation</a> *</td><td><a href="#GUID-E2D6AFB2-4797-3CB9-9A22-33E28CBDC4EE">SendMML</a>(<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>, <a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;)</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td><a href="#GUID-9990316C-BA0F-3E46-BEF1-A8591A7D5D02">SetFlags</a>(<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">void</td><td><a href="#GUID-6DB07765-502D-3F35-A86B-2830D640D9B3">DoCancel</a>()</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-81988414-17DF-3253-9924-A9BDEDAF8241">RunError</a>(<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-27122BEA-8AC8-3072-8A0B-ED7C3E5F7C12">RunL</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-2D4EAA95-4D09-355A-8EB0-9F8508CA1B4E">CMmsCodecClient</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-A9F9F473-D8EA-37EC-AB4A-AD3B83D58E7B">ConstructL</a>(<a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-3C105303-BBC5-3A02-969A-C046C72C2B40">DeleteCurrentEntryL</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-979156C6-FD09-35C6-A64B-B632822AE646">FinalizeDecodedMML</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-36707ED0-4817-3A41-AA61-B9F1BAEB89E1">GenerateRecipientsL</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-F27C841D-9BF7-376A-9B3F-6DD54A9EEC9E">GenerateSenderL</a>(<a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-0C5048BE-354A-3284-A3E9-1EE4581AA3D2">ParentOutbox</a>(<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-220CB774-480E-3EE4-873A-4D4EF8848120">ReleaseRetrievedEntry</a>()</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-C3CB73EA-D5FD-38A1-B15C-82464BAB421B">ResetChunkedMode</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-9D477E92-B78B-3BE2-A598-5D5328D00085">RetrieveFlags</a>(<a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html">TMsvEntry</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-78E4343C-32DC-31C0-A2F6-420B78F58ED7">SetFlagsToTMsvEntry</a>(<a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html">TMsvEntry</a> &amp;)</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::CActive(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Cancel()</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Deque()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::IsActive()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::IsAdded()const</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::Priority()const</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::SetActive()</a></td></tr><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::SetPriority(TInt)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::~CActive()</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Member Enumerations</th></tr></thead><tbody><tr><td align="right" valign="top">enum</td><td><a href="#GUID-94EA56D4-34D2-303C-A71E-D7512020F2F4">TState</a> { <br/><a href="#GUID-B83DD381-EC76-37D8-B930-DF19A14B459C">EIdle</a> = 0, <a href="#GUID-22D1EBF5-4487-3257-938B-3C40F8B04485">EFinalizeDecodedMM</a>, <a href="#GUID-EA3193EA-8911-3D08-AD5C-FC7F2D7CD93C">EFinalizeEncodedMM</a>, <a href="#GUID-5459CD74-A71A-3FFD-BB51-B9AEB020F2D3">ESendMM</a>, <a href="#GUID-E78BD1F8-CB74-3BBD-B11A-D859918E9B4D">EEntryCreated</a>, <a href="#GUID-B985CE47-DD76-3EAF-8661-995677095729">EChunkedRetrieve</a>, <a href="#GUID-F87AFBBC-A4B5-33BD-A614-79ABC836F4FE">EChunkedAdd</a>, <a href="#GUID-C45160D3-2FF2-3F6A-BEB2-188DD849EE73">EChunkedReplace</a><br/> }</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Enumerations</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive:TPriority</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Private Attributes</th></tr></thead><tbody><tr><td align="right" valign="top">
+					<a href="GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49.html">CMsvEntry</a> *</td><td><a href="#GUID-04576EF6-65D3-3D75-AC40-35D6013E04C6">iClientEntry</a></td></tr><tr class="bg"><td align="right" valign="top">CMmsClientEntry *</td><td><a href="#GUID-FD8FEFEE-786A-37CA-9C61-0DB50BF579EF">iClientEntryWrapper</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-A0682D04-9084-3DC3-AA18-5B81A78A1DA8.html">CClientMtmRegistry</a> *</td><td><a href="#GUID-070AFE2D-18BC-33FF-B39F-C2893757D0A9">iClientMtmRegistry</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> *</td><td><a href="#GUID-3EE79D97-1894-3748-AE7D-9F8ACC48E82C">iClientStatus</a></td></tr><tr><td align="right" valign="top">CMmsDecode *</td><td><a href="#GUID-FCAD13A9-932F-360D-A44E-8D6DB4F9D9FE">iDecoder</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-F915EF7D-7C06-3902-AB84-C8E89ABE7F18.html">CBufFlat</a> *</td><td><a href="#GUID-457B5E2E-F4AD-39C4-9242-5572171D4D13">iEncodeBuffer</a></td></tr><tr><td align="right" valign="top">CMmsEncode *</td><td><a href="#GUID-57329280-3017-31B8-BAE9-543A35B3102F">iEncoder</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>
+				</td><td><a href="#GUID-E130B227-F28D-3C79-A061-714E6DA4F422">iEntryBeingHandled</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>
+				</td><td><a href="#GUID-03C6B27D-95A3-3DC6-86E0-D28EE740CC7D">iFlags</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>
+				</td><td><a href="#GUID-DB3BFFB4-8F41-3BEB-A793-FA56FD0969A4">iFolder</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html">RFs</a>
+				</td><td><a href="#GUID-6F2BAFBB-71A5-3828-83D6-1E4B5A769ED4">iFs</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-D1EB9AC4-5B01-358C-8327-628273C7C92F">iLastChunk</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-26D19946-B930-3E46-9081-8A1CD139EAFF.html">CMmsClientMtm</a> *</td><td><a href="#GUID-0BF3A25B-50EA-32A7-9764-0D7653EFC614">iMmsClient</a></td></tr><tr class="bg"><td align="right" valign="top">CMmsHeaders *</td><td><a href="#GUID-4B4C4F07-522B-307F-9957-7F7A8F2B6272">iMmsHeaders</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt16</a>
+				</td><td><a href="#GUID-3DB814D0-0A88-3FA9-A0BC-D4EF1444A7DA">iMmsVersion</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> *</td><td><a href="#GUID-C810EB15-6FAF-3DE0-8938-C006DF8C6A14">iMsvSession</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-EE0085CC-E3FA-37AA-95C4-C80A98A6A4BB">iPosition</a></td></tr><tr class="bg"><td align="right" valign="top">
+					<a href="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF.html">TState</a>
+				</td><td><a href="#GUID-968D7501-3C4F-34AC-84C0-FB30D6D8D095">iState</a></td></tr><tr><td align="right" valign="top">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-2A5DE2B6-B6B0-34CE-8F9D-514AA331A818">iUnread</a></td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Attributes</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html">CActive::iStatus</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-2D4EAA95-4D09-355A-8EB0-9F8508CA1B4E"><a name="GUID-2D4EAA95-4D09-355A-8EB0-9F8508CA1B4E"><!-- --></a>
+		<h2 class="topictitle2">CMmsCodecClient()</h2>
+		<table class="signature"><tr><td>CMmsCodecClient</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>C++ default constructor. C++ default constructor can NOT contain any code, that might leave. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-08710BE1-B9C5-3CEA-B5C5-B2F1CCC974A4"><a name="GUID-08710BE1-B9C5-3CEA-B5C5-B2F1CCC974A4"><!-- --></a>
+		<h2 class="topictitle2">~CMmsCodecClient()</h2>
+		<table class="signature"><tr><td>~CMmsCodecClient</td><td>(</td><td>)</td><td>[virtual]</td></tr></table><div class="section"><div>
+				<p>Destructor. </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-048DD7A4-8240-35D0-A880-720684591237"><a name="GUID-048DD7A4-8240-35D0-A880-720684591237"><!-- --></a>
+		<h2 class="topictitle2">AddMML(CBufFlat &amp;, TMsvId, TUint32, TBool, TMsvId &amp;, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>AddMML</td><td>(</td><td><a href="GUID-F915EF7D-7C06-3902-AB84-C8E89ABE7F18.html">CBufFlat</a> &amp;</td><td>aMm,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a></td><td>aFolder,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aFlags,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aUnread,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp;</td><td>aMmId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Add a multimedia message. The given multimedia message is stored to the target folder. The flags are set correctly. CreateNewMessageEntryL must be called before this function.</p>
+
+				<p>Return values: </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-F915EF7D-7C06-3902-AB84-C8E89ABE7F18.html">CBufFlat</a> &amp; aMm</td><td>the MM in binary format, which will be added to the messaging store  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> aFolder</td><td>the folder in which the MM will be stored  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aFlags</td><td>the flags of the MM, which go to iMtmData1  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aUnread</td><td>if the MM is unread or not  </td></tr><tr><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp; aMmId</td><td>the index, which was created for the added MM by the caller.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>request status of the calling active object </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A9F9F473-D8EA-37EC-AB4A-AD3B83D58E7B"><a name="GUID-A9F9F473-D8EA-37EC-AB4A-AD3B83D58E7B"><!-- --></a>
+		<h2 class="topictitle2">ConstructL(CMsvSession &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>ConstructL</td><td>(</td><td><a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> &amp;</td><td>aMsvSession</td><td>)</td><td>[private]</td></tr></table><div class="section"><div>
+				<p>By default Symbian 2nd phase constructor is private. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> &amp; aMsvSession</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-CE035A93-57F8-3A59-91E5-B98FE888B3A1"><a name="GUID-CE035A93-57F8-3A59-91E5-B98FE888B3A1"><!-- --></a>
+		<h2 class="topictitle2">CreateNewMessageEntryL(TMsvId, TMsvId &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>CreateNewMessageEntryL</td><td>(</td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a></td><td>aFolder,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp;</td><td>aCreatedId</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> aFolder</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp; aCreatedId</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-3C105303-BBC5-3A02-969A-C046C72C2B40"><a name="GUID-3C105303-BBC5-3A02-969A-C046C72C2B40"><!-- --></a>
+		<h2 class="topictitle2">DeleteCurrentEntryL()</h2>
+		<table class="signature"><tr><td>void</td><td>DeleteCurrentEntryL</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-0D0FE3A9-5379-32A8-8581-C91333E0E8D8"><a name="GUID-0D0FE3A9-5379-32A8-8581-C91333E0E8D8"><!-- --></a>
+		<h2 class="topictitle2">DeleteMM(TMsvId)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>DeleteMM</td><td>(</td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a></td><td>aMmId</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Delete a multimedia message.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> aMmId</td><td>The index to the MM, which will be deleted  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-585C1C33-712D-3B11-A6BA-446B6E64653C"><a name="GUID-585C1C33-712D-3B11-A6BA-446B6E64653C"><!-- --></a>
+		<h2 class="topictitle2">DiskSpaceBelowCriticalLevelL(TInt)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>DiskSpaceBelowCriticalLevelL</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aSize</td><td>)</td><td/></tr></table><div class="section"><div>
+				<div class="p">Check if disk space is below critical level when storing data. This is a wrapper function. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>3.0</dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aSize</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-6DB07765-502D-3F35-A86B-2830D640D9B3"><a name="GUID-6DB07765-502D-3F35-A86B-2830D640D9B3"><!-- --></a>
+		<h2 class="topictitle2">DoCancel()</h2>
+		<table class="signature"><tr><td>void</td><td>DoCancel</td><td>(</td><td>)</td><td>[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html#GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F">CActive</a> </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-979156C6-FD09-35C6-A64B-B632822AE646"><a name="GUID-979156C6-FD09-35C6-A64B-B632822AE646"><!-- --></a>
+		<h2 class="topictitle2">FinalizeDecodedMML()</h2>
+		<table class="signature"><tr><td>void</td><td>FinalizeDecodedMML</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-36707ED0-4817-3A41-AA61-B9F1BAEB89E1"><a name="GUID-36707ED0-4817-3A41-AA61-B9F1BAEB89E1"><!-- --></a>
+		<h2 class="topictitle2">GenerateRecipientsL(TDes &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GenerateRecipientsL</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aDetails</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aDetails</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F27C841D-9BF7-376A-9B3F-6DD54A9EEC9E"><a name="GUID-F27C841D-9BF7-376A-9B3F-6DD54A9EEC9E"><!-- --></a>
+		<h2 class="topictitle2">GenerateSenderL(TDes &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GenerateSenderL</td><td>(</td><td><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp;</td><td>aDetails</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-C04A9A0C-DBA7-37DA-B744-54FBF3D544CD.html">TDes</a> &amp; aDetails</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-10B839BB-F474-3680-AE87-2C0A1E7A4F44"><a name="GUID-10B839BB-F474-3680-AE87-2C0A1E7A4F44"><!-- --></a>
+		<h2 class="topictitle2">GetNextDataPart(TPtrC8 &amp;, TBool &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>GetNextDataPart</td><td>(</td><td><a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp;</td><td>aDataPart,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp;</td><td>aLastDataChunk</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Obtain a data part from the supplier. The data is guaranteed to survive until a call is made to <a href="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF.html#GUID-0B25B6D1-026D-363A-B872-012636170661">ReleaseData()</a>. If the component that is receiving the data cannot receive all data in one chunk, data can be given forward in smaller chunks. The data will will remain in the internal buffer of CodecClient until it has been released by calling <a href="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF.html#GUID-0B25B6D1-026D-363A-B872-012636170661">ReleaseData()</a>.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v3.1 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp; aDataPart</td><td>Pointer to the data that has been encoded into internal buffer The length of the pointer is set to reflect the amount of data.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp; aLastDataChunk</td><td>ETrue if this is the last data chunk EFalse if this is not the last data chunk  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C6D20BBE-1ACE-3B2F-A3C9-BB058BC54D9E"><a name="GUID-C6D20BBE-1ACE-3B2F-A3C9-BB058BC54D9E"><!-- --></a>
+		<h2 class="topictitle2">InitializeChunkedAddingL(TMsvId, TMsvId &amp;, TUint32, TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>InitializeChunkedAddingL</td><td>(</td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a></td><td>aFolder,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp;</td><td>aMessageId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aFlags,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aUnread</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Initialize adding a message in chunked mode. An empty invisible message entry is created into the folder specified.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v3.1 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> aFolder</td><td>The folder where the message will be added  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp; aMessageId</td><td>The ID of the message that has been created  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aFlags</td><td>The flags of the MM to be stored in iMtmData1  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aUnread</td><td>Specifies if the message is unread or not Leaves with KErrArgument if aFolder is invalid or if called in the middle of some other operation Leaves with some system wide error code if something goes wrong.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-E56C1B56-8783-3A7D-B012-9DDE0034227F"><a name="GUID-E56C1B56-8783-3A7D-B012-9DDE0034227F"><!-- --></a>
+		<h2 class="topictitle2">InitializeChunkedReplacingL(TMsvId, TUint32, TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>InitializeChunkedReplacingL</td><td>(</td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a></td><td>aMessageId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aFlags,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aUnread</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Initialize replacing a message in chunked mode. The present content of the message entry is deleted. The data is added by calling <a href="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF.html#GUID-16CB860E-E94E-30A2-A338-28323A1F6FAE">NextDataPart()</a></p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v3.1 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> aMessageId</td><td>The ID of the message that will be replaced  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aFlags</td><td>The flags of the MM to be stored in iMtmData1  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aUnread</td><td>Specifies if the message is unread or not Leaves with KErrArgument if aFolder is invalid or if called in the middle of some other operation. Leaves with some system wide error code if something goes wrong.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-A4EA0D33-E230-389B-AE4A-28B1C20E62B6"><a name="GUID-A4EA0D33-E230-389B-AE4A-28B1C20E62B6"><!-- --></a>
+		<h2 class="topictitle2">InitializeChunkedRetrievingL(TMsvId, TMsvId &amp;, TUint32 &amp;, TBool &amp;, TInt &amp;, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>InitializeChunkedRetrievingL</td><td>(</td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a></td><td>aMessageId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp;</td><td>aFolder,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;</td><td>aFlags,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp;</td><td>aUnread,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aOverallDataSize,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Initialize retrieving a message in chunked mode. Data will be obtained by repeatedly calling <a href="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF.html#GUID-10B839BB-F474-3680-AE87-2C0A1E7A4F44">GetNextDataPart()</a> and <a href="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF.html#GUID-0B25B6D1-026D-363A-B872-012636170661">ReleaseData()</a>. Function encodes the first data part into its internal buffer ready to be fetched by calling <a href="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF.html#GUID-10B839BB-F474-3680-AE87-2C0A1E7A4F44">GetNextDataPart()</a></p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v3.1 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> aMessageId</td><td>Id of the message to be retrieved  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp; aFolder</td><td>The folder where the message is stored  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp; aFlags</td><td>The flags of the message, from the iMtmData1  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp; aUnread</td><td>If the message is unread or not  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aOverallDataSize</td><td>The total size of the encoded data if the size can be determined. -1 means the size could not be determined, and the return value of GetNextDataPart() function should be used to determine when the last data part has been reached. The buffer will be smaller than the total data size except in the case of small messages that may fit in the buffer in one chunk.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>request status of the calling active object Leaves with some system wide error code or completes with error if something goes wrong. If the function leaves, the caller must not set itself active as it was not set pending and will not be completed.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-233233BC-7D20-3934-853F-77C496660A1F"><a name="GUID-233233BC-7D20-3934-853F-77C496660A1F"><!-- --></a>
+		<h2 class="topictitle2">MoveMML(TMsvId, TMsvId, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>MoveMML</td><td>(</td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a></td><td>aMmId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a></td><td>aParentId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<div class="p">A multimedia message is moved from a standard folder to another. Moving to outbox is not allowed. <dl class="since"><dt class="dlterm">Since</dt>
+<dd>3.0</dd>
+</dl>
+</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> aMmId</td><td>the id to the moved MM  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> aParentId</td><td>New folder  </td></tr><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-15F99E6C-3443-30EE-84E4-2AEFFF75D601"><a name="GUID-15F99E6C-3443-30EE-84E4-2AEFFF75D601"><!-- --></a>
+		<h2 class="topictitle2">NewL(CMsvSession &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF.html">CMmsCodecClient</a> *</td><td>NewL</td><td>(</td><td><a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> &amp;</td><td>aMsvSession</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Two-phased constructor.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> &amp; aMsvSession</td><td>Message Server Session handle  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-16CB860E-E94E-30A2-A338-28323A1F6FAE"><a name="GUID-16CB860E-E94E-30A2-A338-28323A1F6FAE"><!-- --></a>
+		<h2 class="topictitle2">NextDataPart(TPtrC8 &amp;, TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>NextDataPart</td><td>(</td><td><a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp;</td><td>aDataPart,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aLastDataChunk</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Gives the next data part to be decoded. Decoding is synchronous. When the code returns, data can be released. MMS Decode may not be able to handle incomplete headers. MMS Codec Client will take care of buffering the incoming data and saving possible uncoded data in a flat buffer the same way CMmsTransaction does. The data should be provided in chunks that are small enough to be copied to an internal buffer without fear of running out of memory. HTTP stack provides data in chunks that are less than 10 kB. A similar size would be recommended but there is no absolute requirement as to the size of the data chunk. A compromise between performance and memory consumption may be used to determine an appropriate buffer size.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v3.1 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-6DF731E4-5691-31C4-BEE0-03A3873F15EC.html">TPtrC8</a> &amp; aDataPart</td><td>the data to be decoded.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aLastDataChunk</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0C5048BE-354A-3284-A3E9-1EE4581AA3D2"><a name="GUID-0C5048BE-354A-3284-A3E9-1EE4581AA3D2"><!-- --></a>
+		<h2 class="topictitle2">ParentOutbox(TMsvId)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>ParentOutbox</td><td>(</td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a></td><td>aMmId</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> aMmId</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-0B25B6D1-026D-363A-B872-012636170661"><a name="GUID-0B25B6D1-026D-363A-B872-012636170661"><!-- --></a>
+		<h2 class="topictitle2">ReleaseData()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>ReleaseData</td><td>(</td><td>)</td><td/></tr></table><div class="section"><div>
+				<p>Release the current data part being held at the data supplier. This call indicates to the supplier that the part is no longer needed, and another one can be provided. When this funtion is called, the next data part will be encoded into the buffer. When this function returns, a new data part can be fetched with GetNextDataPart. This function must always be called after the data obtained by <a href="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF.html#GUID-10B839BB-F474-3680-AE87-2C0A1E7A4F44">GetNextDataPart()</a> call has been processed. This function must also be called after last data chunk has been processed so that the state of the data supplier can be reset.</p>
+
+				<div class="p">
+					<dl class="since">
+						
+							<dt class="dlterm">Since</dt>
+
+							<dd>S60 v3.1 </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-220CB774-480E-3EE4-873A-4D4EF8848120"><a name="GUID-220CB774-480E-3EE4-873A-4D4EF8848120"><!-- --></a>
+		<h2 class="topictitle2">ReleaseRetrievedEntry()</h2>
+		<table class="signature"><tr><td>void</td><td>ReleaseRetrievedEntry</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-6335F65F-F166-3CEE-830D-8949F7ABB47D"><a name="GUID-6335F65F-F166-3CEE-830D-8949F7ABB47D"><!-- --></a>
+		<h2 class="topictitle2">ReplaceMML(TMsvId &amp;, CBufFlat &amp;, TUint32, TBool, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>ReplaceMML</td><td>(</td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp;</td><td>aMmId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-F915EF7D-7C06-3902-AB84-C8E89ABE7F18.html">CBufFlat</a> &amp;</td><td>aMm,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aFlags,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aUnread,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>A multimedia message is replaced. First the attachments of the original message is destroyed. Then the new message is stored to the same entry. Flags are set as defined. If the message is in the Outbox, it is not allowed to be replaced.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp; aMmId</td><td>the index to the replaceable MM  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-F915EF7D-7C06-3902-AB84-C8E89ABE7F18.html">CBufFlat</a> &amp; aMm</td><td>The new MMS  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aFlags</td><td>the flags of the MM, which go to iMtmData1  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aUnread</td><td>if the MM is unread or not  </td></tr><tr><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>request status of the calling active object  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-C3CB73EA-D5FD-38A1-B15C-82464BAB421B"><a name="GUID-C3CB73EA-D5FD-38A1-B15C-82464BAB421B"><!-- --></a>
+		<h2 class="topictitle2">ResetChunkedMode()</h2>
+		<table class="signature"><tr><td>void</td><td>ResetChunkedMode</td><td>(</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-9D477E92-B78B-3BE2-A598-5D5328D00085"><a name="GUID-9D477E92-B78B-3BE2-A598-5D5328D00085"><!-- --></a>
+		<h2 class="topictitle2">RetrieveFlags(TMsvEntry, TUint32 &amp;, TBool &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>RetrieveFlags</td><td>(</td><td><a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html">TMsvEntry</a></td><td>aEntry,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;</td><td>aFlags,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp;</td><td>aUnread</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html">TMsvEntry</a> aEntry</td><td> </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp; aFlags</td><td> </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp; aUnread</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-F45238B0-C9EB-3C8D-A6C1-307A96B0DBDC"><a name="GUID-F45238B0-C9EB-3C8D-A6C1-307A96B0DBDC"><!-- --></a>
+		<h2 class="topictitle2">RetrieveMML(TMsvId, CBufFlat &amp;, TMsvId &amp;, TUint32 &amp;, TBool &amp;, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C void</td><td>RetrieveMML</td><td>(</td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a></td><td>aMmId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-F915EF7D-7C06-3902-AB84-C8E89ABE7F18.html">CBufFlat</a> &amp;</td><td>aMM,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp;</td><td>aFolder,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp;</td><td>aFlags,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp;</td><td>aUnread,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Retrieves a multimedia message. This function provides an MM in the binary format, the folder where the MM is stored and its flags.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> aMmId</td><td>Index to the MM, which will be retrieved  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-F915EF7D-7C06-3902-AB84-C8E89ABE7F18.html">CBufFlat</a> &amp; aMM</td><td> </td></tr><tr><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> &amp; aFolder</td><td>The folder, in which the message is stored.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> &amp; aFlags</td><td>the flags of the MM, from the iMtmData1  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> &amp; aUnread</td><td>if the MM is unread or not  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>request status of the calling active object </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-81988414-17DF-3253-9924-A9BDEDAF8241"><a name="GUID-81988414-17DF-3253-9924-A9BDEDAF8241"><!-- --></a>
+		<h2 class="topictitle2">RunError(TInt)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>RunError</td><td>(</td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>aError</td><td>)</td><td>[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html#GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F">CActive</a>. </p>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> aError</td><td> </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-27122BEA-8AC8-3072-8A0B-ED7C3E5F7C12"><a name="GUID-27122BEA-8AC8-3072-8A0B-ED7C3E5F7C12"><!-- --></a>
+		<h2 class="topictitle2">RunL()</h2>
+		<table class="signature"><tr><td>void</td><td>RunL</td><td>(</td><td>)</td><td>[protected, virtual]</td></tr></table><div class="section"><div>
+				<p>From <a href="GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F.html#GUID-067293BF-B28C-3CEC-92F4-1351A795EA7F">CActive</a>. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-E2D6AFB2-4797-3CB9-9A22-33E28CBDC4EE"><a name="GUID-E2D6AFB2-4797-3CB9-9A22-33E28CBDC4EE"><!-- --></a>
+		<h2 class="topictitle2">SendMML(TMsvId, TRequestStatus &amp;)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html">CMsvOperation</a> *</td><td>SendMML</td><td>(</td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a></td><td>aMmId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp;</td><td>aStatus</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>Sends the specified MM.The message is moved to the Outbox before sending. The caller of the method should not delete <a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html#GUID-AF724192-6580-3DE3-9287-3A005C0AA932">CMsvOperation</a>, which is returned from the function until aStatus has completed. If <a href="GUID-AF724192-6580-3DE3-9287-3A005C0AA932.html#GUID-AF724192-6580-3DE3-9287-3A005C0AA932">CMsvOperation</a> is destroyed too early, the sending is canceled.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> aMmId</td><td>Index to the MM, which will be sent.  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> &amp; aStatus</td><td>request status of the calling active object </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-9990316C-BA0F-3E46-BEF1-A8591A7D5D02"><a name="GUID-9990316C-BA0F-3E46-BEF1-A8591A7D5D02"><!-- --></a>
+		<h2 class="topictitle2">SetFlags(TMsvId, TUint32, TBool)</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a></td><td>SetFlags</td><td>(</td><td><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a></td><td>aMmId,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aFlags,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a></td><td>aUnread</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2"/></tr></table><div class="section"><div>
+				<p>This function sets flags of the MM. Note that it is not allowed to change the flags, if the MM is in outbox.</p>
+
+				<p/>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a> aMmId</td><td>Index to the MM  </td></tr><tr class="bg"><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aFlags</td><td>the flags of the MM, which go to iMtmData1  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a> aUnread</td><td>if the MM is unread or not </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-78E4343C-32DC-31C0-A2F6-420B78F58ED7"><a name="GUID-78E4343C-32DC-31C0-A2F6-420B78F58ED7"><!-- --></a>
+		<h2 class="topictitle2">SetFlagsToTMsvEntry(TMsvEntry &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>SetFlagsToTMsvEntry</td><td>(</td><td><a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html">TMsvEntry</a> &amp;</td><td>aEntry</td><td>)</td><td>[private]</td></tr></table><div class="section"></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-5A23B804-2C06-3407-9D48-1BFB212D699F.html">TMsvEntry</a> &amp; aEntry</td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Enumerations Documentation</h1><div class="nested1" id="GUID-94EA56D4-34D2-303C-A71E-D7512020F2F4"><a name="GUID-94EA56D4-34D2-303C-A71E-D7512020F2F4"><!-- --></a>
+		<h2 class="topictitle2">Enum TState</h2>
+		<div class="section"></div>
+<div class="section enumerators"><h3 class="sectiontitle">Enumerators</h3><table border="0" class="enumerators"><tr><td valign="top">EIdle = 0</td><td> </td></tr><tr class="bg"><td valign="top">EFinalizeDecodedMM</td><td> </td></tr><tr><td valign="top">EFinalizeEncodedMM</td><td> </td></tr><tr class="bg"><td valign="top">ESendMM</td><td> </td></tr><tr><td valign="top">EEntryCreated</td><td> </td></tr><tr class="bg"><td valign="top">EChunkedRetrieve</td><td> </td></tr><tr><td valign="top">EChunkedAdd</td><td> </td></tr><tr class="bg"><td valign="top">EChunkedReplace</td><td> </td></tr></table></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Data Documentation</h1><div class="nested1" id="GUID-04576EF6-65D3-3D75-AC40-35D6013E04C6"><a name="GUID-04576EF6-65D3-3D75-AC40-35D6013E04C6"><!-- --></a>
+		<h2 class="topictitle2">
+					CMsvEntry * iClientEntry</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-85BBE389-81F7-3E2F-A789-446D9BE2CC49.html">CMsvEntry</a> *</td><td>iClientEntry</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-FD8FEFEE-786A-37CA-9C61-0DB50BF579EF"><a name="GUID-FD8FEFEE-786A-37CA-9C61-0DB50BF579EF"><!-- --></a>
+		<h2 class="topictitle2">CMmsClientEntry * iClientEntryWrapper</h2>
+		<table class="signature"><tr><td>CMmsClientEntry *</td><td>iClientEntryWrapper</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-070AFE2D-18BC-33FF-B39F-C2893757D0A9"><a name="GUID-070AFE2D-18BC-33FF-B39F-C2893757D0A9"><!-- --></a>
+		<h2 class="topictitle2">
+					CClientMtmRegistry * iClientMtmRegistry</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-A0682D04-9084-3DC3-AA18-5B81A78A1DA8.html">CClientMtmRegistry</a> *</td><td>iClientMtmRegistry</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-3EE79D97-1894-3748-AE7D-9F8ACC48E82C"><a name="GUID-3EE79D97-1894-3748-AE7D-9F8ACC48E82C"><!-- --></a>
+		<h2 class="topictitle2">
+					TRequestStatus * iClientStatus</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-E0B34F3E-D4C4-3232-B8B1-7DB35B454646.html">TRequestStatus</a> *</td><td>iClientStatus</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-FCAD13A9-932F-360D-A44E-8D6DB4F9D9FE"><a name="GUID-FCAD13A9-932F-360D-A44E-8D6DB4F9D9FE"><!-- --></a>
+		<h2 class="topictitle2">CMmsDecode * iDecoder</h2>
+		<table class="signature"><tr><td>CMmsDecode *</td><td>iDecoder</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-457B5E2E-F4AD-39C4-9242-5572171D4D13"><a name="GUID-457B5E2E-F4AD-39C4-9242-5572171D4D13"><!-- --></a>
+		<h2 class="topictitle2">
+					CBufFlat * iEncodeBuffer</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-F915EF7D-7C06-3902-AB84-C8E89ABE7F18.html">CBufFlat</a> *</td><td>iEncodeBuffer</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-57329280-3017-31B8-BAE9-543A35B3102F"><a name="GUID-57329280-3017-31B8-BAE9-543A35B3102F"><!-- --></a>
+		<h2 class="topictitle2">CMmsEncode * iEncoder</h2>
+		<table class="signature"><tr><td>CMmsEncode *</td><td>iEncoder</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-E130B227-F28D-3C79-A061-714E6DA4F422"><a name="GUID-E130B227-F28D-3C79-A061-714E6DA4F422"><!-- --></a>
+		<h2 class="topictitle2">
+					TMsvId
+				 iEntryBeingHandled</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>
+				</td><td>iEntryBeingHandled</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-03C6B27D-95A3-3DC6-86E0-D28EE740CC7D"><a name="GUID-03C6B27D-95A3-3DC6-86E0-D28EE740CC7D"><!-- --></a>
+		<h2 class="topictitle2">
+					TUint32
+				 iFlags</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>
+				</td><td>iFlags</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-DB3BFFB4-8F41-3BEB-A793-FA56FD0969A4"><a name="GUID-DB3BFFB4-8F41-3BEB-A793-FA56FD0969A4"><!-- --></a>
+		<h2 class="topictitle2">
+					TMsvId
+				 iFolder</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2E2E6172-7E37-3AC1-BC2F-7B482E06BC74.html">TMsvId</a>
+				</td><td>iFolder</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-6F2BAFBB-71A5-3828-83D6-1E4B5A769ED4"><a name="GUID-6F2BAFBB-71A5-3828-83D6-1E4B5A769ED4"><!-- --></a>
+		<h2 class="topictitle2">
+					RFs
+				 iFs</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-E263C747-946F-35AA-9F1D-41833BD350FC.html">RFs</a>
+				</td><td>iFs</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-D1EB9AC4-5B01-358C-8327-628273C7C92F"><a name="GUID-D1EB9AC4-5B01-358C-8327-628273C7C92F"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iLastChunk</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iLastChunk</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-0BF3A25B-50EA-32A7-9764-0D7653EFC614"><a name="GUID-0BF3A25B-50EA-32A7-9764-0D7653EFC614"><!-- --></a>
+		<h2 class="topictitle2">
+					CMmsClientMtm * iMmsClient</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-26D19946-B930-3E46-9081-8A1CD139EAFF.html">CMmsClientMtm</a> *</td><td>iMmsClient</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-4B4C4F07-522B-307F-9957-7F7A8F2B6272"><a name="GUID-4B4C4F07-522B-307F-9957-7F7A8F2B6272"><!-- --></a>
+		<h2 class="topictitle2">CMmsHeaders * iMmsHeaders</h2>
+		<table class="signature"><tr><td>CMmsHeaders *</td><td>iMmsHeaders</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-3DB814D0-0A88-3FA9-A0BC-D4EF1444A7DA"><a name="GUID-3DB814D0-0A88-3FA9-A0BC-D4EF1444A7DA"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt16
+				 iMmsVersion</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt16</a>
+				</td><td>iMmsVersion</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-C810EB15-6FAF-3DE0-8938-C006DF8C6A14"><a name="GUID-C810EB15-6FAF-3DE0-8938-C006DF8C6A14"><!-- --></a>
+		<h2 class="topictitle2">
+					CMsvSession * iMsvSession</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-2DA04D96-F0AD-3FDC-9E36-1C27D889AF4B.html">CMsvSession</a> *</td><td>iMsvSession</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-EE0085CC-E3FA-37AA-95C4-C80A98A6A4BB"><a name="GUID-EE0085CC-E3FA-37AA-95C4-C80A98A6A4BB"><!-- --></a>
+		<h2 class="topictitle2">
+					TInt
+				 iPosition</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>iPosition</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-968D7501-3C4F-34AC-84C0-FB30D6D8D095"><a name="GUID-968D7501-3C4F-34AC-84C0-FB30D6D8D095"><!-- --></a>
+		<h2 class="topictitle2">
+					TState
+				 iState</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-881EE6F5-EEA4-3A67-831F-7FE069C30DCF.html">TState</a>
+				</td><td>iState</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+<div class="nested1" id="GUID-2A5DE2B6-B6B0-34CE-8F9D-514AA331A818"><a name="GUID-2A5DE2B6-B6B0-34CE-8F9D-514AA331A818"><!-- --></a>
+		<h2 class="topictitle2">
+					TBool
+				 iUnread</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>iUnread</td><td>[private]</td></tr></table><div class="section"></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

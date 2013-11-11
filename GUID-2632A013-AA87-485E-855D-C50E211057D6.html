@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Tactile feedback implementation example"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-786D76B7-B827-43B7-8202-BA7A7E5EE03E.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-ED56F490-E543-4AD8-AD5E-C760386750CF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-63CB36BD-3ABE-4C0E-94CD-CF128930AC1D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-8661A7E0-F19A-41F8-9062-FBFAE70CF658.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-786D76B7-B827-43B7-8202-BA7A7E5EE03E.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-2632A013-AA87-485E-855D-C50E211057D6"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Tactile feedback implementation example</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-2632A013-AA87-485E-855D-C50E211057D6"><a name="GUID-2632A013-AA87-485E-855D-C50E211057D6"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2561792 id2681718 id2681904 id2682107 id2682139 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html">Classic UI Guide</a> &gt; <a href="GUID-ED56F490-E543-4AD8-AD5E-C760386750CF.html" title="In Symbian^3, all GUI-based applications must work with devices that have touch screens. This section describes how to use UI components with touch support, and how applications can receive touch related events.">Touch UI Support</a> &gt; <a href="GUID-63CB36BD-3ABE-4C0E-94CD-CF128930AC1D.html" title="This section provides information on using the touch UI component and tactile feedback APIs.">API specifications</a> &gt; <a href="GUID-8661A7E0-F19A-41F8-9062-FBFAE70CF658.html" title="The Tactile feedback client API is used for producing tactile feedback for different touch events.">Tactile feedback client API</a> &gt; <a href="GUID-786D76B7-B827-43B7-8202-BA7A7E5EE03E.html">Providing tactile feedback for touch events</a> &gt; </div>
+<h1 class="topictitle1">Tactile
+feedback implementation example</h1>
+<div>
+<p>This is an implementation example of a simple tactile feedback enabled
+control. This example can help give you an overall understanding
+of what methods to implement and what are the typical actions in each function. </p>
+
+<p>The example control uses area registry for producing basic feedback on
+pointer down events, and instant feedback for producing sensitive feedback
+on drag events when the control’s state changes.</p>
+
+<p>The header file of the example control is presented below. </p>
+
+<pre class="codeblock">#include &lt;coecntrl.h&gt;
+
+class CMyTactileEnabledControl: public CCoeControl
+    {
+public:
+    CMyTactileEnabledControl();
+    virtual ~CMyTactileEnabledControl();
+
+public: // from CCoeControl
+    void HandlePointerEventL( const TPointerEvent&amp; aPointerEvent );
+    void SizeChanged();
+    void PositionChanged();
+    };</pre>
+
+<p>Note that you do not necessarily need to implement any new functions for
+supporting tactile feedback. But for non-window-owning controls that use area
+registry, you have to override <samp class="codeph">PositionChanged</samp>, because otherwise
+you may end up with a situation where the control has been moved, but the
+feedback area still remains in its original place.</p>
+
+<p>The first part of the source file is presented below.</p>
+
+<pre class="codeblock">#include &lt;touchfeedback.h&gt;
+#include "mytactileenabledcontrol.h"
+
+CMyTactileEnabledControl::CMyTactileEnabledControl()
+    {
+    // No Tactile Feedback related actions needed 
+    // when the control is created.
+    }
+
+CMyTactileEnabledControl::~CMyTactileEnabledControl()
+    {
+    // Before destroying the control, you need to call 
+    // RemoveFeedbackForControl, first, for removing all remaining
+    // feedback areas, and, second, for clearing this control's   
+    // state information stored by the Tactile Feedback Client API.
+    MTouchFeedback* feedback = MTouchFeedback::Instance();
+    if ( feedback )
+        {
+        feedback-&gt;RemoveFeedbackForControl( this );
+        } 
+    }
+
+</pre>
+
+<p>The code above illustrates that usually nothing needs to be done (from
+the tactile feedback point of view) when a control is constructed, but you
+must always call <samp class="codeph">RemoveFeedbackForControl</samp> at the destructor
+if you have added any feedback areas with the <samp class="codeph">SetFeedbackArea</samp> function,
+or disabled or enabled feedback with the <samp class="codeph">EnableFeedbackForControl</samp> function.</p>
+
+<p>Also notice that you must use <samp class="codeph">MTouchFeedback::Instance</samp> in
+the destructor (and not any stored pointer), because in some rare cases the
+feedback system may already have been destroyed before the last controls are
+deleted.</p>
+
+<p>The remaining part of the source file is displayed below.</p>
+
+<pre class="codeblock">void CMyTactileEnabledControl::HandlePointerEventL(
+    const TPointerEvent&amp; aPointerEvent )
+    {
+    TBool stateChanged;
+
+    // (your code here)
+
+    if(aPointerEvent.iType == TPointerEvent::EDrag &amp;&amp; stateChanged)
+        {
+        // Producing sensitive feedback when dragging causes a state
+        // change (this kind of feedback triggering is not possible  
+        // by using area registry).
+        MTouchFeedback* feedback = MTouchFeedback::Instance();
+        if ( feedback )
+            {
+            feedback-&gt;InstantFeedback( ETouchFeedbackSensitive );
+            }
+        }
+    }
+
+void CMyTactileEnabledControl::SizeChanged()
+    {
+    // (your code here)
+    
+    // We have to update all feedback areas when control is resized.
+    // This is also enough for adding the feedback area in the first
+    // place, because SizeChanged is always called after control has
+    // been created and positioned on screen.
+    MTouchFeedback* feedback = MTouchFeedback::Instance();
+    if ( feedback )
+        {
+        feedback-&gt;SetFeedbackArea( 
+            this,
+            0, // Area index, use 0 when only one area in this control
+            Rect(), 
+            ETouchFeedbackBasic,
+            ETouchEventStylusDown );
+        }    
+    }
+
+void CMyTactileEnabledControl::PositionChanged()
+    {
+    // We have to update our feedback area when this control 
+    // is moved. One way to do this is to call SizeChanged here.
+    SizeChanged();    
+    }
+</pre>
+
+<p>You are recommended to put feedback area updates into a new <samp class="codeph">UpdateFeedbackAreas</samp> function,
+and then to call this from both the <samp class="codeph">SizeChanged</samp> and <samp class="codeph">PositionChanged</samp> functions.</p>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-786D76B7-B827-43B7-8202-BA7A7E5EE03E.html">Providing tactile feedback for touch events</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

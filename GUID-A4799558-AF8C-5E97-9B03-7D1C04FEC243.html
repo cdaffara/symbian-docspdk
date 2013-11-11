@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Duplicating handles to Kernel side objects"/>
+<meta name="abstract" content="This document describes when you should duplicate a handle in kernel side programming."/>
+<meta name="description" content="This document describes when you should duplicate a handle in kernel side programming."/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2EAAE194-FAE1-5545-A678-72973E9B72A7.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-2EAAE194-FAE1-5545-A678-72973E9B72A7.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Duplicating handles to Kernel side objects</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243"><a name="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2387835 id2392072 id2392081 id2393166 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-C14B2552-43A7-4499-ABFE-1725128DA6EF.html" title="Kernel and Hardware Services performs the fundamental operating system tasks of managing access to device resources.">Kernel and Hardware Services Guide</a> &gt; <a href="GUID-0DF9E318-BE97-531E-AB39-A7B5E8787C87.html" title="Provides a framework for accessing file systems.">User Library and File Server</a> &gt; <a href="GUID-A63025D1-7FD4-5120-8A1F-537D6B70103D.html" title="The User Library allows the applications and services that run on a phone to access the functionality provided by the Symbian platform Kernel.">User Library</a> &gt; <a href="GUID-2EAAE194-FAE1-5545-A678-72973E9B72A7.html">Handles</a> &gt; </div>
+<h1 class="topictitle1">Duplicating
+handles to Kernel side objects</h1>
+<div><p>This document describes when you should duplicate a handle in kernel
+side programming.</p>
+
+<div class="section" id="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-E9B67C16-E1D1-42D4-872D-6731F94DBC87"><a name="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-E9B67C16-E1D1-42D4-872D-6731F94DBC87"><!-- --></a><h2 class="sectiontitle">Duplicating a thread-relative handle in another thread</h2> <p>A
+handle in one thread (a thread-relative handle) may be duplicated in another
+thread within the same process.</p>
+ <p>Typically, thread B may want to access
+a Kernel object which already exists and for which thread A, within the same
+process, already holds a handle.</p>
+ <p>For example, if thread A has a handle
+on a semaphore, it is insufficient to pass a copy of the handle, an <samp class="codeph">RSemaphore</samp>,
+to thread B. The handle passed to thread B does not refer to anything known
+by thread B. In order for thread B to gain a valid handle on the DLL, the
+handle must be duplicated.</p>
+ <p>Note that, in practice, real code may or
+may not want to duplicate a semaphore handle, however the principle remains
+valid.</p>
+ <p>In thread B, then:</p>
+ <pre class="codeblock" id="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-A6110799-7A92-5EF9-9AE8-CBB532D7542B"><a name="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-A6110799-7A92-5EF9-9AE8-CBB532D7542B"><!-- --></a>...
+RSemaphore cs;
+cs.SetHandle(h.Handle()); 
+                          // ...where  h  is an RSemaphore, the
+                          // handle to the DLL, and
+                          // passed from thread A code.
+                                  
+cs.Duplicate(tA);
+                          // ...where  tA  is an RThread, the handle to
+                          // thread A, and passed from threadA code.
+                          // Duplicate also opens the resulting
+                          // handle, cs.
+...
+</pre>
+ <p>The dotted line in the following diagram shows the effect
+of this:</p>
+ <div class="fignone" id="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-731954F6-D85E-5940-96A4-15AC6E3AA5F5"><a name="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-731954F6-D85E-5940-96A4-15AC6E3AA5F5"><!-- --></a>
+<img src="GUID-5BABDDEC-1D81-5847-9ADB-65DF8E404BFA_d0e336288_href.png"/>
+</div>
+ <p>Note that for process-relative handles, there is no need to use <samp class="codeph">Duplicate()</samp>;
+the handle passed from thread A to thread B can be used directly.</p>
+ </div>
+
+<div class="section" id="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-83BE173E-F73D-46A8-8267-A1055E486FE3"><a name="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-83BE173E-F73D-46A8-8267-A1055E486FE3"><!-- --></a><h2 class="sectiontitle">Making specific handles from generic handles</h2> <p>There
+are two types of generic handle, one for threads and one for processes, both
+of which are created using the default constructor of the appropriate handle.</p>
+ <pre class="codeblock" id="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-F42A0EEB-3142-527A-9BD4-724B9969CF5D"><a name="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-F42A0EEB-3142-527A-9BD4-724B9969CF5D"><!-- --></a>RThread  thisThread;  // Generic handle meaning "the current thread"
+RProcess thisProcess; // Generic handle meaning "the current process"
+</pre>
+ <p>An important fact about generic handles is that they make
+no claim on the object that they refer to, so you don't need to call <samp class="codeph">Close()</samp> when
+you get rid of them. This is not true of specific handles, which always add
+a reference to the object that they refer to, preventing that object being
+fully destroyed until all specific handles have been closed.</p>
+ <p>Use Duplicate()
+to make a specific handle from a generic handle; for example:</p>
+ <pre class="codeblock" id="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-D5588FB1-8ACE-526F-A8D7-6E2C5C089823"><a name="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-D5588FB1-8ACE-526F-A8D7-6E2C5C089823"><!-- --></a>RThread thisThread;                        // generic handle
+TInt err=thisThread.Duplicate(thisThread);    // a specific handle
+...
+thisThread.Close();                        // don't forget.
+</pre>
+ </div>
+
+<div class="section" id="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-83C281F6-1C91-4F1A-9C69-3C5BF3843DE5"><a name="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-83C281F6-1C91-4F1A-9C69-3C5BF3843DE5"><!-- --></a><h2 class="sectiontitle">Promoting a thread-relative handle to a process-wide handle</h2> <p>The
+second parameter passed to <samp class="codeph">Duplicate()</samp> specifies whether
+the resulting handle is specific to the calling thread, or is valid for all
+threads in the same process.</p>
+ <p><samp class="codeph">Duplicate()</samp> offers a
+way of making a handle, which is specific to a thread, known to all the threads
+in a process.</p>
+ <p>This does not work for all handles but <samp class="codeph">RLibrary</samp> is
+an example of one where it can make sense to promote an <samp class="codeph">RLibrary</samp> thread-relative
+handle to a process-relative handle because this ensures that the library
+will not be automatically unloaded when the original thread terminates. For
+example:</p>
+ <pre class="codeblock" id="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-E02BE012-EE3F-53A0-A3E0-7B57E03B9D28"><a name="GUID-A4799558-AF8C-5E97-9B03-7D1C04FEC243__GUID-E02BE012-EE3F-53A0-A3E0-7B57E03B9D28"><!-- --></a>...
+_LIT(KMyLib,"MYLIB");
+...
+RLibrary threadLibrary;
+err=threadLibrary.Load(KMyLib);        // Load up a DLL, this gives
+                                       // a thread-specific handle.
+RLibrary aDup=threadLibrary;           // Copies handle without
+                                       // doing Open().
+err=threadLibrary.Duplicate(RThread());// Overwrite the original.
+if (err==KErrNone)
+    {
+       aDup.Close();                      // Close the original.
+    }
+...
+</pre>
+ </div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-2EAAE194-FAE1-5545-A678-72973E9B72A7.html">Handles</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

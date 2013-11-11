@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="concept"/>
+<meta name="DC.Title" content="Interacting with text editor controls"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-68A55CD5-EF01-5DE2-8119-EFA39589960F.html"/>
+<meta name="DC.Relation" scheme="URI" content="index.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-32E29020-1956-461A-B79A-1492E06049E7.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-E079315A-E5B6-4D33-B7E3-88697A3F11A4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-0C6CCACF-84B2-5715-BCF3-12330E6F05D4.html"/>
+<meta name="DC.Relation" scheme="URI" content="GUID-68A55CD5-EF01-5DE2-8119-EFA39589960F.html"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-38679CA2-0066-589C-988F-AC14B7E2F107"/>
+<meta name="DC.Language" content="en"/>
+<link rel="stylesheet" type="text/css" href="commonltr.css"/>
+<title>Interacting with text editor controls</title>
+
+     
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+
+
+
+     <link rel="stylesheet" type="text/css" href="nokiacxxref.css"/></head>
+<body id="GUID-38679CA2-0066-589C-988F-AC14B7E2F107"><a name="GUID-38679CA2-0066-589C-988F-AC14B7E2F107"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2563754 id2561792 id2839629 id2839186 id2839196 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+
+
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt; <a href="GUID-32E29020-1956-461A-B79A-1492E06049E7.html" title="The Symbian Guide describes the architecture and functionality of the platform, and provides guides on using its APIs.">Symbian Guide</a> &gt; <a href="GUID-94005A46-B4C6-4A30-A8E8-1B9C2D583D50.html">Classic UI Guide</a> &gt; <a href="GUID-E079315A-E5B6-4D33-B7E3-88697A3F11A4.html">Control and animation framework</a> &gt; <a href="GUID-0C6CCACF-84B2-5715-BCF3-12330E6F05D4.html" title="This section explains Front End Processor (FEP), and its implementations and events.">Using Front End Processor (FEPBASE)</a> &gt; <a href="GUID-68A55CD5-EF01-5DE2-8119-EFA39589960F.html">How to Write a FEP</a> &gt; </div>
+<h1 class="topictitle1">Interacting
+with text editor controls</h1>
+<div>
+<div class="section" id="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-9C16757D-DC75-5223-A555-550B8D3C1DB4"><a name="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-9C16757D-DC75-5223-A555-550B8D3C1DB4"><!-- --></a><h2 class="sectiontitle">Introduction </h2> <p>The
+public parts of the <samp class="codeph">MCoeFepAwareTextEditor</samp> class (which is
+defined in <span class="filepath">epoc32\include\FEPBASE.H</span>) are as follows: </p>
+ <pre class="codeblock" id="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-52B6C9B8-1F43-5CBA-85D9-0D472F4F4396"><a name="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-52B6C9B8-1F43-5CBA-85D9-0D472F4F4396"><!-- --></a>class MCoeFepAwareTextEditor
+    {
+public:
+    virtual void StartFepInlineEditL(const TDesC&amp; aInitialInlineText, TInt aPositionOfInsertionPointInInlineText, TBool aCursorVisibility, const MFormCustomDraw*, MFepInlineTextFormatRetriever&amp;, MFepPointerEventHandlerDuringInlineEdit&amp;)=0;
+    virtual void UpdateFepInlineTextL(const TDesC&amp; aNewInlineText, TInt aPositionOfInsertionPointInInlineText)=0;
+    virtual void SetInlineEditingCursorVisibilityL(TBool aCursorVisibility)=0;
+    IMPORT_C void CommitFepInlineEditL(CCoeEnv&amp; aConeEnvironment);
+    virtual void CancelFepInlineEdit()=0;
+    virtual TInt DocumentLengthForFep() const=0;
+    virtual TInt DocumentMaximumLengthForFep() const=0;
+    virtual void SetCursorSelectionForFepL(const TCursorSelection&amp; aCursorSelection)=0;
+    virtual void GetCursorSelectionForFep(TCursorSelection&amp; aCursorSelection) const=0;
+    virtual void GetEditorContentForFep(TDes&amp; aEditorContent, TInt aDocumentPosition, TInt aLengthToRetrieve) const=0;
+    virtual void GetFormatForFep(TCharFormat&amp; aFormat, TInt aDocumentPosition) const=0;
+    virtual void GetScreenCoordinatesForFepL(TPoint&amp; aLeftSideOfBaseLine, TInt&amp; aHeight, TInt&amp; aAscent, TInt aDocumentPosition) const=0;
+    IMPORT_C MCoeFepAwareTextEditor_Extension1* Extension1();
+private:
+    virtual void DoCommitFepInlineEditL()=0;
+    IMPORT_C virtual MCoeFepAwareTextEditor_Extension1* Extension1(TBool&amp; aSetToTrue);
+    };</pre>
+ <div class="p">An implementation of this interface is provided by TechView’s <samp class="codeph">CEikEdwin</samp> class
+(<samp class="codeph">CEikEdwin</samp> was part of Uikon until Symbian OS v7.0s). <samp class="codeph">MCoeFepAwareTextEditor</samp> member
+functions can be divided into two categories: <ul>
+<li><p>Functions for inline editing.</p>
+</li>
+
+<li><p>Other functions that can broadly be categorized under the title 'context
+awareness'.</p>
+</li>
+
+</ul>
+</div>
+ </div>
+
+<div class="section" id="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-1CE89EC8-5BE8-4F4B-8B39-57ACF40109DB"><a name="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-1CE89EC8-5BE8-4F4B-8B39-57ACF40109DB"><!-- --></a><h2 class="sectiontitle">Inline editing</h2><p>Inline
+editing means the text to be sent to the application is composed inside the
+target text editing control, rather than in the FEP’s floating window. This
+requires the cooperation of the target text editing control which must implement
+the <samp class="codeph">MCoeFepAwareTextEditor</samp> interface. An inline editing transaction
+consists of the following sequence: </p>
+ <ul>
+<li id="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-817D5DC0-5C98-5BD2-A3C3-832D4220C970"><a name="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-817D5DC0-5C98-5BD2-A3C3-832D4220C970"><!-- --></a><p>a call to <samp class="codeph">StartFepInlineEditL()</samp>, </p>
+ </li>
+
+<li id="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-961F900F-946A-5053-8063-D6ED8ECBDF7D"><a name="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-961F900F-946A-5053-8063-D6ED8ECBDF7D"><!-- --></a><p>zero, one or more calls
+to <samp class="codeph">UpdateFepInlineTextL()</samp>, </p>
+ </li>
+
+<li id="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-6C5F14D2-CA78-5194-8B7D-57FD4DA48DD4"><a name="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-6C5F14D2-CA78-5194-8B7D-57FD4DA48DD4"><!-- --></a><p>finally, a call to either <samp class="codeph">CommitFepInlineEditL()</samp> or <samp class="codeph">CancelFepInlineEdit()</samp>. (Note that <samp class="codeph">CCoeFep::SimulateKeyEventsL()</samp> is not used at
+all in inline editing: the text is sent to the application via an entirely
+different mechanism.) </p>
+ </li>
+
+</ul>
+ <p>The second parameter (<samp class="codeph">TInt           aPositionOfInsertionPointInInlineText</samp>)
+to <samp class="codeph">StartFepInlineEditL()</samp> and <samp class="codeph">UpdateFepInlineTextL()</samp> indicates
+where, in the inline text (which is passed as the first parameter), the insertion
+point, or cursor, is to appear. Note that the first parameter to <samp class="codeph">UpdateFepInlineTextL()</samp> must
+be used to pass the <em>entire</em> inline text, not merely any new text to
+be combined with the old inline text. The third parameter (<samp class="codeph">TBool aCursorVisibility</samp>)
+controls whether the insertion point is visible or not. As the types of the
+fourth, fifth and sixth parameters are abstract base classes, the FEP must
+create objects derived from these classes (<a href="GUID-AF2B465F-EFC3-3205-A6D8-2EE19E738385.html"><span class="apiname">MFormCustomDraw</span></a>, <a href="GUID-91C8D439-F28E-3417-87B3-4698BE8571DE.html"><span class="apiname">MFepInlineTextFormatRetriever</span></a> and <a href="GUID-E7E10DF8-B419-329B-BB9D-D277E1631B0D.html"><span class="apiname">MFepPointerEventHandlerDuringInlineEdit</span></a>) and pass references. These object(s) must remain in existence for the entire
+duration of the inline editing transaction. </p>
+ <p>Note that <a href="GUID-AF2B465F-EFC3-3205-A6D8-2EE19E738385.html"><span class="apiname">MFormCustomDraw</span></a> pointer
+may NULL. <a href="GUID-AF2B465F-EFC3-3205-A6D8-2EE19E738385.html"><span class="apiname">MFormCustomDraw</span></a> belongs to the FORM component
+and is not described here. It enables the FEP to do advanced formatting of
+the inline text. The details of the other two interface classes used in inline
+editing are discussed next. </p>
+ <p> <a href="GUID-91C8D439-F28E-3417-87B3-4698BE8571DE.html"><span class="apiname">MFepInlineTextFormatRetriever</span></a> (defined
+in <span class="filepath">epoc32\include\FEPITFR.H</span>) has a single (pure) virtual
+function whose signature is as follows: </p>
+ <pre class="codeblock" id="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-06D8A567-223B-5352-B695-6DC3BF1C804A"><a name="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-06D8A567-223B-5352-B695-6DC3BF1C804A"><!-- --></a>virtual void GetFormatOfFepInlineText(TCharFormat&amp; aFormat, TInt&amp; aNumberOfCharactersWithSameFormat, TInt aPositionOfCharacter) const=0;</pre>
+ <p>The first parameter is to be set by the function to the format of the
+inline text. For example, TFEP1plugin’s implementation of this function sets
+this parameter to red, underlined text. <a href="GUID-A5D563D6-A99A-31DF-B844-5F94EF5FFE87.html"><span class="apiname">MCoeFepAwareTextEditor</span></a> provides
+a member function for finding out the ambient <samp class="codeph">TCharFormat</samp> of
+the text editor: <samp class="codeph">GetFormatForFep()</samp>. This can be called inside
+the FEP’s implementation of <samp class="codeph">GetFormatOfFepInlineText()</samp> to
+make any necessary adjustments to the format of the inline text to ensure
+that it differentiates itself from the surrounding text. </p>
+ <p>The second
+and third parameters to <samp class="codeph">GetFormatOfFepInlineText()</samp> enable
+different parts of the inline text to have different formats. Their use is
+best illustrated by an example (albeit an artificial one). Suppose the FEP
+requires the first four characters of the inline text to be red, the next
+two characters (if there are any) to be green, and any subsequent characters
+to be blue, the <samp class="codeph">GetFormatOfFepInlineText()</samp> function would
+look as follows: </p>
+ <pre class="codeblock" id="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-F4A7F35F-5EA1-5D6E-9570-44ADBC9D7AB5"><a name="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-F4A7F35F-5EA1-5D6E-9570-44ADBC9D7AB5"><!-- --></a>void Xxxxx::GetFormatOfFepInlineText(TCharFormat&amp; aFormat, TInt&amp; aNumberOfCharactersWithSameFormat, TInt aPositionOfCharacter) const
+    {
+    const TInt lengthOfRemainderOfInlineText=iBuffer.Length()-aPositionOfCharacter;
+    aFormat=iBaseFormatForInlineText;
+    aFormat.iFontPresentation.iTextColor.SetRed(0);
+    aFormat.iFontPresentation.iTextColor.SetGreen(0);
+    aFormat.iFontPresentation.iTextColor.SetBlue(0);
+    if (aPositionOfCharacter==0)
+        {
+        // first four characters are red
+        aFormat.iFontPresentation.iTextColor.SetRed(255);
+        aNumberOfCharactersWithSameFormat=Min(4, lengthOfRemainderOfInlineText);
+        }
+    else if (aPositionOfCharacter==4)
+        {
+        // next two characters are green
+        aFormat.iFontPresentation.iTextColor.SetGreen(255);
+        aNumberOfCharactersWithSameFormat=Min(2, lengthOfRemainderOfInlineText);
+        }
+    else if (aPositionOfCharacter==6)
+        {
+        // any subsequent characters are blue
+        aFormat.iFontPresentation.iTextColor.SetBlue(255);
+        aNumberOfCharactersWithSameFormat=lengthOfRemainderOfInlineText;
+        }
+    }</pre>
+ <p> <a href="GUID-E7E10DF8-B419-329B-BB9D-D277E1631B0D.html"><span class="apiname">MFepPointerEventHandlerDuringInlineEdit</span></a> (which
+is defined in <span class="filepath">epoc32\include\FEPBASE.H</span>) gives the FEP
+the opportunity to handle pointer events which occur in the area on the screen
+occupied by the inline text. It has a single (pure) virtual function whose
+signature is as follows: </p>
+ <pre class="codeblock" id="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-3AF75EEB-2FDA-57FD-AC09-7FAE30ACB1FE"><a name="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-3AF75EEB-2FDA-57FD-AC09-7FAE30ACB1FE"><!-- --></a>virtual void HandlePointerEventInInlineTextL(TPointerEvent::TType aType, TUint aModifiers, TInt aPositionInInlineText)=0;</pre>
+ <p>The parameters indicate to the FEP the event’s type (for instance pointer
+down, pointer drag or pointer up), the keyboard modifiers (for instance caps
+lock and shift) and the logical position of the event in the inline text. </p>
+</div>
+
+<div class="section" id="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-0BEE5B61-5ACC-4847-996E-E659D518646E"><a name="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-0BEE5B61-5ACC-4847-996E-E659D518646E"><!-- --></a><h2 class="sectiontitle">Context awareness</h2><p>As
+well as providing support for inline editing, the <a href="GUID-A5D563D6-A99A-31DF-B844-5F94EF5FFE87.html"><span class="apiname">MCoeFepAwareTextEditor</span></a> interface
+class enables the FEP to find out information about the text editor control
+with focus. <samp class="codeph">DocumentLengthForFep()</samp> returns the length of
+the text held in the text editor. <samp class="codeph">DocumentMaximumLengthForFep()</samp> returns
+the upper limit (if any) on the length of text that the text editor can hold. <samp class="codeph">SetCursorSelectionForFepL()</samp> selects
+the specified text range in the text editor, and <samp class="codeph">GetCursorSelectionForFep()</samp> sets
+its parameter to the selected text range in the text editor. <samp class="codeph">GetEditorContentForFep()</samp> allows
+the FEP to retrieve any segment of the text held in the text editor. <samp class="codeph">GetFormatForFep()</samp> sets
+its first parameter according to the character format at the position in the
+text editor specified by the second parameter. <samp class="codeph">GetScreenCoordinatesForFepL()</samp> sets
+the first parameter to the screen coordinates of the left end of the baseline
+of the character glyph whose position in the text editor is specified by the
+last parameter. The second and third parameters are set, respectively, to
+the height and ascent of the font used at that document position. This function
+can be used, for example, to position a FEP window as close as possible to
+the text editor’s insertion point (in other words, the cursor position). </p>
+ <p>The <samp class="codeph">Extension1()</samp> member
+function of <a href="GUID-A5D563D6-A99A-31DF-B844-5F94EF5FFE87.html"><span class="apiname">MCoeFepAwareTextEditor</span></a> returns a pointer to
+an object of the interface class <a href="GUID-C8F42D8B-D03B-3559-9E7C-BBE94C4E7F66.html"><span class="apiname">MCoeFepAwareTextEditor_Extension1
+          </span></a> (defined in <span class="filepath">epoc32\include\FEPBASE.H</span>).
+This class has two public (pure) virtual functions whose signatures are as
+follows: </p>
+ <pre class="codeblock" id="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-3E87C57E-AF43-5268-BC0A-AC34B62C8BAA"><a name="GUID-38679CA2-0066-589C-988F-AC14B7E2F107__GUID-3E87C57E-AF43-5268-BC0A-AC34B62C8BAA"><!-- --></a>virtual void SetStateTransferingOwnershipL(CState* aState, TUid aTypeSafetyUid)=0;
+virtual CState* State(TUid aTypeSafetyUid)=0;</pre>
+ <p>The <samp class="codeph">CState</samp> class
+is defined within the scope of the <a href="GUID-C8F42D8B-D03B-3559-9E7C-BBE94C4E7F66.html"><span class="apiname">MCoeFepAwareTextEditor_Extension1</span></a> class.
+The purpose of the UIDs in the two functions above is to enable the FEP to
+safely downcast the <samp class="codeph">CState</samp> pointer returned by the <samp class="codeph">State()</samp> function
+to a pointer to a derived class known about by the FEP. The <samp class="codeph">CState</samp> class
+is provided to enable FEPs to store state information inside text editor controls,
+where that state information is only of interest to the FEP. </p>
+</div>
+
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="GUID-68A55CD5-EF01-5DE2-8119-EFA39589960F.html">How to Write a FEP</a></div>
+</div>
+</div>
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>

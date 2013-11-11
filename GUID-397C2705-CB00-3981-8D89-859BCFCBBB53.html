@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="copyright" content="(C) Copyright 2010"/>
+<meta name="DC.rights.owner" content="(C) Copyright 2010"/>
+<meta name="DC.Type" content="cxxClass"/>
+<meta name="DC.Title" content="CAccMonitor"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="GUID-397C2705-CB00-3981-8D89-859BCFCBBB53"/>
+
+<title>CAccMonitor</title>
+
+<link type="text/css" rel="stylesheet" href="css/common.css" media="screen"/>
+<link type="text/css" rel="stylesheet" href="css/sdl.css" media="screen"/>
+
+<!--[if IE]>
+<link href="css/iefix.css" rel="stylesheet" type="text/css" media="screen" />
+<![endif]-->
+<meta name="keywords" content="api"/><link rel="stylesheet" type="text/css" href="cxxref.css"/></head>
+<body class="cxxref" id="GUID-397C2705-CB00-3981-8D89-859BCFCBBB53"><a name="GUID-397C2705-CB00-3981-8D89-859BCFCBBB53"><!-- --></a>
+
+
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_header.html'); ?>
+<div id="sdl_container">
+   <div id="leftMenu">  
+ <div id="expandcontractdiv">
+    <a id="collapseTree" href="javascript:tree.collapseAll()">Collapse all</a>
+    <a id="index" href="index.html">Symbian^3 Product Developer Library</a>        
+</div>
+     <iframe style="border:none" height="800" width="300" src="index-toc.html"></iframe>
+<div id="treeDiv1">&#160;</div>
+     <script type="text/javascript">
+	var currentIconMode = 0; window.name="id2437088 id2437096 id2578593 id2438551 id2440230 id2440235 ";
+	YAHOO.util.Event.onDOMReady(buildTree, this,true);
+    </script>
+     
+</div>
+
+<div id="sdl_content">
+<div class="breadcrumb"><a href="index.html" title="Symbian^3 Product Developer Library">Symbian^3 Product Developer Library</a> &gt;</div>
+<h1 class="topictitle1">CAccMonitor Class Reference</h1>
+	<table class="signature"><tr><td>class CAccMonitor : public CBase</td></tr></table><div class="section"><div>
+			<p>The Accessory Monitoring API interface offers accessory information about connected accessories. It also offers an easy-to-use implementation of a CActive-based wrapper for accessory connection status changed event notifications. The clients can get information about the connected accessories capabilities and, if the capabilities have values, get the values from these capabilites. This API consist of classes <a href="GUID-397C2705-CB00-3981-8D89-859BCFCBBB53.html#GUID-397C2705-CB00-3981-8D89-859BCFCBBB53">CAccMonitor</a>, <a href="GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5.html#GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5">CAccMonitorInfo</a> and <a href="GUID-38D62416-DE01-37F1-8F3C-51DEB11EA0FC.html#GUID-38D62416-DE01-37F1-8F3C-51DEB11EA0FC">MAccMonitorObserver</a>. If the user wants to use the observer this API offers, the user has to implement callback function for receiving accessory connection and disconnection status notifications. The connected accessories are offered to the client in an array. This array presents the connected accessories as instances of <a href="GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5.html#GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5">CAccMonitorInfo</a> class. The <a href="GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5.html#GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5">CAccMonitorInfo</a> offers accessory information encapsulated to a class. It presents accessory device type, physical connection and device address information with basic getter functions. The rest of the accessories features are contained in an array. This array can be accessed with functions that are in <a href="GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5.html#GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5">CAccMonitorInfo</a>. This class is not intended for user derivation.</p>
+
+			<p>Usage:</p>
+
+			<div class="p">Example query for some accessory's information. All connected accessories are fetched and the instance of CAccessoryInfo is getted: <pre class="codeblock"> CAccMonitor* accMonitor = CAccMonitor::NewLC();
+ RConnectedAccessories connectedAccessories;
+ CleanupClosePushL( connectedAccessories );
+ accMonitor-&gt;GetConnectedAccessoriesL( connectedAccessories );
+ CAccMonitorInfo* accInfo = CAccMonitorInfo::NewLC();
+ TInt countOfArray = connectedAccessories.Count();
+ for( TInt i = 0; i != countOfArray; i++ )
+   {
+   TAccMonCapability deviceType = connectedAccessories[ i ]-&gt;AccDeviceType();
+   if( deviceType == KAccMonHeadset )
+     {
+     // Some Headset is connected, get the information to accInfo
+     accInfo-&gt;CopyL( connectedAccessories[ i ] );
+     }
+   }
+ // Destroy the pointers from the array, because those are owned by the client
+ CleanupStack::PopAndDestroy( accInfo );
+ CleanupStack::PopAndDestroy( &amp;connectedAccessories );
+ CleanupStack::PopAndDestroy( accMonitor );</pre>
+</div>
+
+			<div class="p">Example query for some accessorys capabilties. The user has fetched the <a href="GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5.html#GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5">CAccMonitorInfo</a> to accInfo instance from connected accessories: <pre class="codeblock"> TInt arrayCount = accInfo-&gt;Count();
+ for( TInt i = 0; i != arrayCount; i++ )
+   {
+   TAccMonCapability accCapa = accInfo-&gt;AccCapabilityAtIndex( i );
+   if( accCapa == KAccMonStereoAudio )
+     {
+     // Accessory has stereo capability, handle this situation.
+     }
+   }</pre>
+</div>
+
+			<div class="p">Initialization example for the observer(from a class that implements <a href="GUID-38D62416-DE01-37F1-8F3C-51DEB11EA0FC.html#GUID-38D62416-DE01-37F1-8F3C-51DEB11EA0FC">MAccMonitorObserver</a> interface). Observer starts to listen for headset connects: <pre class="codeblock"> CAccMonitor* accMonitor = CAccMonitor::NewLC();
+ RAccMonCapabilityArray capabilityArray;
+ CleanupClosePushL( capabilityArray );
+ capabilityArray.Append( KAccMonHeadset );
+ accMonitor-&gt;StartObservingL( this, capabilityArray );
+ CleanupStack::PopAndDestroy( &amp;capabilityArray );
+ CleanupStack::PopAndDestroy( accMonitor );</pre>
+</div>
+
+			<div class="p">Uninitialization example: <pre class="codeblock"> accMonitor-&gt;StopObserving(); </pre>
+</div>
+
+			<div class="p">Connected method implementation example: <pre class="codeblock"> void CMyAccMonitorTest::Connected( CAccMonitorInfo* aAccessoryInfo )
+    {
+    // Notification about the connected accessory. aAccessoryInfo must
+    // be copied because the pointer is deleted after connected method
+    iAccessoryInfo-&gt;CopyL( aAccessoryInfo );
+    }</pre>
+</div>
+
+			<div class="p">AccMonitor.lib <dl class="since"><dt class="dlterm">Since</dt>
+<dd>S60 5.0 </dd>
+</dl>
+</div>
+
+		</div></div>
+<div class="section derivation"><h2 class="sectiontitle">Inherits from</h2><ul class="derivation derivation-root"><li class="derivation-depth-0 ">CAccMonitor<ul class="derivation"><li class="derivation-depth-1 "><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase</a></li></ul></li></ul></div>
+<div class="section member-index"><table border="0" class="member-index"><thead><tr><th colspan="2">Public Member Functions</th></tr></thead><tbody><tr><td align="right" class="code">void</td><td><a href="#GUID-8C3C2C1C-8470-34C1-B0C8-30D2D0A49733">GetCapabilityValueL</a>(const <a href="GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5.html">CAccMonitorInfo</a> *, const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a>, <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;)</td></tr><tr class="bg"><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td><a href="#GUID-BD875DA7-8BF1-3809-8C2B-07D7F361E08F">GetConnectedAccessoriesL</a>(<a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RConnectedAccessories</a> &amp;)</td></tr><tr><td align="right" class="code">
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td><a href="#GUID-84E58273-B936-3A98-9C3E-36D51AB667B4">IsObserving</a>()</td></tr><tr class="bg"><td align="right" class="code">IMPORT_C <a href="GUID-397C2705-CB00-3981-8D89-859BCFCBBB53.html">CAccMonitor</a> *</td><td><a href="#GUID-947316C7-5C6C-3EF3-8FD7-9D5EF3560FD5">NewL</a>()</td></tr><tr><td align="right" class="code">IMPORT_C <a href="GUID-397C2705-CB00-3981-8D89-859BCFCBBB53.html">CAccMonitor</a> *</td><td><a href="#GUID-523F226B-E9B7-3EB8-9CCE-EE8E17F4BE5D">NewLC</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-B558FEB5-8A5D-3B0D-BFFA-9726B63F978F">StartObservingL</a>(<a href="GUID-38D62416-DE01-37F1-8F3C-51DEB11EA0FC.html">MAccMonitorObserver</a> *)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-5B1BEBDF-B6FC-372B-A9A5-47DDC6936D16">StartObservingL</a>(<a href="GUID-38D62416-DE01-37F1-8F3C-51DEB11EA0FC.html">MAccMonitorObserver</a> *, const <a href="GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5.html">CAccMonitorInfo</a> *)</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-659B1AE1-B096-3EA1-884F-477C89A5F1DD">StartObservingL</a>(<a href="GUID-38D62416-DE01-37F1-8F3C-51DEB11EA0FC.html">MAccMonitorObserver</a> *, const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RAccMonCapabilityArray</a> &amp;)</td></tr><tr><td align="right" class="code">void</td><td><a href="#GUID-7C50CDD2-7A5E-3253-B68D-8829618B2970">StopObserving</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Protected Member Functions</th></tr></thead><tbody><tr><td align="right" class="code"/><td><a href="#GUID-F0323D62-1D24-3F51-A8CB-B54B13409873">CAccMonitor</a>()</td></tr><tr class="bg"><td align="right" class="code">void</td><td><a href="#GUID-AABEECB1-334C-32F2-A3A1-D88E61F660E9">ConstructL</a>()</td></tr></tbody></table><table border="0" class="member-index"><thead><tr><th colspan="2">Inherited Functions</th></tr></thead><tbody><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::CBase()</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Delete(CBase *)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::Extension_(TUint,TAny *&amp;,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TAny *)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TLeave,TUint)</a></td></tr><tr class="bg"><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::operator new(TUint,TUint)</a></td></tr><tr><td> </td><td><a href="GUID-8F6FE089-E2A8-30F4-B67E-10F286347681.html">CBase::~CBase()</a></td></tr></tbody></table></div><h1 class="pageHeading topictitle1">Constructor &amp; Destructor Documentation</h1><div class="nested1" id="GUID-F0323D62-1D24-3F51-A8CB-B54B13409873"><a name="GUID-F0323D62-1D24-3F51-A8CB-B54B13409873"><!-- --></a>
+		<h2 class="topictitle2">CAccMonitor()</h2>
+		<table class="signature"><tr><td>CAccMonitor</td><td>(</td><td>)</td><td>[protected]</td></tr></table><div class="section"><div>
+				<p>Default Constructor </p>
+
+			</div></div>
+
+	</div>
+<h1 class="pageHeading topictitle1">Member Functions Documentation</h1><div class="nested1" id="GUID-AABEECB1-334C-32F2-A3A1-D88E61F660E9"><a name="GUID-AABEECB1-334C-32F2-A3A1-D88E61F660E9"><!-- --></a>
+		<h2 class="topictitle2">ConstructL()</h2>
+		<table class="signature"><tr><td>void</td><td>ConstructL</td><td>(</td><td>)</td><td>[protected, pure virtual]</td></tr></table><div class="section"><div>
+				<p>Symbian OS 2nd phase constructor </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-8C3C2C1C-8470-34C1-B0C8-30D2D0A49733"><a name="GUID-8C3C2C1C-8470-34C1-B0C8-30D2D0A49733"><!-- --></a>
+		<h2 class="topictitle2">GetCapabilityValueL(const CAccMonitorInfo *, const TUint32, TInt &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>GetCapabilityValueL</td><td>(</td><td>const <a href="GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5.html">CAccMonitorInfo</a> *</td><td>aInfo,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a></td><td>aCapability,</td></tr><tr><td colspan="3"> </td><td><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp;</td><td>aValue</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Gets the value for a capability that is defined in Accessory Monitoring API.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotFound if no capability is not defined for this accessory, KErrArgument if this accessory is not connected, otherwise standard Symbian error code. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter">const <a href="GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5.html">CAccMonitorInfo</a> * aInfo</td><td> </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TUint32</a> aCapability</td><td>is capability which value needs to be fetched.  </td></tr><tr><td class="parameter"><a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a> &amp; aValue</td><td>is the value for the capability.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-BD875DA7-8BF1-3809-8C2B-07D7F361E08F"><a name="GUID-BD875DA7-8BF1-3809-8C2B-07D7F361E08F"><!-- --></a>
+		<h2 class="topictitle2">GetConnectedAccessoriesL(RConnectedAccessories &amp;)</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TInt</a>
+				</td><td>GetConnectedAccessoriesL</td><td>(</td><td><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RConnectedAccessories</a> &amp;</td><td>aAccessoriesArray</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Used to get the connected accessories which are returned in an <a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html#GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F">RPointerArray</a> that is typed to RConnectedAccessories.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>KErrNotFound if no accessories are connected. KErrNotReady if a device is not ready to start operation. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-AAA13D1F-1BD7-3331-BB8C-11FA2795B53F.html">RConnectedAccessories</a> &amp; aAccessoriesArray</td><td>is a reference to an array that is filled with CAccMonitorInfo instances which are accessories connected to the S60 device.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-84E58273-B936-3A98-9C3E-36D51AB667B4"><a name="GUID-84E58273-B936-3A98-9C3E-36D51AB667B4"><!-- --></a>
+		<h2 class="topictitle2">IsObserving()</h2>
+		<table class="signature"><tr><td>
+					<a href="GUID-FC2F2B93-3D18-3BCC-9FD6-6BC6B240B667.html">TBool</a>
+				</td><td>IsObserving</td><td>(</td><td>)</td><td>const [pure virtual]</td></tr></table><div class="section"><div>
+				<p>Checks whether observer is already observing.</p>
+
+				<p/>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-947316C7-5C6C-3EF3-8FD7-9D5EF3560FD5"><a name="GUID-947316C7-5C6C-3EF3-8FD7-9D5EF3560FD5"><!-- --></a>
+		<h2 class="topictitle2">NewL()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-397C2705-CB00-3981-8D89-859BCFCBBB53.html">CAccMonitor</a> *</td><td>NewL</td><td>(</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Symbian two phased constructor. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-523F226B-E9B7-3EB8-9CCE-EE8E17F4BE5D"><a name="GUID-523F226B-E9B7-3EB8-9CCE-EE8E17F4BE5D"><!-- --></a>
+		<h2 class="topictitle2">NewLC()</h2>
+		<table class="signature"><tr><td>IMPORT_C <a href="GUID-397C2705-CB00-3981-8D89-859BCFCBBB53.html">CAccMonitor</a> *</td><td>NewLC</td><td>(</td><td>)</td><td>[static]</td></tr></table><div class="section"><div>
+				<p>Symbian two phased constructor. Puts the instance to cleanup stack. </p>
+
+			</div></div>
+
+	</div>
+<div class="nested1" id="GUID-B558FEB5-8A5D-3B0D-BFFA-9726B63F978F"><a name="GUID-B558FEB5-8A5D-3B0D-BFFA-9726B63F978F"><!-- --></a>
+		<h2 class="topictitle2">StartObservingL(MAccMonitorObserver *)</h2>
+		<table class="signature"><tr><td>void</td><td>StartObservingL</td><td>(</td><td><a href="GUID-38D62416-DE01-37F1-8F3C-51DEB11EA0FC.html">MAccMonitorObserver</a> *</td><td>aObserver</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Sets observer to listen all connect/disconnect accessory notifications and starts the observer.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>TInt KErrAlreadyExists if observer is active allready, otherwise KErrNone or standard Symbian error code. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-38D62416-DE01-37F1-8F3C-51DEB11EA0FC.html">MAccMonitorObserver</a> * aObserver</td><td>is the pointer to the callback functions.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-5B1BEBDF-B6FC-372B-A9A5-47DDC6936D16"><a name="GUID-5B1BEBDF-B6FC-372B-A9A5-47DDC6936D16"><!-- --></a>
+		<h2 class="topictitle2">StartObservingL(MAccMonitorObserver *, const CAccMonitorInfo *)</h2>
+		<table class="signature"><tr><td>void</td><td>StartObservingL</td><td>(</td><td><a href="GUID-38D62416-DE01-37F1-8F3C-51DEB11EA0FC.html">MAccMonitorObserver</a> *</td><td>aObserver,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5.html">CAccMonitorInfo</a> *</td><td>aInfo</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Sets observer to listen connect/disconnect accessory notifications and starts the observer. Accessories that need to be listened can be defined with <a href="GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5.html#GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5">CAccMonitorInfo</a>. This <a href="GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5.html#GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5">CAccMonitorInfo</a> represents an instance of some connected or previously connected accessory.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>TInt KErrAlreadyExists if observer is active allready, otherwise KErrNone or standard Symbian error code. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-38D62416-DE01-37F1-8F3C-51DEB11EA0FC.html">MAccMonitorObserver</a> * aObserver</td><td>is the pointer to the callback functions.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-1EBA6B3B-BC49-3A3E-99D9-0BF9B21C2FE5.html">CAccMonitorInfo</a> * aInfo</td><td>is the instance of the accessory that needs to be listened. Accessory that needs to be listened is copied from connected accessories array. If an empty instance is set as the parameter no notifications are sent.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-659B1AE1-B096-3EA1-884F-477C89A5F1DD"><a name="GUID-659B1AE1-B096-3EA1-884F-477C89A5F1DD"><!-- --></a>
+		<h2 class="topictitle2">StartObservingL(MAccMonitorObserver *, const RAccMonCapabilityArray &amp;)</h2>
+		<table class="signature"><tr><td>void</td><td>StartObservingL</td><td>(</td><td><a href="GUID-38D62416-DE01-37F1-8F3C-51DEB11EA0FC.html">MAccMonitorObserver</a> *</td><td>aObserver,</td></tr><tr><td colspan="3"> </td><td>const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RAccMonCapabilityArray</a> &amp;</td><td>aCapabilityArray</td></tr><tr><td colspan="2"> </td><td>)</td><td colspan="2">[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Sets observer to listen connect/disconnect accessory notifications and starts the observer. Accessories that need to be listened can be defined.</p>
+
+				<div class="p">
+					<dl class="user">
+						
+							<dt class="dlterm">
+								<strong>leave</strong>
+							</dt>
+
+							<dd>TInt KErrAlreadyExists if observer is active already, otherwise KErrNone or standard Symbian error code. </dd>
+
+						
+					</dl>
+
+				</div>
+
+			</div></div>
+<div class="section parameters"><h3 class="sectiontitle">Parameters</h3><table border="0" class="parameters"><tr><td class="parameter"><a href="GUID-38D62416-DE01-37F1-8F3C-51DEB11EA0FC.html">MAccMonitorObserver</a> * aObserver</td><td>is the pointer to the callback functions.  </td></tr><tr class="bg"><td class="parameter">const <a href="GUID-FAEBF321-6B08-3041-A01F-B1E7282D0707.html">RAccMonCapabilityArray</a> &amp; aCapabilityArray</td><td>is an array of capabilities. Accessory type that needs to be listened is constructed with this capability array. For exmple if KAccMonHeadset capability is inserted to the array the observer receives all notifications about connected/disconnected headsets. If an empty array is set as parameter no notifications are sent to the observer.  </td></tr></table></div>
+
+	</div>
+<div class="nested1" id="GUID-7C50CDD2-7A5E-3253-B68D-8829618B2970"><a name="GUID-7C50CDD2-7A5E-3253-B68D-8829618B2970"><!-- --></a>
+		<h2 class="topictitle2">StopObserving()</h2>
+		<table class="signature"><tr><td>void</td><td>StopObserving</td><td>(</td><td>)</td><td>[pure virtual]</td></tr></table><div class="section"><div>
+				<p>Stops observing accessory connection status changes. Listening will be automatically stopped when CAccMonintoringApi object is deleted. </p>
+
+			</div></div>
+
+	</div>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+<p class="copyright">Copyright &#169;2010 Nokia Corporation and/or its subsidiary(-ies).<br /> All rights
+reserved. Unless otherwise stated, these materials are provided under the terms of the <a href=" http://www.eclipse.org/legal/epl-v10.html"> Eclipse Public License
+v1.0</a>.</p> 
+</div>
+</div>
+<?php include_once (CURRENT_SKIN_PATH.'/sdl_footer.html'); ?>
+
+</body>
+</html>
